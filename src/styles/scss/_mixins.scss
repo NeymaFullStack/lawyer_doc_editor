@@ -1,0 +1,142 @@
+@mixin logan-doc {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  ul,
+  ol,
+  li,
+  p,
+  pre,
+  blockquote,
+  figure,
+  hr {
+    color: black;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    display: block;
+    font-weight: 500;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    color: black;
+  }
+  h1 {
+    font-size: 1.1vw;
+    margin-block-start: 0.33em;
+    margin-block-end: 0.33em;
+    // margin-top: 0.33em !important;
+    // margin-bottom: 0.33em !important;
+  }
+
+  h2 {
+    font-size: 0.825vw; /* 1.5 * 1.1 / 2 */
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    // margin-top: 0.5em !important;
+    // margin-bottom: 0.5em !important;
+  }
+
+  h3 {
+    font-size: 0.647vw; /* 1.17 * 1.1 / 2 */
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    // margin-top: 0.67em;
+    // margin-bottom: 0.67em;
+  }
+
+  h4 {
+    font-size: 0.55vw; /* 1 * 1.1 / 2 */
+    margin-block-start: 0.75em;
+    margin-block-end: 0.75em;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+  }
+
+  h5 {
+    font-size: 0.457vw; /* 0.83 * 1.1 / 2 */
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+  }
+
+  h6 {
+    font-size: 0.374vw; /* 0.67 * 1.1 / 2 */
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  /* List styles */
+  ul,
+  ol {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    padding-inline-start: 40px;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    display: list-item;
+    text-align: match-parent;
+  }
+
+  /* Paragraph styles */
+  p {
+    display: block;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    margin-top: 0.15em !important;
+    margin-bottom: 0.15em !important;
+  }
+
+  /* Preformatted text styles */
+  pre {
+    display: block;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    font-family: monospace;
+    white-space: pre;
+    margin: 0.5em 0; /* 1 * 1.1 */
+  }
+
+  /* Blockquote styles */
+  // blockquote {
+  //   @apply my-2 border-l-4 border-gray-500 py-2 pl-4 text-[0.9em] italic text-black #{!important}; /* Apply Tailwind CSS utility classes for blockquote */
+  // }
+
+  // /* Figure styles */
+  // figure {
+  //   @apply my-2 text-[0.9em] text-black #{!important}; /* Apply margin-bottom for figures */
+  // }
+
+  /* Horizontal rule styles */
+  hr {
+    display: block;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
+  }
+}

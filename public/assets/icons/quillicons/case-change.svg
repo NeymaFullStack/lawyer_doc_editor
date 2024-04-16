@@ -1,0 +1,4 @@
+<svg className="ql-fill ql-stroke" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path className="ql-stroke" d="M1.53418 12.3014L4.92936 3.24756L8.32453 12.3014M7.13622 9.13253H2.72249M9.85236 7.32177C10.1973 6.51004 11.0124 5.9637 11.9461 5.9637C13.2475 5.9637 14.2095 6.86908 14.2095 8.22715V12.3014" stroke="#444444" stroke-width="0.90538" stroke-linecap="round" stroke-linejoin="round"/>
+<path className="ql-stroke" d="M9.68262 10.6887C9.68262 11.7073 10.4426 12.3297 11.3802 12.3297C12.908 12.3297 14.2095 11.5658 14.2095 9.33065V8.90625C13.6437 8.90625 12.5685 8.93454 11.6065 9.04772C10.6794 9.15693 9.68262 9.58529 9.68262 10.6887Z" stroke="#444444" stroke-width="0.90538" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,19 @@
+.ln-version-table {
+  .ant-table {
+    .ant-table-cell {
+      padding: 0.625rem 0.188rem !important;
+      border-color: #095ad31a !important;
+    }
+    tr {
+      padding-left: 0.313rem !important;
+      padding-right: 0.313rem !important;
+      cursor: pointer !important;
+      &:hover {
+        td {
+          background-color: unset !important;
+        }
+        background-color: #f0f5fc !important;
+      }
+    }
+  }
+}

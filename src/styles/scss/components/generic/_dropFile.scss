@@ -1,0 +1,26 @@
+.ln-logan-drop-area {
+  .ant-upload-drag-container {
+    // display: flex !important;
+    // justify-content: center;
+    // gap: 8px;
+    // align-items: center;
+    color: #a3a7af;
+  }
+}
+
+.ln-logan-drop-area,
+.ln-logan-drop-area-active {
+  .ant-upload.ant-upload-drag {
+    height: 4.5rem !important;
+  }
+}
+
+.ln-logan-drop-area-active {
+  cursor: url("/assets/icons/file-grab.svg"), auto;
+  .ant-upload-drag-container {
+    color: #095ad3 !important;
+  }
+  .ant-upload.ant-upload-drag {
+    border-color: #095ad3 !important;
+  }
+}

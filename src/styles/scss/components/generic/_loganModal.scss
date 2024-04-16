@@ -1,0 +1,10 @@
+@import "../../mixins";
+.preview-modal {
+  @include logan-doc;
+  .ant-modal-content {
+    @apply bg-overlay p-0;
+    .ant-modal-body {
+      @apply mx-0;
+    }
+  }
+}

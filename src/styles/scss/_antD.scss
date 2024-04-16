@@ -1,0 +1,113 @@
+.ant-btn {
+  &:disabled {
+    @apply cursor-default bg-secondary-blue text-primary-blue opacity-60 hover:text-primary-blue;
+    &:hover {
+      color: #0e61de !important;
+    }
+  }
+  &-icon {
+    margin-inline-end: 0 !important;
+  }
+}
+.ant-upload.ant-upload-drag {
+  border-width: 0.125rem !important;
+  border-color: #a3a7af !important;
+  &:hover {
+    border-color: #a3a7af !important;
+  }
+}
+
+.ant-table {
+  color: #a3a7af !important;
+  font-size: 0.75rem !important;
+
+  th {
+    background: #f0f5fc !important;
+    border-bottom: none !important;
+  }
+  tbody {
+    tr {
+      cursor: pointer !important;
+      &:hover {
+        td {
+          background-color: unset !important;
+        }
+      }
+    }
+    td.ant-table-cell {
+      border-bottom: 0.094rem solid #f0f5fc !important;
+    }
+  }
+}
+
+.ant-modal {
+  .ant-modal-footer {
+    margin: 0 !important;
+  }
+
+  .ant-modal-close {
+    top: 1rem !important;
+    inset-inline-end: 1rem !important;
+  }
+}
+
+.ant-select {
+  width: 100% !important;
+  height: 2.5rem !important;
+  .ant-select-selector {
+    box-shadow: none !important;
+
+    &:hover,
+    &:focus {
+      box-shadow: none !important;
+      border: 0.075rem solid #095ad3 !important;
+    }
+  }
+}
+
+// FORM AND INPUTS CSS
+.ant-form {
+  &-item {
+    &-label {
+      padding: 0 !important;
+      font-weight: 600 !important;
+    }
+    &-required {
+      &::before {
+        display: none !important;
+      }
+      &::after {
+        visibility: visible !important;
+        display: inline-block;
+        margin-inline-end: 4px;
+        font-family: SimSun, sans-serif;
+        line-height: 1;
+        content: "" !important;
+      }
+    }
+    .ant-form-item-explain:nth-child(1) {
+      display: none !important;
+    }
+  }
+}
+
+.ant-input {
+  @apply text-xs;
+  &:hover,
+  &:focus {
+    box-shadow: none !important;
+    border: 0.075rem solid #095ad3 !important;
+  }
+}
+input.ant-input-status-error {
+  border: 0.075rem solid #db0437 !important;
+  background-color: #db04370d;
+  &:focus,
+  &:hover {
+    border: 0.075rem solid #db0437 !important;
+  }
+}
+
+input.ant-input {
+  height: 2.5rem !important;
+}

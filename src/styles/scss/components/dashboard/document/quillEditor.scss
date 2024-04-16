@@ -1,0 +1,225 @@
+@import "../../../mixins";
+$underlineUrl: url("/assets/icons/quillicons/underline.svg");
+$boldUrl: url("/assets/icons/quillicons/bold-icon.svg");
+$italicURl: url("/assets/icons/quillicons/italic-icon.svg");
+$bulletsURl: url("/assets/icons/quillicons/bullets-icon.svg");
+
+.quill {
+  padding: 0 !important;
+  @include logan-doc;
+  height: 100%;
+  .ql-container.focused-border {
+    border: 0.125rem solid #095ad3 !important;
+  }
+  .ql-container {
+    height: 100%;
+    font-size: 0.9vw !important;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) -40.91%,
+      #ffffff 81.82%
+    ) !important;
+    border: 0.125rem solid #e8f0f2 !important;
+    padding: 0.938rem;
+    width: 100% !important;
+
+    .ql-editor {
+      &::-webkit-scrollbar {
+        display: none !important;
+      }
+      overflow-y: scroll;
+      overflow-wrap: anywhere !important;
+      padding: 0 !important;
+      &::before {
+        margin: 0 0.5rem !important;
+      }
+    }
+  }
+  .doc-var {
+    @apply rounded-md bg-six px-[0.2em] py-[0.1em] text-primary-blue;
+  }
+}
+
+.ql-toolbar {
+  &::after {
+    display: none !important;
+    content: "" !important;
+  }
+  border: none !important;
+  .ln-cus-img-btn {
+    width: fit-content !important;
+    height: fit-content !important;
+    padding: 0 !important;
+  }
+  .ln-cus-img-btn--active {
+    width: fit-content !important;
+    height: fit-content !important;
+    padding: 0 !important;
+    background: linear-gradient(to right, #085ad3 50%, #136df1) !important;
+    border-radius: 0.5rem !important;
+  }
+}
+.ql-snow .ql-formats {
+  display: flex !important;
+  margin: 0 !important;
+}
+
+// quill select styles
+.ql-snow .ql-picker {
+  .ql-picker-label {
+    svg {
+      display: none;
+    }
+    &::before {
+      line-height: 0 !important;
+      padding-left: 0.313rem !important;
+    }
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    border: none !important;
+    padding: 0.125rem !important;
+  }
+  .ql-picker-options {
+    left: 0 !important;
+    span {
+      margin: auto !important;
+    }
+  }
+
+  width: 6.25rem !important;
+  height: fit-content !important;
+  appearance: none !important;
+  background-image: url("/assets/icons/quillicons/arrow-down.svg") !important;
+  background-size: 1.125rem !important; /* Adjust the size of the custom icon */
+  background-position: right 0.188rem center !important; /* Adjust the position of the custom icon */
+  background-repeat: no-repeat !important;
+  background-color: #ffffff !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  color: #444444 !important;
+  border-radius: 0.313rem !important;
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer;
+}
+
+.ql-align.ql-picker {
+  .ql-picker-label {
+    margin-top: 0.125rem;
+    margin-left: -0.125rem;
+    svg {
+      display: block !important;
+      width: 1.5rem !important;
+      height: 1rem !important;
+    }
+  }
+}
+
+//font case change to uppercase
+.ql-upperCase-active {
+  text-transform: uppercase;
+}
+
+/* Font styles for Quill editor */
+.ql-font-arial {
+  font-family: "Arial", sans-serif;
+}
+
+.ql-font-comic-sans {
+  font-family: "Comic Sans MS", cursive;
+}
+
+.ql-font-courier-new {
+  font-family: "Courier New", monospace;
+}
+
+.ql-font-georgia {
+  font-family: "Georgia", serif;
+}
+
+.ql-font-helvetica {
+  font-family: "Helvetica", sans-serif;
+}
+
+.ql-font-lucida {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+//Font Size style for quill editor
+.ql-picker.ql-size {
+  width: 2.5rem !important;
+}
+.ql-size-1 {
+  font-size: 1rem;
+}
+.ql-size-2 {
+  font-size: 2rem;
+}
+.ql-size-3 {
+  font-size: 3rem;
+}
+
+//Align style for quill editoe
+.ql-picker.ql-align {
+  width: 2.375rem !important;
+}
+
+//undeline,bold,italic style
+@mixin setBackground($url) {
+  svg {
+    display: none !important;
+  }
+  background-image: $url !important;
+  background-size: 1.375rem !important; /* Adjust the size of the custom icon */
+  background-position: center !important; /* Adjust the position of the custom icon */
+  background-repeat: no-repeat !important;
+}
+.ql-underline {
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  @include setBackground($underlineUrl);
+}
+
+.ql-italic {
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  @include setBackground($italicURl);
+  // background-image: url("/assets/icons/quillicons/underline.svg") !important;
+}
+
+.ql-bold {
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  @include setBackground($boldUrl);
+  // background-image: url("/assets/icons/quillicons/underline.svg") !important;
+}
+
+.ql-list {
+  height: 1.2rem !important;
+  padding: 0 !important;
+  width: 1.5rem !important;
+}
+// .ql-list[value="bullet"] {
+//   width: 1.125rem !important;
+//   height: 1.125rem !important;
+//   @include setBackground($bulletsURl);
+//   // background-image: url("/assets/icons/quillicons/underline.svg") !important;
+// }
+
+//highlight
+.ql-cus-highlighter {
+  ::-moz-selection {
+    background: #eefe89;
+  }
+  ::-webkit-selection {
+    background: #eefe89;
+  }
+  ::selection {
+    background: #eefe89;
+  }
+}
+.ql-highlighter-active {
+  background: #eefe89;
+}
