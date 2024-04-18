@@ -92,7 +92,7 @@ function DocumentPreviewModal({
         />
       </div>
       <div className="h-[62vh] overflow-y-scroll pb-5">
-        <div className="logan-doc mx-20 mt-5 min-h-[70vh] bg-white p-5  !text-black">
+        <div className="preview-page mx-20 mt-5 min-h-[70vh] bg-white p-5  !text-black">
           {previewTemplate && parse(previewTemplate)}
         </div>
       </div>

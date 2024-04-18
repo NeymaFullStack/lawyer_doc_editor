@@ -1,6 +1,10 @@
 @import "../../mixins";
 .preview-modal {
-  @include logan-doc;
+  .preview-page {
+    font-size: 1.1vw;
+    @include logan-doc;
+  }
+
   .ant-modal-content {
     @apply bg-overlay p-0;
     .ant-modal-body {

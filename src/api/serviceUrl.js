@@ -1,5 +1,5 @@
 export const auth =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJraHVzaGFsc2luZ2gxMisxQGdtYWlsLmNvbSIsImlkIjoxLCJleHAiOjE3MTMyNTc1ODZ9.eSzFzcXxPA4NPFosko-ZKt4nqUzqNkpj28gOQpvIKj4";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJraHVzaGFsc2luZ2gxMisxQGdtYWlsLmNvbSIsImlkIjoxLCJleHAiOjE3MTMzODA2NTN9.KZ3d1AyeBLAmKD2yI2W8M83vnVa5jkBHKHqVTDgxFmE";
 
 // dashboard
 
