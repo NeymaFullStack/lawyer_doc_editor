@@ -187,7 +187,7 @@ const LoganEditor = ({ docDetails = null }) => {
   }, [editorUpdate]);
 
   useEffect(() => {
-    console.log("data", data);
+    // console.log("data", data);
     if (data && quillRefs?.current?.[0]) {
       appDispatch(
         documentAction.setCurrentVersionDocument({
@@ -204,7 +204,7 @@ const LoganEditor = ({ docDetails = null }) => {
         }),
       );
       quillRefs.current[0].docContent = data?.content_details?.content;
-      console.log("mine", quillRefs.current[0].docContent);
+      // console.log("mine", quillRefs.current[0].docContent);
     }
   }, [data]);
 

@@ -68,26 +68,24 @@ export const formats = [
   "code-block",
   "undo",
   "redo",
-  "doc-var",
 ];
 
 const Inline = Quill.import("blots/inline");
 
-class DocVarBlot extends Inline {
+class SpanBlot extends Inline {
   static create(value) {
-    const node = super.create();
-    node.classList.add("doc-var");
-    return node;
+    const blot = super.create();
+    blot.classList.add(value);
+    return blot;
   }
-
-  static formats(node) {
-    return node.classList.contains("doc-var");
+  static formats(value) {
+    return value.className;
   }
 }
-DocVarBlot.blotName = "doc-var";
-DocVarBlot.tagName = "span";
+SpanBlot.blotName = "name";
+SpanBlot.tagName = "span";
 
-Quill.register(DocVarBlot);
+Quill.register(SpanBlot);
 
 // Add sizes to whitelist and register them
 const Size = Quill.import("formats/size");

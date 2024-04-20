@@ -35,8 +35,11 @@ $bulletsURl: url("/assets/icons/quillicons/bullets-icon.svg");
       }
     }
   }
-  .doc-var {
+  .doc-variable {
     @apply rounded-md bg-six px-[0.2em] py-[0.1em] text-primary-blue;
+  }
+  .doc-article {
+    @apply text-primary-gray;
   }
 }
 
@@ -223,3 +226,17 @@ $bulletsURl: url("/assets/icons/quillicons/bullets-icon.svg");
 .ql-highlighter-active {
   background: #eefe89;
 }
+
+// .editor-main {
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+//   overflow: hidden;
+// }
+// #editor-toolbar {
+//   background-color: #f4f4f4;
+//   padding: 8px;
+//   border-bottom: 1px solid #ccc;
+// }
+// #editor-container {
+//   padding: 10px;
+// }
