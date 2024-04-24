@@ -45,7 +45,8 @@ function LoganQuill({
       }}
       onChangeSelection={onTextSelection}
       onChange={(value, _, source, editor) => {
-        value !== quillContent && handleChange(value, quillId - 1);
+        value !== quillContent &&
+          handleChange(value, quillId - 1, _, source, editor);
       }}
       value={quillContent}
       theme="snow"

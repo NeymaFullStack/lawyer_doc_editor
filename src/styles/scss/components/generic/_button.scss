@@ -14,10 +14,7 @@
     }
   }
   &--primary {
-    @apply bg-blue-gradient text-white;
-    &:hover {
-      color: white !important;
-    }
+    @apply bg-blue-gradient text-white hover:bg-blue-gradient hover:text-white #{!important};
   }
   &--primary-trans {
     @apply text-primary-blue;
@@ -27,10 +24,7 @@
     }
   }
   &--secondary {
-    @apply bg-secondary-blue text-primary-blue hover:text-primary-blue;
-    &:hover {
-      color: #0e61de !important;
-    }
+    @apply bg-secondary-blue text-primary-blue hover:text-primary-blue #{!important};
   }
   &--warn {
     @apply bg-warn text-white;

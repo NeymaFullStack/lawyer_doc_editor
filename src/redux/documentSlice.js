@@ -91,7 +91,11 @@ export const documentSlice = createSlice({
   },
   reducers: {
     setActiveDocumentAction: (state, action) => {
-      return { ...state, activeDocumentAction: action.payload };
+      return {
+        ...state,
+        activeDocumentAction: action.payload,
+        copiedContent: null,
+      };
     },
     setActiveDocumentState: (state, action) => {
       return { ...state, documentState: action.payload };

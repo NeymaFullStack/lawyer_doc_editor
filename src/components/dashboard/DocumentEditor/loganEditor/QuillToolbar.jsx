@@ -73,19 +73,44 @@ export const formats = [
 const Inline = Quill.import("blots/inline");
 
 class SpanBlot extends Inline {
-  static create(value) {
+  static create(node) {
     const blot = super.create();
-    blot.classList.add(value);
+    if (node?.className == "doc-variable") {
+      blot.setAttribute("class", "doc-variable");
+    } else if (node?.className == "doc-article") {
+      blot.setAttribute("class", "doc-article");
+    }
     return blot;
   }
-  static formats(value) {
-    return value.className;
+  addClass(node, className) {
+    // debugger;
+    node.setAttribute("class", className);
+  }
+  static formats(domNode) {
+    return domNode;
   }
 }
-SpanBlot.blotName = "name";
+SpanBlot.blotName = "paste-content";
 SpanBlot.tagName = "span";
-
 Quill.register(SpanBlot);
+
+// class SpanBlot extends Inline {
+//   static create(value) {
+//     const blot = super.create();
+//     blot.classList.add(value);
+//     debugger;
+
+//     return blot;
+//   }
+
+//   static formats(value) {
+//     return value.className;
+//   }
+// }
+// SpanBlot.blotName = "name";
+// SpanBlot.tagName = "span";
+
+// Quill.register(SpanBlot);
 
 // Add sizes to whitelist and register them
 const Size = Quill.import("formats/size");

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoganQuill from "./LoganQuill";
 import { useCallback } from "react";
 import {
+  copiedContentType,
   documentActions,
   documentStatus,
   gptActionType,
@@ -163,13 +164,14 @@ const LoganEditor = ({ docDetails = null }) => {
     // { id: 99 },
     // { id: 100 },
   ]);
+  const textInsertRef = useRef(false);
 
   const createQuillRefs = useCallback((ref, index) => {
     quillRefs.current[index] = ref;
   }, []);
 
   const handleChange = useCallback(
-    (value, page) => {
+    (value, page, _, source, editor) => {
       if (quillRefs?.current?.[0]) {
         quillRefs.current[page].docContent = value;
       }
@@ -180,6 +182,8 @@ const LoganEditor = ({ docDetails = null }) => {
   const memoizedtextSelctionFunction = useCallback(onTextSelection, [
     gptHighlighterActive,
     gptSearchProperties,
+    copiedContent,
+    textInsertRef,
   ]);
 
   useEffect(() => {
@@ -310,6 +314,7 @@ const LoganEditor = ({ docDetails = null }) => {
   //     );
   //   }
   // }, [quillRefs]);
+  console.log("copiedContent out", copiedContent);
 
   return (
     <div className="flex h-full w-full flex-col" aria-label="Editor">
@@ -364,6 +369,16 @@ const LoganEditor = ({ docDetails = null }) => {
                       "relative h-full w-full  !text-black" +
                       (gptHighlighterActive ? " ql-cus-highlighter " : "")
                     }
+                    onMouseEnter={() => {
+                      if (copiedContent?.content && !textInsertRef.current) {
+                        textInsertRef.current = true;
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (textInsertRef.current) {
+                        textInsertRef.current = false;
+                      }
+                    }}
                   >
                     <LoganQuill
                       quillId={quill.id}
@@ -455,6 +470,33 @@ const LoganEditor = ({ docDetails = null }) => {
   }
 
   function onTextSelection(range, source, editor) {
+    console.log(textInsertRef.current);
+    if (
+      copiedContent?.content &&
+      copiedContent?.type === copiedContentType.Variable &&
+      range?.length === 0 &&
+      textInsertRef.current
+    ) {
+      const testContent = copiedContent?.content.definition;
+      textInsertRef.current = false;
+      quillRefs.current?.[0]?.editor.insertText(
+        range.index,
+        ` ${testContent} `,
+        "silent",
+      );
+
+      quillRefs.current?.[0]?.editor.formatText(
+        range?.index,
+        testContent.length + 2,
+        { "paste-content": testContent },
+      );
+
+      let newBlot = quillRefs.current?.[0]?.editor.getLeaf(range.index)[0].next;
+      newBlot.addClass(newBlot.domNode, "doc-variable");
+
+      textInsertRef.current = true;
+      appDispatch(documentAction.setCopiedContent(null)); // quillRefs.current?.[0]?.editor.formatText(
+    }
     if (
       range?.length > 0 &&
       gptHighlighterActive &&

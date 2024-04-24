@@ -27,7 +27,6 @@ function VariableField({
   const handleMouseMove = (event) => {
     setCursorPosition({ x: event.clientX, y: event.clientY });
   };
-  console.log(index, "=>", variableProperties);
   useEffect(() => {
     if (window !== undefined) {
       // copiedContent?.id && window.

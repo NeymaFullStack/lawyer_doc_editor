@@ -1,12 +1,8 @@
-import Image from "next/image";
-
 import { Quill } from "react-quill";
-import { useDispatch } from "react-redux";
 var Parchment = Quill.import("parchment");
 class HighlighterAttributor extends Parchment.Attributor.Class {
   add(node, value) {
     if (value === false) {
-      debugger;
       this.remove(node);
       return true;
     }
