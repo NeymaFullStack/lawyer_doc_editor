@@ -12,7 +12,7 @@ function LoganTable({
 }) {
   return (
     <table
-      className={`table-auto w-full border-collapse  text-primary-gray ${className}`}
+      className={`w-full table-auto border-collapse  text-primary-gray ${className}`}
     >
       {!hideHeader && (
         <MemoizedTableHeader
@@ -25,7 +25,7 @@ function LoganTable({
           listData.map((row, rindex) => (
             <tr
               key={row[rowKey]}
-              className={`bg-white border-b-[0.094rem] border-secondary-blue ${
+              className={`border-b-[0.094rem] border-secondary-blue bg-white ${
                 onClickRow ? "cursor-pointer" : ""
               }`}
               onClick={() => {
@@ -65,7 +65,7 @@ function LoganTable({
                       >
                         {row[column.id] || "NA"}
                       </td>
-                    )
+                    ),
                 )}
             </tr>
           ))}
@@ -78,7 +78,7 @@ export default LoganTable;
 const TableHeader = ({ headTitles, headerClass }) => {
   return (
     <thead
-      className={` text-black-txt font-semibold text-[0.813rem]  border-secondary-blue ${headerClass}`}
+      className={` border-secondary-blue text-[0.813rem] font-semibold  text-black-txt ${headerClass}`}
     >
       <tr>
         {headTitles &&

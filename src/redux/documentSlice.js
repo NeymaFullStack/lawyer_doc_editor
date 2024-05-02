@@ -6,86 +6,14 @@ export const documentSlice = createSlice({
   initialState: {
     gptQuery: { type: "usedTyped", text: "generate something" },
     editorUpdate: null,
-    chatMessages: [
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "Ankit",
-      //   text: "chnage it to Clark",
-      // },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "bruce wayne",
-      //   text: "chnage it to Clark",
-      // },
-      // { type: "userTyped", text: "generate legal doc" },
-      // { type: "loganGpt", text: "generate legal doc" },
-      // {
-      //   type: "highlighted",
-      //   textHiglighted: "Ankit",
-      //   text: "chnage it to Clark",
-      // },
-    ],
+    chatMessages: [],
     documentLoading: false,
     currentDocument: null,
     activeDocumentAction: documentActions.Draft,
-    documentState: documentStatus.Draft,
-    currentVersionDocument: null,
-    activeVersionDocument: null,
-    hoverVersionDocument: null,
+    // documentState: documentStatus.Draft,
+    currentDocumentVersion: null,
+    activeDocumentVersion: null,
+    selectedDocumentVersion: null,
     exportDoc: false,
     copiedContent: null,
   },
@@ -100,15 +28,13 @@ export const documentSlice = createSlice({
     setActiveDocumentState: (state, action) => {
       return { ...state, documentState: action.payload };
     },
-    setActiveVersionDocument: (state, action) => {
-      return { ...state, activeVersionDocument: action.payload };
+    setDocumentVersion: (state, action) => {
+      return { ...state, ...action.payload };
     },
     setCurrentDocument: (state, action) => {
       return { ...state, currentDocument: action.payload };
     },
-    setCurrentVersionDocument: (state, action) => {
-      return { ...state, currentVersionDocument: action.payload };
-    },
+
     setExportDoc: (state, action) => {
       return { ...state, exportDoc: !state.exportDoc };
     },
@@ -129,6 +55,9 @@ export const documentSlice = createSlice({
     },
     setDocumentLoading: (state, action) => {
       return { ...state, documentLoading: action.payload };
+    },
+    setDocumentStateByKeys(state, action) {
+      return { ...state, ...action.payload };
     },
   },
 });

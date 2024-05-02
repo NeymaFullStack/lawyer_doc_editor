@@ -23,3 +23,9 @@ export const gptActionType = {
   Update: "update",
   Explain: "explain",
 };
+
+export const versionHistoryFilter = {
+  all: "All Versions",
+  manualSaved: "Manually Saved Versions",
+  autoSaved: "Auto Saved Versions",
+};

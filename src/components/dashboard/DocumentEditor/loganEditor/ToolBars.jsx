@@ -8,48 +8,45 @@ import DuplicateDocumentModal from "../documentAction/versionTool/DuplicateDocum
 import RestoreDocModal from "../documentAction/versionTool/RestoreDocModal";
 import { documentAction } from "@/redux/documentSlice";
 import RemSizeImage from "@/components/generic/RemSizeImage";
+import { Button } from "antd";
 
 function Toolbars({ quillPages, visiblePage }) {
   const appDispatch = useDispatch();
   const [openDuplicateDocModal, setOpenDuplicateDocModal] = useState(false);
   const [openRestoreDocModal, setOpenRestoreDocModal] = useState(false);
-  const exportDoc = useSelector((state) => state.documentReducer.exportDoc);
+  const { exportDoc, selectedDocumentVersion } = useSelector(
+    (state) => state.documentReducer,
+  );
 
   const versionHistoryDocument = useSelector(
-    (state) => state.documentReducer.documentLoading
+    (state) => state.documentReducer.documentLoading,
   );
 
   const activeDocumentAction = useSelector(
-    (state) => state.documentReducer.activeDocumentAction
+    (state) => state.documentReducer.activeDocumentAction,
   );
 
-  const documentState = useSelector(
-    (state) => state.documentReducer.documentState
-  );
-
-  let isStatusDraft = documentState === documentStatus.Draft ? true : false;
   const activeQuillId = useSelector(
-    (state) => state.quillReducer.activeQuillId
+    (state) => state.quillReducer.activeQuillId,
   );
 
   const blurredActiveQuillId = useSelector(
-    (state) => state.quillReducer.blurredActiveQuillId
+    (state) => state.quillReducer.blurredActiveQuillId,
   );
   let toolbar = quillPages.map((quill, index) => {
     return (
       <div
         className={
-          "w-full h-full flex justify-start items-center " +
-          (!isStatusDraft ||
+          "flex h-full w-full items-center justify-start " +
           (activeDocumentAction !== documentActions.Draft &&
-            activeDocumentAction !== documentActions.VariableTool &&
-            activeDocumentAction !== documentActions.Reference)
+          activeDocumentAction !== documentActions.VariableTool &&
+          activeDocumentAction !== documentActions.Reference
             ? "hidden"
             : activeQuillId == 0 && quill.id == blurredActiveQuillId
-            ? ""
-            : quill.id !== activeQuillId
-            ? "hidden"
-            : "")
+              ? ""
+              : quill.id !== activeQuillId
+                ? "hidden"
+                : "")
         }
         key={"toolbar-" + quill.id}
       >
@@ -59,12 +56,12 @@ function Toolbars({ quillPages, visiblePage }) {
   });
 
   toolbar = (
-    <div className="w-full h-full flex items-center">
+    <div className="flex h-full w-full items-center">
       {toolbar}
       {activeDocumentAction == documentActions.VersionHistory ? (
-        <div className="flex w-full h-full items-center">
+        <div className="flex h-full w-full items-center">
           <h2 className="w-[45%] pl-3">
-            {versionHistoryDocument?.documentname || "Updated By Laws"}
+            {/* {versionHistoryDocument?.documentname || "Updated By Laws"} */}
           </h2>
           {
             // Might need to enable later >>>>>>>>>>>>>>>>>>
@@ -76,54 +73,45 @@ function Toolbars({ quillPages, visiblePage }) {
             <span>/ 152</span>
           </div> */
           }
-          <div className="flex w-full items-center justify-end gap-4 mr-5">
-            <button onClick={() => setOpenRestoreDocModal(true)}>
-              <RemSizeImage
-                imagePath={"/assets/icons/quillicons/restore-doc.svg"}
-                remWidth={1}
-                remHeight={1}
-                alt={"Restore"}
-              />
-              {/* <Image
-                src={"/assets/icons/quillicons/restore-doc.svg"}
-                height={16}
-                width={16}
-                alt="Restore"
-              /> */}
-            </button>
-            <button onClick={() => setOpenDuplicateDocModal(true)}>
-              <RemSizeImage
-                imagePath={"/assets/icons/quillicons/duplicate-doc.svg"}
-                remWidth={1}
-                remHeight={1}
-                alt={"Duplicate"}
-              />
-              {/* <Image
-                src={"/assets/icons/quillicons/duplicate-doc.svg"}
-                height={16}
-                width={16}
-                alt="Duplicate"
-              /> */}
-            </button>
-            <button
-              onClick={() => {
-                appDispatch(documentAction.setExportDoc(!exportDoc));
-              }}
-            >
-              <RemSizeImage
-                imagePath={"/assets/icons/export-blue.svg"}
-                remWidth={1}
-                remHeight={1}
-                alt={"Export"}
-              />
-              {/* <Image
-                src={"/assets/icons/export-blue.svg"}
-                height={16}
-                width={16}
-                alt="Export"
-              /> */}
-            </button>
-          </div>
+          {selectedDocumentVersion.is_auto_saved !== null && (
+            <div className="mr-5 flex w-full items-center justify-end gap-4">
+              <Button
+                onClick={() => setOpenRestoreDocModal(true)}
+                icon={
+                  <RemSizeImage
+                    imagePath={"/assets/icons/quillicons/restore-doc.svg"}
+                    remWidth={1}
+                    remHeight={1}
+                    alt={"Save"}
+                  />
+                }
+                className="btn btn--primary !py-1"
+              >
+                Restore
+              </Button>
+
+              {/* <button onClick={() => setOpenDuplicateDocModal(true)}>
+                <RemSizeImage
+                  imagePath={"/assets/icons/quillicons/duplicate-doc.svg"}
+                  remWidth={1}
+                  remHeight={1}
+                  alt={"Duplicate"}
+                />
+              </button>
+              <button
+                onClick={() => {
+                  appDispatch(documentAction.setExportDoc(!exportDoc));
+                }}
+              >
+                <RemSizeImage
+                  imagePath={"/assets/icons/export-blue.svg"}
+                  remWidth={1}
+                  remHeight={1}
+                  alt={"Export"}
+                />
+              </button> */}
+            </div>
+          )}
         </div>
       ) : (
         <>
@@ -149,7 +137,7 @@ function Toolbars({ quillPages, visiblePage }) {
   return (
     <div
       className={
-        "border-b-[0.063rem] border-secondary-blue h-[3.3rem] flex px-[0.4rem] w-full items-center"
+        "flex h-[3.3rem] w-full items-center border-b-[0.063rem] border-secondary-blue px-[0.4rem]"
       }
     >
       <DuplicateDocumentModal

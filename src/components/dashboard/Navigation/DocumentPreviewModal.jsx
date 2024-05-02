@@ -111,7 +111,6 @@ function DocumentPreviewModal({
       appDispatch(folderNavigationAction.setBreadCrumbs(slug));
       router.push(`/dashboard/doc-edit/${res?.id}`);
       onClose();
-      debugger;
     }
   }
 }

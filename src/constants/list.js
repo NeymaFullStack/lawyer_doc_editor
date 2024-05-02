@@ -39,7 +39,7 @@ export const sideBarDropDownMenu = [
   // },
 ];
 
-export const documentActionsDraft = (activeDocumentAction) => {
+export const documentActionsList = (activeDocumentAction) => {
   return [
     {
       value: documentActions.Draft,
@@ -86,14 +86,44 @@ export const documentActionsDraft = (activeDocumentAction) => {
   ];
 };
 
-export const documentActionsFinalized = (draftAction, activeDocumentAction) => {
+export const vesionFilterMenuList = (filters) => {
   return [
     {
-      value: documentActions.VersionHistory,
-      icon:
-        activeDocumentAction === documentActions.VersionHistory
-          ? "/assets/icons/docaction/version-history-active.svg"
-          : "/assets/icons/docaction/version-history.svg",
+      key: "all",
+      label: (
+        <div
+          className={`${filters.value == "all" ? " text-primary-blue" : ""}`}
+        >
+          {"All Versions (Default)"}{" "}
+          {filters.value == "all" && <span className="ml-1 text-lg">•</span>}
+        </div>
+      ),
+    },
+    {
+      key: "autoSaved",
+      label: (
+        <div
+          className={`${filters.value == "autoSaved" ? " text-primary-blue" : ""}`}
+        >
+          {"Auto Saved Versions"}{" "}
+          {filters.value == "autoSaved" && (
+            <span className="ml-1 text-lg">•</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "manualSaved",
+      label: (
+        <div
+          className={`${filters.value == "manualSaved" ? " text-primary-blue" : ""}`}
+        >
+          {"Manual Saved Versions"}{" "}
+          {filters.value == "manualSaved" && (
+            <span className="ml-1 text-lg">•</span>
+          )}
+        </div>
+      ),
     },
   ];
 };

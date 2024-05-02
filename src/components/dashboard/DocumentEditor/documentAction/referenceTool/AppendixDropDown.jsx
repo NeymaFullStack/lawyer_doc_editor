@@ -1,5 +1,6 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import Tags from "@/components/generic/Tags";
+import Tag from "@/components/generic/Tag";
+import Tags from "@/components/generic/Tag";
 import React, { useEffect } from "react";
 import { useState } from "react";
 
@@ -28,7 +29,7 @@ function AppendixDropDown({ onClose }) {
       onClick={(e) => {
         e.stopPropagation();
       }}
-      className="py-2 min-w-[20rem] max-w-[20rem] bg-white shadow-out-lg text-primary-gray rounded-xl text-xs"
+      className="min-w-[20rem] max-w-[20rem] rounded-xl bg-white py-2 text-xs text-primary-gray shadow-out-lg"
     >
       <div className="px-2 pb-2">SELECT</div>
       <ul>
@@ -37,14 +38,14 @@ function AppendixDropDown({ onClose }) {
             return (
               <li
                 key={appendix.id}
-                className=" cursor-pointer group flex items-center justify-between px-2 py-2 hover:bg-six"
+                className=" group flex cursor-pointer items-center justify-between px-2 py-2 hover:bg-six"
                 onClick={() => {
                   onClose();
                 }}
               >
-                <Tags textColor={"text-primary-blue"} bgColor={"bg-six"}>
+                <Tag textColor={"text-primary-blue"} bgColor={"bg-six"}>
                   {appendix?.name}
-                </Tags>
+                </Tag>
                 <div className="hidden group-hover:block">
                   <RemSizeImage
                     imagePath={"/assets/icons/select-icon.svg"}
@@ -59,14 +60,14 @@ function AppendixDropDown({ onClose }) {
           return (
             <li
               key={appendix.id}
-              className=" cursor-pointer group flex items-center justify-between px-2 py-2  hover:bg-six"
+              className=" group flex cursor-pointer items-center justify-between px-2 py-2  hover:bg-six"
               onClick={() => {
                 onClose();
               }}
             >
-              <Tags textColor={"text-[#FF7A00]"} bgColor={"bg-[#FFF3E7]"}>
+              <Tag textColor={"text-[#FF7A00]"} bgColor={"bg-[#FFF3E7]"}>
                 {appendix.name}
-              </Tags>
+              </Tag>
               <div className="hidden group-hover:block">
                 <RemSizeImage
                   imagePath={"/assets/icons/select-icon.svg"}

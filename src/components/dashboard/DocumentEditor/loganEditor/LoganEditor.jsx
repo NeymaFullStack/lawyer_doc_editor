@@ -11,21 +11,25 @@ import {
   gptActionType,
 } from "@/constants/enums";
 import { quillAction } from "@/redux/quillSlice";
-import Tags from "@/components/generic/Tags";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import GptSearch from "../documentAction/draftTool/GptSearch";
 import ContentSearchToolTip from "../documentAction/ContentSearchToolTip";
 import { handleHighlighterChange } from "./customModules/highlighter";
 import ToolBars from "./ToolBars";
 import { getDocumentContentByVersionIdUrl } from "@/api/serviceUrl";
-import { getDocumentContentByVersionId } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import {
+  getDocumentContentByVersionId,
+  updateDocumentVersionContent,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
 import useSWR from "swr";
 import { documentAction } from "@/redux/documentSlice";
 import { editorTextToBeReplaceRegex } from "@/utils/generic";
+import Tag from "@/components/generic/Tag";
+import { debounce } from "lodash";
 
 const LoganEditor = ({ docDetails = null }) => {
-  let url = docDetails?.document_versions?.[0]?.version_id
-    ? `${getDocumentContentByVersionIdUrl}${docDetails?.id}/${docDetails?.document_versions?.[0]?.version_id}`
+  let url = docDetails?.current_version?.version_id
+    ? `${getDocumentContentByVersionIdUrl}${docDetails?.id}/${docDetails?.current_version?.version_id}`
     : null;
   const { data, error, isLoading, mutate } = useSWR(
     [url],
@@ -42,8 +46,11 @@ const LoganEditor = ({ docDetails = null }) => {
     documentState,
     activeDocumentAction,
     documentLoading,
-    currentVersionDocument,
+    currentDocumentVersion,
+    activeDocumentVersion,
     editorUpdate,
+    selectedDocumentVersion,
+    currentDocument,
   } = useSelector((state) => state.documentReducer);
 
   let isDocumentActionDraft =
@@ -53,7 +60,6 @@ const LoganEditor = ({ docDetails = null }) => {
     (state) => state?.quillReducer?.toolbar,
   );
 
-  let isStatusDraft = documentState === documentStatus.Draft ? true : false;
   const { activeQuillId, gptSearchProperties } = useSelector(
     (state) => state.quillReducer,
   );
@@ -170,55 +176,73 @@ const LoganEditor = ({ docDetails = null }) => {
     quillRefs.current[index] = ref;
   }, []);
 
-  const handleChange = useCallback(
-    (value, page, _, source, editor) => {
-      if (quillRefs?.current?.[0]) {
-        quillRefs.current[page].docContent = value;
-      }
-    },
-    [quillRefs],
-  );
+  const debouncedUpdateContent =
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useCallback(
+      debounce((content, docId, versionId) => {
+        updateDocumentVersionContent({
+          document_id: docId,
+          version_id: versionId,
+          content: content,
+        });
+      }, 5000),
+      [],
+    );
 
-  const memoizedtextSelctionFunction = useCallback(onTextSelection, [
-    gptHighlighterActive,
-    gptSearchProperties,
-    copiedContent,
-    textInsertRef,
-  ]);
+  const handleChange = (value, page, _, source, editor) => {
+    if (
+      currentDocumentVersion &&
+      value !== currentDocumentVersion?.docContent
+    ) {
+      console.log("render");
+      appDispatch(
+        documentAction.setDocumentVersion({
+          currentDocumentVersion: {
+            ...currentDocumentVersion,
+            docContent: value,
+          },
+        }),
+      );
+      debouncedUpdateContent(
+        value,
+        currentDocument.id,
+        currentDocumentVersion.version_id,
+      );
+    }
+  };
+
+  const memoizedtextSelctionFunction = useCallback(
+    onTextSelection,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gptHighlighterActive, gptSearchProperties, copiedContent, textInsertRef],
+  );
 
   useEffect(() => {
     executeGptChanges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorUpdate]);
 
   useEffect(() => {
-    // console.log("data", data);
-    if (data && quillRefs?.current?.[0]) {
+    if (data) {
       appDispatch(
-        documentAction.setCurrentVersionDocument({
-          ...data,
-          versionId: data?.version_id,
-          docContent: data?.content_details?.content,
+        documentAction.setDocumentVersion({
+          currentDocumentVersion: {
+            ...data,
+            docContent: data?.content_details?.content,
+          },
         }),
       );
-      appDispatch(
-        documentAction.setActiveVersionDocument({
-          ...data,
-          versionId: data?.version_id,
-          docContent: data?.content_details?.content,
-        }),
-      );
-      quillRefs.current[0].docContent = data?.content_details?.content;
-      // console.log("mine", quillRefs.current[0].docContent);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
-    if (!isDocumentActionDraft || !isStatusDraft) {
+    if (!isDocumentActionDraft) {
       quillRefs.current[0]?.editor.disable();
     } else {
       quillRefs.current[0]?.editor.enable();
     }
-  }, [isDocumentActionDraft, isStatusDraft]);
+  }, [isDocumentActionDraft]);
 
   useEffect(() => {
     appDispatch(documentAction.setCurrentDocument(docDetails));
@@ -230,6 +254,7 @@ const LoganEditor = ({ docDetails = null }) => {
         window.removeEventListener("click", removeEditorFocus);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -241,12 +266,12 @@ const LoganEditor = ({ docDetails = null }) => {
       "highlighter",
       false,
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gptHighlighterActive]);
 
   useEffect(() => {
     if (activeQuillId !== 0) {
-      isStatusDraft &&
-        isDocumentActionDraft &&
+      isDocumentActionDraft &&
         quillRefs.current?.[0]?.editor.container.classList.add(
           "focused-border",
         );
@@ -255,8 +280,61 @@ const LoganEditor = ({ docDetails = null }) => {
         "focused-border",
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeQuillId]);
 
+  useEffect(() => {
+    if (quillRefs?.current?.[0] && activeDocumentVersion) {
+      if (
+        activeDocumentAction === documentActions.VersionHistory ||
+        (activeDocumentAction !== documentActions.VersionHistory &&
+          activeDocumentVersion.is_auto_saved !== null)
+      ) {
+        quillRefs.current[0]?.editor.clipboard.dangerouslyPasteHTML(
+          activeDocumentVersion?.docContent,
+        );
+      }
+      quillRefs.current?.[0]?.editor.container.classList.remove(
+        "auto-save",
+        "save",
+      );
+      activeDocumentVersion.is_auto_saved !== null &&
+        quillRefs.current?.[0]?.editor.container.classList.add(
+          `${activeDocumentVersion.is_auto_saved ? "auto-save" : "save"}`,
+        );
+    }
+  }, [activeDocumentVersion, quillRefs?.current?.[0]]);
+
+  useEffect(() => {
+    if (currentDocumentVersion) {
+      if (
+        selectedDocumentVersion === null ||
+        selectedDocumentVersion.version_id !== currentDocumentVersion.version_id
+      ) {
+        quillRefs.current[0]?.editor.clipboard.dangerouslyPasteHTML(
+          currentDocumentVersion?.docContent,
+        );
+      }
+
+      appDispatch(
+        documentAction.setDocumentVersion({
+          activeDocumentVersion: {
+            ...currentDocumentVersion,
+          },
+          selectedDocumentVersion: {
+            ...currentDocumentVersion,
+          },
+        }),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeDocumentAction, currentDocumentVersion]);
+  console.log(
+    "versions",
+    currentDocumentVersion,
+    selectedDocumentVersion,
+    activeDocumentVersion,
+  );
   // useEffect(() => {
   //   if (activeQuillId !== 0 && activeQuillId !== quillId) {
   //     quillRefs.current?.[0].editor.container.classList.remove(
@@ -314,8 +392,8 @@ const LoganEditor = ({ docDetails = null }) => {
   //     );
   //   }
   // }, [quillRefs]);
-  console.log("copiedContent out", copiedContent);
-
+  // console.log("document", currentDocumentVersion, activeDocumentVersion);
+  // console.log("versions", currentDocumentVersion);
   return (
     <div className="flex h-full w-full flex-col" aria-label="Editor">
       <ToolBars quillPages={quillPages} visiblePage={visiblePageId} />
@@ -326,17 +404,13 @@ const LoganEditor = ({ docDetails = null }) => {
           </div>
         )}
         <div className="mt-1 flex w-[89%] items-center  gap-2">
-          {!isStatusDraft ||
-            (activeDocumentAction !== documentActions.Draft && (
-              <Tags
-                textColor={"text-primary-blue"}
-                bgColor={"bg-secondary-blue"}
-              >
-                Document
-              </Tags>
-            ))}
+          {activeDocumentAction !== documentActions.Draft && (
+            <Tag textColor={"text-primary-blue"} bgColor={"bg-secondary-blue"}>
+              Document
+            </Tag>
+          )}
           <h2 className=" text-lg font-semibold text-black-txt">
-            Updated By laws
+            {currentDocument?.document_name}
           </h2>
           {/* <span className="text-xs">28 Pages</span> */}
         </div>
@@ -344,7 +418,7 @@ const LoganEditor = ({ docDetails = null }) => {
           ref={documentScrollRef}
           className="my-2 flex w-full flex-1 justify-center overflow-y-scroll p-1 pb-0"
         >
-          <div className="relative  h-full w-[90%] gap-2 bg-white">
+          <div className="relative  h-full w-[90%] gap-2">
             {quillPages.map((quill, index) => {
               return (
                 <div className="flex h-full w-full flex-col gap-2 " key={index}>
@@ -360,9 +434,7 @@ const LoganEditor = ({ docDetails = null }) => {
                   <div
                     onClick={(e) => {
                       e.stopPropagation();
-                      !documentLoading &&
-                        isStatusDraft &&
-                        isDocumentActionDraft;
+                      !documentLoading && isDocumentActionDraft;
                       appDispatch(quillAction.setActiveQuillId(quill.id));
                     }}
                     className={
@@ -382,9 +454,6 @@ const LoganEditor = ({ docDetails = null }) => {
                   >
                     <LoganQuill
                       quillId={quill.id}
-                      quillContent={
-                        quillRefs?.current?.[index]?.docContent || "<p><p>"
-                      }
                       onTextSelection={memoizedtextSelctionFunction}
                       handleChange={handleChange}
                       createQuillRefs={createQuillRefs}
@@ -470,7 +539,7 @@ const LoganEditor = ({ docDetails = null }) => {
   }
 
   function onTextSelection(range, source, editor) {
-    console.log(textInsertRef.current);
+    // console.log(textInsertRef.current);
     if (
       copiedContent?.content &&
       copiedContent?.type === copiedContentType.Variable &&
@@ -522,7 +591,9 @@ const LoganEditor = ({ docDetails = null }) => {
   }
 
   function removeEditorFocus() {
-    !documentLoading && appDispatch(quillAction.setActiveQuillId(0));
+    !documentLoading &&
+      activeQuillId !== 0 &&
+      appDispatch(quillAction.setActiveQuillId(0));
     quillRefs.current?.[0]?.editor.formatText(
       0,
       quillRefs.current?.[0]?.editor.getText()?.length,
@@ -580,12 +651,10 @@ const LoganEditor = ({ docDetails = null }) => {
     // let timerId = setTimeout(() => {
     //   appDispatch(documentAction.setDocumentLoading(false));
     // }, [3000]);
-    // debugger;
     return () => {
       clearTimeout(timerId);
     };
   }
-  function onContentLoad(content) {}
 };
 
 export default React.memo(LoganEditor);

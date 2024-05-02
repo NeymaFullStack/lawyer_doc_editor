@@ -20,7 +20,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
   const appDispatch = useDispatch();
   const [chatQuery, setChatQuery] = useState("");
   const [listening, setListening] = useState(false);
-  const { currentVersionDocument, documentLoading } = useSelector(
+  const { currentDocumentVersion, documentLoading } = useSelector(
     (state) => state.documentReducer,
   );
 
@@ -168,10 +168,10 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
         text: chatQuery,
       }),
     );
-    if (currentVersionDocument?.versionId && chatQuery) {
+    if (currentDocumentVersion?.versionId && chatQuery) {
       appDispatch(documentAction.setDocumentLoading(true));
       const { data: gptRes } = await chatWithGpt(
-        gptChatUrl(currentVersionDocument?.versionId),
+        gptChatUrl(currentDocumentVersion?.versionId),
         { message_content: chatQuery },
       );
       if (gptRes) {

@@ -40,6 +40,7 @@ function CreateDocModal({
   onClose,
   saveDocFolderFieldValues,
   formValues,
+  onApply,
 }) {
   const appDispatch = useDispatch();
 
@@ -107,7 +108,12 @@ function CreateDocModal({
                 alt={"back"}
               />
             }
-            onClick={onClickCreateDocument}
+            onClick={() => {
+              appDispatch(
+                folderNavigationAction.setOpenModalType(modalType.PROGRESS),
+              );
+              onApply(formValues);
+            }}
             className={`btn btn--primary flex-row-reverse`}
           >
             Create Document
@@ -253,22 +259,6 @@ function CreateDocModal({
 
   function setFormFields(formField) {
     saveDocFolderFieldValues(formField);
-  }
-
-  async function onClickCreateDocument() {
-    let res = await getDocumentTemplate({
-      language: formValues?.language?.label,
-      legal_boundary: formValues?.legalPlayground?.label,
-      topic: formValues?.documentTopic,
-      context: formValues?.description,
-    });
-
-    if (res) {
-      saveDocFolderFieldValues({ previewTemplate: res });
-      appDispatch(
-        folderNavigationAction.setOpenModalType(modalType.DOCUMENT_PREVIEW),
-      );
-    }
   }
 }
 

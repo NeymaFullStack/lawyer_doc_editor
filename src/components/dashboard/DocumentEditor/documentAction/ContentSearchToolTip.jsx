@@ -1,6 +1,7 @@
 "use client";
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import Tags from "@/components/generic/Tags";
+import Tag from "@/components/generic/Tag";
+import Tags from "@/components/generic/Tag";
 import { copiedContentType } from "@/constants/enums";
 import { documentAction } from "@/redux/documentSlice";
 import React, { useEffect } from "react";
@@ -11,7 +12,7 @@ function ContentSearchToolTip() {
   const appDispatch = useDispatch();
 
   const copiedContent = useSelector(
-    (state) => state.documentReducer.copiedContent
+    (state) => state.documentReducer.copiedContent,
   );
   useEffect(() => {
     if (copiedContent?.type === copiedContentType.Appendix) {
@@ -22,16 +23,16 @@ function ContentSearchToolTip() {
   }, []);
 
   return (
-    <div className=" shadow-out-lg p-3 bg-white rounded-lg text-[0.813rem] ">
+    <div className=" rounded-lg bg-white p-3 text-[0.813rem] shadow-out-lg ">
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-between min-w-[10rem] max-w-[15rem]">
+        <div className="flex min-w-[10rem] max-w-[15rem] items-center justify-between">
           <div>
             {(copiedContent?.type === copiedContentType.Appendix ||
               copiedContent?.type === copiedContentType.Article) && (
               <div className="flex items-center gap-2">
-                <Tags textColor={toolTipStyle?.text} bgColor={toolTipStyle.bg}>
+                <Tag textColor={toolTipStyle?.text} bgColor={toolTipStyle.bg}>
                   Appendix
-                </Tags>
+                </Tag>
                 <span className="flex  gap-[2px]">
                   <RemSizeImage
                     imagePath={"/assets/icons/appendix-icon.svg"}
@@ -49,13 +50,13 @@ function ContentSearchToolTip() {
               </span>
             )}
           </div>
-          <div className="px-1 flex items-center gap-[0.125rem] pl-3">
+          <div className="flex items-center gap-[0.125rem] px-1 pl-3">
             <span>1</span>
             <span>/</span>
             <span>2</span>
           </div>
         </div>
-        <div className=" bg-secondary-blue h-[1.219rem]  w-[0.063rem]"></div>
+        <div className=" h-[1.219rem] w-[0.063rem]  bg-secondary-blue"></div>
         <div className="flex items-center gap-1">
           <button className="rotate-180">
             <RemSizeImage

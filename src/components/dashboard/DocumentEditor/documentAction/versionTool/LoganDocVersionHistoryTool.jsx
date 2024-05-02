@@ -1,55 +1,63 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import { documenetVersionHistoryListColumns } from "@/constants/tableColumns/dashboardTableColumns";
-import { Button, Table } from "antd";
-import { debounce } from "lodash";
-import Image from "next/image";
+import { Button } from "antd";
 import React, { useEffect, useState } from "react";
+import DocumentVersion from "./DocumentVersion";
 import { useSelector } from "react-redux";
+import { getDocumentVersionList } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { Collapse } from "antd";
+import LoganDropDown from "@/components/generic/LoganDropDown";
+import { vesionFilterMenuList } from "@/constants/list";
+import { versionHistoryFilter } from "@/constants/enums";
 
 function LoganDocVersionHistoryTool() {
-  const [activeDocument, setActiveD] = useState(null);
-  const hoverVersionHistoryDocument = useSelector(
-    (state) => state?.documentReduceer?.hoverVersionHistoryDocument
+  const { currentDocument, currentDocumentVersion } = useSelector(
+    (state) => state.documentReducer,
   );
-  const selectedVersionHistoryDocument = useSelector(
-    (state) => state.documentReduceer?.selectedVersionHistoryDocument
-  );
-  const currentVersionDocument = useSelector(
-    (state) => state.documentReduceer?.currentVersionDocument
-  );
-
+  const [filters, setFilters] = useState({
+    value: "all",
+    label: "All Versions",
+  });
+  const [versionList, setVersionList] = useState([]);
   useEffect(() => {
-    // for checking which document is active in
-    // if (
-    //   hoverVersionHistoryDocument?.id &&
-    //   record.id === hoverVersionHistoryDocument?.id
-    // ) {
-    //   isActive = true;
-    // } else if (
-    //   selectedVersionHistoryDocument?.id &&
-    //   record.id === selectedVersionHistoryDocument?.id
-    // ) {
-    //   isActive = true;
-    // } else if (record.id === currentVersionDocument?.id) {
-    //   isActive = true;
-    // }
-  }, []);
+    currentDocument.id && fetchDocumentVersions();
+  }, [currentDocumentVersion, filters]);
 
-  const onHoverRow = debounce(() => {
-    // set hover version
-  }, [1500]);
+  // console.log(
+  //   versionList.map((item) => {
+  //     if (item.details) {
+  //     } else if (item?.version_details && item?.version_details.length > 0) {
+  //       debugger;
+  //       let collapseItem = {
+  //         key: item.label,
+  //         label: item.label,
+  //         children: (
+  //           <ul>
+  //             {item?.version_details.map((version) => {
+  //               console.log("version", version);
+  //               return (
+  //                 <li key={version.version_id}>
+  //                   <DocumentVersion docVersion={version} />
+  //                 </li>
+  //               );
+  //             })}
+  //           </ul>
+  //         ),
+  //       };
+  //       console.log("items", collapseItem);
+  //       return collapseItem;
+  //     }
+  //   }),
+  // );
 
   return (
     <div
       className="h-full w-[26.5rem] overflow-hidden bg-white"
       aria-label="Logan Document Version History"
     >
-      <div className="w-full flex justify-between border-b-[0.063rem] border-secondary-blue h-[3.3rem] items-center px-[0.8rem]">
-        <h2 className="text-primary-gray text-sm font-semibold">
-          Document Version History
-        </h2>
+      <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
+        <h2 className="text-sm font-semibold text-primary-gray">Versioning</h2>
         <div className="flex items-center gap-1 ">
-          <Button
+          {/* <Button
             className="btn btn--secondary !py-4"
             icon={
               <RemSizeImage
@@ -58,100 +66,136 @@ function LoganDocVersionHistoryTool() {
                 remHeight={1.343}
                 alt={"Sort"}
               />
-              // <Image
-              //   src={"/assets/icons/sort-icon.svg"}
-              //   height={21.49}
-              //   width={21.49}
-              //   alt="New"
-              // />
             }
           >
             By Date
-          </Button>
-          <Button
-            className="btn btn--secondary !py-4"
-            icon={
-              <RemSizeImage
-                imagePath={"/assets/icons/all-doc.svg"}
-                remWidth={1.343}
-                remHeight={1.343}
-                alt={"All Doc"}
-              />
-              // <Image
-              //   src={"/assets/icons/all-doc.svg"}
-              //   height={21.49}
-              //   width={21.49}
-              //   alt="New"
-              // />
+          </Button> */}
+          <LoganDropDown
+            trigger={["hover"]}
+            placement="bottomRight"
+            dropDownMenu={{
+              items: vesionFilterMenuList(filters),
+              onClick: onFilter,
+            }}
+            baseElement={
+              <Button
+                className="btn btn--secondary !py-4"
+                icon={
+                  <RemSizeImage
+                    imagePath={"/assets/icons/all-doc.svg"}
+                    remWidth={1.343}
+                    remHeight={1.343}
+                    alt={"All Doc"}
+                  />
+                }
+              >
+                {filters?.label}
+              </Button>
             }
-          >
-            All
-          </Button>
+          />
         </div>
       </div>
-      <div className="ln-version-table m-1 mt-2 overflow-hidden h-[100%]">
-        <div className="p-1 pr-3  overflow-y-scroll h-[92%]">
-          <Table
-            onRow={(data, index) => {
-              return {
-                onMouseEnter: () => onHoverRow(data, true),
-                onMouseLeave: () => {
-                  data.active && onMouseLeaveVersion(data, false);
-                },
-                onClick: onClickVersion,
-              };
+      <div className="m-1 mt-2 h-[100%] overflow-hidden">
+        <div className="h-[92%] overflow-y-scroll  p-1 pr-3">
+          <DocumentVersion docVersion={currentDocumentVersion} />
+          <Collapse
+            expandIcon={(panelProps) => {
+              return (
+                <RemSizeImage
+                  className={panelProps.isActive ? " rotate-90" : ""}
+                  imagePath={"/assets/icons/docaction/expand-icon.svg"}
+                  remWidth={0.45}
+                  remHeight={0.5}
+                  alt={"Expand"}
+                />
+              );
             }}
-            showHeader={false}
-            pagination={false}
-            rowKey={"id"}
-            columns={documenetVersionHistoryListColumns(activeDocument)}
-            // rowClassName={(record,index)=>{
-            //    if(record.active){
-            //       return
-            //    }
-            // }}
-            dataSource={[
-              {
-                docName: "Updated By Laws",
-                time: "Today",
-                version: "current",
-                active: true,
-                id: 1,
-              },
-              {
-                docName: "Updated By Laws",
-                time: "2023-03-25 · 4:25pm",
-                version: "draft",
-                exported: true,
-                active: false,
-                id: 2,
-              },
-              {
-                docName: "Updated By Laws",
-                time: "2023-03-25 · 4:25pm",
-                version: "finalized",
-                exported: true,
-                active: false,
-                id: 3,
-              },
-              {
-                docName: "Updated By Laws",
-                time: "Today",
-                version: "current",
-                active: false,
-                id: 4,
-              },
-            ]}
+            bordered={false}
+            items={versionList
+              .slice(1)
+              .map((item) => {
+                if (item?.details && item?.details.length > 0) {
+                  let collapseItem = {
+                    key: item.label,
+                    label: (
+                      <div className="text-sm font-semibold text-primary-gray">
+                        {item.label}
+                      </div>
+                    ),
+                    children: item?.details.map((item) => {
+                      return (
+                        <div key={item.label}>
+                          <div className="text-xs font-semibold text-primary-gray">
+                            {item.label}
+                          </div>
+                          <ul className="mt-1">
+                            {item?.version_details.map((version) => {
+                              return (
+                                <li key={version.version_id}>
+                                  <DocumentVersion docVersion={version} />
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      );
+                    }),
+                  };
+                  return collapseItem;
+                } else if (
+                  item?.version_details &&
+                  item?.version_details.length > 0
+                ) {
+                  let collapseItem = {
+                    key: item.label,
+                    label: (
+                      <div className="text-sm font-semibold text-primary-gray">
+                        {item.label}
+                      </div>
+                    ),
+                    children: (
+                      <ul>
+                        {item?.version_details.map((version) => {
+                          return (
+                            <li key={version.version_id}>
+                              <DocumentVersion docVersion={version} />
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ),
+                  };
+                  return collapseItem;
+                }
+              })
+              .filter((item) => item !== undefined)}
           />
         </div>
       </div>
     </div>
   );
 
-  function onMouseLeaveVersion() {}
+  function onFilter({ key }) {
+    setFilters({ value: key, label: versionHistoryFilter[key] });
+  }
 
-  function onClickVersion() {
-    // set versionDocument
+  async function fetchDocumentVersions() {
+    let filterParams = {};
+    if (filters.value !== "all") {
+      if (filters.value == "autoSaved") {
+        filterParams.is_auto_saved = true;
+      } else if (filters.value == "manualSaved") {
+        filterParams.is_auto_saved = false;
+      }
+    }
+    let { data } = await getDocumentVersionList({
+      documentId: currentDocument.id,
+      queryParams: filterParams,
+    });
+    // debugger;
+    if (data?.length > 0) {
+      setVersionList(data);
+    }
   }
 }
 

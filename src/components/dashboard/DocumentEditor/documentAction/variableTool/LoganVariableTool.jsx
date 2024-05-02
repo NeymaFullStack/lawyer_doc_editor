@@ -31,14 +31,16 @@ const dummyVars = [
 ];
 function LoganVariableTool() {
   const [addVariableButtonHover, setAddVariableButtonHover] = useState(false);
-  const { activeVersionDocument } = useSelector(
+  const [variablesList, setVariablesList] = useState([]);
+  const { activeDocumentVersion } = useSelector(
     (state) => state.documentReducer,
   );
 
   useEffect(() => {
-    activeVersionDocument.id && fetchDocumentVariables();
-  }, [activeVersionDocument]);
-  const [variablesList, setVariablesList] = useState([]);
+    activeDocumentVersion.id &&
+      activeDocumentVersion.version_id &&
+      fetchDocumentVariables();
+  }, [activeDocumentVersion]);
 
   return (
     <div
@@ -168,8 +170,8 @@ function LoganVariableTool() {
 
   async function fetchDocumentVariables() {
     let { data } = await getDocumentVariables({
-      documentId: activeVersionDocument.id,
-      documentVersionId: activeVersionDocument.versionId,
+      documentId: activeDocumentVersion?.id,
+      documentVersionId: activeDocumentVersion?.version_id,
     });
     data?.length > 0 ? setVariablesList(data) : setVariablesList(dummyVars);
   }
@@ -183,12 +185,11 @@ function LoganVariableTool() {
     }
     let res = updateDocumentVariables(
       {
-        documentId: activeVersionDocument.id,
-        documentVersionId: activeVersionDocument.versionId,
+        documentId: activeDocumentVersion.id,
+        documentVersionId: activeDocumentVersion.versionId,
       },
       { document_variables: varList },
     );
-    debugger;
   }
 }
 

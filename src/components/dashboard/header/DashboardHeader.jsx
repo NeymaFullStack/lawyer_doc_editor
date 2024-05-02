@@ -8,8 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import FolderNavigationHeader from "./FolderNAvigationHeader";
+import { createNewDocumentVersion } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { documentAction } from "@/redux/documentSlice";
 
 function DashboardHeader() {
+  const appDispatch = useDispatch();
   const pathname = usePathname();
   const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
@@ -17,6 +20,8 @@ function DashboardHeader() {
   const { folderListView, breadCrumbs: folderRoutes } = useSelector(
     (state) => state.folderNavigationReducer,
   );
+  const { selectedDocumentVersion, currentDocument, currentDocumentVersion } =
+    useSelector((state) => state.documentReducer);
   const [breadCrumbs, setBreadCrumbs] = useState([]);
 
   useLayoutEffect(() => {
@@ -45,16 +50,18 @@ function DashboardHeader() {
       )}
       {showDocEditHeader ? (
         <div className="flex w-full items-center justify-between px-7">
-          <h2 className="text-lg font-semibold">Updated By Laws</h2>
+          <h2 className="text-lg font-semibold">
+            {currentDocument?.document_name}
+          </h2>
           <div className="flex items-center gap-3">
             <p className="flex items-center gap-[0.313rem] text-xs">
               <span>Last version saved Yesterday</span>
               <span className="rounded-full bg-[#A3A7AF] p-[0.156rem]"></span>
               <span>4:25pm</span>
             </p>
-            <DocumentState />
+            {/* <DocumentState /> */}
             <Button
-              onClick={() => setOpenSaveCurrentDocModal(true)}
+              onClick={onClickSaveButton}
               icon={
                 <RemSizeImage
                   imagePath={"/assets/icons/save-white-icon.svg"}
@@ -99,6 +106,25 @@ function DashboardHeader() {
       {/* <NavigationBreadCrumbs breadCrumbs={breadCrumbs} /> */}
     </header>
   );
+
+  async function onClickSaveButton() {
+    // setOpenSaveCurrentDocModal(true);
+    const res = await createNewDocumentVersion({
+      document_id: currentDocument.id,
+      version_id: currentDocumentVersion.version_id,
+      is_auto_saved: false,
+    });
+    if (res[0].version_id && res[0].content) {
+      appDispatch(
+        documentAction.setDocumentVersion({
+          currentDocumentVersion: {
+            ...res[0],
+            docContent: res[0].content,
+          },
+        }),
+      );
+    }
+  }
 }
 
 export default DashboardHeader;

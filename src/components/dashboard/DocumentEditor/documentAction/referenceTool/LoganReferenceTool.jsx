@@ -3,8 +3,8 @@ import { Button, Dropdown } from "antd";
 import React, { useEffect, useState } from "react";
 import AppendixList from "./AppendixList";
 import ArticleList from "./ArticleList";
-import Tags from "@/components/generic/Tags";
 import AppendixDropDown from "./AppendixDropDown";
+import Tag from "@/components/generic/Tag";
 
 function LoganReferenceTool() {
   const [isAppendixActive, setIsAppendixActive] = useState(true);
@@ -20,8 +20,8 @@ function LoganReferenceTool() {
       className="h-full w-[26.5rem]  overflow-hidden bg-white "
       aria-label="Logan Document Version History"
     >
-      <div className="w-full flex justify-between border-b-[0.063rem] border-secondary-blue h-[3.3rem] items-center px-[0.8rem]">
-        <h2 className="text-primary-gray text-sm font-semibold">
+      <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
+        <h2 className="text-sm font-semibold text-primary-gray">
           Reference Management
         </h2>
         <div className="flex items-center gap-2 ">
@@ -32,7 +32,7 @@ function LoganReferenceTool() {
             }}
             className={`btn btn--normal !py-4 ${
               isAppendixActive &&
-              "text-[#FF7A00] border-solid hover:!text-[#FF7A00] !border-[0.063rem] !border-[#FF7A00] bg-[#FFF3E7]"
+              "!border-[0.063rem] border-solid !border-[#FF7A00] bg-[#FFF3E7] text-[#FF7A00] hover:!text-[#FF7A00]"
             }`}
           >
             Appendix
@@ -44,7 +44,7 @@ function LoganReferenceTool() {
             }}
             className={`btn btn--normal !py-4 ${
               !isAppendixActive &&
-              "text-[#FF26C2] border-solid hover:!text-[#FF26C2] !border-[0.063rem] !border-[#FF26C2] bg-[#FFF5FD]"
+              "!border-[0.063rem] border-solid !border-[#FF26C2] bg-[#FFF5FD] text-[#FF26C2] hover:!text-[#FF26C2]"
             }`}
           >
             Articles
@@ -52,7 +52,7 @@ function LoganReferenceTool() {
         </div>
       </div>
       {!isAppendixActive && (
-        <div className=" relative px-5 py-3 flex items-center gap-2 border-b-[0.063rem] border-secondary-blue bg-gradient-search">
+        <div className=" relative flex items-center gap-2 border-b-[0.063rem] border-secondary-blue bg-gradient-search px-5 py-3">
           <span className="text-xs">Articles From :</span>
           <Dropdown
             destroyPopupOnHide={true}
@@ -65,13 +65,13 @@ function LoganReferenceTool() {
               />
             )}
           >
-            <Tags textColor={"text-primary-blue"} bgColor={"bg-six"}>
+            <Tag textColor={"text-primary-blue"} bgColor={"bg-six"}>
               {articleFrom}
-            </Tags>
+            </Tag>
           </Dropdown>
         </div>
       )}
-      <div className="w-full px-5 py-3 flex gap-3 items-center border-b-[0.063rem] border-secondary-blue bg-gradient-search">
+      <div className="flex w-full items-center gap-3 border-b-[0.063rem] border-secondary-blue bg-gradient-search px-5 py-3">
         <RemSizeImage
           imagePath={"/assets/icons/search-icon.svg"}
           remWidth={1.188}
@@ -80,13 +80,13 @@ function LoganReferenceTool() {
         />
         <input
           autoComplete="off"
-          className="w-[80%] text-xs  outline-none  bg-gradient-search"
+          className="w-[80%] bg-gradient-search  text-xs  outline-none"
           placeholder={`Search For An ${
             isAppendixActive ? "Annex" : "Article"
           }`}
         ></input>
       </div>
-      <div className="overflow-hidden h-[100%] text-xs m-4 ">
+      <div className="m-4 h-[100%] overflow-hidden text-xs ">
         {isAppendixActive ? <AppendixList /> : <ArticleList />}
       </div>
     </div>

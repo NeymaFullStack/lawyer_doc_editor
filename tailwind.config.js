@@ -22,6 +22,7 @@ module.exports = {
       fontSize: {
         "xl-em": "2rem",
       },
+
       backgroundColor: {
         blanc: "#FFFFFF8C",
         two: "#FAFBFC",
@@ -35,14 +36,17 @@ module.exports = {
         warn: "#DB0437",
         "warn-light": "#DB04370D",
         overlay: "#383D44",
+        "auto-save": "#FFF7DB",
+        save: "#D9FADB",
       },
-
       colors: {
         "black-txt": "#383D44",
         "secondary-blue": "#095AD31A",
         "hr-line": "#F0F5FD",
         "primary-blue": "#095AD3",
         "primary-gray": "#A3A7AF",
+        "auto-save": "#FFC700",
+        save: "#10C900",
       },
       boxShadow: {
         out: "0 0 10px 0.1px #ededed",

@@ -1,9 +1,9 @@
 import { documentStatus } from "../enums";
-import Tags from "@/components/generic/Tags";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import Sort from "@/components/generic/Sort";
 import { sortNumbersTableList, sortStringTableList } from "@/utils/generic";
-import { dateTimeFormat } from "@/utils/dateUtils";
+import { dtFormat } from "@/utils/dateUtils";
+import Tag from "@/components/generic/Tag";
 const foldersToShow = 4;
 
 export const documenetVersionHistoryListColumns = (activeDocument) => {
@@ -54,21 +54,21 @@ export const documenetVersionHistoryListColumns = (activeDocument) => {
         let status = "";
         if (record.version === documentStatus.Current) {
           status = (
-            <Tags textColor={"text-primary-blue"} bgColor={"bg-secondary-blue"}>
+            <Tag textColor={"text-primary-blue"} bgColor={"bg-secondary-blue"}>
               Current version
-            </Tags>
+            </Tag>
           );
         } else if (record.version === documentStatus.Finalized) {
           status = (
-            <Tags textColor={"text-[#10C900]"} bgColor={"bg-[#D9FADB]"}>
+            <Tag textColor={"text-[#10C900]"} bgColor={"bg-[#D9FADB]"}>
               Finalized
-            </Tags>
+            </Tag>
           );
         } else {
           status = (
-            <Tags textColor={"text-[#FFC700]"} bgColor={"bg-[#FFF7DB]"}>
+            <Tag textColor={"text-[#FFC700]"} bgColor={"bg-[#FFF7DB]"}>
               Draft
-            </Tags>
+            </Tag>
           );
         }
 
@@ -156,7 +156,7 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
             <Sort
               onClickSort={(sortOrder) => {
                 setListData(
-                  sortNumbersTableList(listData, sortOrder, "lastModified")
+                  sortNumbersTableList(listData, sortOrder, "lastModified"),
                 );
               }}
             />
@@ -164,7 +164,7 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
         );
       },
       format: (row) => {
-        return dateTimeFormat(row?.updated_at);
+        return dtFormat(row?.updated_at);
       },
       id: "updated_at",
     },
@@ -181,27 +181,27 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
         }
         let folderTags = folders?.map((folder, index) => {
           return (
-            <Tags
+            <Tag
               className={"font-medium"}
               textColor={"text-primary-blue"}
               bgColor={"bg-secondary-blue"}
               key={folder?.id}
             >
               {folder?.title}
-            </Tags>
+            </Tag>
           );
         });
 
         if (folderLimitExceed) {
           folderTags?.push(
-            <Tags
+            <Tag
               className={"font-medium"}
               textColor={"text-primary-blue"}
               bgColor={"bg-secondary-blue"}
               key="o0"
             >
               {`+1`}
-            </Tags>
+            </Tag>,
           );
         }
         return <div className="flex items-center gap-1">{folderTags}</div>;
@@ -273,7 +273,7 @@ export const foldersListTableColumns = (setListData, listData) => {
             <Sort
               onClickSort={(sortOrder) => {
                 setListData(
-                  sortNumbersTableList(listData, sortOrder, "lastModified")
+                  sortNumbersTableList(listData, sortOrder, "lastModified"),
                 );
               }}
             />
@@ -281,7 +281,7 @@ export const foldersListTableColumns = (setListData, listData) => {
         );
       },
       format: (row) => {
-        return dateTimeFormat(row?.updated_at);
+        return dtFormat(row?.updated_at);
       },
       id: "updated_at",
     },
@@ -299,26 +299,26 @@ export const foldersListTableColumns = (setListData, listData) => {
         }
         let folderTags = folders?.map((folder, index) => {
           return (
-            <Tags
+            <Tag
               className={"font-medium"}
               textColor={"text-primary-blue"}
               bgColor={"bg-secondary-blue"}
               key={folder?.id}
             >
               {folder?.title}
-            </Tags>
+            </Tag>
           );
         });
 
         if (folderLimitExceed) {
           folderTags?.push(
-            <Tags
+            <Tag
               className={"font-medium"}
               textColor={"text-primary-blue"}
               bgColor={"bg-secondary-blue"}
             >
               {`+1`}
-            </Tags>
+            </Tag>,
           );
         }
         return <div className="flex items-center gap-1">{folderTags}</div>;

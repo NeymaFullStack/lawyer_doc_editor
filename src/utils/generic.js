@@ -31,3 +31,13 @@ export function sortNumbersTableList(listdata, sortOrder, sortParam) {
 }
 
 export const editorTextToBeReplaceRegex = `/\\"([^"]*)\\"/g`;
+
+export const debounce = (fn, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    setTimeout(() => {
+      fn(args);
+    }, delay);
+  };
+};

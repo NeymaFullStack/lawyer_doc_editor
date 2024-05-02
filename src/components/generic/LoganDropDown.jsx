@@ -26,9 +26,11 @@ function LoganDropDown({
         open={openMenu}
         overlayStyle={overlayStyle}
         menu={dropDownMenu}
-        {...(customDropDownMenu && {
-          dropdownRender: (menus) => customDropDownMenu({ menus, closeMenu }),
-        })}
+        {...(customDropDownMenu !== undefined &&
+          customDropDownMenu !== false &&
+          customDropDownMenu !== null && {
+            dropdownRender: (menus) => customDropDownMenu({ menus, closeMenu }),
+          })}
         placement={placement}
       >
         {baseElement}

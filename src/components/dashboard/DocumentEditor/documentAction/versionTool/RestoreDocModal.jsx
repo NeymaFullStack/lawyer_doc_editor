@@ -1,24 +1,33 @@
+import { updateDocumentVersionContent } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import LoganModal from "@/components/generic/LoganModal";
-import React from "react";
+import { documentAction } from "@/redux/documentSlice";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-function RestoreDocModal({ openRestoreDocModal, document, onClose, onApply }) {
+function RestoreDocModal({ openRestoreDocModal, onClose }) {
+  const appDispatch = useDispatch();
+  const [input, setInput] = useState("");
+  const { selectedDocumentVersion, currentDocument, currentDocumentVersion } =
+    useSelector((state) => state.documentReducer);
   return (
     <LoganModal
       applyButtonText={"Restore Current Document"}
       cancelButtonText={"Cancel"}
       modalOpen={openRestoreDocModal}
       onClickCancel={onClose}
-      onClickApply={onApply}
+      onClickApply={() => {
+        input === "RESTORE" && onClickApplyButton();
+      }}
       width={"44rem"}
       applyButtonClass={"btn--warn"}
     >
-      <h2 className="font-bold text-2xl text-black">
+      <h2 className="text-2xl font-bold text-black">
         Restore Document Version
       </h2>
-      <p className="mt-3 text-[0.813rem] p-5 bg-warn-light rounded-xl">
-        <span className="text-black font-medium">Attention</span>: You are about
+      <p className="mt-3 rounded-xl bg-warn-light p-5 text-[0.813rem]">
+        <span className="font-medium text-black">Attention</span>: You are about
         to restore a previous version of this document.
-        <span className="text-black font-medium">
+        <span className="font-medium text-black">
           This action will overwrite the current document with the selected
           version. This action CANNOT be undone
         </span>
@@ -29,19 +38,49 @@ function RestoreDocModal({ openRestoreDocModal, document, onClose, onApply }) {
       <div className="mt-4">
         <label
           htmlFor="doc-name"
-          className="text-[0.784rem] text-black font-semibold mt-10"
+          className="mt-10 text-[0.784rem] font-semibold text-black"
         >
           {`Please Type "RESTORE" to confirm`}
         </label>
         <input
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
           autoComplete="off"
           id="doc-name"
           type="text"
-          className="border-[0.063rem] w-full border-secondary-blue h-[2.813rem] mt-2 rounded-xl pl-4 text-primary-gray text-sm"
+          className="mt-2 h-[2.813rem] w-full rounded-xl border-[0.063rem] border-secondary-blue pl-4 text-sm text-primary-gray"
         ></input>
       </div>
     </LoganModal>
   );
+
+  async function onClickApplyButton() {
+    if (
+      selectedDocumentVersion &&
+      selectedDocumentVersion.docContent &&
+      selectedDocumentVersion.version_id
+    ) {
+      const res = await updateDocumentVersionContent({
+        document_id: currentDocument.id,
+        version_id: selectedDocumentVersion.version_id,
+        content: selectedDocumentVersion.docContent,
+      });
+
+      if (res.content) {
+        appDispatch(
+          documentAction.setDocumentVersion({
+            currentDocumentVersion: {
+              ...currentDocumentVersion,
+              docContent: res.content,
+            },
+          }),
+        );
+        onClose();
+      }
+    }
+  }
 }
 
 export default RestoreDocModal;

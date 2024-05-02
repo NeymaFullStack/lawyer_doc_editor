@@ -32,7 +32,13 @@ function Directory({
   const [listData, setListData] = useState([...foldersList]);
 
   useEffect(() => {
-    appDispatch(documentAction.setCurrentVersionDocument(null));
+    appDispatch(
+      documentAction.setDocumentVersion({
+        currentDocumentVersion: null,
+        selectedDocumentVersion: null,
+        activeDocumentVersion: null,
+      }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

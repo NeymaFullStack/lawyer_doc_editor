@@ -9,7 +9,7 @@ import LoganDraftTool from "./draftTool/LoganDraftTool";
 import LoganVariableTool from "./variableTool/LoganVariableTool";
 import LoganReferenceTool from "./referenceTool/LoganReferenceTool";
 
-function LoganTools() {
+function LoganTools({ docDetails }) {
   const activeDocumentAction = useSelector(
     (state) => state.documentReducer.activeDocumentAction,
   );
@@ -28,7 +28,7 @@ function LoganTools() {
       case documentActions.VersionHistory:
         return <LoganDocVersionHistoryTool />;
       case documentActions.Preview:
-        return <LoganDocPreviewTool />;
+        return <LoganDocPreviewTool docDetails={docDetails} />;
     }
   }
 }

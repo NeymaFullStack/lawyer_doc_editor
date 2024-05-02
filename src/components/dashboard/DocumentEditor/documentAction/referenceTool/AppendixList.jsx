@@ -1,5 +1,5 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import Tags from "@/components/generic/Tags";
+import Tag from "@/components/generic/Tag";
 import { copiedContentType } from "@/constants/enums";
 import { documentAction } from "@/redux/documentSlice";
 import React, { useState } from "react";
@@ -18,14 +18,14 @@ function AppendixList() {
     { count: 4, name: "Board Meeting Minutes Approving Changes" },
   ]);
   return (
-    <ul className="overflow-y-scroll h-[92%] flex flex-col gap-4">
+    <ul className="flex h-[92%] flex-col gap-4 overflow-y-scroll">
       {appendixList.map((appendix, index) => {
         return (
-          <li key={index} className="flex justify-between items-start">
+          <li key={index} className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <Tags textColor={"text-[#FF7A00]"} bgColor={"bg-[#FFF3E7]"}>
+              <Tag textColor={"text-[#FF7A00]"} bgColor={"bg-[#FFF3E7]"}>
                 Annex
-              </Tags>
+              </Tag>
               <span className="flex  gap-[2px]">
                 <RemSizeImage
                   imagePath={"/assets/icons/appendix-icon.svg"}
@@ -35,9 +35,9 @@ function AppendixList() {
                 />
                 <span className="text-[#FF7A00]">{index}</span>
               </span>
-              <span className="flex justify-normal items-start">
+              <span className="flex items-start justify-normal">
                 <span className=" max-w-[85%]">{appendix.name}</span>
-                <span className="py-[0.063rem] px-[0.313rem] rounded-md bg-six">
+                <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
                   {appendix.count}
                 </span>
               </span>
@@ -48,10 +48,10 @@ function AppendixList() {
                   documentAction.setCopiedContent({
                     content: appendix,
                     type: copiedContentType.Appendix,
-                  })
+                  }),
                 );
               }}
-              className=" p-1 font-semibold text-primary-blue bg-six min-w-[3.313rem]   hover:bg-blue-gradient hover:text-white items-center justify-center rounded-md"
+              className=" min-w-[3.313rem] items-center justify-center rounded-md bg-six   p-1 font-semibold text-primary-blue hover:bg-blue-gradient hover:text-white"
             >
               Copy
             </button>

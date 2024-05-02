@@ -30,12 +30,11 @@ const modules = (id) => {
 function LoganQuill({
   quillId,
   createQuillRefs,
-  quillContent,
   handleChange,
   onTextSelection,
 }) {
   const quillRef = useRef();
-  // console.log("quillContent", quillContent);
+  // console.log("render");
   return (
     <ReactQuill
       id={`ql-${quillId}`}
@@ -45,10 +44,8 @@ function LoganQuill({
       }}
       onChangeSelection={onTextSelection}
       onChange={(value, _, source, editor) => {
-        value !== quillContent &&
-          handleChange(value, quillId - 1, _, source, editor);
+        handleChange(value, quillId - 1, _, source, editor);
       }}
-      value={quillContent}
       theme="snow"
       placeholder="Write something..."
       modules={modules(quillId)}

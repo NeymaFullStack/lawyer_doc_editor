@@ -14,8 +14,8 @@ function LoganDocumentBase() {
   const fileListWrapperRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
   const [baseHeight, setBaseheight] = useState(null);
-  const currentVersionDocument = useSelector(
-    (state) => state.documentReducer?.currentVersionDocument
+  const currentDocumentVersion = useSelector(
+    (state) => state.documentReducer?.currentDocumentVersion,
   );
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function LoganDocumentBase() {
   }, [showFiles]);
 
   return (
-    <div className="bg-white relative h-[25%] " ref={fileBaseRef}>
+    <div className="relative h-[25%] bg-white " ref={fileBaseRef}>
       <>
         {showFiles &&
           (fileList.length > 0 && resizerActive ? (
@@ -85,11 +85,11 @@ function LoganDocumentBase() {
       <div
         className={`${
           showFiles ? "bg-8 text-primary-blue" : "bg-blue-gradient text-white"
-        } flex justify-between items-center px-4 py-2 ${
+        } flex items-center justify-between px-4 py-2 ${
           resizerActive ? "border-y-[0.125rem]" : "border-b-[0.125rem]"
         } border-secondary-blue`}
       >
-        <div className="flex gap-2 items-center  text-xs font-semibold">
+        <div className="flex items-center gap-2  text-xs font-semibold">
           <RemSizeImage
             imagePath={
               showFiles
@@ -111,13 +111,13 @@ function LoganDocumentBase() {
             alt="Upload"
           /> */}
           <span>Related Files</span>
-          <span className="py-[0.125rem] px-1 rounded-lg bg-[#095AD31A]">
+          <span className="rounded-lg bg-[#095AD31A] px-1 py-[0.125rem]">
             19
           </span>
         </div>
         <button
           onClick={() => setShowFiles(!showFiles)}
-          className={`cursor-pointer flex gap-2 items-center text-xs font-semibold px-3 py-1 rounded-md ${
+          className={`flex cursor-pointer items-center gap-2 rounded-md px-3 py-1 text-xs font-semibold ${
             showFiles ? "bg-[#095AD31A]" : ""
           }`}
         >
@@ -150,21 +150,21 @@ function LoganDocumentBase() {
             <div className="flex h-[calc(100%-2.75rem)] ">
               <div
                 ref={fileListWrapperRef}
-                className="flex-1 grid grid-cols-3 gap-5 h-full overflow-y-scroll border-r-[0.094rem] border-secondary-blue p-4"
+                className="grid h-full flex-1 grid-cols-3 gap-5 overflow-y-scroll border-r-[0.094rem] border-secondary-blue p-4"
               >
                 {fileList.map((file, index) => {
                   return (
                     <div
                       key={index}
-                      className=" flex flex-col gap-1 h-fit cursor-pointer "
+                      className=" flex h-fit cursor-pointer flex-col gap-1 "
                     >
-                      <div className="relative group px-2 w-[6.5rem] h-[2.8rem] rounded-lg text-[0.188rem] overflow-hidden break-words shadow-out">
+                      <div className="group relative h-[2.8rem] w-[6.5rem] overflow-hidden break-words rounded-lg px-2 text-[0.188rem] shadow-out">
                         {parse(
-                          "<p>Hello, World!ajskdcjkasjkcasjkcnjkasncjkasnkjcnasjkcnjkdadkhjwfdhishfishfiewhifhesdiufhiushiufasdkfcjkasdhfksdhiudskvbasdknkasdhiudsbfjkndsjkcnaisbcuiadiuvdknvuiehvikjabjkgvdsjbvu</p>"
+                          "<p>Hello, World!ajskdcjkasjkcasjkcnjkasncjkasnkjcnasjkcnjkdadkhjwfdhishfishfiewhifhesdiufhiushiufasdkfcjkasdhfksdhiudskvbasdknkasdhiudsbfjkndsjkcnaisbcuiadiuvdknvuiehvikjabjkgvdsjbvu</p>",
                         )}
                         <div
-                          className={`hidden group-hover:flex group-hover:bg-gradient-preview  
-                  absolute top-0 left-0 right-0 bottom-0 justify-center items-center`}
+                          className={`absolute bottom-0 left-0  
+                  right-0 top-0 hidden items-center justify-center group-hover:flex group-hover:bg-gradient-preview`}
                         >
                           <RemSizeImage
                             imagePath={"/assets/icons/preview-eye.svg"}
@@ -216,8 +216,8 @@ function LoganDocumentBase() {
     let formData = new FormData();
     formData.append("file", file);
     const { data: content } = await uploadDocument(
-      `/documents/${currentVersionDocument.version_id}/upload`,
-      formData
+      `/documents/${currentDocumentVersion.version_id}/upload`,
+      formData,
     );
     setFileList([...fileList, content]);
   }

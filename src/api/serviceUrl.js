@@ -1,5 +1,5 @@
 export const auth =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJraHVzaGFsc2luZ2gxMisxQGdtYWlsLmNvbSIsImlkIjoxLCJleHAiOjE3MTM4MTEwMjh9.wcTwes2jF3dsmtHzJ_IcdludMk3Ph_AUpHNUuYAkFlU";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJraHVzaGFsc2luZ2gxMisxQGdtYWlsLmNvbSIsImlkIjoxLCJleHAiOjE3MTQ3MjIwNzB9.m7grxgoYEo5rmaqnGviPrIks6AcWk8C7pQX0lj3_sxU";
 
 // dashboard
 
@@ -15,3 +15,7 @@ export const gptChatUrl = (versionId) => {
 };
 export const getDocumentTemplateUrl = "/documents/preview";
 export const getDocumentVariablesUrl = "/documents/variables";
+export const getDocumentVersionListsUrl = (documentId) =>
+  `/documents/${documentId}/version/list`;
+export const createNewDocumentVersionUrl = "/documents/version/create";
+export const updateDocumentVersionContentUrl = "/documents/content/save";

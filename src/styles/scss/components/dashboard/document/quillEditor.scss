@@ -8,17 +8,11 @@ $bulletsURl: url("/assets/icons/quillicons/bullets-icon.svg");
   padding: 0 !important;
   @include logan-doc;
   height: 100%;
-  .ql-container.focused-border {
-    border: 0.125rem solid #095ad3 !important;
-  }
+
   .ql-container {
     height: 100%;
+    background-color: #ffff;
     font-size: 1rem !important;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0) -40.91%,
-      #ffffff 81.82%
-    ) !important;
     border: 0.125rem solid #e8f0f2 !important;
     padding: 0.938rem;
     width: 100% !important;
@@ -34,6 +28,17 @@ $bulletsURl: url("/assets/icons/quillicons/bullets-icon.svg");
         margin: 0 0.5rem !important;
       }
     }
+  }
+  .ql-container.auto-save {
+    background-color: #fff7db80 !important;
+    border: 0.125rem solid #ffc700 !important;
+  }
+  .ql-container.save {
+    background-color: #d9fadb33 !important;
+    border: 0.125rem solid #10c900 !important;
+  }
+  .ql-container.focused-border {
+    border: 0.125rem solid #095ad3 !important;
   }
   .doc-variable {
     @apply rounded-md bg-six px-[0.2em] py-[0.1em] text-primary-blue;

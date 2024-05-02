@@ -111,3 +111,22 @@ input.ant-input-status-error {
 input.ant-input {
   height: 2.5rem !important;
 }
+
+//Collapse
+.ant-collapse {
+  background-color: white !important;
+  &-item {
+    @apply py-2 #{!important};
+    border: none !important;
+  }
+
+  &-header {
+    padding: 0 !important;
+  }
+  &-content {
+    @apply mt-1 #{!important};
+    &-box {
+      padding: 0 !important;
+    }
+  }
+}
