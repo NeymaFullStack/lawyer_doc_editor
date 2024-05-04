@@ -25,7 +25,6 @@ function CreateClientModal({
         customFooter={
           <div className="mt-2 flex items-center gap-3">
             <Button
-              htmlType="submit"
               disabled={clientName <= 0}
               onClick={() => {
                 onClickCreateDoc();
@@ -39,7 +38,9 @@ function CreateClientModal({
                 />
               }
               className={`btn text-xs ${
-                clientName.length > 0 ? "btn--primary" : "btn--disabled"
+                clientName.length > 0
+                  ? "btn--primary"
+                  : "bg-secondary-blue text-primary-blue  hover:text-primary-blue"
               } `}
             >
               Create Your Client First Document

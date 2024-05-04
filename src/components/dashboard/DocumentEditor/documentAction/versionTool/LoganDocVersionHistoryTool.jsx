@@ -10,9 +10,10 @@ import { vesionFilterMenuList } from "@/constants/list";
 import { versionHistoryFilter } from "@/constants/enums";
 
 function LoganDocVersionHistoryTool() {
-  const { currentDocument, currentDocumentVersion } = useSelector(
-    (state) => state.documentReducer,
+  const { currentDocumentVersion } = useSelector(
+    (state) => state.documentVersioningReducer,
   );
+  const { currentDocument } = useSelector((state) => state.documentReducer);
   const [filters, setFilters] = useState({
     value: "all",
     label: "All Versions",

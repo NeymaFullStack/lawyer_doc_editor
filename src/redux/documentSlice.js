@@ -1,22 +1,20 @@
 import { documentActions, documentStatus } from "@/constants/enums";
 import { createSlice } from "@reduxjs/toolkit";
 
+const documentInitalState = {
+  gptQuery: { type: "usedTyped", text: "generate something" },
+  editorUpdate: null,
+  chatMessages: [],
+  documentLoading: false,
+  currentDocument: null,
+  activeDocumentAction: documentActions.Draft,
+  exportDoc: false,
+  copiedContent: null,
+};
+
 export const documentSlice = createSlice({
   name: "document",
-  initialState: {
-    gptQuery: { type: "usedTyped", text: "generate something" },
-    editorUpdate: null,
-    chatMessages: [],
-    documentLoading: false,
-    currentDocument: null,
-    activeDocumentAction: documentActions.Draft,
-    // documentState: documentStatus.Draft,
-    currentDocumentVersion: null,
-    activeDocumentVersion: null,
-    selectedDocumentVersion: null,
-    exportDoc: false,
-    copiedContent: null,
-  },
+  initialState: { ...documentInitalState },
   reducers: {
     setActiveDocumentAction: (state, action) => {
       return {
@@ -24,12 +22,6 @@ export const documentSlice = createSlice({
         activeDocumentAction: action.payload,
         copiedContent: null,
       };
-    },
-    setActiveDocumentState: (state, action) => {
-      return { ...state, documentState: action.payload };
-    },
-    setDocumentVersion: (state, action) => {
-      return { ...state, ...action.payload };
     },
     setCurrentDocument: (state, action) => {
       return { ...state, currentDocument: action.payload };
@@ -44,10 +36,11 @@ export const documentSlice = createSlice({
     setGptQuery: (state, action) => {
       return { ...state, gptQuery: action.payload };
     },
+
     updateChatMessages: (state, action) => {
       return {
         ...state,
-        chatMessages: [...state.chatMessages, action.payload],
+        chatMessages: [...state.chatMessages, ...action.payload],
       };
     },
     initiateEditorUpdate: (state, action) => {
@@ -56,8 +49,8 @@ export const documentSlice = createSlice({
     setDocumentLoading: (state, action) => {
       return { ...state, documentLoading: action.payload };
     },
-    setDocumentStateByKeys(state, action) {
-      return { ...state, ...action.payload };
+    resetDocumentSlice: (state, action) => {
+      return { ...documentInitalState };
     },
   },
 });

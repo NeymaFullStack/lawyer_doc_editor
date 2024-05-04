@@ -43,6 +43,7 @@ function FolderDocCreation() {
       );
     }
   }, [docFolderFieldValues?.previewTemplate]);
+
   return (
     <>
       {openModalType === modalType?.New_CLIENT && (
@@ -59,6 +60,7 @@ function FolderDocCreation() {
           onClose={closeModal}
           cancelAiTemplateGeneration={() => {
             controllerRef.current.abort();
+            controllerRef.current = new AbortController();
             // source.cancel("Operation canceled by the user.");
           }}
         />
@@ -91,6 +93,7 @@ function FolderDocCreation() {
           onClose={closeModal}
           formValues={docFolderFieldValues}
           slugs={segments}
+          createClient={docFolderFieldValues?.createClient}
         />
       )}
     </>

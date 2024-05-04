@@ -6,20 +6,23 @@ import parse from "html-react-parser";
 import { modalType } from "./FolderDocCreation";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
-import { createDocument } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import {
+  createDocument,
+  createFolder,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentAction } from "@/redux/documentSlice";
 import { useParams, useRouter } from "next/navigation";
 
 function DocumentPreviewModal({
   open,
   onClose,
-  formValues: { previewTemplate = "", documentTopic = "" },
+  formValues,
   slugs,
+  createClient,
 }) {
   const appDispatch = useDispatch();
   const router = useRouter();
   const { slug } = useParams();
-  console.log("slugs", slug);
 
   return (
     <LoganModal
@@ -93,17 +96,30 @@ function DocumentPreviewModal({
       </div>
       <div className="h-[62vh] overflow-y-scroll pb-5">
         <div className="preview-page mx-20 mt-5 min-h-[70vh] bg-white p-5  !text-black">
-          {previewTemplate && parse(previewTemplate)}
+          {formValues?.previewTemplate && parse(formValues?.previewTemplate)}
         </div>
       </div>
     </LoganModal>
   );
 
   async function onClickCreateDocument() {
+    console.log("formValues", formValues);
+
+    if (createClient && formValues?.clientName) {
+      let res = await createFolder({
+        title: formValues?.clientName,
+      });
+      res.id && createNewDocument(res.id);
+    } else {
+      createNewDocument(1);
+    }
+  }
+
+  async function createNewDocument(parentFolderId) {
     let res = await createDocument({
-      document_name: documentTopic,
-      project_id: 1,
-      content: previewTemplate,
+      document_name: formValues?.documentTopic,
+      project_id: parentFolderId,
+      content: formValues?.previewTemplate,
     });
 
     if (res) {

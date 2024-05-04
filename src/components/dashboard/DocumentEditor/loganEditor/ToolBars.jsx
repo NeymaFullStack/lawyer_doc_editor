@@ -14,25 +14,18 @@ function Toolbars({ quillPages, visiblePage }) {
   const appDispatch = useDispatch();
   const [openDuplicateDocModal, setOpenDuplicateDocModal] = useState(false);
   const [openRestoreDocModal, setOpenRestoreDocModal] = useState(false);
-  const { exportDoc, selectedDocumentVersion } = useSelector(
-    (state) => state.documentReducer,
-  );
-
-  const versionHistoryDocument = useSelector(
-    (state) => state.documentReducer.documentLoading,
+  const { selectedDocumentVersion } = useSelector(
+    (state) => state.documentVersioningReducer,
   );
 
   const activeDocumentAction = useSelector(
     (state) => state.documentReducer.activeDocumentAction,
   );
 
-  const activeQuillId = useSelector(
-    (state) => state.quillReducer.activeQuillId,
+  const { exportDoc, activeQuillId, blurredActiveQuillId } = useSelector(
+    (state) => state.quillReducer,
   );
 
-  const blurredActiveQuillId = useSelector(
-    (state) => state.quillReducer.blurredActiveQuillId,
-  );
   let toolbar = quillPages.map((quill, index) => {
     return (
       <div
@@ -73,7 +66,7 @@ function Toolbars({ quillPages, visiblePage }) {
             <span>/ 152</span>
           </div> */
           }
-          {selectedDocumentVersion.is_auto_saved !== null && (
+          {selectedDocumentVersion?.is_auto_saved !== null && (
             <div className="mr-5 flex w-full items-center justify-end gap-4">
               <Button
                 onClick={() => setOpenRestoreDocModal(true)}

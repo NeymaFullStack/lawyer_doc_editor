@@ -9,7 +9,7 @@ import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import FolderNavigationHeader from "./FolderNAvigationHeader";
 import { createNewDocumentVersion } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import { documentAction } from "@/redux/documentSlice";
+import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 
 function DashboardHeader() {
   const appDispatch = useDispatch();
@@ -20,8 +20,10 @@ function DashboardHeader() {
   const { folderListView, breadCrumbs: folderRoutes } = useSelector(
     (state) => state.folderNavigationReducer,
   );
-  const { selectedDocumentVersion, currentDocument, currentDocumentVersion } =
-    useSelector((state) => state.documentReducer);
+  const { currentDocumentVersion } = useSelector(
+    (state) => state.documentVersioningReducer,
+  );
+  const { currentDocument } = useSelector((state) => state.documentReducer);
   const [breadCrumbs, setBreadCrumbs] = useState([]);
 
   useLayoutEffect(() => {
@@ -110,13 +112,13 @@ function DashboardHeader() {
   async function onClickSaveButton() {
     // setOpenSaveCurrentDocModal(true);
     const res = await createNewDocumentVersion({
-      document_id: currentDocument.id,
-      version_id: currentDocumentVersion.version_id,
+      document_id: currentDocument?.id,
+      version_id: currentDocumentVersion?.version_id,
       is_auto_saved: false,
     });
     if (res[0].version_id && res[0].content) {
       appDispatch(
-        documentAction.setDocumentVersion({
+        documentVersioningAction.setDocumentVersion({
           currentDocumentVersion: {
             ...res[0],
             docContent: res[0].content,

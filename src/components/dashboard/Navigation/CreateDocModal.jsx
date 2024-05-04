@@ -100,6 +100,7 @@ function CreateDocModal({
             Back
           </Button>
           <Button
+            disabled={formValues?.documentTopic?.length < 1}
             icon={
               <RemSizeImage
                 imagePath={"/assets/icons/arrow-right-white.svg"}

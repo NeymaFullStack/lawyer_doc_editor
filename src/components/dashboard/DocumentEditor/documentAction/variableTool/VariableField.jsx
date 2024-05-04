@@ -46,7 +46,7 @@ function VariableField({
               left: cursorPosition.x + 5 + "px",
               top: cursorPosition.y + "px",
             }}
-            className="fixed flex items-center gap-2 rounded-md border-[2px] border-dotted border-primary-blue p-1 text-primary-blue"
+            className="text-var border-var fixed flex items-center gap-2 rounded-md border-[2px] border-dotted p-1"
           >
             <RemSizeImage
               imagePath={"/assets/icons/paste-icon.svg"}

@@ -38,6 +38,7 @@ module.exports = {
         overlay: "#383D44",
         "auto-save": "#FFF7DB",
         save: "#D9FADB",
+        var: "#FFF5FD",
       },
       colors: {
         "black-txt": "#383D44",
@@ -47,6 +48,7 @@ module.exports = {
         "primary-gray": "#A3A7AF",
         "auto-save": "#FFC700",
         save: "#10C900",
+        var: "#FF26C2",
       },
       boxShadow: {
         out: "0 0 10px 0.1px #ededed",

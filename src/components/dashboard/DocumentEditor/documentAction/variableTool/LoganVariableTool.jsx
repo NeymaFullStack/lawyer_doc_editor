@@ -33,7 +33,7 @@ function LoganVariableTool() {
   const [addVariableButtonHover, setAddVariableButtonHover] = useState(false);
   const [variablesList, setVariablesList] = useState([]);
   const { activeDocumentVersion } = useSelector(
-    (state) => state.documentReducer,
+    (state) => state.documentVersioningReducer,
   );
 
   useEffect(() => {
@@ -41,7 +41,6 @@ function LoganVariableTool() {
       activeDocumentVersion.version_id &&
       fetchDocumentVariables();
   }, [activeDocumentVersion]);
-
   return (
     <div
       className="h-full w-[26.5rem]  overflow-hidden bg-white "
@@ -183,13 +182,15 @@ function LoganVariableTool() {
     } else {
       varList[varIndex] = variable;
     }
-    let res = updateDocumentVariables(
-      {
-        documentId: activeDocumentVersion.id,
-        documentVersionId: activeDocumentVersion.versionId,
-      },
-      { document_variables: varList },
-    );
+    if (activeDocumentVersion?.id && activeDocumentVersion.version_id) {
+      let res = updateDocumentVariables(
+        {
+          documentId: activeDocumentVersion.id,
+          documentVersionId: activeDocumentVersion.version_id,
+        },
+        { document_variables: varList },
+      );
+    }
   }
 }
 

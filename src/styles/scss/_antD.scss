@@ -1,9 +1,6 @@
 .ant-btn {
   &:disabled {
-    @apply cursor-default bg-secondary-blue text-primary-blue opacity-60 hover:text-primary-blue;
-    &:hover {
-      color: #0e61de !important;
-    }
+    @apply cursor-default opacity-60 #{!important};
   }
   &-icon {
     margin-inline-end: 0 !important;

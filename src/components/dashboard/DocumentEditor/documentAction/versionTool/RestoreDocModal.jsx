@@ -1,6 +1,6 @@
 import { updateDocumentVersionContent } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import LoganModal from "@/components/generic/LoganModal";
-import { documentAction } from "@/redux/documentSlice";
+import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ function RestoreDocModal({ openRestoreDocModal, onClose }) {
   const appDispatch = useDispatch();
   const [input, setInput] = useState("");
   const { selectedDocumentVersion, currentDocument, currentDocumentVersion } =
-    useSelector((state) => state.documentReducer);
+    useSelector((state) => state.documentVersioningReducer);
   return (
     <LoganModal
       applyButtonText={"Restore Current Document"}
@@ -70,7 +70,7 @@ function RestoreDocModal({ openRestoreDocModal, onClose }) {
 
       if (res.content) {
         appDispatch(
-          documentAction.setDocumentVersion({
+          documentVersioningAction.setDocumentVersion({
             currentDocumentVersion: {
               ...currentDocumentVersion,
               docContent: res.content,

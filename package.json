@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.11.0",
     "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
     "dayjs": "^1.11.10",
     "html-react-parser": "^5.0.10",
     "lodash": "^4.17.21",

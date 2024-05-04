@@ -9,12 +9,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import DocFile from "./DocFile";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
-import { documentAction } from "@/redux/documentSlice";
 import {
   clientFoldersListTableColumns,
   foldersListTableColumns,
 } from "@/constants/tableColumns/dashboardTableColumns";
 import LoganTable from "@/components/generic/LoganTable";
+import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
+import { documentAction } from "@/redux/documentSlice";
 
 function Directory({
   foldersList = [],
@@ -32,13 +33,9 @@ function Directory({
   const [listData, setListData] = useState([...foldersList]);
 
   useEffect(() => {
-    appDispatch(
-      documentAction.setDocumentVersion({
-        currentDocumentVersion: null,
-        selectedDocumentVersion: null,
-        activeDocumentVersion: null,
-      }),
-    );
+    appDispatch(documentVersioningAction.resetDocumentVersion());
+    appDispatch(documentAction.resetDocumentSlice());
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

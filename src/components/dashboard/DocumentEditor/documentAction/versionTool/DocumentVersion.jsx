@@ -1,23 +1,22 @@
 "use client";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import Tag from "@/components/generic/Tag";
-import { documentAction } from "@/redux/documentSlice";
+import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import { dtYYMMDD12hrFormat } from "@/utils/dateUtils";
-import { debounce } from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function DocumentVersion({ docVersion }) {
-  const { selectedDocumentVersion, currentDocument } = useSelector(
-    (state) => state.documentReducer,
+  const { selectedDocumentVersion } = useSelector(
+    (state) => state.documentVersioningReducer,
   );
+  const { currentDocument } = useSelector((state) => state.documentReducer);
   const appDispatch = useDispatch();
   const onHoverVersion = () => {
     // set hover version
-
-    selectedDocumentVersion.version_id !== docVersion.version_id &&
+    selectedDocumentVersion?.version_id !== docVersion?.version_id &&
       appDispatch(
-        documentAction.setDocumentVersion({
+        documentVersioningAction.setDocumentVersion({
           activeDocumentVersion: {
             ...docVersion,
             docContent: docVersion?.content || docVersion?.docContent,
@@ -36,7 +35,6 @@ function DocumentVersion({ docVersion }) {
       return style;
     }
   };
-
   return (
     <div
       onClick={onSelectVersion}
@@ -44,7 +42,7 @@ function DocumentVersion({ docVersion }) {
       onMouseLeave={() => {
         selectedDocumentVersion.version_id !== docVersion.version_id &&
           appDispatch(
-            documentAction.setDocumentVersion({
+            documentVersioningAction.setDocumentVersion({
               activeDocumentVersion: selectedDocumentVersion,
             }),
           );
@@ -64,7 +62,7 @@ function DocumentVersion({ docVersion }) {
           className={`font-semibold text-black ${selectedDocumentVersion?.version_id === docVersion?.version_id ? "text-primary-blue" : ""}`}
         >
           {docVersion?.is_auto_saved === null
-            ? currentDocument.document_name
+            ? currentDocument?.document_name
             : docVersion?.version_name || docVersion?.document_name || "NA"}
         </span>
       </div>
@@ -103,7 +101,7 @@ function DocumentVersion({ docVersion }) {
         ? docVersion?.docContent
         : docVersion?.content;
     appDispatch(
-      documentAction.setDocumentVersion({
+      documentVersioningAction.setDocumentVersion({
         selectedDocumentVersion: {
           ...docVersion,
           docContent: newDocContent,

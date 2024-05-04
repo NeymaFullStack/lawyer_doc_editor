@@ -6,7 +6,7 @@ import { useRef } from "react";
 
 function LoganUserChat() {
   const { chatMessages, documentLoading, gptQuery } = useSelector(
-    (state) => state.documentReducer
+    (state) => state.documentReducer,
   );
   const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -17,7 +17,7 @@ function LoganUserChat() {
       timeoutId = setTimeout(() => {
         /// if this cause any issue in future then inside loganUserChat in createChatMessage Function convert RemImages to notmal image tag
         lastMessageRef?.current?.scrollIntoView({
-          behavior: "smooth",
+          behavior: "auto",
           block: "end",
         });
       }, 100); // Adjust the delay as needed
@@ -46,7 +46,7 @@ function LoganUserChat() {
   // }, [socket]);
 
   return (
-    <ul className="border-r-[0.063rem] min-h-full flex flex-col justify-end">
+    <ul className="flex min-h-full flex-col justify-end border-r-[0.063rem]">
       {chatMessages.map((message, index) => {
         return (
           <li
@@ -59,19 +59,13 @@ function LoganUserChat() {
       })}
       {documentLoading && (
         <li ref={lastMessageRef}>
-          <div className="bg-six px-8 py-4 flex gap-5 items-center">
+          <div className="flex items-center gap-5 bg-six px-8 py-4">
             <RemSizeImage
               imagePath={"/assets/icons/chat-star.svg"}
               remWidth={1.751}
               remHeight={1.751}
               alt={"Logan Gpt"}
             />
-            {/* <Image
-              src={"/assets/icons/chat-star.svg"}
-              height={28.01}
-              width={28.01}
-              alt="Logan Gpt"
-            /> */}
             <RemSizeImage
               imagePath={"/assets/images/processing-msg.svg"}
               remWidth={5.375}
@@ -98,9 +92,22 @@ function LoganUserChat() {
 
   function createChatMessage(message) {
     switch (message?.type) {
-      case "userTyped":
+      // case "user":
+      //   return (
+      //     <div className="flex items-center gap-5 bg-two px-8 py-4">
+      //       <RemSizeImage
+      //         imagePath={"/assets/icons/msg-usexr.svg"}
+      //         remWidth={1.751}
+      //         remHeight={1.751}
+      //         alt={"User"}
+      //       />
+
+      //       <p>{message?.text}</p>
+      //     </div>
+      //   );
+      case "USER":
         return (
-          <div className="bg-two px-8 py-4 flex gap-5 items-center">
+          <div className="flex items-start gap-5 bg-two px-8 py-4 text-black">
             <RemSizeImage
               imagePath={"/assets/icons/msg-user.svg"}
               remWidth={1.751}
@@ -108,46 +115,39 @@ function LoganUserChat() {
               alt={"User"}
             />
 
-            <p>{message.text}</p>
+            {message?.highlighted_text ? (
+              <div className="flex flex-col">
+                <span className=" flex w-fit items-center gap-2 rounded-2xl  bg-highlight px-2">
+                  <RemSizeImage
+                    imagePath={"/assets/icons/msg-highlighter.svg"}
+                    remWidth={0.611}
+                    remHeight={0.633}
+                    alt={"User"}
+                  />
+
+                  <span className="text-black-txt">
+                    {message?.highlighted_text}
+                  </span>
+                </span>
+                <p className="ml-3  mt-1 border-l-[0.063rem] pl-3  text-justify text-black-txt">
+                  {message?.message}
+                </p>
+              </div>
+            ) : (
+              <p className="text-justify text-black-txt">{message?.message}</p>
+            )}
           </div>
         );
-      case "loganGpt":
+      case "LOGAN_AI":
         return (
-          <div className="bg-six px-8 py-4 flex gap-5 items-start">
+          <div className="flex items-start gap-5 bg-six px-8 py-4 ">
             <RemSizeImage
               imagePath={"/assets/icons/chat-star.svg"}
               remWidth={1.751}
               remHeight={1.751}
               alt={"Logan Gpt"}
             />
-            <p>{message.text}</p>
-          </div>
-        );
-      case "highlighted":
-        return (
-          <div className="bg-two px-8 py-4 flex gap-5 items-start">
-            <RemSizeImage
-              imagePath={"/assets/icons/msg-user.svg"}
-              remWidth={1.751}
-              remHeight={1.751}
-              alt={"User"}
-            />
-
-            <div>
-              <p className="flex items-center gap-1 bg-highlight px-2 rounded-2xl">
-                <RemSizeImage
-                  imagePath={"/assets/icons/msg-highlighter.svg"}
-                  remWidth={0.611}
-                  remHeight={0.633}
-                  alt={"User"}
-                />
-
-                <span>{message.textHiglighted}</span>
-              </p>
-              <p className="pt-2 ml-4 pl-2 border-l-[0.063rem]">
-                {message.text}
-              </p>
-            </div>
+            <p className="text-justify text-black-txt">{message?.message}</p>
           </div>
         );
     }

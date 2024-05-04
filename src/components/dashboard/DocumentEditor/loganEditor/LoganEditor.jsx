@@ -26,6 +26,7 @@ import { documentAction } from "@/redux/documentSlice";
 import { editorTextToBeReplaceRegex } from "@/utils/generic";
 import Tag from "@/components/generic/Tag";
 import { debounce } from "lodash";
+import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 
 const LoganEditor = ({ docDetails = null }) => {
   let url = docDetails?.current_version?.version_id
@@ -41,28 +42,28 @@ const LoganEditor = ({ docDetails = null }) => {
   );
   const appDispatch = useDispatch();
   const {
-    copiedContent,
-    exportDoc,
-    documentState,
-    activeDocumentAction,
-    documentLoading,
     currentDocumentVersion,
     activeDocumentVersion,
-    editorUpdate,
     selectedDocumentVersion,
+  } = useSelector((state) => state.documentVersioningReducer);
+
+  const {
+    copiedContent,
+    exportDoc,
+    activeDocumentAction,
+    documentLoading,
     currentDocument,
+    editorUpdate,
   } = useSelector((state) => state.documentReducer);
 
   let isDocumentActionDraft =
     activeDocumentAction === documentStatus.Draft ? true : false;
 
-  const { gptHighlighterActive, editorLock } = useSelector(
-    (state) => state?.quillReducer?.toolbar,
-  );
-
-  const { activeQuillId, gptSearchProperties } = useSelector(
-    (state) => state.quillReducer,
-  );
+  const {
+    activeQuillId,
+    gptSearchProperties,
+    toolbar: { gptHighlighterActive, editorLock },
+  } = useSelector((state) => state.quillReducer);
 
   const quillRefs = useRef([]);
   const documentScrollRef = useRef();
@@ -194,20 +195,20 @@ const LoganEditor = ({ docDetails = null }) => {
       currentDocumentVersion &&
       value !== currentDocumentVersion?.docContent
     ) {
-      console.log("render");
       appDispatch(
-        documentAction.setDocumentVersion({
+        documentVersioningAction.setDocumentVersion({
           currentDocumentVersion: {
             ...currentDocumentVersion,
             docContent: value,
           },
         }),
       );
-      debouncedUpdateContent(
-        value,
-        currentDocument.id,
-        currentDocumentVersion.version_id,
-      );
+      !gptHighlighterActive &&
+        debouncedUpdateContent(
+          value,
+          currentDocument.id,
+          currentDocumentVersion.version_id,
+        );
     }
   };
 
@@ -217,15 +218,15 @@ const LoganEditor = ({ docDetails = null }) => {
     [gptHighlighterActive, gptSearchProperties, copiedContent, textInsertRef],
   );
 
-  useEffect(() => {
-    executeGptChanges();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editorUpdate]);
+  // useEffect(() => {
+  //   executeGptChanges();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [editorUpdate]);
 
   useEffect(() => {
     if (data) {
       appDispatch(
-        documentAction.setDocumentVersion({
+        documentVersioningAction.setDocumentVersion({
           currentDocumentVersion: {
             ...data,
             docContent: data?.content_details?.content,
@@ -317,7 +318,7 @@ const LoganEditor = ({ docDetails = null }) => {
       }
 
       appDispatch(
-        documentAction.setDocumentVersion({
+        documentVersioningAction.setDocumentVersion({
           activeDocumentVersion: {
             ...currentDocumentVersion,
           },
@@ -484,7 +485,7 @@ const LoganEditor = ({ docDetails = null }) => {
                 </div>
               );
             })}
-            {documentLoading && (
+            {/* {documentLoading && (
               <div
                 className={`absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center bg-white opacity-[0.5]`}
               >
@@ -495,7 +496,7 @@ const LoganEditor = ({ docDetails = null }) => {
                   alt={"Loader"}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -580,20 +581,20 @@ const LoganEditor = ({ docDetails = null }) => {
       if (608 - left <= 240) {
         gptleftPosition = 608 - 465;
       }
+      console.log("selectedText", editor.getText(range.index, range.length));
       appDispatch(
         quillAction.setGptSearchProperties({
           top: top + height + 15,
           left: gptleftPosition,
           range,
+          highlighted_text: editor.getText(range.index, range.length).trim(),
         }),
       );
     }
   }
 
   function removeEditorFocus() {
-    !documentLoading &&
-      activeQuillId !== 0 &&
-      appDispatch(quillAction.setActiveQuillId(0));
+    !documentLoading && appDispatch(quillAction.setActiveQuillId(0));
     quillRefs.current?.[0]?.editor.formatText(
       0,
       quillRefs.current?.[0]?.editor.getText()?.length,
@@ -604,57 +605,57 @@ const LoganEditor = ({ docDetails = null }) => {
       appDispatch(quillAction.setGptSearchProperties(null));
   }
 
-  function executeGptChanges() {
-    if (editorUpdate?.action === gptActionType.Update) {
-      if (editorUpdate.index > 0 && editorUpdate?.update_with) {
-        let textToUpdate = editorTextToBeReplaceRegex.exec(
-          editorUpdate?.content,
-        )?.[1];
+  // function executeGptChanges() {
+  //   if (editorUpdate?.action === gptActionType.Update) {
+  //     if (editorUpdate.index > 0 && editorUpdate?.update_with) {
+  //       let textToUpdate = editorTextToBeReplaceRegex.exec(
+  //         editorUpdate?.content,
+  //       )?.[1];
 
-        quillRefs.current?.[0]?.editor?.deleteText(
-          editorUpdate?.index,
-          textToUpdate?.length,
-        );
-        quillRefs.current?.[0]?.editor?.insertText(
-          editorUpdate?.index,
-          editorUpdate.update_with,
-        );
-        appDispatch(
-          documentAction.updateChatMessages({
-            type: "loganGpt",
-            text: textToUpdate,
-          }),
-        );
-        appDispatch(documentAction.setDocumentLoading(false));
-      } else {
-        appDispatch(
-          documentAction.updateChatMessages({
-            type: "loganGpt",
-            text: editorUpdate?.content,
-          }),
-        );
-        appDispatch(documentAction.setDocumentLoading(false));
-      }
-    } else if (
-      editorUpdate?.action === gptActionType.Explain ||
-      editorUpdate?.content
-    ) {
-      appDispatch(
-        documentAction.updateChatMessages({
-          type: "loganGpt",
-          text: editorUpdate?.content,
-        }),
-      );
-      appDispatch(documentAction.setDocumentLoading(false));
-    }
+  //       quillRefs.current?.[0]?.editor?.deleteText(
+  //         editorUpdate?.index,
+  //         textToUpdate?.length,
+  //       );
+  //       quillRefs.current?.[0]?.editor?.insertText(
+  //         editorUpdate?.index,
+  //         editorUpdate.update_with,
+  //       );
+  //       appDispatch(
+  //         documentAction.updateChatMessages({
+  //           type: "loganGpt",
+  //           text: textToUpdate,
+  //         }),
+  //       );
+  //       appDispatch(documentAction.setDocumentLoading(false));
+  //     } else {
+  //       appDispatch(
+  //         documentAction.updateChatMessages({
+  //           type: "loganGpt",
+  //           text: editorUpdate?.content,
+  //         }),
+  //       );
+  //       appDispatch(documentAction.setDocumentLoading(false));
+  //     }
+  //   } else if (
+  //     editorUpdate?.action === gptActionType.Explain ||
+  //     editorUpdate?.content
+  //   ) {
+  //     appDispatch(
+  //       documentAction.updateChatMessages({
+  //         type: "loganGpt",
+  //         text: editorUpdate?.content,
+  //       }),
+  //     );
+  //     appDispatch(documentAction.setDocumentLoading(false));
+  //   }
 
-    // let timerId = setTimeout(() => {
-    //   appDispatch(documentAction.setDocumentLoading(false));
-    // }, [3000]);
-    return () => {
-      clearTimeout(timerId);
-    };
-  }
+  //   // let timerId = setTimeout(() => {
+  //   //   appDispatch(documentAction.setDocumentLoading(false));
+  //   // }, [3000]);
+  //   return () => {
+  //     clearTimeout(timerId);
+  //   };
+  // }
 };
 
 export default React.memo(LoganEditor);

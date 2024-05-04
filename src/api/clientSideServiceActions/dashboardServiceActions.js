@@ -7,6 +7,8 @@ import {
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
   getDocumentVersionListsUrl,
+  getUSerChatUrl,
+  gptChatUrl,
   updateDocumentVersionContentUrl,
 } from "../serviceUrl";
 
@@ -35,7 +37,7 @@ export const getDocumentContentByVersionId = async (url, queryParams = {}) => {
 export const createFolder = async (queryParams) => {
   try {
     const res = await Api.post(createFolderUrl, queryParams);
-    return res;
+    return res.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);
@@ -66,10 +68,10 @@ export const uploadDocument = async (url, queryParams = {}) => {
   }
 };
 
-export const chatWithGpt = async (url, queryParams) => {
+export const chatWithGpt = async (queryParams) => {
   try {
-    const res = await Api.post(url, queryParams);
-    return res;
+    const res = await Api.post(gptChatUrl, queryParams);
+    return res.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);
@@ -145,6 +147,16 @@ export const updateDocumentVersionContent = async (queryParams = {}) => {
   try {
     const res = await Api.put(updateDocumentVersionContentUrl, queryParams);
     return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const getUSerChat = async (documentId) => {
+  try {
+    const res = await Api.get(`${getUSerChatUrl}/${documentId}`);
+    return res?.data?.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);

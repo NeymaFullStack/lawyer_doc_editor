@@ -3,7 +3,6 @@ import {
   CreateConversation,
   chatWithGpt,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import { createConversationUrl, gptChatUrl } from "@/api/serviceUrl";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { documentAction } from "@/redux/documentSlice";
 import React, { useCallback, useEffect, useState } from "react";
@@ -20,8 +19,12 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
   const appDispatch = useDispatch();
   const [chatQuery, setChatQuery] = useState("");
   const [listening, setListening] = useState(false);
-  const { currentDocumentVersion, documentLoading } = useSelector(
+  const { gptSearchProperties } = useSelector((state) => state.quillReducer);
+  const { documentLoading, currentDocument } = useSelector(
     (state) => state.documentReducer,
+  );
+  const { currentDocumentVersion } = useSelector(
+    (state) => state.documentVersioningReducer,
   );
 
   const handleResult = useCallback((event) => {
@@ -76,6 +79,14 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
             /> */}
           </button>
         )}
+        <button onClick={listening ? stopListening : startListening}>
+          <RemSizeImage
+            imagePath={"/assets/icons/mike-icon.svg"}
+            remWidth={isTooltip ? 2 : 2.5}
+            remHeight={isTooltip ? 2 : 2.5}
+            alt={"Mike"}
+          />
+        </button>
         <div
           className={
             " flex flex-1 items-center gap-2 rounded-lg bg-six px-3 " +
@@ -114,40 +125,11 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
                   remHeight={1.082}
                   alt={"Send Button"}
                 />
-                // <Image
-                //   src={
-                //     isTooltip
-                //       ? "/assets/icons/right-tick.svg"
-                //       : "/assets/icons/send-icon.svg"
-                //   }
-                //   width={18.76}
-                //   height={17.31}
-                //   alt="Send Button"
-                // />
               )}
             </button>
-
-            {/* <div className="w-[0.063rem] h-full bg-one"></div>
-            <button>
-              <Image
-                src={"/assets/icons/highlighter.svg"}
-                width={18.76}
-                height={17.31}
-                alt="Highlighter"
-                className=" cursor-pointer"
-              />
-            </button> */}
           </div>
         </div>
 
-        <button onClick={listening ? stopListening : startListening}>
-          <RemSizeImage
-            imagePath={"/assets/icons/mike-icon.svg"}
-            remWidth={isTooltip ? 2 : 2.5}
-            remHeight={isTooltip ? 2 : 2.5}
-            alt={"Mike"}
-          />
-        </button>
         {/* <Image
             onClick={listening ? stopListening : startListening}
             className=" cursor-pointer"
@@ -163,20 +145,34 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
   async function onSendQuery() {
     // appDispatch(CreateConversation(createConversationUrl));
     appDispatch(
-      documentAction.updateChatMessages({
-        type: "userTyped",
-        text: chatQuery,
-      }),
+      documentAction.updateChatMessages([
+        {
+          type: "USER",
+          message: chatQuery,
+          highlighted_text: gptSearchProperties?.highlighted_text,
+        },
+      ]),
     );
-    if (currentDocumentVersion?.versionId && chatQuery) {
+    debugger;
+    if (currentDocumentVersion?.version_id && chatQuery) {
       appDispatch(documentAction.setDocumentLoading(true));
-      const { data: gptRes } = await chatWithGpt(
-        gptChatUrl(currentDocumentVersion?.versionId),
-        { message_content: chatQuery },
-      );
+      const { data: gptRes } = await chatWithGpt({
+        document_id: currentDocument?.id,
+        message: chatQuery,
+        highlighted_text: gptSearchProperties?.highlighted_text,
+      });
       if (gptRes) {
+        debugger;
         setChatQuery("");
-        appDispatch(documentAction.initiateEditorUpdate(gptRes));
+        appDispatch(
+          documentAction.updateChatMessages([
+            {
+              type: "LOGAN_AI",
+              message: gptRes.message,
+            },
+          ]),
+        );
+        appDispatch(documentAction.setDocumentLoading(false));
       }
     }
   }
