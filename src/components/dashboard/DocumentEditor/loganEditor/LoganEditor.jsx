@@ -581,7 +581,7 @@ const LoganEditor = ({ docDetails = null }) => {
       if (608 - left <= 240) {
         gptleftPosition = 608 - 465;
       }
-      console.log("selectedText", editor.getText(range.index, range.length));
+      // console.log("selectedText", editor.getText(range.index, range.length));
       appDispatch(
         quillAction.setGptSearchProperties({
           top: top + height + 15,

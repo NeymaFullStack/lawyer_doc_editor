@@ -13,7 +13,6 @@ const LoganEditor = dynamic(
 async function Page({ params: { docId } }) {
   const documentData =
     docId && (await getDocumentData(`${getDocumentDataUrl}/${docId}`));
-  console.log(documentData);
   return (
     <div className="flex w-full flex-1 overflow-hidden">
       <main className="flex h-full flex-1 rounded-t-lg border-[0.063rem] border-secondary-blue bg-six">

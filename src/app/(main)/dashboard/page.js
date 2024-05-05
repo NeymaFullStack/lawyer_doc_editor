@@ -7,7 +7,6 @@ export const revalidate = 0;
 
 async function Dashboard({ params }) {
   const clientFolderList = await getClientFolderList();
-  console.log(clientFolderList);
   return (
     <main className="flex w-full flex-1 overflow-hidden rounded-tl-lg border-[0.063rem]  border-secondary-blue bg-six pr-3">
       <div className="my-4 flex flex-col gap-6 overflow-y-auto px-6">

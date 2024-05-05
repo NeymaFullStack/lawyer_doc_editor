@@ -32,7 +32,7 @@ function DashboardHeader() {
       setBreadCrumbs(folderRoutes);
       !showDocEditHeader && setShowEditHeader(true);
     } else {
-      console.log("segment", segments);
+      // console.log("segment", segments);
       if (segments?.length > 0) {
         setBreadCrumbs(segments);
       } else {

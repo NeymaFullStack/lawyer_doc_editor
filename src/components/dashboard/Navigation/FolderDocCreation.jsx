@@ -32,7 +32,7 @@ function FolderDocCreation() {
   // const controller = new AbortController();
   // const CancelToken = axios.CancelToken;
   // const source = CancelToken.source();
-  console.log("rat", docFolderFieldValues);
+  // console.log("rat", docFolderFieldValues);
   useEffect(() => {
     if (
       openModalType === modalType.PROGRESS &&

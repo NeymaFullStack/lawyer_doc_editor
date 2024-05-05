@@ -103,7 +103,7 @@ function DocumentPreviewModal({
   );
 
   async function onClickCreateDocument() {
-    console.log("formValues", formValues);
+    // console.log("formValues", formValues);
 
     if (createClient && formValues?.clientName) {
       let res = await createFolder({
