@@ -7,9 +7,9 @@ import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useDispatch, useSelector } from "react-redux";
 import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
-import FolderNavigationHeader from "./FolderNAvigationHeader";
 import { createNewDocumentVersion } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
+import FolderNavigationHeader from "./FolderNavigationHeader";
 
 function DashboardHeader() {
   const appDispatch = useDispatch();

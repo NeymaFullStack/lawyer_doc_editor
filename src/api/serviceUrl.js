@@ -1,5 +1,8 @@
 export const auth =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJraHVzaGFsc2luZ2gxMisxQGdtYWlsLmNvbSIsImlkIjoxLCJleHAiOjE3MTQ4MjI4ODV9.LjYmljcHAq3EVja_eop23RhLkBMN5gy4FkLd2ak6Yuw";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaGVlcmFqQHNhYXN1cC5jb20iLCJpZCI6MiwiZXhwIjoxNzE0OTk4MzU2fQ.OuwqvgrJGEufe7UsSN61yIfUYhAEhmse0rJBLNdylWY";
+
+//auth
+export const userLoginUrl = "/auth/login";
 
 // dashboard
 

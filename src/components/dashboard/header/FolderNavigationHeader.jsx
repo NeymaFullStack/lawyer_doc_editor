@@ -4,8 +4,8 @@ import RemSizeImage from "@/components/generic/RemSizeImage";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import React from "react";
 import { modalType } from "../Navigation/FolderDocCreation";
-import CreateFolderModal from "../Navigation/createFolderModal";
 import { useDispatch, useSelector } from "react-redux";
+import CreateFolderModal from "../Navigation/CreateFolderModal";
 
 function FolderNavigationHeader({ folderListView = false, segments }) {
   const appDispatch = useDispatch();

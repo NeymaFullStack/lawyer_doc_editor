@@ -10,6 +10,7 @@ import {
   getUSerChatUrl,
   gptChatUrl,
   updateDocumentVersionContentUrl,
+  userLoginUrl,
 } from "../serviceUrl";
 
 export const CreateConversation =
@@ -157,6 +158,18 @@ export const getUSerChat = async (documentId) => {
   try {
     const res = await Api.get(`${getUSerChatUrl}/${documentId}`);
     return res?.data?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const userLogin = async (queryParams = {}) => {
+  try {
+    const res = await Api.post(userLoginUrl, queryParams, {
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+    });
+    return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);

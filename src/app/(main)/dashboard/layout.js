@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Layout({ children }) {
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex h-full flex-col">
       <DashboardHeader />
       {children}
     </div>
