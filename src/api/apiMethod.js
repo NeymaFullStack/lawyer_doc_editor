@@ -4,8 +4,7 @@ import { deleteCookie, getCookie, getCookies } from "cookies-next";
 
 const isDevEnvironment = process && process.env.NODE_ENV === "development";
 
-export const API_URL =
-  "http://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:7003";
+export const API_URL = "http://localhost:7003";
 const tokenExpired = "Could not validate credentials";
 const Api = Axios.create({
   baseURL: `${API_URL}`,
@@ -16,7 +15,8 @@ const Api = Axios.create({
 Api.interceptors.request.use(
   (config) => {
     if (!config.headers.Authorization) {
-      const authToken = JSON.parse(getCookie("authToken"));
+      const authToken =
+        getCookie("authToken") && JSON.parse(getCookie("authToken"));
       config.headers["Authorization"] = `Bearer ${authToken})}`;
       // if (isDevEnvironment && authToken) {
       // } else if (process.env.NODE_ENV === "production") {
