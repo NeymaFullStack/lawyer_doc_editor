@@ -1,13 +1,14 @@
 "use client";
 import { userLogin } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { dashboardRoute } from "@/constants/routes";
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 function LoginForm() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const router = useRouter();
-  console.log("login", loginData);
+  // console.log("login", loginData);
   return (
     <form
       className="w-[22rem] space-y-4 md:space-y-8"
@@ -69,9 +70,8 @@ function LoginForm() {
       username: loginData?.email,
       password: loginData?.password,
     });
-    if (res) {
-      console.log("dahs", dashboardRoute);
-
+    if (res?.access_token) {
+      setCookie("authToken", JSON.stringify(res.access_token));
       router.push("/dashboard");
     }
   }

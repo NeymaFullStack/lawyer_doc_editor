@@ -28,7 +28,7 @@ function ProgressModal({ open, onClose, cancelAiTemplateGeneration }) {
       });
     };
 
-    timer = setInterval(updateProgress, 100); // Adjust the interval as needed
+    timer = setInterval(updateProgress, 180); // Adjust the interval as needed
 
     return () => {
       setProgress(100);
@@ -40,6 +40,10 @@ function ProgressModal({ open, onClose, cancelAiTemplateGeneration }) {
 
   return (
     <LoganModal
+      onClickCancel={() => {
+        onClose();
+        cancelAiTemplateGeneration();
+      }}
       closable={false}
       modalOpen={open}
       width={"45rem"}

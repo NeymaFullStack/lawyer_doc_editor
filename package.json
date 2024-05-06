@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -13,6 +13,7 @@
     "antd": "^5.11.0",
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
+    "cookies-next": "^4.1.1",
     "dayjs": "^1.11.10",
     "html-react-parser": "^5.0.10",
     "jwt-decode": "^4.0.0",

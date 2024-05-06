@@ -63,6 +63,7 @@ module.exports = {
         "auto-save": "#FFC700",
         save: "#10C900",
         var: "#FF26C2",
+        "disable-blu": "#095AD333",
       },
       boxShadow: {
         out: "0 0 10px 0.1px #ededed",

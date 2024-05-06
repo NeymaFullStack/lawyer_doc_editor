@@ -4,6 +4,8 @@ import DocumentActionBar from "@/components/dashboard/DocumentEditor/documentAct
 import LoganTools from "@/components/dashboard/DocumentEditor/documentAction/LoganTools";
 import React from "react";
 import dynamic from "next/dynamic";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 
 const LoganEditor = dynamic(
   () => import("@/components/dashboard/DocumentEditor/loganEditor/LoganEditor"),
@@ -12,7 +14,11 @@ const LoganEditor = dynamic(
 
 async function Page({ params: { docId } }) {
   const documentData =
-    docId && (await getDocumentData(`${getDocumentDataUrl}/${docId}`));
+    docId &&
+    (await getDocumentData(
+      `${getDocumentDataUrl}/${docId}`,
+      JSON.parse(getCookie("authToken", { cookies })),
+    ));
   return (
     <div className="flex w-full flex-1 overflow-hidden">
       <main className="flex h-full flex-1 rounded-t-lg border-[0.063rem] border-secondary-blue bg-six">

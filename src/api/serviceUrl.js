@@ -1,5 +1,5 @@
 export const auth =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaGVlcmFqQHNhYXN1cC5jb20iLCJpZCI6MiwiZXhwIjoxNzE0OTk4MzU2fQ.OuwqvgrJGEufe7UsSN61yIfUYhAEhmse0rJBLNdylWY";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaGVlcmFqQHNhYXN1cC5jb20iLCJpZCI6MiwiZXhwIjoxNzE2OTk4MzU2fQ.OuwqvgrJGEufe7UsSN61yIfUYhAEhmse0rJBLNdylWY";
 
 //auth
 export const userLoginUrl = "/auth/login";

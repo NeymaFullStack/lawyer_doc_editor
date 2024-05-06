@@ -26,11 +26,11 @@ function DocumentPreviewModal({
 
   return (
     <LoganModal
+      hideCloseicon={true}
       className={"preview-modal relative"}
-      closable={false}
       modalOpen={open}
       width={"43.188rem"}
-      onClickCancel={onClose}
+      onClickCancel={() => onClose()}
       footer
       customFooter={
         <div className="absolute -bottom-[3.5rem] right-0 flex items-center justify-end gap-3">

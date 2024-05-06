@@ -1,13 +1,16 @@
 import { getFolderDetails } from "@/api/serverSideServiceActions/dashboardServiceActions";
-import { getFolderDetailsUrl } from "@/api/serviceUrl";
 import Directory from "@/components/dashboard/Navigation/Directory";
 import RecentDocuments from "@/components/dashboard/Navigation/RecentDocuments";
 import React from "react";
+import { cookies } from "next/headers";
+import { getCookie } from "cookies-next";
 
 async function Page({ params: { slug } }) {
-  const folderData = await getFolderDetails({ id: slug[slug.length - 1] });
-
-  // const appDispatch = useDispatch();
+  const folderData = await getFolderDetails(
+    { id: slug[slug.length - 1] },
+    JSON.parse(getCookie("authToken", { cookies })),
+  );
+  // console.log(folderData);
   // const pathname = usePathname();
   // const router = useRouter();
   // const { folderListView } = useSelector(

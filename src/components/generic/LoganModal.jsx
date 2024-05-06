@@ -24,6 +24,7 @@ function LoganModal({
   closable,
   modalButtonsCLass,
   wrapClassName,
+  hideCloseicon,
 }) {
   return (
     <Modal
@@ -31,7 +32,7 @@ function LoganModal({
       wrapClassName={wrapClassName}
       destroyOnClose
       width={width}
-      className={className}
+      className={`${className} ${hideCloseicon ? "hide-close-icon" : ""}`}
       closeIcon={
         <RemSizeImage
           imagePath={"/assets/icons/cross-icon.svg"}
@@ -39,12 +40,6 @@ function LoganModal({
           remHeight={1.5}
           alt={"Close"}
         />
-        // <Image
-        //   src={"/assets/icons/cross-icon.svg"}
-        //   width={24}
-        //   height={24}
-        //   alt="Close"
-        // />
       }
       onCancel={onClickCancel}
       open={modalOpen}

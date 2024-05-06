@@ -37,6 +37,12 @@
   }
 }
 
+//Modal
+.hide-close-icon {
+  .ant-modal-close {
+    display: none !important;
+  }
+}
 .ant-modal {
   .ant-modal-footer {
     margin: 0 !important;

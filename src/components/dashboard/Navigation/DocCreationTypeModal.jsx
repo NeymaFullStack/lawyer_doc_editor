@@ -14,7 +14,8 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
     <LoganModal
       closable={false}
       modalOpen={open}
-      onClickCancel={onClose}
+      hideCloseicon={true}
+      onClickCancel={() => onClose()}
       width={"43.188rem"}
       className={"relative"}
       customFooter={

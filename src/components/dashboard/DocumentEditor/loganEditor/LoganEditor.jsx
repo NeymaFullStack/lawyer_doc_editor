@@ -330,12 +330,12 @@ const LoganEditor = ({ docDetails = null }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDocumentAction, currentDocumentVersion]);
-  console.log(
-    "versions",
-    currentDocumentVersion,
-    selectedDocumentVersion,
-    activeDocumentVersion,
-  );
+  // console.log(
+  //   "versions",
+  //   currentDocumentVersion,
+  //   selectedDocumentVersion,
+  //   activeDocumentVersion,
+  // );
   // useEffect(() => {
   //   if (activeQuillId !== 0 && activeQuillId !== quillId) {
   //     quillRefs.current?.[0].editor.container.classList.remove(

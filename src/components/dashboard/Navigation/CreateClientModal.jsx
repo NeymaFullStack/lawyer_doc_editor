@@ -25,7 +25,6 @@ function CreateClientModal({
         customFooter={
           <div className="mt-2 flex items-center gap-3">
             <Button
-              disabled={clientName <= 0}
               onClick={() => {
                 onClickCreateDoc();
               }}
@@ -40,7 +39,7 @@ function CreateClientModal({
               className={`btn text-xs ${
                 clientName.length > 0
                   ? "btn--primary"
-                  : "bg-secondary-blue text-primary-blue  hover:text-primary-blue"
+                  : "text-disable-blu  hover:!text-disable-blu !bg-secondary-blue"
               } `}
             >
               Create Your Client First Document
@@ -102,10 +101,12 @@ function CreateClientModal({
   );
 
   async function onClickSaveClose() {
-    const res = createFolder({
+    const res = await createFolder({
       title: clientName,
     });
-    onClose();
+    if (res) {
+      onClose();
+    }
   }
   function onClickCreateDoc() {
     appDispatch(
