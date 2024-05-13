@@ -39,7 +39,7 @@ function CreateClientModal({
               className={`btn text-xs ${
                 clientName.length > 0
                   ? "btn--primary"
-                  : "text-disable-blu  hover:!text-disable-blu !bg-secondary-blue"
+                  : "!bg-secondary-blue  text-disable-blu hover:!text-disable-blu"
               } `}
             >
               Create Your Client First Document
@@ -106,6 +106,7 @@ function CreateClientModal({
     });
     if (res) {
       onClose();
+      appDispatch(folderNavigationAction.toggleRefreshDirectory());
     }
   }
   function onClickCreateDoc() {

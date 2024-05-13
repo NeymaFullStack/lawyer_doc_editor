@@ -1,5 +1,5 @@
 export const auth =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaGVlcmFqQHNhYXN1cC5jb20iLCJpZCI6MiwiZXhwIjoxNzE2OTk4MzU2fQ.OuwqvgrJGEufe7UsSN61yIfUYhAEhmse0rJBLNdylWY";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaGVlcmFqQHNhYXN1cC5haSIsImlkIjoiMzM5NjU3Y2ItYWY4Zi00MDRhLTk3Y2EtZTJmYTFhMjIwODYzIiwiZXhwIjoxNzE1NzA4NTMzfQ.uuVC4ASXS8_L_Cb8Dh6c3W6g3SZrf2C3Fwg0OsXDltwa";
 
 //auth
 export const userLoginUrl = "/auth/login";
@@ -7,17 +7,19 @@ export const userLoginUrl = "/auth/login";
 // dashboard
 
 export const createConversationUrl = "/chat/conversation";
+export const getRecentDocumentsUrl = "/document/recent/list";
 export const getClientFoldersListUrl = "/folder/client/all";
 export const getFolderDetailsUrl = "/folder";
-export const getDocumentContentByVersionIdUrl = "/documents/";
+export const getDocumentContentByVersionIdUrl = "/document/";
 export const createFolderUrl = "/folder";
-export const createDocumentUrl = "/documents";
-export const getDocumentDataUrl = "/documents";
+export const createDocumentUrl = "/document";
+export const getDocumentDataUrl = "/document";
 export const gptChatUrl = `/chat/conversation`;
-export const getDocumentTemplateUrl = "/documents/preview";
-export const getDocumentVariablesUrl = "/documents/variables";
+export const getDocumentTemplateUrl = "/document/preview";
+export const getDocumentVariablesUrl = "/document/variables";
 export const getDocumentVersionListsUrl = (documentId) =>
-  `/documents/${documentId}/version/list`;
-export const createNewDocumentVersionUrl = "/documents/version/create";
-export const updateDocumentVersionContentUrl = "/documents/content/save";
+  `/document/${documentId}/version/list`;
+export const createNewDocumentVersionUrl = "/document/version/create";
+export const updateDocumentVersionContentUrl = "/document/content/save";
 export const getUSerChatUrl = "/chat/document";
+export const restoreVersionUrl = "/document/version/restore";

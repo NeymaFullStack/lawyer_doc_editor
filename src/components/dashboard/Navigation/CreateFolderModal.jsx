@@ -1,11 +1,16 @@
 "use client";
+import { createFolder } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import LoganModal from "@/components/generic/LoganModal";
+import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { Button, Form, Input } from "antd";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 function CreateFolderModal({ open, onClose, folderHierarchy, parentFolderId }) {
   const [folderName, SetFolderName] = useState("");
+  const appDispatch = useDispatch();
 
   return (
     <LoganModal
@@ -58,7 +63,7 @@ function CreateFolderModal({ open, onClose, folderHierarchy, parentFolderId }) {
               className={`btn text-xs ${
                 folderName.length > 0 && "btn--primary"
               } `}
-              onClick={createFolder}
+              onClick={onClickCreateFolder}
             >
               Create
             </Button>
@@ -68,15 +73,16 @@ function CreateFolderModal({ open, onClose, folderHierarchy, parentFolderId }) {
     </LoganModal>
   );
 
-  async function createFolder() {
+  async function onClickCreateFolder() {
     if (parentFolderId) {
       let res = await createFolder({
         parent_id: parentFolderId,
         title: folderName,
       });
       if (res) {
-        onClose();
         SetFolderName("");
+        appDispatch(folderNavigationAction.toggleRefreshDirectory());
+        onClose();
       }
     }
   }

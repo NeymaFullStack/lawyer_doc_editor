@@ -4,24 +4,13 @@ import RemSizeImage from "@/components/generic/RemSizeImage";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import React from "react";
 import { modalType } from "../Navigation/FolderDocCreation";
-import { useDispatch, useSelector } from "react-redux";
-import CreateFolderModal from "../Navigation/CreateFolderModal";
+import { useDispatch } from "react-redux";
 
 function FolderNavigationHeader({ folderListView = false, segments }) {
   const appDispatch = useDispatch();
 
-  const { openModalType } = useSelector(
-    (state) => state.folderNavigationReducer,
-  );
   return (
     <div className="flex w-full items-center justify-between">
-      <CreateFolderModal
-        open={openModalType === modalType.NEW_FOLDER}
-        onClose={() => {
-          appDispatch(folderNavigationAction.setOpenModalType(""));
-        }}
-        parentFolderId={segments[segments.length - 1]}
-      />
       <div className="w-[50%]">
         <LoganAutoComplete />
       </div>
@@ -135,7 +124,7 @@ function FolderNavigationHeader({ folderListView = false, segments }) {
             <span>New Document</span>
           </div>
         ),
-        key: "newDoc",
+        key: modalType.EMPLACEMENT,
       },
       {
         label: (

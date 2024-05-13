@@ -7,7 +7,7 @@ function LoganDraftTool() {
   return (
     <div className="flex h-full w-[26.5rem] flex-col overflow-hidden">
       <LoganChatBox />
-      <LoganDocumentBase />
+      {/* <LoganDocumentBase /> */}
     </div>
   );
 }

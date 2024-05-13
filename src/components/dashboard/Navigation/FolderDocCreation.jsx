@@ -10,6 +10,7 @@ import { useSelectedLayoutSegments } from "next/navigation";
 import ProgressModal from "./ProgressModal";
 import { getDocumentTemplate } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import axios from "axios";
+import ChooseEmplacementModal from "./ChooseEmplacementModal";
 
 export const modalType = {
   NEW_FOLDER: "newFolder",
@@ -19,6 +20,7 @@ export const modalType = {
   CREATE_DOCUMENT: "createDocument",
   DOCUMENT_PREVIEW: "documentPreview",
   PROGRESS: "progress",
+  EMPLACEMENT: "emplacement",
 };
 
 function FolderDocCreation() {
@@ -28,11 +30,10 @@ function FolderDocCreation() {
     (state) => state.folderNavigationReducer,
   );
   const controllerRef = useRef(new AbortController());
-  const [docFolderFieldValues, setDocFolderFieldValues] = useState({});
-  // const controller = new AbortController();
-  // const CancelToken = axios.CancelToken;
-  // const source = CancelToken.source();
-  // console.log("rat", docFolderFieldValues);
+  const [docFolderFieldValues, setDocFolderFieldValues] = useState({
+    emplacement: { selectedFolder: null, path: new Map() },
+  });
+
   useEffect(() => {
     if (
       openModalType === modalType.PROGRESS &&
@@ -49,6 +50,14 @@ function FolderDocCreation() {
       {openModalType === modalType?.New_CLIENT && (
         <CreateClientModal
           open={openModalType === modalType?.New_CLIENT}
+          onClose={closeModal}
+          saveDocFolderFieldValues={saveDocFolderFieldValues}
+          formValues={docFolderFieldValues}
+        />
+      )}
+      {openModalType === modalType?.EMPLACEMENT && (
+        <ChooseEmplacementModal
+          open={openModalType === modalType?.EMPLACEMENT}
           onClose={closeModal}
           saveDocFolderFieldValues={saveDocFolderFieldValues}
           formValues={docFolderFieldValues}
@@ -104,7 +113,10 @@ function FolderDocCreation() {
     if (preserveValues) {
       setDocFolderFieldValues({ ...docFolderFieldValues, ...additionalValues });
     } else {
-      setDocFolderFieldValues({ ...additionalValues });
+      setDocFolderFieldValues({
+        emplacement: { selectedFolder: null, path: new Map() },
+        ...additionalValues,
+      });
     }
   }
 

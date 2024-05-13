@@ -29,17 +29,3 @@ export const getFolderDetails = cache(async ({ id }, auth) => {
     console.log("error 123", error);
   }
 });
-
-export const getDocumentData = cache(async (url, auth) => {
-  try {
-    const res = await Api.get(url, {
-      headers: {
-        Authorization: `Bearer ${auth}`,
-      },
-    });
-    return res?.data;
-  } catch (error) {
-    //dispatch action for global error dialog box
-    console.log(error);
-  }
-});

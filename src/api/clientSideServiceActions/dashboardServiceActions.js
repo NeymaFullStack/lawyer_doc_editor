@@ -1,3 +1,4 @@
+import { cache } from "react";
 import Api from "../apiMethod";
 import {
   createDocumentUrl,
@@ -7,11 +8,43 @@ import {
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
   getDocumentVersionListsUrl,
+  getFolderDetailsUrl,
+  getRecentDocumentsUrl,
   getUSerChatUrl,
   gptChatUrl,
   updateDocumentVersionContentUrl,
   userLoginUrl,
 } from "../serviceUrl";
+
+export const getClientFolderList = cache(async () => {
+  try {
+    const res = await Api.get(getClientFoldersListUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+});
+
+export const getRecentDocumentList = cache(async () => {
+  try {
+    const res = await Api.get(getRecentDocumentsUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+});
+
+export const getFolderDetails = cache(async ({ id }) => {
+  try {
+    const res = await Api.get(`${getFolderDetailsUrl}/${id}`);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+});
 
 export const CreateConversation =
   (url, queryParams = {}) =>
@@ -25,9 +58,19 @@ export const CreateConversation =
     }
   };
 
+export const getDocumentData = cache(async (url) => {
+  try {
+    const res = await Api.get(url);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+});
+
 export const getDocumentContentByVersionId = async (url, queryParams = {}) => {
   try {
-    const res = await Api.get(url[0]);
+    const res = await Api.get(url);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box
@@ -169,6 +212,16 @@ export const userLogin = async (queryParams = {}) => {
     const res = await Api.post(userLoginUrl, queryParams, {
       headers: { "content-type": "application/x-www-form-urlencoded" },
     });
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const restoreDocumentVersion = async (queryParams = {}) => {
+  try {
+    const res = await Api.post(userLoginUrl, queryParams);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

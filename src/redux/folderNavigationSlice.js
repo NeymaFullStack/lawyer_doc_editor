@@ -6,6 +6,7 @@ export const folderNavigationSlice = createSlice({
     folderListView: false,
     breadCrumbs: [],
     openModalType: "",
+    refreshDirectory: false,
   },
   reducers: {
     toggleFolderView: (state, action) => {
@@ -19,6 +20,9 @@ export const folderNavigationSlice = createSlice({
     },
     setOpenModalType: (state, action) => {
       return { ...state, openModalType: action.payload };
+    },
+    toggleRefreshDirectory: (state, action) => {
+      return { ...state, refreshDirectory: !state.refreshDirectory };
     },
   },
 });

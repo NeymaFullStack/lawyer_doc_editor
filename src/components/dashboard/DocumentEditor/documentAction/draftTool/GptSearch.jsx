@@ -153,7 +153,6 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
         },
       ]),
     );
-    debugger;
     if (currentDocumentVersion?.version_id && chatQuery) {
       appDispatch(documentAction.setDocumentLoading(true));
       const { data: gptRes } = await chatWithGpt({
@@ -161,8 +160,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
         message: chatQuery,
         highlighted_text: gptSearchProperties?.highlighted_text,
       });
-      if (gptRes) {
-        debugger;
+      if (gptRes?.message) {
         setChatQuery("");
         appDispatch(
           documentAction.updateChatMessages([
@@ -172,6 +170,8 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
             },
           ]),
         );
+        appDispatch(documentAction.setDocumentLoading(false));
+      } else {
         appDispatch(documentAction.setDocumentLoading(false));
       }
     }

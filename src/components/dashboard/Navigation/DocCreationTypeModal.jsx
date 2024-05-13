@@ -21,11 +21,16 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
       customFooter={
         <div className="absolute -bottom-[3.5rem] right-0 flex items-center justify-end gap-3">
           <Button
-            htmlType="submit"
             onClick={() => {
               if (createClient) {
                 appDispatch(
                   folderNavigationAction.setOpenModalType(modalType.New_CLIENT),
+                );
+              } else {
+                appDispatch(
+                  folderNavigationAction.setOpenModalType(
+                    modalType.EMPLACEMENT,
+                  ),
                 );
               }
             }}

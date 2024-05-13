@@ -12,21 +12,15 @@ const LoganEditor = dynamic(
   { ssr: false },
 );
 
-async function Page({ params: { docId } }) {
-  const documentData =
-    docId &&
-    (await getDocumentData(
-      `${getDocumentDataUrl}/${docId}`,
-      JSON.parse(getCookie("authToken", { cookies })),
-    ));
+async function Page() {
   return (
     <div className="flex w-full flex-1 overflow-hidden">
       <main className="flex h-full flex-1 rounded-t-lg border-[0.063rem] border-secondary-blue bg-six">
         <section className="h-full flex-1">
-          <LoganEditor docDetails={documentData} />
+          <LoganEditor />
         </section>
         <section className="border-l-[0.063rem] border-secondary-blue">
-          <LoganTools docDetails={documentData} />
+          <LoganTools />
         </section>
       </main>
       <aside>

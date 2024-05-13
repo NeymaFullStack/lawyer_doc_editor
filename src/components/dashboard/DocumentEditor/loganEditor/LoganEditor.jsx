@@ -2,45 +2,50 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import LoganQuill from "./LoganQuill";
 import { useCallback } from "react";
 import {
   copiedContentType,
   documentActions,
   documentStatus,
-  gptActionType,
 } from "@/constants/enums";
 import { quillAction } from "@/redux/quillSlice";
-import RemSizeImage from "@/components/generic/RemSizeImage";
-import GptSearch from "../documentAction/draftTool/GptSearch";
-import ContentSearchToolTip from "../documentAction/ContentSearchToolTip";
+
 import { handleHighlighterChange } from "./customModules/highlighter";
-import ToolBars from "./ToolBars";
-import { getDocumentContentByVersionIdUrl } from "@/api/serviceUrl";
+import {
+  getDocumentContentByVersionIdUrl,
+  getDocumentDataUrl,
+} from "@/api/serviceUrl";
 import {
   getDocumentContentByVersionId,
+  getDocumentData,
   updateDocumentVersionContent,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import useSWR from "swr";
 import { documentAction } from "@/redux/documentSlice";
-import { editorTextToBeReplaceRegex } from "@/utils/generic";
 import Tag from "@/components/generic/Tag";
 import { debounce } from "lodash";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
+import LoganQuill from "./LoganQuill";
+import GptSearch from "../documentAction/draftTool/GptSearch";
+import ContentSearchToolTip from "../documentAction/ContentSearchToolTip";
+import ToolBars from "./ToolBars";
+import { useParams } from "next/navigation";
 
-const LoganEditor = ({ docDetails = null }) => {
-  let url = docDetails?.current_version?.version_id
-    ? `${getDocumentContentByVersionIdUrl}${docDetails?.id}/${docDetails?.current_version?.version_id}`
-    : null;
-  const { data, error, isLoading, mutate } = useSWR(
-    [url],
-    getDocumentContentByVersionId,
-    {
-      shouldRetryOnError: false,
-      revalidateOnFocus: false,
-    },
-  );
+const LoganEditor = () => {
+  // let url = docDetails?.current_version?.version_id
+  //   ? `${getDocumentContentByVersionIdUrl}${docDetails?.id}/${docDetails?.current_version?.version_id}`
+  //   : null;
+  // const { data, error, isLoading, mutate } = useSWR(
+  //   [url],
+  //   getDocumentContentByVersionId,
+  //   {
+  //     shouldRetryOnError: false,
+  //     revalidateOnFocus: false,
+  //   },
+  // );
   const appDispatch = useDispatch();
+  const { docId } = useParams();
+
   const {
     currentDocumentVersion,
     activeDocumentVersion,
@@ -224,20 +229,6 @@ const LoganEditor = ({ docDetails = null }) => {
   // }, [editorUpdate]);
 
   useEffect(() => {
-    if (data) {
-      appDispatch(
-        documentVersioningAction.setDocumentVersion({
-          currentDocumentVersion: {
-            ...data,
-            docContent: data?.content_details?.content,
-          },
-        }),
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  useEffect(() => {
     if (!isDocumentActionDraft) {
       quillRefs.current[0]?.editor.disable();
     } else {
@@ -246,7 +237,7 @@ const LoganEditor = ({ docDetails = null }) => {
   }, [isDocumentActionDraft]);
 
   useEffect(() => {
-    appDispatch(documentAction.setCurrentDocument(docDetails));
+    fetchDocumentData();
     if (typeof window !== undefined) {
       window.addEventListener("click", removeEditorFocus);
     }
@@ -395,6 +386,8 @@ const LoganEditor = ({ docDetails = null }) => {
   // }, [quillRefs]);
   // console.log("document", currentDocumentVersion, activeDocumentVersion);
   // console.log("versions", currentDocumentVersion);
+  console.log("currentDocument", currentDocument);
+
   return (
     <div className="flex h-full w-full flex-col" aria-label="Editor">
       <ToolBars quillPages={quillPages} visiblePage={visiblePageId} />
@@ -604,7 +597,26 @@ const LoganEditor = ({ docDetails = null }) => {
     gptSearchProperties !== null &&
       appDispatch(quillAction.setGptSearchProperties(null));
   }
-
+  async function fetchDocumentData() {
+    const res = await getDocumentData(`${getDocumentDataUrl}/${docId}`);
+    if (res.id) {
+      appDispatch(documentAction.setCurrentDocument(res));
+      const verRes = await getDocumentContentByVersionId(
+        `${getDocumentContentByVersionIdUrl}${res?.id}/${res?.current_version?.version_id}`,
+      );
+      if (verRes) {
+        console.log("verRes", verRes);
+        appDispatch(
+          documentVersioningAction.setDocumentVersion({
+            currentDocumentVersion: {
+              ...verRes,
+              docContent: verRes?.content_details?.content,
+            },
+          }),
+        );
+      }
+    }
+  }
   // function executeGptChanges() {
   //   if (editorUpdate?.action === gptActionType.Update) {
   //     if (editorUpdate.index > 0 && editorUpdate?.update_with) {

@@ -118,7 +118,7 @@ function Sidebar() {
               </Link>
             </div>
           </li>
-          <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
+          {/* <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
             <div className="w-[55%]">
               <Link href={"/tempelates"}>
                 <div
@@ -145,7 +145,7 @@ function Sidebar() {
                 </div>
               </Link>
             </div>
-          </li>
+          </li> */}
         </ul>
         <ul className="absolute bottom-0 mb-7 flex w-full flex-col gap-4">
           <li className="pl-5">MORE</li>

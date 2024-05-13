@@ -111,7 +111,8 @@ function DocumentPreviewModal({
       });
       res.id && createNewDocument(res.id);
     } else {
-      createNewDocument(1);
+      formValues.emplacement.selectedFolder &&
+        createNewDocument(formValues.emplacement.selectedFolder);
     }
   }
 

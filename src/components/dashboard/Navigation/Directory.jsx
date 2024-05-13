@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import DocFolder from "./DocFolder";
 import { onClickFolder } from "@/utils/dashboard/navigation-utils";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import DocFile from "./DocFile";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
@@ -16,33 +16,51 @@ import {
 import LoganTable from "@/components/generic/LoganTable";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import { documentAction } from "@/redux/documentSlice";
+import CreateFolderModal from "./CreateFolderModal";
+import { modalType } from "./FolderDocCreation";
+import {
+  getClientFolderList,
+  getFolderDetails,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
 
-function Directory({
-  foldersList = [],
-  documentsList = [],
-  clientList = false,
-  slug = [],
-}) {
+function Directory({ client = false }) {
   const appDispatch = useDispatch();
   const pathname = usePathname();
+  const { slug } = useParams();
   const router = useRouter();
-  const { folderListView } = useSelector(
+  const { folderListView, openModalType, refreshDirectory } = useSelector(
     (state) => state.folderNavigationReducer,
   );
+  const [directoryData, setDirectoryData] = useState({
+    listData: [],
+    foldersList: [],
+    documentsList: [],
+  });
 
-  const [listData, setListData] = useState([...foldersList]);
+  useEffect(() => {
+    client ? fetchClientList() : fetchFolderList();
+  }, [refreshDirectory]);
 
   useEffect(() => {
     appDispatch(documentVersioningAction.resetDocumentVersion());
     appDispatch(documentAction.resetDocumentSlice());
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div className="flex w-full flex-col gap-6">
+      {openModalType === modalType.NEW_FOLDER && (
+        <CreateFolderModal
+          open={openModalType === modalType.NEW_FOLDER}
+          onClose={() => {
+            appDispatch(folderNavigationAction.setOpenModalType(""));
+          }}
+          parentFolderId={slug[slug.length - 1]}
+        />
+      )}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-4">
-          {clientList ? (
+          {client ? (
             <h2 className="font-semibold text-black ">Client Folders</h2>
           ) : (
             <>
@@ -54,7 +72,14 @@ function Directory({
           {!folderListView && (
             <Sort
               onClickSort={(sortOrder) => {
-                setListData(sortStringTableList(listData, sortOrder, "title"));
+                setDirectoryData({
+                  ...directoryData,
+                  foldersList: sortStringTableList(
+                    directoryData?.foldersList,
+                    sortOrder,
+                    "title",
+                  ),
+                });
               }}
               title={"Name"}
             />
@@ -62,10 +87,10 @@ function Directory({
         </div>
         {!folderListView && (
           <div className="grid grid-cols-6 gap-x-6 gap-y-5">
-            {listData?.map((folder, index) => {
+            {directoryData?.foldersList?.map((folder, index) => {
               return (
                 <DocFolder
-                  nonClient={!clientList}
+                  nonClient={!client}
                   onClickFolder={(folder) =>
                     onClickFolder(folder, pathname, router)
                   }
@@ -78,20 +103,27 @@ function Directory({
         )}
       </div>
 
-      {!folderListView && !clientList && (
+      {!folderListView && !client && (
         <div className="flex w-full flex-col gap-4">
           <div className="flex items-center gap-4">
             <h2 className="font-semibold text-black ">Documents</h2>
             <Sort
               onClickSort={(sortOrder) => {
-                setListData(sortStringTableList(listData, sortOrder, "title"));
+                setDirectoryData({
+                  ...directoryData,
+                  documentsList: sortStringTableList(
+                    directoryData.documentsList,
+                    sortOrder,
+                    "title",
+                  ),
+                });
               }}
               title={"Name"}
             />
           </div>
           <div className="grid grid-cols-5 gap-x-6 gap-y-7">
-            {documentsList?.length > 0 &&
-              documentsList.map((file, index) => {
+            {directoryData?.documentsList?.length > 0 &&
+              directoryData?.documentsList.map((file, index) => {
                 return (
                   <DocFile
                     onClickDoc={onClickDoc}
@@ -104,21 +136,51 @@ function Directory({
           </div>
         </div>
       )}
-      {folderListView && listData.length > 0 && (
+      {folderListView && directoryData?.listData.length > 0 && (
         <LoganTable
           onClickRow={(folder) => onClickFolder(folder, pathname, router)}
           tableColumns={
-            clientList
-              ? clientFoldersListTableColumns(setListData, listData)
-              : foldersListTableColumns(setListData, listData)
+            client
+              ? clientFoldersListTableColumns(
+                  setDirectoryData,
+                  directoryData?.listData,
+                )
+              : foldersListTableColumns(
+                  setDirectoryData,
+                  directoryData?.listData,
+                )
           }
           rowKey="id"
-          className=" -mt-6"
-          listData={listData}
+          className=" -mt-6 w-full"
+          listData={directoryData?.listData}
         />
       )}
     </div>
   );
+
+  async function fetchClientList() {
+    const clientFolderList = await getClientFolderList();
+    if (clientFolderList?.length > 0) {
+      setDirectoryData({
+        ...directoryData,
+        foldersList: clientFolderList,
+        listData: clientFolderList,
+      });
+    }
+  }
+
+  async function fetchFolderList() {
+    const res = await getFolderDetails({ id: slug[slug.length - 1] });
+    if (res.sub_projects?.length > 0) {
+      setDirectoryData({
+        ...directoryData,
+        foldersList: res.sub_projects,
+        documentsList: res?.documents,
+        listData: [...res.sub_projects, res?.documents],
+      });
+    }
+  }
+
   function onClickDoc(doc) {
     appDispatch(folderNavigationAction.setBreadCrumbs(slug));
     router.push(`/dashboard/doc-edit/${doc.id}`);
