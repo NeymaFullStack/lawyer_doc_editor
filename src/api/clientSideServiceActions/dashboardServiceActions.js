@@ -12,6 +12,7 @@ import {
   getRecentDocumentsUrl,
   getUSerChatUrl,
   gptChatUrl,
+  restoreVersionUrl,
   updateDocumentVersionContentUrl,
   userLoginUrl,
 } from "../serviceUrl";
@@ -221,7 +222,7 @@ export const userLogin = async (queryParams = {}) => {
 
 export const restoreDocumentVersion = async (queryParams = {}) => {
   try {
-    const res = await Api.post(userLoginUrl, queryParams);
+    const res = await Api.post(restoreVersionUrl, queryParams);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

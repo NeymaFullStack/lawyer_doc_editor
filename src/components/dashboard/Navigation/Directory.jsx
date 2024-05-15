@@ -171,7 +171,7 @@ function Directory({ client = false }) {
 
   async function fetchFolderList() {
     const res = await getFolderDetails({ id: slug[slug.length - 1] });
-    if (res.sub_projects?.length > 0) {
+    if (res?.sub_projects?.length || res?.documents?.length > 0) {
       setDirectoryData({
         ...directoryData,
         foldersList: res.sub_projects,

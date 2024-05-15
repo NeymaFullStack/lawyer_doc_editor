@@ -42,7 +42,7 @@ function LoganChatBox() {
   async function fetchUserChat() {
     let chatRes = await getUSerChat(currentDocument.id);
     if (chatRes.length > 0) {
-      appDispatch(documentAction.updateChatMessages(chatRes));
+      appDispatch(documentAction.setChatMessages(chatRes));
     }
   }
 }

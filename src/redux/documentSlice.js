@@ -43,6 +43,12 @@ export const documentSlice = createSlice({
         chatMessages: [...state.chatMessages, ...action.payload],
       };
     },
+    setChatMessages: (state, action) => {
+      return {
+        ...state,
+        chatMessages: [...action.payload],
+      };
+    },
     initiateEditorUpdate: (state, action) => {
       return { ...state, editorUpdate: action.payload };
     },

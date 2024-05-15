@@ -20,7 +20,8 @@ function LoganDocVersionHistoryTool() {
   });
   const [versionList, setVersionList] = useState([]);
   useEffect(() => {
-    currentDocument.id && fetchDocumentVersions();
+    currentDocument?.id && fetchDocumentVersions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDocumentVersion, filters]);
 
   // console.log(
@@ -190,10 +191,9 @@ function LoganDocVersionHistoryTool() {
       }
     }
     let { data } = await getDocumentVersionList({
-      documentId: currentDocument.id,
+      documentId: currentDocument?.id,
       queryParams: filterParams,
     });
-    // debugger;
     if (data?.length > 0) {
       setVersionList(data);
     }

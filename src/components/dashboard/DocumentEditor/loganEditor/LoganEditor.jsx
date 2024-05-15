@@ -198,7 +198,8 @@ const LoganEditor = () => {
   const handleChange = (value, page, _, source, editor) => {
     if (
       currentDocumentVersion &&
-      value !== currentDocumentVersion?.docContent
+      value !== currentDocumentVersion?.docContent &&
+      activeDocumentAction !== documentActions.VersionHistory
     ) {
       appDispatch(
         documentVersioningAction.setDocumentVersion({
@@ -295,29 +296,30 @@ const LoganEditor = () => {
           `${activeDocumentVersion.is_auto_saved ? "auto-save" : "save"}`,
         );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDocumentVersion, quillRefs?.current?.[0]]);
 
   useEffect(() => {
     if (currentDocumentVersion) {
       if (
         selectedDocumentVersion === null ||
-        selectedDocumentVersion.version_id !== currentDocumentVersion.version_id
+        selectedDocumentVersion?.version_id !==
+          currentDocumentVersion?.version_id
       ) {
         quillRefs.current[0]?.editor.clipboard.dangerouslyPasteHTML(
           currentDocumentVersion?.docContent,
         );
+        appDispatch(
+          documentVersioningAction.setDocumentVersion({
+            activeDocumentVersion: {
+              ...currentDocumentVersion,
+            },
+            selectedDocumentVersion: {
+              ...currentDocumentVersion,
+            },
+          }),
+        );
       }
-
-      appDispatch(
-        documentVersioningAction.setDocumentVersion({
-          activeDocumentVersion: {
-            ...currentDocumentVersion,
-          },
-          selectedDocumentVersion: {
-            ...currentDocumentVersion,
-          },
-        }),
-      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDocumentAction, currentDocumentVersion]);
@@ -342,6 +344,7 @@ const LoganEditor = () => {
   //     );
   //   }
   // }, [activeQuillId]);
+  useEffect(() => {}, [currentDocumentVersion]);
 
   // useEffect(() => {
   //   const wrapper = documentScrollRef.current;
@@ -386,7 +389,6 @@ const LoganEditor = () => {
   // }, [quillRefs]);
   // console.log("document", currentDocumentVersion, activeDocumentVersion);
   // console.log("versions", currentDocumentVersion);
-  console.log("currentDocument", currentDocument);
 
   return (
     <div className="flex h-full w-full flex-col" aria-label="Editor">
@@ -605,7 +607,6 @@ const LoganEditor = () => {
         `${getDocumentContentByVersionIdUrl}${res?.id}/${res?.current_version?.version_id}`,
       );
       if (verRes) {
-        console.log("verRes", verRes);
         appDispatch(
           documentVersioningAction.setDocumentVersion({
             currentDocumentVersion: {

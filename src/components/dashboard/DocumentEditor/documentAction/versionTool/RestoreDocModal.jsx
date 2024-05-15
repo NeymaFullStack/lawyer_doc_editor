@@ -72,12 +72,12 @@ function RestoreDocModal({ openRestoreDocModal, onClose }) {
         document_id: currentDocument?.id,
         version_id: selectedDocumentVersion.version_id,
       });
-      if (res.content) {
+      if (res.data) {
         appDispatch(
           documentVersioningAction.setDocumentVersion({
             currentDocumentVersion: {
               ...currentDocumentVersion,
-              docContent: res.content,
+              docContent: res.data[0].content,
             },
           }),
         );

@@ -100,7 +100,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
             value={chatQuery}
             type="text"
             className={
-              " h-[100%] flex-1 bg-six px-3 pl-1 text-xs outline-none "
+              " h-[100%] flex-1 bg-six px-3 pl-1 text-xs text-black-txt outline-none "
             }
             onChange={(e) => {
               setChatQuery(e.target.value);

@@ -2,7 +2,9 @@ import Axios from "axios";
 import { deleteCookie, getCookie } from "cookies-next";
 import { auth } from "./serviceUrl";
 
-export const API_URL = "http://localhost:7003";
+// export const API_URL = "http://localhost:7003";
+export const API_URL =
+  "http://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:7003";
 const tokenExpired = "Could not validate credentials";
 const Api = Axios.create({
   baseURL: `${API_URL}`,
