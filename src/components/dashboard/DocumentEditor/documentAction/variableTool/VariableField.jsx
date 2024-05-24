@@ -1,6 +1,7 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { copiedContentType } from "@/constants/enums";
 import { documentAction } from "@/redux/documentSlice";
+import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
 import { Dropdown } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,7 +47,7 @@ function VariableField({
               left: cursorPosition.x + 5 + "px",
               top: cursorPosition.y + "px",
             }}
-            className="text-var border-var fixed flex items-center gap-2 rounded-md border-[2px] border-dotted p-1"
+            className="fixed flex items-center gap-2 rounded-md border-[2px] border-dotted border-var p-1 text-var"
           >
             <RemSizeImage
               imagePath={"/assets/icons/paste-icon.svg"}
@@ -155,11 +156,11 @@ function VariableField({
                   });
                 }}
               >
-                {variable.variable}
+                {variable?.variable}
               </span>
-              <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
+              {/* <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
                 {1}
-              </span>
+              </span> */}
             </div>
           )}
         </div>
@@ -178,7 +179,7 @@ function VariableField({
               updateVariableDefinition();
             }}
           >
-            {variable.definition || editVariableState.definition ? (
+            {variable?.definition || editVariableState?.definition ? (
               <div
                 onFocus={() => {}}
                 className=" flex h-full flex-1 items-center    px-3 text-black-txt"
@@ -189,9 +190,16 @@ function VariableField({
                   }}
                   autoComplete="off"
                   className="w-full"
-                  autoFocus={!variable.definition}
-                  value={variable.definition}
+                  autoFocus={!variable?.definition}
+                  value={variable?.definition}
                   onChange={(e) => {
+                    appDispatch(
+                      documentVariableAction.setCurrentEditVaraible({
+                        previousDefinition: variable.definition,
+                        currentDefinition: e.target.value,
+                        id: variable.variable,
+                      }),
+                    );
                     setVariable({
                       ...variable,
                       definition: e.target.value,
@@ -209,7 +217,7 @@ function VariableField({
                 }}
                 className="flex h-full flex-1 items-center bg-six px-3 "
               >
-                Unfilled
+                {variable.variable}
               </div>
             )}
           </div>

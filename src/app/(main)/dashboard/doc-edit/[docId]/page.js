@@ -1,11 +1,8 @@
-import { getDocumentData } from "@/api/serverSideServiceActions/dashboardServiceActions";
-import { getDocumentDataUrl } from "@/api/serviceUrl";
 import DocumentActionBar from "@/components/dashboard/DocumentEditor/documentAction/DocumentActionBar";
 import LoganTools from "@/components/dashboard/DocumentEditor/documentAction/LoganTools";
 import React from "react";
 import dynamic from "next/dynamic";
-import { getCookie } from "cookies-next";
-import { cookies } from "next/headers";
+import TipTapEditor from "@/components/dashboard/DocumentEditor/loganTipTap/Editor";
 
 const LoganEditor = dynamic(
   () => import("@/components/dashboard/DocumentEditor/loganEditor/LoganEditor"),
@@ -17,7 +14,8 @@ async function Page() {
     <div className="flex w-full flex-1 overflow-hidden">
       <main className="flex h-full flex-1 rounded-t-lg border-[0.063rem] border-secondary-blue bg-six">
         <section className="h-full flex-1">
-          <LoganEditor />
+          {/* <LoganEditor /> */}
+          <TipTapEditor />
         </section>
         <section className="border-l-[0.063rem] border-secondary-blue">
           <LoganTools />

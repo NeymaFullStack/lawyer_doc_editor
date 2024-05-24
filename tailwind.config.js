@@ -22,7 +22,6 @@ module.exports = {
       fontSize: {
         "xl-em": "2rem",
       },
-
       backgroundColor: {
         blanc: "#FFFFFF8C",
         two: "#FAFBFC",
@@ -54,7 +53,7 @@ module.exports = {
           900: "#1e3a8a",
           950: "#172554",
         },
-
+        "doc-border": "#E8F0F2",
         "black-txt": "#383D44",
         "secondary-blue": "#095AD31A",
         "hr-line": "#F0F5FD",

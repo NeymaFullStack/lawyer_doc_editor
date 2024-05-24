@@ -79,7 +79,6 @@
     font-size: 0.78em !important;
   }
   ul {
-    list-style-type: none !important;
   }
 
   ol {
@@ -90,6 +89,9 @@
     display: list-item;
     margin-block-start: 0.3em !important;
     margin-block-end: 0.3em !important;
+    p {
+      font-size: 1em !important;
+    }
   }
 
   /* Paragraph styles */

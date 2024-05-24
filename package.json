@@ -10,6 +10,11 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
+    "@tiptap/core": "^2.4.0",
+    "@tiptap/extension-underline": "^2.4.0",
+    "@tiptap/pm": "^2.4.0",
+    "@tiptap/react": "^2.4.0",
+    "@tiptap/starter-kit": "^2.4.0",
     "antd": "^5.11.0",
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",

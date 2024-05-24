@@ -23,6 +23,7 @@ function DocumentPreviewModal({
   const appDispatch = useDispatch();
   const router = useRouter();
   const { slug } = useParams();
+  const [loading, setLoading] = useState(false);
 
   return (
     <LoganModal
@@ -56,6 +57,7 @@ function DocumentPreviewModal({
             Back
           </Button>
           <Button
+            loading={loading}
             icon={
               <RemSizeImage
                 imagePath={"/assets/icons/arrow-right-white.svg"}
@@ -117,6 +119,7 @@ function DocumentPreviewModal({
   }
 
   async function createNewDocument(parentFolderId) {
+    setLoading(true);
     let res = await createDocument({
       document_name: formValues?.documentTopic,
       project_id: parentFolderId,
