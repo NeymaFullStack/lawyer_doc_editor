@@ -14,15 +14,15 @@ function RecentDocuments() {
     fetchRecentDocuments();
   }, []);
   return (
-    <div className="flex  w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <h2 className="font-semibold text-black ">Recent Documents</h2>
       {recentDocuments && (
-        <div className="rounded-lg bg-white p-5  pb-4 ">
+        <div className=" w-full rounded-lg bg-white  p-5 pb-4">
           <div className="overflow-x-scroll pb-6">
-            <ul className="grid grid-cols-5 gap-x-6">
-              {recentDocuments?.map((doc) => {
+            <ul className="flex items-center gap-x-6">
+              {recentDocuments.slice(0, 1)?.map((doc) => {
                 return (
-                  <li key={doc.id} className=" w-fit">
+                  <li key={doc.id}>
                     <DocFile doc={doc} onClickDoc={onClickDoc} />
                   </li>
                 );

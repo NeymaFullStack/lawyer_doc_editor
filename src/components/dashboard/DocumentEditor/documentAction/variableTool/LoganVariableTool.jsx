@@ -9,27 +9,9 @@ import {
   getDocumentVariables,
   updateDocumentVariables,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
-const dummyVars = [
-  {
-    variable: "Contract_Value",
-    definition: "WK Tech Industries",
-    id: nanoid(),
-    count: 1,
-  },
-  {
-    name: "Contract_Value",
-    value: "WK Tech Industries",
-    count: 1,
-    id: nanoid(),
-  },
-  {
-    name: "Contract_Value",
-    value: "",
-    count: 1,
-    id: nanoid(),
-  },
-];
+
 function LoganVariableTool() {
+  const [varibaleSearch, setVariableSearch] = useState();
   const [addVariableButtonHover, setAddVariableButtonHover] = useState(false);
   const [variablesList, setVariablesList] = useState([]);
   const { activeDocumentVersion } = useSelector(
@@ -47,9 +29,11 @@ function LoganVariableTool() {
       aria-label="Logan Document Version History"
     >
       <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
-        <h2 className="text-sm font-semibold text-primary-gray">Variables</h2>
+        <h2 className="text-sm font-semibold text-primary-gray">
+          Variables and Definitions
+        </h2>
         <div className="flex items-center gap-2 ">
-          <Button
+          {/* <Button
             className="btn btn--secondary !py-4"
             icon={
               <RemSizeImage
@@ -67,8 +51,8 @@ function LoganVariableTool() {
             }
           >
             By Date
-          </Button>
-          <Button
+          </Button> */}
+          {/* <Button
             className="btn btn--secondary !py-4"
             icon={
               <RemSizeImage
@@ -86,7 +70,7 @@ function LoganVariableTool() {
             }
           >
             All
-          </Button>
+          </Button> */}
           <button
             onClick={addNewVariable}
             onMouseEnter={(e) => {
@@ -133,25 +117,38 @@ function LoganVariableTool() {
           alt="New"
         /> */}
         <input
+          onChange={(e) => {
+            setVariableSearch(e.target.value);
+          }}
           autoComplete="off"
           className="w-[80%] bg-gradient-search  text-xs  outline-none"
           placeholder="Search For a Variable Id Or Value..."
         ></input>
       </div>
-      <div className=" h-[100%] overflow-hidden p-3 pr-3 text-xs">
-        <ul className=" mr-2  flex h-[92%] flex-col gap-4 overflow-y-scroll">
-          {variablesList.map((variable, index) => {
-            return (
-              <li key={nanoid()}>
-                <VariableField
-                  variableProperties={variable}
-                  addNew={variable.new ? true : false}
-                  index={index}
-                  updateVariableList={updateVariableList}
-                />
-              </li>
-            );
-          })}
+      <div className=" h-[100%] overflow-hidden p-3  pr-3 text-xs">
+        <ul className="mr-2 flex h-full flex-col gap-4 overflow-y-scroll pb-5">
+          {variablesList
+            .filter((item) => {
+              if (!varibaleSearch) {
+                return true;
+              }
+              return (
+                item.variable.includes(varibaleSearch) ||
+                item.definition.includes(varibaleSearch)
+              );
+            })
+            .map((variable, index) => {
+              return (
+                <li key={nanoid()}>
+                  <VariableField
+                    variableProperties={variable}
+                    addNew={variable.new ? true : false}
+                    index={index}
+                    updateVariableList={updateVariableList}
+                  />
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>
@@ -172,7 +169,7 @@ function LoganVariableTool() {
       documentId: activeDocumentVersion?.id,
       documentVersionId: activeDocumentVersion?.version_id,
     });
-    data?.length > 0 ? setVariablesList(data) : setVariablesList(dummyVars);
+    data?.length > 0 && setVariablesList(data);
   }
 
   function updateVariableList(variable, varIndex = -1) {

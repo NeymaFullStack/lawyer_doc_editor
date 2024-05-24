@@ -1,0 +1,58 @@
+@import "../../../mixins";
+
+.logan-tiptap {
+  .toolbar {
+    .ant-select,
+    .ant-select-open {
+      @apply h-6  #{!important};
+      .ant-select-selector {
+        @apply border-[#d9d9d9] hover:border-[#d9d9d9] #{!important};
+      }
+      .ant-select-arrow {
+        @apply right-1;
+      }
+    }
+    .tip-fnt-family {
+      .ant-select {
+        @apply w-16 #{!important};
+      }
+    }
+    .tip-fnt-family {
+      .ant-select {
+        @apply w-16 #{!important};
+      }
+    }
+  }
+  .tiptap {
+    @include logan-doc;
+    @apply break-all text-[1rem] #{!important};
+
+    ul {
+      @apply list-disc pl-4;
+    }
+    ol {
+      @apply list-decimal pl-4;
+    }
+    .doc-variable {
+      @apply rounded-md bg-[#FFF5FD] px-[0.2em] py-[0.1em] text-[#FF26C2];
+    }
+    .doc-article {
+      @apply text-primary-gray;
+    }
+    .is-selected {
+      @apply bg-[#eca0dd];
+    }
+  }
+
+  .auto-save {
+    background-color: #fff7db80 !important;
+    border: 0.125rem solid #ffc700 !important;
+  }
+  .save {
+    background-color: #d9fadb33 !important;
+    border: 0.125rem solid #10c900 !important;
+  }
+  .tiptap.ProseMirror-focused {
+    @apply focus-visible:outline-none  #{!important};
+  }
+}

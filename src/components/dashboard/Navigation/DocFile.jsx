@@ -8,7 +8,7 @@ function DocFile({ onClickDoc, doc, nonClient = false }) {
       onClick={() => {
         onClickDoc(doc);
       }}
-      className={`flex flex-col gap-2 ${
+      className={`flex w-[13rem] flex-col gap-2 ${
         nonClient ? "bg-blanc" : "bg-six"
       } cursor-pointer rounded-lg px-4 py-3`}
     >

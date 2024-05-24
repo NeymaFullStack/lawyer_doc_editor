@@ -14,6 +14,7 @@ export const store = configureStore({
     documentReducer: documentSlice.reducer,
     folderNavigationReducer: folderNavigationSlice.reducer,
     documentVersioningReducer: documentVersioningSlice.reducer,
+    documentVariableReducer: documentVariableSlice.reducer,
   },
   middleware: [thunk],
 });

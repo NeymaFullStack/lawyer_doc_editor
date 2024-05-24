@@ -3,11 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 export const documentVariableSlice = createSlice({
   name: "documentVariable",
   initialState: {
-    editVaraibleId: null,
+    currentEditVariable: null,
   },
   reducers: {
-    setEditVaraibleId: (state, action) => {
-      return { ...state, ...action.payload };
+    setCurrentEditVaraible: (state, action) => {
+      return { ...state, currentEditVariable: action.payload };
     },
   },
 });
