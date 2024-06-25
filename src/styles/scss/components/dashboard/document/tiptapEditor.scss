@@ -25,7 +25,8 @@
   }
   .tiptap {
     @include logan-doc;
-    @apply break-all text-[1rem] #{!important};
+
+    @apply flex-1 break-words break-all text-[1rem] #{!important};
 
     ul {
       @apply list-disc pl-4;
@@ -33,11 +34,42 @@
     ol {
       @apply list-decimal pl-4;
     }
+    // li::marker {
+    //   content: "a";
+    // }
     .doc-variable {
-      @apply rounded-md bg-[#FFF5FD] px-[0.2em] py-[0.1em] text-[#FF26C2];
+      @apply rounded-md bg-[#FFF5FD] px-[0.4em] py-[0.1em] text-[#FF26C2];
     }
     .doc-article {
-      @apply text-primary-gray;
+      h2 {
+        span {
+          @apply text-primary-gray;
+        }
+      }
+      ul {
+        padding-left: 0 !important;
+        list-style-type: none !important;
+        li {
+          // float: inline-start; /* Use flexbox to align items */
+          /* Center align items vertically */
+          position: relative;
+          p {
+            margin-top: 0;
+            margin-left: 2rem;
+          }
+        }
+        li::before {
+          position: absolute;
+          top: 0;
+          width: 1.5rem;
+          content: attr(data-index);
+          text-align: end;
+          color: #a3a7af !important;
+        }
+      }
+    }
+    .doc-article-tag {
+      @apply rounded-md bg-secondary-blue px-[0.4em] py-[0.1em] text-primary-blue;
     }
     .is-selected {
       @apply bg-[#eca0dd];

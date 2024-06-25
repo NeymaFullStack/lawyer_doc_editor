@@ -7,7 +7,7 @@ export const documentArticleSlice = createSlice({
   },
   reducers: {
     setArticlesList: (state, action) => {
-      return { ...state, ...action.payload };
+      return { ...state, articleList: action.payload };
     },
   },
 });

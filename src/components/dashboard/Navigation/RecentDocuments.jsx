@@ -20,7 +20,7 @@ function RecentDocuments() {
         <div className=" w-full rounded-lg bg-white  p-5 pb-4">
           <div className="overflow-x-scroll pb-6">
             <ul className="flex items-center gap-x-6">
-              {recentDocuments.slice(0, 1)?.map((doc) => {
+              {recentDocuments?.map((doc) => {
                 return (
                   <li key={doc.id}>
                     <DocFile doc={doc} onClickDoc={onClickDoc} />

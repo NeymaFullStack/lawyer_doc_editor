@@ -1,7 +1,4 @@
-import {
-  restoreDocumentVersion,
-  updateDocumentVersionContent,
-} from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { restoreDocumentVersion } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import LoganModal from "@/components/generic/LoganModal";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import React, { useState } from "react";

@@ -23,3 +23,5 @@ export const createNewDocumentVersionUrl = "/document/version/create";
 export const updateDocumentVersionContentUrl = "/document/content/save";
 export const getUSerChatUrl = "/chat/document";
 export const restoreVersionUrl = "/document/version/restore";
+export const exportDocumentPdfUrl = (documentId, documentVersionId) =>
+  `/exports/document/${documentId}/${documentVersionId}/pdf`;

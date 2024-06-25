@@ -2,11 +2,10 @@ import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import useSpeechHook from "@/hooks/useSpeechHook";
 import { Button, Form, Input, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { modalType } from "./FolderDocCreation";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
-import { getDocumentTemplate } from "@/api/clientSideServiceActions/dashboardServiceActions";
 const { TextArea } = Input;
 
 let recognition;
@@ -61,7 +60,7 @@ function CreateDocModal({
     });
   }, []);
 
-  // console.log("ANT", formValues);
+  console.log("ANT", formValues);
 
   return (
     <LoganModal
@@ -121,17 +120,6 @@ function CreateDocModal({
           </Button>
         </div>
       }
-      // applyButtonText={"Create Document"}
-      // cancelButtonText={"Back"}
-      // modalButtonsCLass={" flex-row-reverse"}
-      // cancelButtonIcon={
-      //   <RemSizeImage
-      //     imagePath={"/assets/icons/left-arrow-grey.svg"}
-      //     remWidth={1}
-      //     remHeight={1}
-      //     alt={"AI"}
-      //   />
-      // }
     >
       <div className="flex items-center justify-between ">
         <h2 className="text-2xl font-bold text-black">
@@ -186,7 +174,7 @@ function CreateDocModal({
             >
               <Select
                 onChange={(value, option) => {
-                  setFormFields({ legal_boundary: option });
+                  setFormFields({ legalPlayground: option });
                 }}
                 options={countryOptions}
                 suffixIcon={

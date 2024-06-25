@@ -2,41 +2,41 @@
   box-shadow: none !important;
   animation: none !important;
   transition: none !important;
-  @apply flex items-center gap-2 rounded-lg border-none
+  @apply flex items-center gap-2 rounded-lg 
       px-4  py-5 text-xs font-semibold outline-none;
   &:hover {
     color: inherit !important;
   }
   &--normal {
-    @apply bg-six  text-primary-gray hover:text-primary-gray;
+    @apply border-none  bg-six text-primary-gray hover:text-primary-gray;
     &:hover {
       color: #a3a7af !important;
     }
   }
   &--primary {
-    @apply bg-blue-gradient text-white hover:bg-blue-gradient hover:text-white #{!important};
+    @apply border-none bg-blue-gradient text-white hover:bg-blue-gradient  hover:text-white #{!important};
   }
   &--primary-trans {
-    @apply text-primary-blue;
+    @apply border-none text-primary-blue;
     border: 0.063rem solid #0e61de !important;
     &:hover {
       color: #0e61de !important;
     }
   }
   &--secondary {
-    @apply bg-secondary-blue text-primary-blue hover:text-primary-blue #{!important};
+    @apply border-none bg-secondary-blue text-primary-blue hover:text-primary-blue #{!important};
   }
   &--warn {
-    @apply bg-warn text-white;
     background-image: none !important;
+    @apply border-none bg-warn text-white hover:bg-warn hover:text-white #{!important};
   }
   &--purple {
-    @apply bg-purple-gradient text-white;
+    @apply border-none bg-purple-gradient text-white;
     &:hover {
       color: white !important;
     }
   }
-  &--back {
-    @apply bg-blanc text-primary-gray hover:text-primary-gray;
+  &--normal-outlined {
+    @apply border-[1px] border-secondary-blue bg-blanc text-primary-gray hover:text-primary-gray #{!important};
   }
 }

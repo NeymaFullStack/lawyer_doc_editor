@@ -15,8 +15,9 @@ function LoganChatBox() {
 
   useEffect(() => {
     currentDocument?.id && fetchUserChat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDocument]);
-
+  // console.log("current document", currentDocument?.id);
   return (
     <div
       className="flex flex-1 flex-col overflow-hidden bg-white"
@@ -43,6 +44,8 @@ function LoganChatBox() {
     let chatRes = await getUSerChat(currentDocument.id);
     if (chatRes.length > 0) {
       appDispatch(documentAction.setChatMessages(chatRes));
+    } else if (chatMessages.length > 0) {
+      appDispatch(documentAction.setChatMessages([]));
     }
   }
 }

@@ -23,6 +23,7 @@ function LoganVariableTool() {
       activeDocumentVersion.version_id &&
       fetchDocumentVariables();
   }, [activeDocumentVersion]);
+  console.log("varilanle List", variablesList);
   return (
     <div
       className="h-full w-[26.5rem]  overflow-hidden bg-white "
@@ -92,14 +93,6 @@ function LoganVariableTool() {
               remHeight={2}
               alt={"Add"}
             />
-            {/* <Image
-              src={`/assets/icons/${
-                addVariableButtonHover ? "add-blue" : "add-light-blue"
-              }.svg`}
-              height={32}
-              width={32}
-              alt="Add"
-            /> */}
           </button>
         </div>
       </div>
@@ -110,12 +103,6 @@ function LoganVariableTool() {
           remHeight={1.188}
           alt={"Search"}
         />
-        {/* <Image
-          src={"/assets/icons/search-icon.svg"}
-          height={19}
-          width={19}
-          alt="New"
-        /> */}
         <input
           onChange={(e) => {
             setVariableSearch(e.target.value);
@@ -125,8 +112,8 @@ function LoganVariableTool() {
           placeholder="Search For a Variable Id Or Value..."
         ></input>
       </div>
-      <div className=" h-[100%] overflow-hidden p-3  pr-3 text-xs">
-        <ul className="mr-2 flex h-full flex-col gap-4 overflow-y-scroll pb-5">
+      <div className="flex h-full max-h-full flex-col overflow-y-hidden p-3  pr-3 text-xs">
+        <ul className="glex-1 mr-2 flex w-full flex-col gap-2 overflow-y-scroll pb-5">
           {variablesList
             .filter((item) => {
               if (!varibaleSearch) {
@@ -139,7 +126,7 @@ function LoganVariableTool() {
             })
             .map((variable, index) => {
               return (
-                <li key={nanoid()}>
+                <li key={variable.variable}>
                   <VariableField
                     variableProperties={variable}
                     addNew={variable.new ? true : false}
@@ -172,7 +159,7 @@ function LoganVariableTool() {
     data?.length > 0 && setVariablesList(data);
   }
 
-  function updateVariableList(variable, varIndex = -1) {
+  async function updateVariableList(variable, varIndex = -1) {
     let varList = [...variablesList];
     if (varIndex < 0) {
       varList.unshift(variable);
@@ -180,13 +167,14 @@ function LoganVariableTool() {
       varList[varIndex] = variable;
     }
     if (activeDocumentVersion?.id && activeDocumentVersion.version_id) {
-      let res = updateDocumentVariables(
+      let { data } = await updateDocumentVariables(
         {
           documentId: activeDocumentVersion.id,
           documentVersionId: activeDocumentVersion.version_id,
         },
         { document_variables: varList },
       );
+      setVariablesList(data);
     }
   }
 }

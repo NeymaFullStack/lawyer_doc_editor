@@ -7,7 +7,10 @@ import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useDispatch, useSelector } from "react-redux";
 import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
-import { createNewDocumentVersion } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import {
+  createNewDocumentVersion,
+  exportDocumentPdf,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import FolderNavigationHeader from "./FolderNavigationHeader";
 
@@ -77,6 +80,31 @@ function DashboardHeader() {
               Save
             </Button>
             <Button
+              onClick={async () => {
+                let responsePdf = await exportDocumentPdf(
+                  currentDocument?.id,
+                  currentDocumentVersion?.version_id,
+                );
+                // console.log("responsePdf", responsePdf);
+                // function binaryStringToArrayBuffer(binaryString) {
+                //   const length = binaryString.length;
+                //   const arrayBuffer = new ArrayBuffer(length);
+                //   const uint8Array = new Uint8Array(arrayBuffer);
+                //   for (let i = 0; i < length; i++) {
+                //     uint8Array[i] = binaryString.charCodeAt(i);
+                //   }
+                //   return arrayBuffer;
+                // }
+                // console.log("responsePdf", responsePdf);
+                // const buffer = binaryStringToArrayBuffer(responsePdf);
+                const pdfBlob = new Blob([responsePdf.data], {
+                  type: "application/pdf",
+                });
+
+                const fileUrl = URL.createObjectURL(pdfBlob);
+                const w = window.open(fileUrl, "_blank");
+                w && w.focus();
+              }}
               icon={
                 <RemSizeImage
                   imagePath={"/assets/icons/export-blue.svg"}

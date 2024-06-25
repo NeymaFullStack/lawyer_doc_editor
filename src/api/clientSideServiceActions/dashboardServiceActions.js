@@ -4,6 +4,8 @@ import {
   createDocumentUrl,
   createFolderUrl,
   createNewDocumentVersionUrl,
+  exportDocumentPdfUrl,
+  exportDocumentUrl,
   getClientFoldersListUrl,
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
@@ -223,6 +225,18 @@ export const userLogin = async (queryParams = {}) => {
 export const restoreDocumentVersion = async (queryParams = {}) => {
   try {
     const res = await Api.post(restoreVersionUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const exportDocumentPdf = async (documentId, documentVersionId) => {
+  try {
+    const res = await Api.get(
+      exportDocumentPdfUrl(documentId, documentVersionId),
+    );
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

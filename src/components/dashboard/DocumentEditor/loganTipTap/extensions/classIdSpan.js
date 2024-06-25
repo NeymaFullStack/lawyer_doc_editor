@@ -1,6 +1,7 @@
 // extensions/CustomSpan.js
 import { Node, mergeAttributes } from "@tiptap/core";
-import { Fascinate_Inline } from "next/font/google";
+import { Fragment, Slice } from "@tiptap/pm/model";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
 
 // export const classIdSpan = Node.create({
 //   name: "classIdSpan",
@@ -69,8 +70,8 @@ export const classIdSpan = Node.create({
   content: "inline*",
   group: "inline",
   inline: true,
-  atom: false, // Treat as a single unit for selection and deletion
   selectable: true, // Allow selection
+  draggable: false,
   addAttributes() {
     return {
       class: {
@@ -86,10 +87,12 @@ export const classIdSpan = Node.create({
       {
         preserveWhitespace: true,
         tag: "span",
-        getAttrs: (dom) => ({
-          class: dom.getAttribute("class"),
-          id: dom.getAttribute("id"),
-        }),
+        getAttrs: (dom) => {
+          return {
+            class: dom.getAttribute("class"),
+            id: dom.getAttribute("id"),
+          };
+        },
       },
     ];
   },
@@ -105,6 +108,22 @@ export const classIdSpan = Node.create({
   },
   addNodeView() {
     return ({ node, getPos, editor }) => {
+      if (
+        node.attrs.class === "doc-article" &&
+        node.attrs.class !== "doc-variable"
+      ) {
+        // if (node.textContent === "") {
+        //   debugger;
+        //   const { state, dispatch } = editor.view;
+        //   const transaction = state.tr.delete(
+        //     getPos(),
+        //     getPos() + node.nodeSize,
+        //   );
+        //   dispatch(transaction);
+        //   return null;
+        // }
+        return;
+      }
       const dom = document.createElement("span");
       dom.textContent = node.textContent;
       Object.entries(node.attrs).forEach(([key, value]) => {
@@ -114,35 +133,26 @@ export const classIdSpan = Node.create({
       });
 
       // Handle click event
-      dom.addEventListener("click", () => {
-        const { state, dispatch } = editor.view;
-        const transaction = state.tr.setSelection(
-          NodeSelection.create(state.doc, getPos()),
-        );
-        dispatch(transaction);
-      });
+      node.attrs.class === "doc-variable" ||
+        (node.attrs.class === "doc-article-title" &&
+          dom.addEventListener("click", () => {
+            const { state, dispatch } = editor.view;
+            const transaction = state.tr.setSelection(
+              NodeSelection.create(state.doc, getPos()),
+            );
+            dispatch(transaction);
+          }));
 
-      if (node.textContent === "") {
-        const { state, dispatch } = editor.view;
-        const transaction = state.tr.delete(getPos(), getPos() + node.nodeSize);
-        dispatch(transaction);
-        return null;
-      }
+      // if (node.textContent === "") {
+      //   debugger;
+      //   const { state, dispatch } = editor.view;
+      //   const transaction = state.tr.delete(getPos(), getPos() + node.nodeSize);
+      //   dispatch(transaction);
+      //   return null;
+      // }
 
       return {
         dom,
-        // update: (updatedNode) => {
-        //   if (updatedNode.type !== node.type) {
-        //     return false;
-        //   }
-
-        //   Object.entries(updatedNode.attrs).forEach(([key, value]) => {
-        //     if (value) {
-        //       dom.setAttribute(key, value);
-        //     }
-        //   });
-        //   return true;
-        // },
         selectNode: () => {
           dom.classList.add("is-selected");
         },
@@ -152,44 +162,74 @@ export const classIdSpan = Node.create({
       };
     };
   },
-  // addCommands() {
-  //   return {
-  //     replaceTextInNodeWithClassAndValue:
-  //       (className, prevText, newText) =>
-  //       ({ state, dispatch }) => {
-  //         let allowChange = false;
-  //         const { doc, schema } = state;
-  //         const tr = state.tr;
-  //         // console.log("2");
-  //         doc.descendants((node, pos) => {
-  //           if (allowChange) {
-  //             // const nodeType = schema.nodes.classIdSpan;
-  //             // const newAttrs = { ...node.attrs };
-  //             // const newNode = nodeType.create(newAttrs, schema.text(newText));
-  //             // console.log("pos", pos);
-  //             // console.log("textContent", node.textContent.length);
-  //             // console.log("nodesize", node.nodeSize);
+  addCommands() {
+    return {
+      replaceTextInNodeWithClassAndValue:
+        (prevText, newText) =>
+        ({ state, dispatch }) => {
+          if (prevText === newText) {
+            return false;
+          }
+          const { schema, tr, doc } = state;
+          const customNodeType = schema.nodes.classIdSpan;
+          let trMapping = tr.mapping;
+          doc.descendants((node, pos) => {
+            // debugger;
+            if (
+              node.type.name === "classIdSpan" &&
+              node?.textContent === prevText
+            ) {
+              const mappedPos = trMapping.map(pos);
 
-  //             tr.replaceText(pos, pos + node.nodeSize, newText);
-  //             allowChange = false;
-  //           }
-  //           if (
-  //             node.type.name === "classIdSpan" &&
-  //             node.attrs.class === className &&
-  //             node.textContent === prevText
-  //           ) {
-  //             allowChange = true;
-  //           }
-  //         });
+              if (newText === "") {
+                tr.delete(mappedPos, mappedPos + node.nodeSize);
+              } else {
+                const newTextNode = schema.text(newText);
+                const newCustomNode = customNodeType.create(
+                  node.attrs,
+                  newTextNode,
+                );
+                const slice = new Slice(Fragment.from(newCustomNode), 0, 0);
 
-  //         if (tr.docChanged) {
-  //           dispatch(tr);
-  //           return true;
-  //         }
-  //         return false;
-  //       },
-  //   };
-  // },
+                tr.replace(mappedPos, mappedPos + node.nodeSize, slice);
+              }
+            }
+          });
+          if (tr.docChanged) {
+            dispatch(tr);
+            return true;
+          }
+          return false;
+        },
+    };
+  },
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        props: {
+          handleKeyDown: (view, event) => {
+            if (event.key === "Backspace") {
+              const { state } = view;
+              const { selection } = state;
+              const { $from, node: selectedNode } = selection;
+              const prevNode = $from.nodeBefore;
+              const nextNode = $from.nodeAfter;
+              if (selectedNode?.attrs?.class === "doc-article-title") {
+                event.preventDefault();
+                this.options.openModal(selectedNode);
+                return true;
+              } else if (prevNode?.attrs?.class === "doc-article-title") {
+                event.preventDefault();
+                this.options.openModal(selectedNode);
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+      }),
+    ];
+  },
 });
 
 export default classIdSpan;

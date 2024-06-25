@@ -46,7 +46,7 @@ export const documentSlice = createSlice({
     setChatMessages: (state, action) => {
       return {
         ...state,
-        chatMessages: [...action.payload],
+        chatMessages: action.payload,
       };
     },
     initiateEditorUpdate: (state, action) => {

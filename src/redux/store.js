@@ -6,6 +6,7 @@ import { documentSlice } from "./documentSlice";
 import { folderNavigationSlice } from "./folderNavigationSlice";
 import { documentVersioningSlice } from "./editor/documentVersioningSlice";
 import { documentVariableSlice } from "./editor/documentVariableSlice";
+import { documentArticleSlice } from "./editor/documentArticleSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     folderNavigationReducer: folderNavigationSlice.reducer,
     documentVersioningReducer: documentVersioningSlice.reducer,
     documentVariableReducer: documentVariableSlice.reducer,
+    documentArticleReducer: documentArticleSlice.reducer,
   },
   middleware: [thunk],
 });

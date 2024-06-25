@@ -29,7 +29,7 @@ function VariableField({
     setCursorPosition({ x: event.clientX, y: event.clientY });
   };
   useEffect(() => {
-    if (window !== undefined) {
+    if (window !== undefined && copiedContent) {
       // copiedContent?.id && window.
       window.addEventListener("mousemove", handleMouseMove);
     }
@@ -41,7 +41,7 @@ function VariableField({
   return (
     <div className="flex">
       {copiedContent?.content?.variable &&
-        copiedContent?.content?.definition == variable.definition && (
+        copiedContent?.content?.definition == variable?.definition && (
           <div
             style={{
               left: cursorPosition.x + 5 + "px",
@@ -113,12 +113,6 @@ function VariableField({
                     remHeight={0.625}
                     alt={"Search"}
                   />
-                  {/* <Image
-                    src={"/assets/icons/right-tick.svg"}
-                    height={10}
-                    width={13}
-                    alt="Right-Tick"
-                  /> */}
                 </button>
               )}
             </div>
