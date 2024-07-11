@@ -29,3 +29,16 @@ export const versionHistoryFilter = {
   manualSaved: "Manually Saved Versions",
   autoSaved: "Auto Saved Versions",
 };
+
+export const articleInsertionType = {
+  article: "Article",
+  subArticle: "Sub-Article",
+  nestedList: "Sub-Article",
+};
+
+export const tagInsertionType = {
+  Article: "article",
+  SubArticle: "subArticle",
+  Variable: "variable",
+  Definition: "definition",
+};

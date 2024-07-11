@@ -11,3 +11,16 @@ export const findNodePos = (doc, node) => {
 
   return nodePos;
 };
+
+export const findOutermostNode = (node, state) => {
+  let { $from } = state.selection;
+  let depth = $from.depth;
+
+  // Traverse up the ancestors until you reach the top-level node
+  while (depth > 0) {
+    node = $from.node(depth);
+    depth--;
+  }
+
+  return node;
+};

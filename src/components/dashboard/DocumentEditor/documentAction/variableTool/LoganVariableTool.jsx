@@ -4,29 +4,33 @@ import React, { useEffect, useState } from "react";
 import VariableField from "./VariableField";
 import { nanoid } from "nanoid";
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getDocumentVariables,
   updateDocumentVariables,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
 
 function LoganVariableTool() {
+  const appDispatch = useDispatch();
   const [varibaleSearch, setVariableSearch] = useState();
   const [addVariableButtonHover, setAddVariableButtonHover] = useState(false);
-  const [variablesList, setVariablesList] = useState([]);
   const { activeDocumentVersion } = useSelector(
     (state) => state.documentVersioningReducer,
   );
+  const { variableList } = useSelector(
+    (state) => state.documentVariableReducer,
+  );
 
-  useEffect(() => {
-    activeDocumentVersion.id &&
-      activeDocumentVersion.version_id &&
-      fetchDocumentVariables();
-  }, [activeDocumentVersion]);
-  console.log("varilanle List", variablesList);
+  // useEffect(() => {
+  //   activeDocumentVersion.id &&
+  //     activeDocumentVersion.version_id &&
+  //     fetchDocumentVariables();
+  // }, [activeDocumentVersion]);
+  console.log("varilanle List", variableList);
   return (
     <div
-      className="h-full w-[26.5rem]  overflow-hidden bg-white "
+      className="flex h-full w-[26.5rem] flex-col  overflow-hidden bg-white "
       aria-label="Logan Document Version History"
     >
       <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
@@ -112,9 +116,9 @@ function LoganVariableTool() {
           placeholder="Search For a Variable Id Or Value..."
         ></input>
       </div>
-      <div className="flex h-full max-h-full flex-col overflow-y-hidden p-3  pr-3 text-xs">
-        <ul className="glex-1 mr-2 flex w-full flex-col gap-2 overflow-y-scroll pb-5">
-          {variablesList
+      <div className="flex-1 overflow-y-scroll p-4 text-xs">
+        <ul>
+          {variableList
             .filter((item) => {
               if (!varibaleSearch) {
                 return true;
@@ -126,7 +130,7 @@ function LoganVariableTool() {
             })
             .map((variable, index) => {
               return (
-                <li key={variable.variable}>
+                <li key={variable.variable} className="my-2">
                   <VariableField
                     variableProperties={variable}
                     addNew={variable.new ? true : false}
@@ -142,25 +146,26 @@ function LoganVariableTool() {
   );
 
   function addNewVariable() {
-    let tempVariableList = [...variablesList];
+    let tempVariableList = [...variableList];
     tempVariableList.unshift({
       variable: "",
       definition: "",
       new: true,
     });
-    setVariablesList(tempVariableList);
+    appDispatch(documentVariableAction.setVariableList(tempVariableList));
   }
 
-  async function fetchDocumentVariables() {
-    let { data } = await getDocumentVariables({
-      documentId: activeDocumentVersion?.id,
-      documentVersionId: activeDocumentVersion?.version_id,
-    });
-    data?.length > 0 && setVariablesList(data);
-  }
+  // async function fetchDocumentVariables() {
+  //   let { data } = await getDocumentVariables({
+  //     documentId: activeDocumentVersion?.id,
+  //     documentVersionId: activeDocumentVersion?.version_id,
+  //   });
+  //   data?.length > 0 &&
+  //     appDispatch(documentVariableAction.setVariableList(data));
+  // }
 
   async function updateVariableList(variable, varIndex = -1) {
-    let varList = [...variablesList];
+    let varList = [...variableList];
     if (varIndex < 0) {
       varList.unshift(variable);
     } else {
@@ -174,7 +179,7 @@ function LoganVariableTool() {
         },
         { document_variables: varList },
       );
-      setVariablesList(data);
+      appDispatch(documentVariableAction.setVariableList(data));
     }
   }
 }

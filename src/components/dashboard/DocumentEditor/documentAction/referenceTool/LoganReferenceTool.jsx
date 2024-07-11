@@ -21,7 +21,7 @@ function LoganReferenceTool() {
   console.log("articleList", articleList);
   return (
     <div
-      className="h-full w-[26.5rem]  overflow-hidden bg-white "
+      className="flex h-full  w-[26.5rem] flex-col  overflow-hidden bg-white"
       aria-label="Logan Document Version History"
     >
       <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
@@ -86,7 +86,7 @@ function LoganReferenceTool() {
           placeholder={"Search for a specific appendix or article"}
         ></input>
       </div>
-      <div className="m-4 h-[100%] overflow-hidden text-xs ">
+      <div className="flex-1 overflow-y-scroll p-3 text-xs ">
         <Collapse
           bordered={false}
           items={[
