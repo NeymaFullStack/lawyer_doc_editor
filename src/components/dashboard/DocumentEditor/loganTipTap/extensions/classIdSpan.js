@@ -1,68 +1,7 @@
 // extensions/CustomSpan.js
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
-
-// export const classIdSpan = Node.create({
-//   name: "classIdSpan",
-//   content: "inline*",
-//   group: "inline",
-
-//   inline: true,
-//   draggable: false,
-//   selectable: true,
-//   atom: true,
-//   addAttributes() {
-//     return {
-//       class: {
-//         default: null,
-//       },
-//       id: {
-//         default: null,
-//       },
-//     };
-//   },
-
-//   parseHTML() {
-//     return [
-//       {
-//         preserveWhitespace: true,
-//         tag: "span",
-//         getAttrs: (dom) => ({
-//           class: dom.getAttribute("class"),
-//           id: dom.getAttribute("id"),
-//         }),
-//       },
-//     ];
-//   },
-
-//   renderHTML({ HTMLAttributes }) {
-//     return [
-//       "span",
-//       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-//         contenteditable: false,
-//         draggable: false,
-//       }),
-//       0,
-//     ];
-//   },
-
-//   addCommands() {
-//     return {
-//       setclassIdSpan:
-//         (attributes) =>
-//         ({ commands }) => {
-//           return commands.setNode(this.name, attributes);
-//         },
-//       toggleclassIdSpan:
-//         (attributes) =>
-//         ({ commands }) => {
-//           return commands.toggleNode(this.name, "paragraph", attributes);
-//         },
-//     };
-//   },
-// });
-
+import { Plugin } from "@tiptap/pm/state";
 import { NodeSelection } from "prosemirror-state";
 
 export const classIdSpan = Node.create({
@@ -108,10 +47,7 @@ export const classIdSpan = Node.create({
   },
   addNodeView() {
     return ({ node, getPos, editor }) => {
-      if (
-        node.attrs.class === "doc-article" &&
-        node.attrs.class !== "doc-variable"
-      ) {
+      if (node.attrs.class === "doc-article-title") {
         // if (node.textContent === "") {
         //   debugger;
         //   const { state, dispatch } = editor.view;
@@ -133,15 +69,14 @@ export const classIdSpan = Node.create({
       });
 
       // Handle click event
-      node.attrs.class === "doc-variable" ||
-        (node.attrs.class === "doc-article-title" &&
-          dom.addEventListener("click", () => {
-            const { state, dispatch } = editor.view;
-            const transaction = state.tr.setSelection(
-              NodeSelection.create(state.doc, getPos()),
-            );
-            dispatch(transaction);
-          }));
+      node.attrs.class === "doc-variable" &&
+        dom.addEventListener("click", () => {
+          const { state, dispatch } = editor.view;
+          const transaction = state.tr.setSelection(
+            NodeSelection.create(state.doc, getPos()),
+          );
+          dispatch(transaction);
+        });
 
       // if (node.textContent === "") {
       //   debugger;
@@ -220,7 +155,7 @@ export const classIdSpan = Node.create({
                 return true;
               } else if (prevNode?.attrs?.class === "doc-article-title") {
                 event.preventDefault();
-                this.options.openModal(selectedNode);
+                this.options.openModal(prevNode);
                 return true;
               }
             }

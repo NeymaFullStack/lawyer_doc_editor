@@ -23,6 +23,7 @@ module.exports = {
         "xl-em": "2rem",
       },
       backgroundColor: {
+        appendex: "#FFF3E7",
         blanc: "#FFFFFF8C",
         two: "#FAFBFC",
         three: "#ECF1F4",
@@ -53,6 +54,7 @@ module.exports = {
           900: "#1e3a8a",
           950: "#172554",
         },
+        appendex: "#FF7A00",
         "doc-border": "#E8F0F2",
         "black-txt": "#383D44",
         "secondary-blue": "#095AD31A",
@@ -67,6 +69,7 @@ module.exports = {
       boxShadow: {
         out: "0 0 10px 0.1px #ededed",
         "out-lg": "0px 0px 12px 1px #0000003B",
+        "3d": "0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.1)",
         // "in-white": "inset 0px -3px 2px 5px  #ffffff",
       },
     },

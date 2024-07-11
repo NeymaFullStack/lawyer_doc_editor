@@ -55,7 +55,7 @@ function CollapsibleArticle({ item, showArticleTag }) {
               remHeight={1.2}
               alt={"Paste"}
             />
-            <div className="ml-1 flex items-center gap-2 text-xs font-semibold">
+            <div className="ml-1 flex items-center gap-2 text-sm font-semibold ">
               <div className="flex items-center">
                 <RemSizeImage
                   className={"mr-1"}
@@ -85,17 +85,23 @@ function CollapsibleArticle({ item, showArticleTag }) {
                   setHoverActive(false);
                 }}
               >
-                <div className="flex items-center gap-2">
-                  {showArticleTag && <Tag>Article</Tag>}
-                  <RemSizeImage
-                    imagePath={"/assets/icons/docaction/article-icon.svg"}
-                    remWidth={0.5}
-                    remHeight={0.5}
-                    alt={"article"}
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    {showArticleTag && <Tag>Article</Tag>}
+                    <RemSizeImage
+                      imagePath={"/assets/icons/docaction/article-icon.svg"}
+                      remWidth={0.5}
+                      remHeight={0.5}
+                      alt={"article"}
+                    />
+                    <span className=" text-xs text-primary-blue">
+                      {item.index}
+                    </span>
+                  </div>
                   <h3 className=" text-xs font-medium text-black-txt">
                     {item.articleName}
                   </h3>
+
                   <span
                     className={`rounded-md bg-six px-[0.313rem] py-[0.063rem] ${item?.children?.length > 0 ? "text-primary-blue" : "text-primary-gray"}`}
                   >
