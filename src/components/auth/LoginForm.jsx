@@ -1,9 +1,8 @@
 "use client";
 import { userLogin } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import { dashboardRoute } from "@/constants/routes";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function LoginForm() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -72,6 +71,7 @@ function LoginForm() {
     });
     if (res?.access_token) {
       setCookie("authToken", JSON.stringify(res.access_token));
+      localStorage.setItem("user", JSON.stringify(res));
       router.push("/dashboard");
     }
   }
