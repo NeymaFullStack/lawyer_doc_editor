@@ -75,8 +75,31 @@
     .doc-article-tag {
       @apply rounded-md bg-secondary-blue px-[0.4em] py-[0.1em] text-primary-blue;
     }
+    .doc-appendix-tag {
+      @apply text-appendix-1 rounded-md bg-appendix px-[0.4em] py-[0.1em];
+    }
     .is-selected {
       @apply bg-[#fae4f5];
+    }
+    .appendix-separator {
+      @apply text-appendix-1  left-0 right-0 my-6 flex items-center justify-center overflow-visible bg-six py-4 #{!important};
+      .sep-heading {
+        @apply text-black;
+      }
+    }
+
+    .annex-tag-para {
+      @apply text-center;
+    }
+    h1.annex-heading {
+      @apply pt-0 text-center #{!important};
+    }
+
+    .annex-tag {
+      @apply text-appendix-1 rounded-md bg-appendix px-[0.4em] py-[0.1em];
+    }
+    .sep-heading {
+      @apply text-xl font-semibold;
     }
   }
 

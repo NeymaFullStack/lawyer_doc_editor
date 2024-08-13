@@ -1,35 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Dragger from "antd/es/upload/Dragger";
 import { Button } from "antd";
 import RemSizeImage from "./RemSizeImage";
 
-function DropFile({ onUpload }) {
+function DropFile({ onUpload, customClass, height }) {
   const [filehovering, setFileHovering] = useState(false);
+
   return (
-    <div>
+    <div
+      onDragEnter={(e) => {
+        e.preventDefault();
+        console.log("enter");
+        !filehovering && setFileHovering(true);
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        console.log("leave");
+        filehovering && setFileHovering(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        filehovering && setFileHovering(false);
+      }}
+      onDragOver={(e) => {
+        !filehovering && setFileHovering(true);
+        e.preventDefault();
+        console.log("hover");
+      }}
+    >
       <Dragger
-        accept={[`.docx`]}
+        // ref={dropRef}
+        accept={[`.docx`, ".pdf"]}
         customRequest={onUpload}
         showUploadList={false}
-        className={
-          filehovering ? "ln-logan-drop-area-active" : "ln-logan-drop-area"
-        }
+        className={`${filehovering ? "ln-logan-drop-area-active" : "ln-logan-drop-area"}`}
         multiple={false}
+        rootClassName={customClass}
+        height={height || "4.5rem"}
       >
-        <div
-          onDragEnter={(e) => {
-            !filehovering && setFileHovering(true);
-          }}
-          onDragLeave={(e) => {
-            filehovering && setFileHovering(false);
-          }}
-          onDrop={(e) => {
-            filehovering && setFileHovering(false);
-          }}
-          className="flex gap-2 items-center justify-center"
-        >
+        <div className="flex items-center justify-center gap-2">
           <span className="font-bold">Drag & Drop Files Here</span>
           {!filehovering && (
             <div className="flex items-center gap-2">

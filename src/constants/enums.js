@@ -42,3 +42,8 @@ export const tagInsertionType = {
   Variable: "variable",
   Definition: "definition",
 };
+
+export const documentType = {
+  document: "Document",
+  appendix: "Appendix",
+};

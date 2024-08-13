@@ -5,10 +5,14 @@ import { Button, Form } from "antd";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { modalType } from "./FolderDocCreation";
+import { useSelector } from "react-redux";
 
 function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
   const appDispatch = useDispatch();
   const [hoveredButton, setHoveredButton] = useState("");
+  const { newAppendixState } = useSelector(
+    (state) => state.documentIndexingReducer,
+  );
 
   return (
     <LoganModal
@@ -22,6 +26,10 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
         <div className="absolute -bottom-[3.5rem] right-0 flex items-center justify-end gap-3">
           <Button
             onClick={() => {
+              if (newAppendixState?.id) {
+                onClose(false, { newAppendix: true });
+                return;
+              }
               if (createClient) {
                 appDispatch(
                   folderNavigationAction.setOpenModalType(modalType.New_CLIENT),
@@ -44,14 +52,17 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
             }
             className={`btn btn--normal`}
           >
-            Back
+            {newAppendixState?.id ? "Cancel" : "Back"}
           </Button>
         </div>
       }
     >
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-black">
-          Choose <span className="text-primary-blue">How To Begin</span>
+          {newAppendixState?.id ? "Add an" : "Choose"}{" "}
+          <span className="text-primary-blue">
+            {newAppendixState?.id ? "Appendix" : "How To Begin"}
+          </span>
         </h2>
         <RemSizeImage
           imagePath={"/assets/icons/poweredby-ai.svg"}
@@ -61,8 +72,9 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
         />
       </div>
       <p className="mt-3 text-xs">
-        To create your document, you can start from scratch, import your
-        document, or select a template.
+        To {newAppendixState?.id ? "add a new ppendix" : "create your document"}
+        , you can start from scratch, import your document, or select a
+        template.
       </p>
       <div className="mb-3 mt-5 flex items-center justify-between gap-4 font-semibold  text-primary-gray">
         <div
@@ -95,6 +107,13 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
         <div
           onMouseEnter={() => {
             setHoveredButton("importTemplate");
+          }}
+          onClick={() => {
+            appDispatch(
+              folderNavigationAction.setOpenModalType(
+                modalType?.IMPORT_TEMPLATE,
+              ),
+            );
           }}
           onMouseLeave={() => setHoveredButton("")}
           className={`flex cursor-pointer flex-col items-center gap-3 rounded-lg bg-six px-6 py-6 text-black  hover:bg-primary-blue hover:text-white`}
