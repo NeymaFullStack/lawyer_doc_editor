@@ -1,5 +1,5 @@
 // extensions/CustomSpan.js
-import { findNodePos } from "@/utils/dashboard/editor-utils";
+import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin } from "@tiptap/pm/state";

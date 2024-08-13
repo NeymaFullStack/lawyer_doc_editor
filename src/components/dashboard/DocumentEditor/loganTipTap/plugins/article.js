@@ -1,16 +1,12 @@
 import { tagInsertionType } from "@/constants/enums";
-import { findNodePos } from "@/utils/dashboard/editor-utils";
+import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Extension } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
 
 const ArticleExtention = Extension.create({
   name: "article",
-  // addOptions() {
-  //   return {
-  //     updateArticles: () => {},
-  //   };
-  // },
+
   addProseMirrorPlugins() {
     let updateArticles = this.options.updateArticles;
     return [
@@ -70,7 +66,10 @@ const ArticleExtention = Extension.create({
                   $from.before($from.depth - 1),
                 ).nodeBefore;
                 if (nodeBeforeDivArticle.type.name === "paragraph") {
-                  let paragraphPos = findNodePos(doc, nodeBeforeDivArticle);
+                  let paragraphPos = findNodePosFromNode(
+                    doc,
+                    nodeBeforeDivArticle,
+                  );
                   newTr = newTr.deleteRange(
                     paragraphPos,
                     paragraphPos + nodeBeforeDivArticle.nodeSize,
@@ -88,7 +87,6 @@ const ArticleExtention = Extension.create({
           },
         },
         view(view) {
-          console.log("this", this.options);
           return {
             update(view, prevState) {
               //Below Code maintain Article structure and dynamic article numbering
@@ -97,9 +95,18 @@ const ArticleExtention = Extension.create({
                 return;
               }
               let articleOccurance = 1;
+              let appendixOccurance = 1;
               let tr = state.tr;
               let trMapping = tr.mapping;
-              let articlesList = [];
+              let articlesList = [
+                {
+                  articleType: "document",
+                  title: "",
+                  children: [],
+                  id: crypto.randomUUID(),
+                  isOpen: false,
+                },
+              ];
               const setIndexForListItems = (listNode, parentIndex = []) => {
                 let index = 1;
                 let articleList = [];
@@ -107,7 +114,7 @@ const ArticleExtention = Extension.create({
                   if (child.type.name === "listItem") {
                     let uniqueId = child.attrs["id"] || crypto.randomUUID();
                     const dataIndex = [...parentIndex, index].join(".");
-                    const pos = findNodePos(tr.doc, child);
+                    const pos = findNodePosFromNode(tr.doc, child);
                     tr = tr.setNodeMarkup(pos, undefined, {
                       ...child.attrs,
                       "data-index": dataIndex,
@@ -115,11 +122,12 @@ const ArticleExtention = Extension.create({
                     });
                     let article = {
                       id: uniqueId,
-                      articleName: String(child.textContent)
+                      title: String(child.textContent)
                         .split(" ")
                         .slice(0, 4)
                         .join(" "),
                       index: dataIndex,
+                      isOpen: false,
                       type: tagInsertionType.SubArticle,
                     };
                     child.forEach((grandChild) => {
@@ -142,12 +150,86 @@ const ArticleExtention = Extension.create({
                 });
                 return articleList;
               };
-
+              let newAppendexSeprator = {
+                sepratorAppendixHeading: "",
+                separatorHeadingPos: undefined,
+                id: null,
+              };
               tr.doc.forEach((node, offset, index) => {
                 let pos = offset;
+
                 const mappedPos = trMapping.map(pos);
                 // debugger;
-                if (
+                if (node.attrs.class === "appendix-separator") {
+                  articleOccurance = 1;
+                  newAppendexSeprator.id = node.attrs.id;
+                  node.forEach((child, offset) => {
+                    if (child.attrs.class === "appendix-index") {
+                      let prevAppendixIndex = String(child.textContent);
+                      if (
+                        prevAppendixIndex.length == 2 &&
+                        prevAppendixIndex.charAt(0) === "0"
+                      ) {
+                        prevAppendixIndex = Number(prevAppendixIndex.charAt(1));
+                      } else {
+                        prevAppendixIndex = Number(prevAppendixIndex);
+                      }
+                      debugger;
+                      if (prevAppendixIndex !== appendixOccurance) {
+                        // insert appendix index in that child node
+                        let newAppendixNode =
+                          state.schema.nodes.classIdSpan.create(
+                            { class: "appendix-index" },
+                            [state.schema.text(appendixOccurance)],
+                          );
+                        let childPsa = findNodePosFromNode(state.doc, child);
+                        tr.insertText(
+                          String(appendixOccurance),
+                          mappedPos + offset + 2,
+                          mappedPos + offset + 1 + child.nodeSize - 1,
+                        );
+                        debugger;
+                      }
+                    }
+                    if (child.attrs.class === "sep-heading") {
+                      newAppendexSeprator.sepratorAppendixHeading =
+                        child.textContent;
+                      newAppendexSeprator.separatorHeadingPos = offset;
+                    }
+                  });
+                } else if (
+                  newAppendexSeprator?.separatorHeadingPos &&
+                  newAppendexSeprator?.sepratorAppendixHeading &&
+                  newAppendexSeprator?.id
+                ) {
+                  if (node.attrs.class === "annex-tag-para") {
+                    let annexIndex = Number(
+                      String(node.textContent).split(" ")[1],
+                    );
+                    if (annexIndex !== appendixOccurance) {
+                      // insert Paragraph with span tag with correct appendix index
+                    }
+                  }
+                  if (node.type.name === "heading" && node.attrs.level === 1) {
+                    let appendixHeading = node?.textContent;
+                    if (
+                      newAppendexSeprator.sepratorAppendixHeading !==
+                      appendixHeading
+                    ) {
+                      // insert node.textContent at newAppendexSeprator.separatorHeadingPos
+                    }
+                    articlesList.push({
+                      articleType: "appendix",
+                      index: appendixOccurance,
+                      title: appendixHeading,
+                      children: [],
+                      id: newAppendexSeprator.id,
+                      isOpen: false,
+                    });
+                    newAppendexSeprator = {};
+                    appendixOccurance++;
+                  }
+                } else if (
                   node.type.name === "classIdDiv" &&
                   node.attrs.class === "doc-article"
                 ) {
@@ -176,7 +258,6 @@ const ArticleExtention = Extension.create({
                     }
                     // debugger;
                   });
-                  console.log("h2Node", h2Node, node);
 
                   if (
                     hasCustomNode &&
@@ -203,9 +284,10 @@ const ArticleExtention = Extension.create({
                   }
                   let article = {
                     id: h2Node?.attrs?.id,
-                    articleName: h2Node?.lastChild?.textContent,
+                    title: h2Node?.lastChild?.textContent,
                     index: articleOccurance,
                     type: tagInsertionType.Article,
+                    isOpen: false,
                   };
                   node.forEach((child) => {
                     if (
@@ -220,12 +302,19 @@ const ArticleExtention = Extension.create({
                       };
                     }
                   });
-                  articlesList.push(article);
+                  let lastArticle = articlesList[articlesList.length - 1];
+                  lastArticle = {
+                    ...lastArticle,
+                    children: [...lastArticle.children, article],
+                  };
+                  articlesList[articlesList.length - 1] = lastArticle;
+                  // console.log("ant", articlesList);
                   articleOccurance++;
                 } else {
                   articleOccurance = 1;
                 }
               });
+
               updateArticles(articlesList);
               if (tr.docChanged) {
                 dispatch(tr);

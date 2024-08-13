@@ -23,7 +23,7 @@ module.exports = {
         "xl-em": "2rem",
       },
       backgroundColor: {
-        appendex: "#FFF3E7",
+        appendix: "#FFF3E7",
         blanc: "#FFFFFF8C",
         two: "#FAFBFC",
         three: "#ECF1F4",
@@ -39,6 +39,7 @@ module.exports = {
         "auto-save": "#FFF7DB",
         save: "#D9FADB",
         var: "#FFF5FD",
+        collapse: "#FBFDFE",
       },
       colors: {
         primary: {
@@ -54,7 +55,7 @@ module.exports = {
           900: "#1e3a8a",
           950: "#172554",
         },
-        appendex: "#FF7A00",
+        "appendix-1": "#FF7A00",
         "doc-border": "#E8F0F2",
         "black-txt": "#383D44",
         "secondary-blue": "#095AD31A",

@@ -6,25 +6,41 @@ import ArticleList from "./ArticleList";
 import AppendixDropDown from "./AppendixDropDown";
 import Tag from "@/components/generic/Tag";
 import { useSelector } from "react-redux";
+import CollapsibleList from "@/components/generic/CollapsibleList";
+import { manipulateItems } from "@/utils/dashboard/editor-utils";
+import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
+import { useDispatch } from "react-redux";
 
 function LoganReferenceTool() {
+  const appDispatch = useDispatch();
   // const [isAppendixActive, setIsAppendixActive] = useState(true);
   // const [openAppendixMenu, setOpenAppendixMenu] = useState(true);
   const { currentDocument } = useSelector((state) => state.documentReducer);
-  const articleList = useSelector(
-    (state) => state.documentArticleReducer.articleList,
+  const { articleList, collapsibleListOpenState } = useSelector(
+    (state) => state.documentIndexingReducer,
   );
 
   // useEffect(() => {
   //   !isAppendixActive && !openAppendixMenu && setOpenAppendixMenu(true);
   // }, [isAppendixActive]);
-  console.log("articleList", articleList);
+  // console.log("pop", collapsibleListOpenState);
+
+  const manageArticles = (actionType, id, level, articleInputValue = "") => {
+    manipulateItems(
+      appDispatch,
+      articleList,
+      actionType,
+      id,
+      level,
+      articleInputValue,
+    );
+  };
   return (
     <div
       className="flex h-full  w-[26.5rem] flex-col  overflow-hidden bg-white"
       aria-label="Logan Document Version History"
     >
-      <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
+      <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
         <h2 className="text-sm font-semibold text-primary-gray">Index</h2>
         {/* <div className="flex items-center gap-2 ">
           <Button
@@ -86,8 +102,20 @@ function LoganReferenceTool() {
           placeholder={"Search for a specific appendix or article"}
         ></input>
       </div>
-      <div className="flex-1 overflow-y-scroll p-3 text-xs ">
-        <Collapse
+      <div className="flex flex-1 flex-col gap-2 overflow-y-scroll p-3 text-xs ">
+        <CollapsibleList
+          items={articleList.slice(0, 1)}
+          isDragAndDrop={true}
+          articleAction={manageArticles}
+          collapsibleListOpenState={collapsibleListOpenState.slice(0, 1)}
+        />
+        <CollapsibleList
+          items={articleList.slice(1)}
+          isDragAndDrop={true}
+          articleAction={manageArticles}
+          collapsibleListOpenState={collapsibleListOpenState.slice(1)}
+        />
+        {/* <Collapse
           bordered={false}
           items={[
             {
@@ -116,7 +144,7 @@ function LoganReferenceTool() {
               />
             );
           }}
-        />
+        /> */}
       </div>
     </div>
   );

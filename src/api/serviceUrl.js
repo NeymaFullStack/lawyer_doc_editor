@@ -14,6 +14,8 @@ export const getDocumentContentByVersionIdUrl = "/document/";
 export const createFolderUrl = "/folder";
 export const createDocumentUrl = "/document";
 export const getDocumentDataUrl = "/document";
+export const getAppendixContnetUrl = "/document/appendix";
+
 export const gptChatUrl = `/chat/conversation`;
 export const getDocumentTemplateUrl = "/document/preview";
 export const getDocumentVariablesUrl = "/document/variables";
@@ -25,3 +27,4 @@ export const getUSerChatUrl = "/chat/document";
 export const restoreVersionUrl = "/document/version/restore";
 export const exportDocumentPdfUrl = (documentId, documentVersionId) =>
   `/exports/document/${documentId}/${documentVersionId}/pdf`;
+export const importDocUrl = "/imports/document";

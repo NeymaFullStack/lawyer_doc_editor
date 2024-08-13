@@ -10,6 +10,7 @@ import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { Button, Form, Input } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
 function CreateNewDocModal({ clientFolder = null, open, onClose }) {
@@ -18,6 +19,9 @@ function CreateNewDocModal({ clientFolder = null, open, onClose }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [docName, setDocName] = useState("");
+  const { newAppendixState } = useSelector(
+    (state) => state.documentIndexingReducer,
+  );
   const [hoveredButton, setHoveredButton] = useState("");
 
   return (
@@ -44,7 +48,11 @@ function CreateNewDocModal({ clientFolder = null, open, onClose }) {
         <>
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-black">
-              Choose <span className="text-primary-blue">How To Begin</span>
+              {newAppendixState?.id ? "Create Your" : "Choose"}
+              <span className="text-primary-blue">
+                {newAppendixState?.id ? "Appendix" : "How To Begin"}
+              </span>{" "}
+              {newAppendixState?.id && "From Scratch"}
             </h2>
             <RemSizeImage
               imagePath={"/assets/icons/poweredby-ai.svg"}
@@ -54,8 +62,8 @@ function CreateNewDocModal({ clientFolder = null, open, onClose }) {
             />
           </div>
           <p className="mt-3 text-xs">
-            To create your document, you can start from scratch, import your
-            document, or select a template.
+            Describe the document you would like to generate. Try to be as
+            accurate as possible.
           </p>
           <div className="mt-5 flex items-center gap-4">
             <Button

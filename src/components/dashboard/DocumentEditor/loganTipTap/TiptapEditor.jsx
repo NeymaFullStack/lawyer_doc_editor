@@ -23,10 +23,13 @@ import { useParams } from "next/navigation";
 import { classIdSpan } from "./extensions/classIdSpan";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { documentArticleAction } from "@/redux/editor/documentArticleSlice";
+import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import ArticleDeleteConfirmationModal from "./ArticleDeleteConfirmationModal";
 import { classIdDiv } from "./extensions/classIdDiv";
-import { findNodePos } from "@/utils/dashboard/editor-utils";
+import {
+  findNodePosFromId,
+  findNodePosFromNode,
+} from "@/utils/dashboard/editor-utils";
 import { CustomHeading } from "./extensions/heading";
 import ArticleExtention from "./plugins/article";
 import CustomListItem from "./extensions/listItem";
@@ -35,6 +38,8 @@ import ArticleInsertion from "./plugins/artcleInsertion";
 import LoganTagsMenu from "./loganTagsMenu";
 import BackSlashAction from "./plugins/backSlashAction";
 import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
+import { customParagraph } from "./extensions/paragraph";
+import { createCollapsibleListOpenState } from "@/utils/component-utils";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import * as Y from "yjs";
@@ -76,8 +81,8 @@ const TiptapEditor = () => {
   const { currentEditVariable } = useSelector(
     (state) => state.documentVariableReducer,
   );
-  const articleList = useSelector(
-    (state) => state.documentArticleReducer.articleList,
+  const { newAppendixState, reorderAppendixState } = useSelector(
+    (state) => state.documentIndexingReducer,
   );
   const [tagInsertionState, setTagInsertionState] = useState(
     initialTagInsertionState,
@@ -85,6 +90,7 @@ const TiptapEditor = () => {
   const { copiedContent, activeDocumentAction, currentDocument } = useSelector(
     (state) => state.documentReducer,
   );
+
   const [articleInsertionState, setArticleInsertionState] = useState(
     initialArticleInsertionState,
   );
@@ -116,6 +122,7 @@ const TiptapEditor = () => {
       extensions: [
         StarterKit.configure({
           heading: false, // Disable the default heading extension
+          paragraph: false,
         }),
         Collaboration.configure({
           document: doc,
@@ -147,12 +154,14 @@ const TiptapEditor = () => {
             });
           },
         }),
+        customParagraph,
         CustomHeading.configure({
           levels: [1, 2, 3, 4, 5, 6], // Support for heading levels 1 to 6
         }),
         ArticleExtention.configure({
           updateArticles: (articles) => {
-            appDispatch(documentArticleAction.setArticlesList(articles));
+            createCollapsibleListOpenState(articles, appDispatch);
+            appDispatch(documentIndexingAction.setArticlesList(articles));
           },
         }),
         ,
@@ -218,7 +227,7 @@ const TiptapEditor = () => {
         selectedDocumentVersion?.version_id !==
           currentDocumentVersion?.version_id
       ) {
-        editor.getHTML() !== currentDocumentVersion?.docContent &&
+        editor?.getHTML() !== currentDocumentVersion?.docContent &&
           setEditorContent(currentDocumentVersion?.docContent);
         appDispatch(
           documentVersioningAction.setDocumentVersion({
@@ -238,6 +247,104 @@ const TiptapEditor = () => {
   useEffect(() => {
     copiedContent !== null && (textInsertRef.current = true);
   }, [copiedContent]);
+
+  useEffect(() => {
+    if (newAppendixState?.content && newAppendixState?.id) {
+      const { doc } = editor.state;
+      let foundNode = null;
+      let nextAppendixPos = doc.content.size;
+      doc.descendants((node, pos) => {
+        if (node.attrs.id === newAppendixState?.id) {
+          foundNode = node;
+        } else if (foundNode && node.attrs.class == "appendix-separator") {
+          nextAppendixPos = pos;
+        }
+      });
+      if (foundNode === null) {
+        doc.forEach((node, offset) => {
+          if (
+            node.attrs.class == "appendix-separator" &&
+            nextAppendixPos == doc.content.size
+          ) {
+            nextAppendixPos = offset;
+          }
+        });
+      }
+      console.log();
+      editor.commands.insertContentAt(
+        nextAppendixPos,
+        newAppendixState?.content,
+      );
+      appDispatch(documentIndexingAction.resetNewAppendixState());
+    }
+  }, [newAppendixState]);
+
+  useEffect(() => {
+    if (
+      reorderAppendixState?.sourceItem?.id &&
+      reorderAppendixState?.destinationItem?.id
+    ) {
+      const { doc } = editor.state;
+      let foundSourceNode = null;
+      let foundDestinationNode = null;
+      let sourceReorderStartPos = doc.content.size;
+      let sourceReorderEndPos = doc.content.size;
+      let destinationReorderStartPos = doc.content.size;
+      let destinationReorderEndPos = doc.content.size;
+      console.log("reorderAppendixState", reorderAppendixState);
+      let pos = doc.content.size;
+      doc.forEach((node, offset) => {
+        pos = offset;
+        if (node.attrs.id === reorderAppendixState?.sourceItem?.id) {
+          foundSourceNode = node;
+          sourceReorderStartPos = pos;
+          if (
+            foundDestinationNode &&
+            destinationReorderEndPos == doc.content.size
+          ) {
+            destinationReorderEndPos = pos;
+          }
+        } else if (
+          node.attrs.id === reorderAppendixState?.destinationItem?.id
+        ) {
+          foundDestinationNode = node;
+          destinationReorderStartPos = pos;
+          if (foundSourceNode && sourceReorderEndPos == doc.content.size) {
+            sourceReorderEndPos = pos;
+          }
+        } else if (
+          foundSourceNode &&
+          node.attrs.class == "appendix-seprator" &&
+          sourceReorderEndPos == doc.content.size
+        ) {
+          sourceReorderEndPos = pos;
+        } else if (
+          foundDestinationNode &&
+          node.attrs.class == "appendix-seprator" &&
+          destinationReorderEndPos == doc.content.size
+        ) {
+          destinationReorderEndPos = pos;
+        }
+      });
+      const insertionPosition =
+        reorderAppendixState?.sourceItem?.index <
+        reorderAppendixState?.destinationItem.index
+          ? destinationReorderEndPos
+          : destinationReorderStartPos;
+      console.log(
+        "positions",
+        sourceReorderStartPos,
+        sourceReorderEndPos,
+        insertionPosition,
+        doc.content.size,
+      );
+      editor.commands.cut(
+        { from: sourceReorderStartPos, to: sourceReorderEndPos },
+        insertionPosition,
+      );
+      appDispatch(documentIndexingAction.setReorderAppendixState(null));
+    }
+  }, [reorderAppendixState]);
 
   useEffect(() => {
     if (editor && currentEditVariable?.previousDefinition) {
@@ -310,14 +417,15 @@ const TiptapEditor = () => {
           </h2>
           {/* <span className="text-xs">28 Pages</span> */}
         </div>
+
         <div
           ref={editorRef}
-          className=" my-2 h-full  w-[90%] overflow-y-scroll  bg-white "
+          className="relative my-2 h-full  w-[90%] overflow-y-scroll  bg-white "
         >
           {activeDocumentVersion && (
             <EditorContent
               editor={editor}
-              className={`flex min-h-full w-full flex-col border-[0.125rem] px-5 py-2  ${activeDocumentAction !== documentActions.VersionHistory && editor?.isFocused ? "border-primary-blue" : ""} ${editor && activeDocumentVersion?.is_auto_saved !== null ? (activeDocumentVersion?.is_auto_saved ? "auto-save" : "save") : ""}`}
+              className={` flex min-h-full w-full flex-col border-[0.125rem] px-5 py-2  ${activeDocumentAction !== documentActions.VersionHistory && editor?.isFocused ? "border-primary-blue" : ""} ${editor && activeDocumentVersion?.is_auto_saved !== null ? (activeDocumentVersion?.is_auto_saved ? "auto-save" : "save") : ""}`}
             />
           )}
         </div>
@@ -374,7 +482,7 @@ const TiptapEditor = () => {
       } else {
         editor.commands.insertContentAt(
           Number(pos),
-          `<span id=${copiedContent?.content?.articleName} class="doc-article-tag">Article xyz- ${copiedContent?.content?.articleName}</span>`,
+          `<span id=${copiedContent?.content?.id} class=${copiedContent.type === copiedContentType.Appendix ? "doc-appendix-tag" : "doc-article-tag"}>Article ${copiedContent?.content.index}- ${copiedContent?.content?.title}</span>`,
           { updateSelection: true },
         );
       }
@@ -388,7 +496,7 @@ const TiptapEditor = () => {
   }
 
   function handleChange({ editor, transaction }) {
-    console.log("bbb", articleInsertionState);
+    // console.log("bbb", articleInsertionState);
     if (articleInsertionState.initiate) {
       setArticleInsertionState(initialArticleInsertionState);
     } else if (articleInsertionState.isOpen) {
@@ -441,7 +549,7 @@ const TiptapEditor = () => {
   //         ),
   //       };
   //     });
-  //   appDispatch(documentArticleAction.setArticlesList(articles));
+  //   appDispatch(documentIndexingAction.setArticlesList(articles));
   //   function extractNestedArticles(children) {
   //     if (
   //       children &&
@@ -486,7 +594,7 @@ const TiptapEditor = () => {
   //         }
   //         return item;
   //       });
-  //       appDispatch(documentArticleAction.setArticlesList(newArticleList));
+  //       appDispatch(documentIndexingAction.setArticlesList(newArticleList));
   //       // console.log("articles", newArticleList);
   //     }
   //   }
@@ -496,11 +604,11 @@ const TiptapEditor = () => {
     if (nodeToDelete) {
       const { doc } = editor.state;
       // const articleToDelete =
-      const nodeToDeletePos = findNodePos(doc, nodeToDelete);
+      const nodeToDeletePos = findNodePosFromNode(doc, nodeToDelete);
       const grandParentNode = editor.state.doc.resolve(
         nodeToDeletePos - 1,
       ).parent;
-      const grandparentNodePos = findNodePos(doc, grandParentNode);
+      const grandparentNodePos = findNodePosFromNode(doc, grandParentNode);
       const grandparentNodeSelection =
         editor.commands.setNodeSelection(grandparentNodePos);
       grandparentNodePos !== null &&

@@ -9,8 +9,9 @@ import DocumentPreviewModal from "./DocumentPreviewModal";
 import { useSelectedLayoutSegments } from "next/navigation";
 import ProgressModal from "./ProgressModal";
 import { getDocumentTemplate } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import axios from "axios";
 import ChooseEmplacementModal from "./ChooseEmplacementModal";
+import ImportTemplateModal from "./ImportTemplateModal";
+import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 
 export const modalType = {
   NEW_FOLDER: "newFolder",
@@ -21,6 +22,7 @@ export const modalType = {
   DOCUMENT_PREVIEW: "documentPreview",
   PROGRESS: "progress",
   EMPLACEMENT: "emplacement",
+  IMPORT_TEMPLATE: "importTemplate",
 };
 
 function FolderDocCreation() {
@@ -105,10 +107,23 @@ function FolderDocCreation() {
           createClient={docFolderFieldValues?.createClient}
         />
       )}
+      {openModalType === modalType?.IMPORT_TEMPLATE && (
+        <ImportTemplateModal
+          open={openModalType === modalType?.IMPORT_TEMPLATE}
+          onClose={closeModal}
+          formValues={docFolderFieldValues}
+          saveDocFolderFieldValues={saveDocFolderFieldValues}
+        />
+      )}
     </>
   );
 
   function closeModal(preserveValues = false, additionalValues = {}) {
+    if (additionalValues?.newAppendix) {
+      appDispatch(documentIndexingAction.setNewAppendixState(null));
+      appDispatch(folderNavigationAction.setOpenModalType(""));
+      return;
+    }
     !preserveValues && appDispatch(folderNavigationAction.setOpenModalType(""));
     if (preserveValues) {
       setDocFolderFieldValues({ ...docFolderFieldValues, ...additionalValues });

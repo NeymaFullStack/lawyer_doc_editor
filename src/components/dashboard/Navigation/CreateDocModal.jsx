@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import { modalType } from "./FolderDocCreation";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
+import { useSelector } from "react-redux";
 const { TextArea } = Input;
 
 let recognition;
@@ -45,7 +46,9 @@ function CreateDocModal({
 
   const [startListening, stopListening, listening, transcript] =
     useSpeechHook(recognition);
-
+  const { newAppendixState } = useSelector(
+    (state) => state.documentIndexingReducer,
+  );
   useEffect(() => {
     transcript && setFormFields({ description: transcript });
   }, [transcript]);
@@ -123,7 +126,11 @@ function CreateDocModal({
     >
       <div className="flex items-center justify-between ">
         <h2 className="text-2xl font-bold text-black">
-          Choose <span className="text-primary-blue">How To Begin</span>
+          {newAppendixState?.id ? "Create Your " : "Choose"}
+          <span className="text-primary-blue">
+            {newAppendixState?.id ? "Appendix" : "How To Begin"}
+          </span>{" "}
+          {newAppendixState?.id && "From Scratch"}
         </h2>
         <RemSizeImage
           imagePath={"/assets/icons/poweredby-ai.svg"}
@@ -133,8 +140,8 @@ function CreateDocModal({
         />
       </div>
       <p className="mt-3 text-xs">
-        To create your document, you can start from scratch, import your
-        document, or select a template.
+        Describe the document you would like to generate. Try to be as accurate
+        as possible.
       </p>
       <div className="mt-4">
         <Form

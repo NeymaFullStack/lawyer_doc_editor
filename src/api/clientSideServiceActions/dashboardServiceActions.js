@@ -6,6 +6,7 @@ import {
   createNewDocumentVersionUrl,
   exportDocumentPdfUrl,
   exportDocumentUrl,
+  getAppendixContnetUrl,
   getClientFoldersListUrl,
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
@@ -14,6 +15,7 @@ import {
   getRecentDocumentsUrl,
   getUSerChatUrl,
   gptChatUrl,
+  importDocUrl,
   restoreVersionUrl,
   updateDocumentVersionContentUrl,
   userLoginUrl,
@@ -101,9 +103,19 @@ export const createDocument = async (queryParams = {}) => {
   }
 };
 
-export const uploadDocument = async (url, queryParams = {}) => {
+export const getAppendixContent = async (queryParams = {}) => {
   try {
-    const res = await Api.post(url, queryParams, {
+    const res = await Api.post(getAppendixContnetUrl, queryParams);
+    return res.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const importDoc = async (queryParams = {}) => {
+  try {
+    const res = await Api.post(importDocUrl, queryParams, {
       headers: {
         "Content-type": "multipart/form-data",
       },

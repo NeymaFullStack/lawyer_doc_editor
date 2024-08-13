@@ -17,7 +17,7 @@ const LoganTagsMenu = ({
     (state) => state.documentVariableReducer,
   );
   const articleList = useSelector(
-    (state) => state.documentArticleReducer.articleList,
+    (state) => state.documentIndexingReducer.articleList,
   );
   const [tagList, setTagList] = useState([]);
   const [filteredTagList, setFilteredTagList] = useState([]);

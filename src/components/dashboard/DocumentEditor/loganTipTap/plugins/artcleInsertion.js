@@ -1,4 +1,4 @@
-import { findNodePos } from "@/utils/dashboard/editor-utils";
+import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Extension } from "@tiptap/core";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
 
@@ -46,7 +46,7 @@ const ArticleInsertion = Extension.create({
                   );
                   menuItems.push(item);
                 } else if (parentNode.lastChild.type.name === "bulletList") {
-                  let listPos = findNodePos(doc, parentNode.lastChild);
+                  let listPos = findNodePosFromNode(doc, parentNode.lastChild);
 
                   let item = createArticleInsertionItem(
                     listPos + 2,
