@@ -1,3 +1,8 @@
 {
-  "commentTranslate.multiLineMerge": true
+  "commentTranslate.multiLineMerge": true,
+  "cSpell.words": [
+    "Collab",
+    "Extention",
+    "Tiptap"
+  ]
 }

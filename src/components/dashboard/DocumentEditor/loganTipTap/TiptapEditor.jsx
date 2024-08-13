@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent, generateJSON } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import ToolBar from "./ToolBar";
@@ -21,7 +21,7 @@ import {
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import { useParams } from "next/navigation";
 import { classIdSpan } from "./extensions/classIdSpan";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import ArticleDeleteConfirmationModal from "./ArticleDeleteConfirmationModal";
@@ -40,6 +40,14 @@ import BackSlashAction from "./plugins/backSlashAction";
 import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
 import { customParagraph } from "./extensions/paragraph";
 import { createCollapsibleListOpenState } from "@/utils/component-utils";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import * as Y from "yjs";
+import { TiptapCollabProvider } from "@hocuspocus/provider";
+import { useUserDetails } from "@/hooks";
+import { getUserColor } from "@/utils/generic";
+
+const doc = new Y.Doc();
 
 const docHtml =
   '<h1>Rental Agreement</h1><hr size="1"/><p>This Rental Agreement ("Agreement") is made and entered into this day by and between <span id="landlord" class="doc-variable">Anuj</span> ("Landlord") and <span id="tenant" class="doc-variable">Ankit</span> ("Tenant"). The premises subject to this Agreement is located at the address specified herein under the laws of the <span id="state" class="doc-variable">United States</span>.</p><div class="doc-article"><h2 id="a1f97861-4814-4e7f-a187-f09305c429ea">Premises</h2><p id="afbae19a-5b70-455f-91f0-0e5cff40d61a">The Landlord hereby leases to the Tenant the residential premises described as <span id="property_address" class="doc-variable">[Insert Address Here]</span> ("the Premises"). The Premises are to be occupied strictly as a private dwelling by the Tenant and their immediate family and for no other purpose without prior written consent of the Landlord.</p></div>';
@@ -58,6 +66,7 @@ const initialTagInsertionState = {
 const TiptapEditor = () => {
   const { docId } = useParams();
   const editorRef = useRef();
+  const { first_name = "", last_name = "" } = useUserDetails() || {};
   const appDispatch = useDispatch();
   const textInsertRef = useRef(false);
   const [openArticleDeleteConfirmModal, setOpenArticleDeleteConfirmModal] =
@@ -99,12 +108,31 @@ const TiptapEditor = () => {
       [],
     );
 
+  const provider = useMemo(() => {
+    return new TiptapCollabProvider({
+      name: docId,
+      baseUrl: "ws://localhost:1234/collaboration",
+      // token: "notoken", // Your JWT token
+      document: doc,
+    });
+  }, [docId]);
+
   const editor = useEditor(
     {
       extensions: [
         StarterKit.configure({
           heading: false, // Disable the default heading extension
           paragraph: false,
+        }),
+        Collaboration.configure({
+          document: doc,
+        }),
+        CollaborationCursor.configure({
+          provider,
+          user: {
+            name: `${first_name} ${last_name}`,
+            color: getUserColor(`${first_name} ${last_name}`),
+          },
         }),
         ArticleInsertion.configure({
           openArticleInsertionMenu: (menuItems, pos) => {
@@ -155,7 +183,7 @@ const TiptapEditor = () => {
       onSelectionUpdate: handleSelection,
       onUpdate: handleChange,
     },
-    [],
+    [provider, first_name, last_name],
   );
 
   useEffect(() => {

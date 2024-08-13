@@ -41,3 +41,28 @@ export const debounce = (fn, delay) => {
     }, delay);
   };
 };
+
+export const userColors = Object.freeze([
+  "#fb7185",
+  "#fdba74",
+  "#d9f99d",
+  "#a7f3d0",
+  "#a5f3fc",
+  "#a5b4fc",
+  "#f0abfc",
+]);
+
+function hashStringToNumber(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash;
+}
+
+export function getUserColor(username) {
+  const hash = hashStringToNumber(username);
+  const index = Math.abs(hash) % userColors.length;
+  return userColors[index];
+}
