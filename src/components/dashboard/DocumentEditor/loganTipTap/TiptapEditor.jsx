@@ -81,9 +81,13 @@ const TiptapEditor = () => {
   const { currentEditVariable } = useSelector(
     (state) => state.documentVariableReducer,
   );
-  const { newAppendixState, reorderAppendixState } = useSelector(
-    (state) => state.documentIndexingReducer,
-  );
+  const {
+    articleList,
+    newAppendixState,
+    reorderAppendixState,
+    collapsibleListOpenState,
+    deleteAppendixState,
+  } = useSelector((state) => state.documentIndexingReducer);
   const [tagInsertionState, setTagInsertionState] = useState(
     initialTagInsertionState,
   );
@@ -160,7 +164,6 @@ const TiptapEditor = () => {
         }),
         ArticleExtention.configure({
           updateArticles: (articles) => {
-            createCollapsibleListOpenState(articles, appDispatch);
             appDispatch(documentIndexingAction.setArticlesList(articles));
           },
         }),
@@ -195,7 +198,7 @@ const TiptapEditor = () => {
     currentDocumentVersion?.id &&
       currentDocumentVersion?.version_id &&
       fetchDocumentVariables();
-  }, [currentDocumentVersion]);
+  }, [currentDocumentVersion, articleList]);
 
   useEffect(() => {
     activeDocumentAction === documentActions.Preview ||
@@ -275,15 +278,57 @@ const TiptapEditor = () => {
         nextAppendixPos,
         newAppendixState?.content,
       );
+      editor.commands.setNodeSelection(nextAppendixPos);
+
+      editor.commands.scrollIntoView();
       appDispatch(documentIndexingAction.resetNewAppendixState());
     }
   }, [newAppendixState]);
+  useEffect(() => {
+    if (deleteAppendixState?.id) {
+      const { doc } = editor.state;
+      let foundNode = null;
+      let deletionNodeEndPos = doc.content.size;
+      let deletionNodeStartPos = doc.content.size;
+      doc.descendants((node, pos) => {
+        if (
+          node.attrs.id === deleteAppendixState?.id &&
+          node.attrs.class == "appendix-separator"
+        ) {
+          foundNode = node;
+          deletionNodeStartPos = pos;
+        } else if (foundNode && node.attrs.class == "appendix-separator") {
+          deletionNodeEndPos = pos;
+        } else if (node.attrs.id === deleteAppendixState?.id) {
+          deletionNodeStartPos = pos;
+          deletionNodeEndPos = pos + node.nodeSize;
+        }
+      });
+      // if (foundNode === null) {
+      //   doc.forEach((node, offset) => {
+      //     if (
+      //       node.attrs.class == "appendix-separator" &&
+      //       nextAppendixPos == doc.content.size
+      //     ) {
+      //       nextAppendixPos = offset;
+      //     }
+      //   });
+      // }
+      console.log("pos", deletionNodeStartPos, deletionNodeEndPos);
+      editor.commands.deleteRange({
+        from: deletionNodeStartPos,
+        to: deletionNodeEndPos,
+      });
+      appDispatch(documentIndexingAction.setDeleteAppendixState(null));
+    }
+  }, [deleteAppendixState]);
 
   useEffect(() => {
     if (
       reorderAppendixState?.sourceItem?.id &&
       reorderAppendixState?.destinationItem?.id
     ) {
+      console.log("reorderAppendixState", reorderAppendixState);
       const { doc } = editor.state;
       let foundSourceNode = null;
       let foundDestinationNode = null;
@@ -293,51 +338,59 @@ const TiptapEditor = () => {
       let destinationReorderEndPos = doc.content.size;
       console.log("reorderAppendixState", reorderAppendixState);
       let pos = doc.content.size;
-      doc.forEach((node, offset) => {
-        pos = offset;
-        if (node.attrs.id === reorderAppendixState?.sourceItem?.id) {
-          foundSourceNode = node;
-          sourceReorderStartPos = pos;
-          if (
+      if (reorderAppendixState.isRoot) {
+        doc.forEach((node, offset) => {
+          pos = offset;
+          if (node.attrs.id === reorderAppendixState?.sourceItem?.id) {
+            foundSourceNode = node;
+            sourceReorderStartPos = pos;
+            if (
+              foundDestinationNode &&
+              destinationReorderEndPos == doc.content.size
+            ) {
+              destinationReorderEndPos = pos;
+            }
+          } else if (
+            node.attrs.id === reorderAppendixState?.destinationItem?.id
+          ) {
+            foundDestinationNode = node;
+            destinationReorderStartPos = pos;
+            if (foundSourceNode && sourceReorderEndPos == doc.content.size) {
+              sourceReorderEndPos = pos;
+            }
+          } else if (
+            foundSourceNode &&
+            node.attrs.class == "appendix-seprator" &&
+            sourceReorderEndPos == doc.content.size
+          ) {
+            sourceReorderEndPos = pos;
+          } else if (
             foundDestinationNode &&
+            node.attrs.class == "appendix-seprator" &&
             destinationReorderEndPos == doc.content.size
           ) {
             destinationReorderEndPos = pos;
           }
-        } else if (
-          node.attrs.id === reorderAppendixState?.destinationItem?.id
-        ) {
-          foundDestinationNode = node;
-          destinationReorderStartPos = pos;
-          if (foundSourceNode && sourceReorderEndPos == doc.content.size) {
-            sourceReorderEndPos = pos;
+        });
+      } else {
+        doc.descendants((node, pos) => {
+          if (node?.attrs.id === reorderAppendixState?.sourceItem?.id) {
+            sourceReorderStartPos = pos;
+            sourceReorderEndPos = pos + node.nodeSize;
           }
-        } else if (
-          foundSourceNode &&
-          node.attrs.class == "appendix-seprator" &&
-          sourceReorderEndPos == doc.content.size
-        ) {
-          sourceReorderEndPos = pos;
-        } else if (
-          foundDestinationNode &&
-          node.attrs.class == "appendix-seprator" &&
-          destinationReorderEndPos == doc.content.size
-        ) {
-          destinationReorderEndPos = pos;
-        }
-      });
+          if (node?.attrs.id === reorderAppendixState?.destinationItem?.id) {
+            destinationReorderStartPos = pos;
+            destinationReorderEndPos = pos + node.nodeSize;
+          }
+        });
+      }
+
       const insertionPosition =
         reorderAppendixState?.sourceItem?.index <
         reorderAppendixState?.destinationItem.index
           ? destinationReorderEndPos
           : destinationReorderStartPos;
-      console.log(
-        "positions",
-        sourceReorderStartPos,
-        sourceReorderEndPos,
-        insertionPosition,
-        doc.content.size,
-      );
+
       editor.commands.cut(
         { from: sourceReorderStartPos, to: sourceReorderEndPos },
         insertionPosition,
@@ -345,6 +398,12 @@ const TiptapEditor = () => {
       appDispatch(documentIndexingAction.setReorderAppendixState(null));
     }
   }, [reorderAppendixState]);
+
+  useEffect(() => {
+    if (collapsibleListOpenState === null && articleList?.length > 0) {
+      createCollapsibleListOpenState(articleList, appDispatch);
+    }
+  }, [articleList]);
 
   useEffect(() => {
     if (editor && currentEditVariable?.previousDefinition) {

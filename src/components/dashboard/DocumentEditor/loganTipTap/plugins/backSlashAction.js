@@ -42,6 +42,11 @@ const BackSlashAction = Extension.create({
                     { class: "doc-article-tag" },
                     [schema.text(`${item.index} - ${item.tagName}`)],
                   );
+                } else if (item?.type === tagInsertionType.Appendix) {
+                  newNode = schema.nodes.classIdSpan.create(
+                    { class: "doc-appendix-tag" },
+                    [schema.text(`Appendix ${item.index} - ${item.tagName}`)],
+                  );
                 }
                 let newTr = tr;
                 if (newNode !== undefined) {

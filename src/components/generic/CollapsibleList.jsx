@@ -8,6 +8,10 @@ import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import { useDispatch } from "react-redux";
 import { documentAction } from "@/redux/documentSlice";
 import { toggleCollapsibleListOpenState } from "@/utils/component-utils";
+import OptionButton from "./buttons/OptionButton";
+import LoganDropDown from "./LoganDropDown";
+import NewButtonActionsDropDown from "../Sidebar/NewButtonActionsDropDown";
+import { Button } from "antd";
 
 const CollapsibleList = ({
   items,
@@ -37,7 +41,9 @@ const CollapsibleList = ({
                 articleParentType={item.articleType}
                 collapsibleItemOpenState={
                   collapsibleListOpenState?.length > 0
-                    ? collapsibleListOpenState[index]
+                    ? collapsibleListOpenState.find(
+                        (collapseItem, index) => collapseItem.id === item.id,
+                      )
                     : {}
                 }
               />
@@ -48,11 +54,11 @@ const CollapsibleList = ({
       </Droppable>
     </DragDropContext>
   );
-  function reorder(list, startIndex, endIndex) {
-    const [removed] = list.splice(startIndex, 1);
-    list.splice(endIndex, 0, removed);
-    return list;
-  }
+  // function reorder(list, startIndex, endIndex) {
+  //   const [removed] = list.splice(startIndex, 1);
+  //   list.splice(endIndex, 0, removed);
+  //   return list;
+  // }
 
   function onDragEnd(result) {
     if (!result.destination) {
@@ -63,38 +69,56 @@ const CollapsibleList = ({
     const destination = result.destination;
     let sourceItem = null;
     let destinationItem = null;
+    let isRoot = false;
     if (source.droppableId === destination.droppableId) {
       const newItems = JSON.parse(JSON.stringify(items));
 
       if (String(source.droppableId).includes("root-")) {
         sourceItem = newItems[source.index];
         destinationItem = newItems[destination.index];
-        appDispatch(
-          documentIndexingAction.setReorderAppendixState({
-            sourceItem,
-            destinationItem,
-          }),
-        );
-        return;
+        isRoot = true;
+      } else {
+        findDroppableAreaItem(newItems);
       }
-
-      const reorderRecursive = (items) => {
-        items.forEach((item) => {
-          if (`${item.id}-subitems` === source.droppableId) {
-            item.children = reorder(
-              item.children,
-              source.index,
-              destination.index,
-            );
-          } else if (item.children) {
-            reorderRecursive(item.children);
-          }
-        });
-      };
-
-      reorderRecursive(newItems);
-      // appDispatch(documentIndexingAction.setArticlesList(newItems));
+      appDispatch(
+        documentIndexingAction.setReorderAppendixState({
+          sourceItem,
+          destinationItem,
+          isRoot,
+        }),
+      );
     }
+
+    function findDroppableAreaItem(items) {
+      for (let index = 0; index < items.length; index++) {
+        if (items?.[index]?.id === source.droppableId) {
+          items?.[index]?.children.forEach((actionItem, index) => {
+            source.index === index && (sourceItem = actionItem);
+            destination.index === index && (destinationItem = actionItem);
+            return;
+          });
+        } else if (items?.[index]?.children && items) {
+          findDroppableAreaItem(items[index].children);
+        }
+      }
+    }
+
+    // const reorderRecursive = (items) => {
+    //   items.forEach((item) => {
+    //     if (`${item.id}-subitems` === source.droppableId) {
+    //       item.children = reorder(
+    //         item.children,
+    //         source.index,
+    //         destination.index,
+    //       );
+    //     } else if (item.children) {
+    //       reorderRecursive(item.children);
+    //     }
+    //   });
+    // };
+
+    // reorderRecursive(newItems);
+    // appDispatch(documentIndexingAction.setArticlesList(newItems));
   }
 };
 
@@ -137,7 +161,7 @@ const CollapsibleItem = ({
     };
   }, [copiedContent]);
   // const toggleOpen = () => setitem?.IsOpen(!item?.isOpen);
-  // console.log(item.title, collapsibleItemOpenState?.isOpen);
+  console.log(item.id, collapsibleItemOpenState?.isOpen);
 
   const content = (
     <div
@@ -299,7 +323,7 @@ const CollapsibleItem = ({
         </div>
         {hovered &&
           (level > 0 || (level == 0 && articleParentType !== "document")) && (
-            <div className="mr-2 flex items-center">
+            <div className="mr-2 flex items-center gap-2">
               <button
                 onClick={(e) => {
                   appDispatch(
@@ -314,14 +338,42 @@ const CollapsibleItem = ({
               >
                 Copy
               </button>
+              <LoganDropDown
+                placement="bottomRight"
+                trigger={"click"}
+                baseElement={
+                  <button className="p-1" onClick={(e) => e.stopPropagation()}>
+                    <OptionButton />
+                  </button>
+                }
+                customDropDownMenu={({ closeMenu }) => (
+                  <ul className="text-md rounded-xl bg-white p-1 shadow-out-lg">
+                    <li
+                      onClick={() => {
+                        //delete itme logic
+                        articleAction("delete", item.id, level);
+                        closeMenu();
+                      }}
+                      className="flex cursor-pointer items-center gap-2 rounded-lg p-2 py-1 pr-4 hover:bg-five hover:text-primary-blue"
+                    >
+                      <RemSizeImage
+                        imagePath={"/assets/icons/delete-outline.svg"}
+                        remWidth={0.9}
+                        remHeight={0.9}
+                        alt={"delete"}
+                      />
+                      <span className=" font-medium text-black-txt">
+                        Delete
+                      </span>
+                    </li>
+                  </ul>
+                )}
+              />
             </div>
           )}
       </div>
       {collapsibleItemOpenState?.isOpen && item.children && (
-        <Droppable
-          droppableId={`${item.id}-subitems`}
-          type={`subitem-${level}`}
-        >
+        <Droppable droppableId={`${item.id}`} type={`subitem-${level}`}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {item?.children.map((child, index) => (
@@ -336,7 +388,9 @@ const CollapsibleItem = ({
                   articleParentType={articleParentType}
                   collapsibleItemOpenState={
                     collapsibleItemOpenState?.children?.length > 0
-                      ? collapsibleItemOpenState?.children[index]
+                      ? collapsibleItemOpenState?.children.find(
+                          (collapseItem, index) => collapseItem.id === child.id,
+                        )
                       : {}
                   }
                 />

@@ -3,6 +3,7 @@ import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Extension } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
+import { padStart } from "lodash";
 
 const ArticleExtention = Extension.create({
   name: "article",
@@ -103,8 +104,7 @@ const ArticleExtention = Extension.create({
                   articleType: "document",
                   title: "",
                   children: [],
-                  id: crypto.randomUUID(),
-                  isOpen: false,
+                  id: "doc",
                 },
               ];
               const setIndexForListItems = (listNode, parentIndex = []) => {
@@ -127,7 +127,6 @@ const ArticleExtention = Extension.create({
                         .slice(0, 4)
                         .join(" "),
                       index: dataIndex,
-                      isOpen: false,
                       type: tagInsertionType.SubArticle,
                     };
                     child.forEach((grandChild) => {
@@ -152,7 +151,8 @@ const ArticleExtention = Extension.create({
               };
               let newAppendexSeprator = {
                 sepratorAppendixHeading: "",
-                separatorHeadingPos: undefined,
+                separatorHeadingStartPos: undefined,
+                separatorHeadingEndPos: undefined,
                 id: null,
               };
               tr.doc.forEach((node, offset, index) => {
@@ -174,49 +174,72 @@ const ArticleExtention = Extension.create({
                       } else {
                         prevAppendixIndex = Number(prevAppendixIndex);
                       }
-                      debugger;
                       if (prevAppendixIndex !== appendixOccurance) {
                         // insert appendix index in that child node
-                        let newAppendixNode =
-                          state.schema.nodes.classIdSpan.create(
-                            { class: "appendix-index" },
-                            [state.schema.text(appendixOccurance)],
-                          );
-                        let childPsa = findNodePosFromNode(state.doc, child);
                         tr.insertText(
-                          String(appendixOccurance),
+                          padStart(String(appendixOccurance), 2, "0"),
                           mappedPos + offset + 2,
                           mappedPos + offset + 1 + child.nodeSize - 1,
                         );
-                        debugger;
                       }
                     }
                     if (child.attrs.class === "sep-heading") {
+                      let mappedSepHeadingPos = trMapping.map(pos);
                       newAppendexSeprator.sepratorAppendixHeading =
                         child.textContent;
-                      newAppendexSeprator.separatorHeadingPos = offset;
+                      newAppendexSeprator.separatorHeadingStartPos =
+                        mappedSepHeadingPos + offset + 2;
+                      newAppendexSeprator.separatorHeadingEndPos =
+                        mappedSepHeadingPos + offset + 1 + child.nodeSize - 1;
                     }
                   });
                 } else if (
-                  newAppendexSeprator?.separatorHeadingPos &&
+                  newAppendexSeprator?.separatorHeadingStartPos &&
                   newAppendexSeprator?.sepratorAppendixHeading &&
                   newAppendexSeprator?.id
                 ) {
                   if (node.attrs.class === "annex-tag-para") {
-                    let annexIndex = Number(
-                      String(node.textContent).split(" ")[1],
-                    );
+                    let annexTextArray = String(node.textContent).split(" ");
+                    let annexIndex =
+                      annexTextArray.length > 1 ? annexTextArray[1] : false;
+                    if (
+                      annexIndex?.length == 2 &&
+                      annexIndex?.charAt(0) === "0"
+                    ) {
+                      annexIndex = Number(annexIndex.charAt(1));
+                    } else {
+                      annexIndex = Number(annexIndex);
+                    }
                     if (annexIndex !== appendixOccurance) {
                       // insert Paragraph with span tag with correct appendix index
+
+                      let anextagPos = trMapping.map(
+                        findNodePosFromNode(state.doc, node.firstChild),
+                      );
+                      tr.insertText(
+                        `Annex ${padStart(String(appendixOccurance), 2, "0")}`,
+                        anextagPos + 1,
+                        anextagPos + node.firstChild.nodeSize - 1,
+                      );
                     }
                   }
-                  if (node.type.name === "heading" && node.attrs.level === 1) {
+
+                  if (
+                    node.type.name === "heading" &&
+                    node.attrs.level === 1 &&
+                    node.attrs.class === "annex-heading"
+                  ) {
                     let appendixHeading = node?.textContent;
                     if (
                       newAppendexSeprator.sepratorAppendixHeading !==
                       appendixHeading
                     ) {
                       // insert node.textContent at newAppendexSeprator.separatorHeadingPos
+                      tr.insertText(
+                        appendixHeading,
+                        newAppendexSeprator.separatorHeadingStartPos,
+                        newAppendexSeprator.separatorHeadingEndPos,
+                      );
                     }
                     articlesList.push({
                       articleType: "appendix",
@@ -224,7 +247,6 @@ const ArticleExtention = Extension.create({
                       title: appendixHeading,
                       children: [],
                       id: newAppendexSeprator.id,
-                      isOpen: false,
                     });
                     newAppendexSeprator = {};
                     appendixOccurance++;
@@ -283,11 +305,10 @@ const ArticleExtention = Extension.create({
                     tr.setMeta("addToHistory", true);
                   }
                   let article = {
-                    id: h2Node?.attrs?.id,
+                    id: node?.attrs?.id,
                     title: h2Node?.lastChild?.textContent,
                     index: articleOccurance,
                     type: tagInsertionType.Article,
-                    isOpen: false,
                   };
                   node.forEach((child) => {
                     if (
@@ -314,7 +335,7 @@ const ArticleExtention = Extension.create({
                   articleOccurance = 1;
                 }
               });
-
+              console.log("articlesList", articlesList);
               updateArticles(articlesList);
               if (tr.docChanged) {
                 dispatch(tr);
