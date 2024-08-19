@@ -30,8 +30,8 @@ function DocFolder({ onClickFolder, folder, nonClient = false }) {
       >
         <RemSizeImage
           imagePath={"/assets/icons/blue-option-hoz.svg"}
-          remWidth={0.8}
-          remHeight={0.781}
+          remWidth={0.4}
+          remHeight={0.4}
           alt="option"
           className={"rotate-90"}
         />

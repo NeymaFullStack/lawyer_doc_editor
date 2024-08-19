@@ -28,10 +28,18 @@ const LoganTagsMenu = ({
     }
     for (let item of articleList) {
       let tag = {
-        type: item?.type,
-        tagName: item?.articleName,
+        type: "",
+        tagName: item?.title,
         index: item?.index,
+        id: item.id,
       };
+      if (
+        item?.articleType &&
+        item?.articleType === tagInsertionType.Appendix
+      ) {
+        tag.type = tagInsertionType.Appendix;
+      }
+
       tagList.push(tag);
       if (item?.children && item.children.length > 0) {
         tagList = [...tagList, ...extractArticles(item?.children)];
@@ -50,12 +58,13 @@ const LoganTagsMenu = ({
       for (let item of articleList) {
         let tag = {
           type: item?.type,
-          tagName: item?.articleName,
+          tagName: item?.title,
           index: item?.index,
+          id: item.id,
         };
         tagList.push(tag);
         if (item.children) {
-          tagList = [...tagList, ...extractArticles()];
+          tagList = [...tagList, ...extractArticles(item.children)];
         }
       }
       return tagList;
@@ -110,6 +119,9 @@ const LoganTagsMenu = ({
               } else if (item?.type === tagInsertionType?.Article) {
                 tagColors["textColor"] = "text-primary-blue";
                 tagColors["bgColor"] = "bg-secondary-blue";
+              } else if (item?.type === tagInsertionType?.Appendix) {
+                tagColors["textColor"] = "text-appendix-1";
+                tagColors["bgColor"] = "bg-appendix";
               }
               return (
                 <li
@@ -139,7 +151,9 @@ const LoganTagsMenu = ({
                       <span
                         className={`text-sm font-semibold ${tagColors?.textColor}`}
                       >
-                        Article
+                        {item?.type === tagInsertionType?.Appendix
+                          ? "Appendix"
+                          : "Article"}
                       </span>
                     )}
                     {item.type !== tagInsertionType.Variable && (

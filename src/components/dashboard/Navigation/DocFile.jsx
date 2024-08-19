@@ -46,8 +46,8 @@ function DocFile({ onClickDoc, doc, nonClient = false }) {
         >
           <RemSizeImage
             imagePath={"/assets/icons/blue-option-hoz.svg"}
-            remWidth={1}
-            remHeight={1}
+            remWidth={0.4}
+            remHeight={0.4}
             alt={"option"}
           />
         </span>

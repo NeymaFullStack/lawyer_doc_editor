@@ -23,7 +23,7 @@ function LoganReferenceTool() {
   // useEffect(() => {
   //   !isAppendixActive && !openAppendixMenu && setOpenAppendixMenu(true);
   // }, [isAppendixActive]);
-  // console.log("pop", collapsibleListOpenState);
+  console.log("pop", articleList, collapsibleListOpenState);
 
   const manageArticles = (actionType, id, level, articleInputValue = "") => {
     manipulateItems(

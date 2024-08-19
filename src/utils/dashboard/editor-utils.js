@@ -117,9 +117,18 @@ export const manipulateItems = (
             }
             return true;
 
-          case "delete":
-            tempItems.splice(i, 1);
-            return tempItems;
+          case "delete": {
+            if (item?.input) {
+              tempItems.splice(i, 1);
+              return tempItems;
+            } else {
+              dispatch(
+                documentIndexingAction.setDeleteAppendixState({
+                  id: id,
+                }),
+              );
+            }
+          }
         }
       } else if (item.children) {
         const result = recursiveManipulation(

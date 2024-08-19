@@ -38,6 +38,7 @@ export const articleInsertionType = {
 
 export const tagInsertionType = {
   Article: "article",
+  Appendix: "appendix",
   SubArticle: "subArticle",
   Variable: "variable",
   Definition: "definition",

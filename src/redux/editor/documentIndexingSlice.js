@@ -6,7 +6,8 @@ export const documentIndexingSlice = createSlice({
     articleList: [],
     newAppendixState: null,
     reorderAppendixState: null,
-    collapsibleListOpenState: [],
+    collapsibleListOpenState: null,
+    deleteAppendixState: null,
   },
   reducers: {
     setArticlesList: (state, action) => {
@@ -16,6 +17,12 @@ export const documentIndexingSlice = createSlice({
       return {
         ...state,
         newAppendixState: { ...state.newAppendixState, ...action.payload },
+      };
+    },
+    setDeleteAppendixState: (state, action) => {
+      return {
+        ...state,
+        deleteAppendixState: action.payload,
       };
     },
     resetNewAppendixState: (state, action) => {
@@ -30,6 +37,7 @@ export const documentIndexingSlice = createSlice({
     setCollapsibleListOpenState: (state, action) => {
       return { ...state, collapsibleListOpenState: action.payload };
     },
+
     setAppendixInsertionContent: (state, action) => {
       return {
         ...state,
