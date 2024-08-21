@@ -257,7 +257,7 @@ const ArticleExtention = Extension.create({
                 ) {
                   const newNode = state.schema.nodes.classIdSpan.create(
                     { class: `doc-article-title` },
-                    state.schema.text(`Article ${articleOccurance}: `),
+                    state.schema.text(`Article ${articleOccurance} - `),
                   );
                   let h2Node;
                   node.forEach((child) => {
@@ -288,7 +288,7 @@ const ArticleExtention = Extension.create({
                   ) {
                     let artcleIndex = h2Node?.content?.firstChild?.textContent
                       ?.split(" ")[1]
-                      ?.split(":")[0];
+                      ?.split(" - ")[0];
 
                     if (Number(artcleIndex) !== articleOccurance) {
                       const slice = new Slice(Fragment.from(newNode), 0, 0);

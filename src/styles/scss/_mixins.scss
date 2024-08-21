@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 @mixin logan-doc {
   h1,
   h2,
@@ -14,6 +20,7 @@
   figure,
   hr {
     color: #383d44 !important;
+    font-family: "Inter";
   }
 
   h1,
@@ -30,32 +37,28 @@
   h1 {
     font-size: 1.5rem; /* Reduced size */
     margin-bottom: 0.5rem;
+    font-weight: 800 !important;
   }
-
   h2 {
-    font-size: 1.25rem; /* Reduced size */
+    font-size: 1rem; /* Reduced size */
   }
-
   h3 {
-    font-size: 1.125rem; /* Reduced size */
+    font-size: 0.9rem; /* Reduced size */
   }
-
   h4 {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
-
   h5 {
-    font-size: 0.875rem;
+    font-size: 0.7rem;
   }
-
   h6 {
-    font-size: 0.75rem;
+    font-size: 0.6rem;
   }
 
   /* Paragraph */
 
   p {
-    margin: 0.3rem 0; /* Reduced margin */
+    margin: 0.4rem 0; /* Reduced margin */
     font-size: 0.875rem; /* Reduced size */
   }
 
@@ -67,10 +70,13 @@
   }
 
   li {
-    margin: 0.3rem 0; /* Reduced margin */
+    margin: 0.4rem 0; /* Reduced margin */
     font-size: 0.875rem; /* Reduced size */
   }
 
+  hr {
+    @apply my-4;
+  }
   /* Links */
   a {
     color: #007bff;

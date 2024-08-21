@@ -19,6 +19,9 @@ export const classIdSpan = Node.create({
       id: {
         default: null,
       },
+      style: {
+        default: null,
+      },
     };
   },
   parseHTML() {
@@ -27,9 +30,11 @@ export const classIdSpan = Node.create({
         preserveWhitespace: true,
         tag: "span",
         getAttrs: (dom) => {
+          // debugger;
           return {
             class: dom.getAttribute("class"),
             id: dom.getAttribute("id"),
+            style: dom.getAttribute("style"),
           };
         },
       },
@@ -37,11 +42,22 @@ export const classIdSpan = Node.create({
   },
 
   renderHTML({ HTMLAttributes, node }) {
+    if (HTMLAttributes.class && HTMLAttributes.class !== null) {
+      console.log("mango", HTMLAttributes);
+
+      return ["span", { ...HTMLAttributes }, 0];
+    }
+    console.log("poppy", HTMLAttributes);
+
+    delete HTMLAttributes.contenteditable;
+
     return [
       "span",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        contenteditable: false,
-      }),
+      {
+        class: HTMLAttributes["class"],
+        id: HTMLAttributes["id"],
+        style: HTMLAttributes["style"],
+      },
       0,
     ];
   },

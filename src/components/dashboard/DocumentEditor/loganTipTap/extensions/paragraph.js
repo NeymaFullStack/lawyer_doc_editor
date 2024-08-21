@@ -1,12 +1,16 @@
 import Paragraph from "@tiptap/extension-paragraph";
 
 export const customParagraph = Paragraph.extend({
+  content: "inline*",
   addAttributes() {
     return {
       class: {
         default: null,
       },
       id: {
+        default: null,
+      },
+      style: {
         default: null,
       },
     };
@@ -19,6 +23,7 @@ export const customParagraph = Paragraph.extend({
           return {
             class: dom.getAttribute("class"),
             id: dom.getAttribute("id"),
+            style: dom.getAttribute("style"),
           };
         },
       },

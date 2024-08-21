@@ -68,7 +68,8 @@ module.exports = {
         "disable-blu": "#095AD333",
       },
       boxShadow: {
-        out: "0 0 10px 0.1px #ededed",
+        out: "0 0 10px 0.1px #F0F5FD",
+        "out-md": "0px 0px 36.6px 16.37px #0337841A",
         "out-lg": "0px 0px 12px 1px #0000003B",
         "3d": "0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.1)",
         // "in-white": "inset 0px -3px 2px 5px  #ffffff",

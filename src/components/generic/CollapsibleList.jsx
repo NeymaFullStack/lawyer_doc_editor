@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Tag from "./Tag";
@@ -10,8 +11,7 @@ import { documentAction } from "@/redux/documentSlice";
 import { toggleCollapsibleListOpenState } from "@/utils/component-utils";
 import OptionButton from "./buttons/OptionButton";
 import LoganDropDown from "./LoganDropDown";
-import NewButtonActionsDropDown from "../Sidebar/NewButtonActionsDropDown";
-import { Button } from "antd";
+import { uniqueId } from "lodash";
 
 const CollapsibleList = ({
   items,
@@ -23,7 +23,7 @@ const CollapsibleList = ({
   // console.log("collapse", collapsibleListOpenState);
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId={`root-${crypto.randomUUID()}`} type="item">
+      <Droppable droppableId={`root-${uniqueId()}`} type="item">
         {(provided) => (
           <div
             className="flex flex-col justify-center gap-2"

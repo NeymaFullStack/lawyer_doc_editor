@@ -41,10 +41,12 @@
       @apply rounded-md bg-[#FFF5FD] px-[0.4em] py-[0.1em] text-[#FF26C2];
     }
     .doc-article {
+      @apply my-3;
       h2 {
         span {
           @apply text-primary-gray;
         }
+        @apply text-[1rem] font-semibold;
       }
       ul {
         ul {
@@ -62,7 +64,7 @@
         }
         li::before {
           float: inline-start; /* Use flexbox to align items */
-          margin-right: 0.5rem;
+          margin-right: 0.8rem;
           left: 0;
           top: 0;
           min-width: 1rem;
@@ -76,13 +78,13 @@
       @apply rounded-md bg-secondary-blue px-[0.4em] py-[0.1em] text-primary-blue;
     }
     .doc-appendix-tag {
-      @apply text-appendix-1 rounded-md bg-appendix px-[0.4em] py-[0.1em];
+      @apply rounded-md bg-appendix px-[0.4em] py-[0.1em] text-appendix-1;
     }
     .is-selected {
       @apply bg-[#fae4f5];
     }
     .appendix-separator {
-      @apply text-appendix-1  left-0 right-0 my-6 flex items-center justify-center overflow-visible bg-six py-4 #{!important};
+      @apply left-0  right-0 my-6 flex items-center justify-center overflow-visible bg-six py-4 text-appendix-1 #{!important};
       .sep-heading {
         @apply text-black;
       }
@@ -96,7 +98,7 @@
     }
 
     .annex-tag {
-      @apply text-appendix-1 rounded-md bg-appendix px-[0.4em] py-[0.1em];
+      @apply rounded-md bg-appendix px-[0.4em] py-[0.1em] text-appendix-1;
     }
     .sep-heading {
       @apply text-xl font-semibold;

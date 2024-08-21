@@ -3,9 +3,11 @@ import Api from "../apiMethod";
 import {
   createDocumentUrl,
   createFolderUrl,
+  createImportedDocumentUrl,
   createNewDocumentVersionUrl,
   exportDocumentPdfUrl,
   exportDocumentUrl,
+  getAllNotificationsUrl,
   getAppendixContnetUrl,
   getClientFoldersListUrl,
   getDocumentTemplateUrl,
@@ -20,6 +22,16 @@ import {
   updateDocumentVersionContentUrl,
   userLoginUrl,
 } from "../serviceUrl";
+
+export const getAllNotifications = cache(async () => {
+  try {
+    const res = await Api.get(getAllNotificationsUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+});
 
 export const getClientFolderList = cache(async () => {
   try {
@@ -93,9 +105,12 @@ export const createFolder = async (queryParams) => {
   }
 };
 
-export const createDocument = async (queryParams = {}) => {
+export const createDocument = async (isImport, queryParams = {}) => {
   try {
-    const res = await Api.post(createDocumentUrl, queryParams);
+    const res = await Api.post(
+      isImport ? createImportedDocumentUrl : createDocumentUrl,
+      queryParams,
+    );
     return res.data;
   } catch (error) {
     //dispatch action for global error dialog box

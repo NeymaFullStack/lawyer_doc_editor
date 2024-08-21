@@ -4,8 +4,11 @@ export const auth =
 //auth
 export const userLoginUrl = "/auth/login";
 
-// dashboard
+//app
+export const getAllNotificationsUrl = "/notification/all";
+export const getNewNotificationsUrl = "http://localhost:7003/notification/1";
 
+// dashboard
 export const createConversationUrl = "/chat/conversation";
 export const getRecentDocumentsUrl = "/document/recent/list";
 export const getClientFoldersListUrl = "/folder/client/all";
@@ -13,6 +16,8 @@ export const getFolderDetailsUrl = "/folder";
 export const getDocumentContentByVersionIdUrl = "/document/";
 export const createFolderUrl = "/folder";
 export const createDocumentUrl = "/document";
+export const createImportedDocumentUrl = "/document/imports";
+
 export const getDocumentDataUrl = "/document";
 export const getAppendixContnetUrl = "/document/appendix";
 

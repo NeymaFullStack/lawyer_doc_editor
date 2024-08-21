@@ -49,7 +49,9 @@ function DocumentPreviewModal({
             onClick={() => {
               appDispatch(
                 folderNavigationAction.setOpenModalType(
-                  modalType.CREATE_DOCUMENT,
+                  formValues.isImport
+                    ? modalType.IMPORT_TEMPLATE
+                    : modalType.CREATE_DOCUMENT,
                 ),
               );
               onClose(true, { previewTemplate: "" });
@@ -159,7 +161,7 @@ function DocumentPreviewModal({
       // );
       // onClose();
     } else {
-      let res = await createDocument({
+      let res = await createDocument(formValues?.isImport ? true : false, {
         document_name: formValues?.documentTopic,
         project_id: parentFolderId,
         content: formValues?.previewTemplate,

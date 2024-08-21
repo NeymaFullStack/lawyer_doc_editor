@@ -9,12 +9,16 @@ import NewButtonActionsDropDown from "./NewButtonActionsDropDown";
 import RemSizeImage from "../generic/RemSizeImage";
 import LoganDropDown from "../generic/LoganDropDown";
 import FolderDocCreation from "../dashboard/Navigation/FolderDocCreation";
+import WorkSpaceSelector from "./WorkSpaceSelector";
+import dayjs from "dayjs";
+import Notification from "./Notification";
 
 function Sidebar() {
   const appDispatch = useDispatch();
   const activeMenuItem = useSelector(
     (state) => state?.appReducer?.activeMenuItem,
   );
+
   return (
     <aside
       id="logo-sidebar"
@@ -36,12 +40,13 @@ function Sidebar() {
             </div>
           </Link>
         </div>
+        <WorkSpaceSelector />
         <LoganDropDown
           placement="bottomRight"
           trigger={"hover"}
           baseElement={
             <Button
-              className="btn btn--primary mb-8 ml-5 text-xs"
+              className="btn btn--primary mb-8 ml-5 mt-10 text-xs"
               icon={
                 <RemSizeImage
                   imagePath={"/assets/icons/add-white.svg"}
@@ -147,7 +152,7 @@ function Sidebar() {
             </div>
           </li> */}
         </ul>
-        <ul className="absolute bottom-0 mb-7 flex w-full flex-col gap-4">
+        <ul className="absolute bottom-0 mb-5 flex w-full flex-col gap-2">
           <li className="pl-5">MORE</li>
           <li className="pl-5">
             <div
@@ -170,34 +175,42 @@ function Sidebar() {
               onClick={() => onClickMenuItem("dashboard")}
             >
               <RemSizeImage
-                imagePath={"/assets/icons/user-icon.svg"}
+                imagePath={"/assets/icons/help-icon.svg"}
                 remWidth={1.25}
                 remHeight={1.25}
                 alt="Account"
               />
-              {/* <Image
-                src={"/assets/icons/user-icon.svg"}
-                height={20}
-                width={20}
-                alt="Account"
-              /> */}
-              <span>Account</span>
+              <span>Help</span>
             </div>
           </li>
-          <li className="px-5">
-            <Button
-              className="btn btn--secondary text-xs"
-              icon={
-                <RemSizeImage
-                  imagePath={"/assets/icons/chrome-icon.svg"}
-                  remWidth={1.25}
-                  remHeight={1.25}
-                  alt="Chrome"
-                />
-              }
+          <li className="pl-5">
+            <div
+              className={"flex cursor-pointer items-center gap-4"}
+              onClick={() => onClickMenuItem("dashboard")}
             >
-              Get Chrome Extension
-            </Button>
+              <RemSizeImage
+                imagePath={"/assets/icons/logout-icon.svg"}
+                remWidth={1.25}
+                remHeight={1.25}
+                alt="Account"
+              />
+              <span>Logout</span>
+            </div>
+          </li>
+          <li className="mx-3 mt-3 flex items-center gap-2 rounded-xl border-[1px] border-secondary-blue px-2 py-2">
+            <RemSizeImage
+              imagePath={"/assets/icons/user-img.svg"}
+              remWidth={1.65}
+              remHeight={1.65}
+              alt="User"
+            />
+            <div className="flex flex-col justify-center ">
+              <span className="text-sm font-semibold leading-3 text-black-txt">
+                Paul Smith
+              </span>
+              <span className="text-xs">paul.s@lexington.com</span>
+            </div>
+            <Notification />
           </li>
         </ul>
       </div>

@@ -87,6 +87,7 @@ function FolderDocCreation() {
           onClose={closeModal}
           open={openModalType === modalType?.DOCUMENT_TEMPLATE_TYPE_SELECTION}
           formValues={docFolderFieldValues}
+          saveDocFolderFieldValues={saveDocFolderFieldValues}
         />
       )}
       {openModalType === modalType?.CREATE_DOCUMENT && (

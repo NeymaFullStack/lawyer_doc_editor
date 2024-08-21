@@ -13,6 +13,9 @@
       color: #a3a7af !important;
     }
   }
+  &--white {
+    @apply border-[1px] border-secondary-blue border-secondary-blue bg-white text-black-txt hover:text-black-txt #{!important};
+  }
   &--primary {
     @apply border-none bg-blue-gradient text-white hover:bg-blue-gradient  hover:text-white #{!important};
   }

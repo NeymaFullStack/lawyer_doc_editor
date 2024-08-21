@@ -35,7 +35,6 @@ import ArticleExtention from "./plugins/article";
 import CustomListItem from "./extensions/listItem";
 import ArticleMenu from "./ArticleMenu";
 import ArticleInsertion from "./plugins/artcleInsertion";
-import LoganTagsMenu from "./loganTagsMenu";
 import BackSlashAction from "./plugins/backSlashAction";
 import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
 import { customParagraph } from "./extensions/paragraph";
@@ -46,6 +45,7 @@ import * as Y from "yjs";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { useUserDetails } from "@/hooks";
 import { getUserColor } from "@/utils/generic";
+import LoganTagsMenu from "./LoganTagsMenu";
 
 const doc = new Y.Doc();
 
@@ -112,14 +112,15 @@ const TiptapEditor = () => {
       [],
     );
 
-  const provider = useMemo(() => {
-    return new TiptapCollabProvider({
-      name: docId,
-      baseUrl: "ws://localhost:1234/collaboration",
-      // token: "notoken", // Your JWT token
-      document: doc,
-    });
-  }, [docId]);
+  // const provider = useMemo(() => {
+  //   return new TiptapCollabProvider({
+  //     name: docId,
+  //     baseUrl:
+  //       "ws://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:5555/collaboration",
+  //     // token: "notoken", // Your JWT token
+  //     document: doc,
+  //   });
+  // }, [docId]);
 
   const editor = useEditor(
     {
@@ -131,13 +132,13 @@ const TiptapEditor = () => {
         Collaboration.configure({
           document: doc,
         }),
-        CollaborationCursor.configure({
-          provider,
-          user: {
-            name: `${first_name} ${last_name}`,
-            color: getUserColor(`${first_name} ${last_name}`),
-          },
-        }),
+        // CollaborationCursor.configure({
+        //   provider,
+        //   user: {
+        //     name: `${first_name} ${last_name}`,
+        //     color: getUserColor(`${first_name} ${last_name}`),
+        //   },
+        // }),
         ArticleInsertion.configure({
           openArticleInsertionMenu: (menuItems, pos) => {
             setArticleInsertionState({
@@ -186,7 +187,7 @@ const TiptapEditor = () => {
       onSelectionUpdate: handleSelection,
       onUpdate: handleChange,
     },
-    [provider, first_name, last_name],
+    // [provider, first_name, last_name],
   );
 
   useEffect(() => {
@@ -400,7 +401,10 @@ const TiptapEditor = () => {
   }, [reorderAppendixState]);
 
   useEffect(() => {
-    if (collapsibleListOpenState === null && articleList?.length > 0) {
+    if (
+      (collapsibleListOpenState === null && articleList?.length > 0) ||
+      articleList.length !== collapsibleListOpenState?.length
+    ) {
       createCollapsibleListOpenState(articleList, appDispatch);
     }
   }, [articleList]);
@@ -484,7 +488,7 @@ const TiptapEditor = () => {
           {activeDocumentVersion && (
             <EditorContent
               editor={editor}
-              className={` flex min-h-full w-full flex-col border-[0.125rem] px-5 py-2  ${activeDocumentAction !== documentActions.VersionHistory && editor?.isFocused ? "border-primary-blue" : ""} ${editor && activeDocumentVersion?.is_auto_saved !== null ? (activeDocumentVersion?.is_auto_saved ? "auto-save" : "save") : ""}`}
+              className={` flex min-h-full w-full flex-col border-[0.125rem] px-10 py-2  ${activeDocumentAction !== documentActions.VersionHistory && editor?.isFocused ? "border-primary-blue" : ""} ${editor && activeDocumentVersion?.is_auto_saved !== null ? (activeDocumentVersion?.is_auto_saved ? "auto-save" : "save") : ""}`}
             />
           )}
         </div>
@@ -523,8 +527,9 @@ const TiptapEditor = () => {
       documentId: currentDocumentVersion?.id,
       documentVersionId: currentDocumentVersion?.version_id,
     });
-    data?.length > 0 &&
-      appDispatch(documentVariableAction.setVariableList(data));
+    data?.length > 0
+      ? appDispatch(documentVariableAction.setVariableList(data))
+      : appDispatch(documentVariableAction.setVariableList([]));
   }
 
   function handleSelection({ editor, transaction }) {
@@ -552,6 +557,9 @@ const TiptapEditor = () => {
 
   function setEditorContent(content) {
     editor?.commands.setContent(content);
+    // editor?.commands.setContent(
+    //   '<p style=""><img src="cid:i.0"/><span style=""></span></p><p style=""><span style="font-weight: bold; color: rgb(0, 171, 68); font-size: 14pt;">Ankit <span style="font-weight: bold; color: rgb(250, 171, 70); font-size: 14pt;" id="company_name" class="doc-variable">Your Company</span></span></p><p style=""><span style="color: rgb(102, 102, 102); font-size: 10pt;"><span id="street_address" class="doc-variable">123 Your Street</span></span></p><p style=""><span style="color: rgb(102, 102, 102); font-size: 10pt;"><span id="city_and_state" class="doc-variable">Your City, ST 12345</span></span></p><p style=""><span style="color: rgb(102, 102, 102); font-size: 10pt;"><span id="contact_number" class="doc-variable">(123) 456-7890</span></span></p><p style=""><span style="">Project Name</span><span style="color: rgb(53, 55, 68); font-size: 36pt; font-family: Proxima Nova;"></span></p><p style=""><span style="font-weight: bold; color: rgb(102, 102, 102); font-size: 14pt;">4</span><span style="font-weight: bold; font-size: 14pt;">th</span><span style="font-weight: bold; font-size: 14pt;"> September 20XX</span><span style="font-weight: bold; color: rgb(102, 102, 102); font-size: 14pt;"></span></p><section><div class="doc-article" id="5dedc7c4-9302-4061-8a00-03dd428f9bf2"><h2 class="article-heading" id="2fa0ed0a-53b5-4ded-a18c-0a78580cecb9">OVERVIEW</h2></div></section><p style=""><span style="">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper. </span></p><section><div class="doc-article" id="fe5035f6-14ee-4c60-9998-222425a708b5"><h2 class="article-heading" id="f43e5abe-1b36-40f7-8c55-baae768af7df">GOALS</h2></div></section><ul><li><span style="font-family: Proxima Nova;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</span><span style="font-family: Proxima Nova;"></span></li><li><span style="">S</span><span style="font-family: Proxima Nova;">ed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span><span style=""></span></li></ul><section><div class="doc-article" id="62b9f3de-c68b-4ea1-a3b6-cc8efd30ded3"><h2 class="article-heading" id="bba3213f-96a5-4997-a828-726e27bfdc7a">SPECIFICATIONS</h2></div></section><p style=""><span style="">Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.</span><span style="font-family: Proxima Nova;"></span></p><section><div class="doc-article" id="1ae16472-526d-4b93-8d97-c60234d28e54"><h2 class="article-heading" id="2791b7d7-51ac-4fb0-a9ca-26745817dce5">MILESTONES</h2></div></section><p style=""><span style="">Lorem Ipsum</span><span style="font-weight: bold; font-size: 14pt; font-family: Proxima Nova;"></span></p><p style=""><span style="font-family: Proxima Nova;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span></p><p style=""><span style="">Dolor Sit Amet</span></p><p style=""><span style="font-family: Proxima Nova;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span><span style="font-size: 13pt;"></span></p>',
+    // );
   }
 
   function handleChange({ editor, transaction }) {

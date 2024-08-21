@@ -7,7 +7,12 @@ import { useDispatch } from "react-redux";
 import { modalType } from "./FolderDocCreation";
 import { useSelector } from "react-redux";
 
-function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
+function DocCreationTypeModal({
+  onClose,
+  open,
+  formValues: { createClient },
+  saveDocFolderFieldValues,
+}) {
   const appDispatch = useDispatch();
   const [hoveredButton, setHoveredButton] = useState("");
   const { newAppendixState } = useSelector(
@@ -114,6 +119,7 @@ function DocCreationTypeModal({ onClose, open, formValues: { createClient } }) {
                 modalType?.IMPORT_TEMPLATE,
               ),
             );
+            saveDocFolderFieldValues({ isImport: true });
           }}
           onMouseLeave={() => setHoveredButton("")}
           className={`flex cursor-pointer flex-col items-center gap-3 rounded-lg bg-six px-6 py-6 text-black  hover:bg-primary-blue hover:text-white`}
