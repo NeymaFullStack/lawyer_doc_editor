@@ -1,9 +1,5 @@
-import { getFolderDetails } from "@/api/serverSideServiceActions/dashboardServiceActions";
 import Directory from "@/components/dashboard/Navigation/Directory";
-import RecentDocuments from "@/components/dashboard/Navigation/RecentDocuments";
 import React from "react";
-import { cookies } from "next/headers";
-import { getCookie } from "cookies-next";
 
 async function Page() {
   return (

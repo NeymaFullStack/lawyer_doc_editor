@@ -17,6 +17,8 @@ export const copiedContentType = {
   Variable: "variable",
   Appendix: "appendix",
   Article: "article",
+  Company: "company",
+  SubArticle: "subArticle",
 };
 
 export const gptActionType = {

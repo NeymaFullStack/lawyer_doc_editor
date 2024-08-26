@@ -10,7 +10,6 @@ import RemSizeImage from "../generic/RemSizeImage";
 import LoganDropDown from "../generic/LoganDropDown";
 import FolderDocCreation from "../dashboard/Navigation/FolderDocCreation";
 import WorkSpaceSelector from "./WorkSpaceSelector";
-import dayjs from "dayjs";
 import Notification from "./Notification";
 
 function Sidebar() {

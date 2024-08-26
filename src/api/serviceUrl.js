@@ -6,6 +6,7 @@ export const userLoginUrl = "/auth/login";
 
 //app
 export const getAllNotificationsUrl = "/notification/all";
+export const markAllNotificationSeenUrl = "/notification/all/read";
 export const getNewNotificationsUrl = "http://localhost:7003/notification/1";
 
 // dashboard

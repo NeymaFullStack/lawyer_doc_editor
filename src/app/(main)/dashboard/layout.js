@@ -1,4 +1,4 @@
-import DashboardHeader from "@/components/dashboard/header/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/header/index";
 
 export const metadata = {
   title: "Logan - Dashboard",

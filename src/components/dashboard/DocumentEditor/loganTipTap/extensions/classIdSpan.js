@@ -43,11 +43,11 @@ export const classIdSpan = Node.create({
 
   renderHTML({ HTMLAttributes, node }) {
     if (HTMLAttributes.class && HTMLAttributes.class !== null) {
-      console.log("mango", HTMLAttributes);
+      // console.log("mango", HTMLAttributes);
 
       return ["span", { ...HTMLAttributes }, 0];
     }
-    console.log("poppy", HTMLAttributes);
+    // console.log("poppy", HTMLAttributes);
 
     delete HTMLAttributes.contenteditable;
 

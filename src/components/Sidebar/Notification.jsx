@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import RemSizeImage from "../generic/RemSizeImage";
 import NotificationBox from "./NotificationBox";
 import { getAllNotifications } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import dayjs from "dayjs";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { appAction } from "@/redux/appSlice";
@@ -84,7 +83,7 @@ function Notification() {
     getAllNotification();
   }, []);
 
-  console.log("notificationsList", notificationsList);
+  // console.log("notificationsList", notificationsList);
   return (
     <div
       className=" ml-auto cursor-pointer"

@@ -6,7 +6,6 @@ import {
   createImportedDocumentUrl,
   createNewDocumentVersionUrl,
   exportDocumentPdfUrl,
-  exportDocumentUrl,
   getAllNotificationsUrl,
   getAppendixContnetUrl,
   getClientFoldersListUrl,
@@ -18,6 +17,7 @@ import {
   getUSerChatUrl,
   gptChatUrl,
   importDocUrl,
+  markAllNotificationSeenUrl,
   restoreVersionUrl,
   updateDocumentVersionContentUrl,
   userLoginUrl,
@@ -26,6 +26,16 @@ import {
 export const getAllNotifications = cache(async () => {
   try {
     const res = await Api.get(getAllNotificationsUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+});
+
+export const markAllNotificationSeen = cache(async () => {
+  try {
+    const res = await Api.get(markAllNotificationSeenUrl);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

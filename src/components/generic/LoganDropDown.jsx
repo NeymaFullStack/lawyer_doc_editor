@@ -14,7 +14,7 @@ function LoganDropDown({
 }) {
   const [openMenu, setOpenMenu] = useState(false);
   const dropdownRef = useRef();
-  console.log("openMenu", openMenu);
+  // console.log("openMenu", openMenu);
   return (
     <div ref={dropdownRef} className="flex items-center">
       <Dropdown

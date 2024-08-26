@@ -6,7 +6,12 @@ import SaveCurrentDocumentModal from "../DocumentEditor/documentAction/SaveCurre
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useDispatch, useSelector } from "react-redux";
 import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSelectedLayoutSegments,
+} from "next/navigation";
 import {
   createNewDocumentVersion,
   exportDocumentPdf,
@@ -16,10 +21,12 @@ import FolderNavigationHeader from "./FolderNavigationHeader";
 
 function DashboardHeader() {
   const appDispatch = useDispatch();
+  const params = useParams();
   const pathname = usePathname();
   const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
   const [showDocEditHeader, setShowEditHeader] = useState(false);
+
   const { folderListView, breadCrumbs: folderRoutes } = useSelector(
     (state) => state.folderNavigationReducer,
   );
@@ -27,23 +34,28 @@ function DashboardHeader() {
     (state) => state.documentVersioningReducer,
   );
   const { currentDocument } = useSelector((state) => state.documentReducer);
-  const [breadCrumbs, setBreadCrumbs] = useState([]);
+  const [breadCrumbs, setBreadCrumbs] = useState([
+    { id: 1, name: "wk one", href: "/dashboard/1" },
+    { id: 2, name: "wk two", href: "/dashboard/2/3" },
+  ]);
+  console.log("mad", currentDocument);
 
   useLayoutEffect(() => {
-    if (pathname.includes("/dashboard/doc-edit")) {
-      folderRoutes?.length > 0;
-      setBreadCrumbs(folderRoutes);
-      !showDocEditHeader && setShowEditHeader(true);
-    } else {
-      // console.log("segment", segments);
-      if (segments?.length > 0) {
-        setBreadCrumbs(segments);
+    if (pathname.startsWith("/dashboard")) {
+      let lastProjectId;
+      if (params?.slug) {
+        lastProjectId = params?.slug[params?.slug - 1];
+      } else if (params?.docId && currentDocument?.project_id) {
+        lastProjectId = currentDocument.project_id;
       } else {
-        setBreadCrumbs([]);
+        // breadCrumbs.length !== 0 && setBreadCrumbs([]);
+        // debugger;
+        // return;
       }
-      showDocEditHeader && setShowEditHeader(false);
+      //call Api to get breadcrumbs and
+      // updateBreadcrumbs(res);
     }
-  }, [pathname, folderRoutes]);
+  }, [params, currentDocument]);
 
   return (
     <header className="flex flex-col gap-3 pb-3 pt-3">
@@ -133,7 +145,7 @@ function DashboardHeader() {
           segments={segments}
         />
       )}
-      {/* <NavigationBreadCrumbs breadCrumbs={breadCrumbs} /> */}
+      <NavigationBreadCrumbs breadCrumbs={breadCrumbs} />
     </header>
   );
 
@@ -154,6 +166,27 @@ function DashboardHeader() {
         }),
       );
     }
+  }
+
+  async function updateBreadcrumbs(rawBreadcrumbs) {
+    // call api to get names of folderids
+    const breadcrumbPaths = rawBreadcrumbs.map((item, index) => ({
+      name: item.name,
+      href: `/dashboard/${rawBreadcrumbs
+        .slice(0, index + 1)
+        .map((item, index) => {
+          return String(item?.id);
+        })
+        .join("/")}`,
+    }));
+    setBreadCrumbs(breadcrumbPaths);
+    // appDispatch(folderNavigationAction.setBreadCrumbs(breadcrumbPaths));
+  }
+
+  function resetBreadcrumbs() {
+    setBreadCrumbs([]);
+
+    // appDispatch(folderNavigationAction.setBreadCrumbs([]));
   }
 }
 

@@ -1,11 +1,17 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import RemSizeImage from "./RemSizeImage";
+import { useRouter } from "next/navigation";
+import ClientPageDrawer from "../dashboard/clientPage/ClientPageDrawer";
 
 function NavigationBreadCrumbs({ breadCrumbs }) {
+  const router = useRouter();
+  const [openClientPage, setOpenClientPage] = useState(false);
+  console.log("bread", breadCrumbs);
   return (
     <>
       {breadCrumbs.length > 0 && (
-        <div className="flex gap-3 items-center">
+        <div className="flex items-center gap-3">
           {
             <RemSizeImage
               imagePath={"/assets/icons/bread-crumb.svg"}
@@ -20,7 +26,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                 return (
                   <li
                     key={index}
-                    className=" cursor-pointer flex gap-1 items-center text-[0.813rem]"
+                    className=" flex  items-center gap-1 !text-xs text-[0.813rem]"
                   >
                     <RemSizeImage
                       imagePath={"/assets/icons/arrow-down-gray.svg"}
@@ -29,15 +35,36 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                       alt={"Route"}
                       className={" -rotate-90"}
                     />
-                    <span className="flex items-center gap-2 leading-none bg-black-txt py-[0.35rem] px-3 rounded-md text-white font-bold">
-                      <RemSizeImage
-                        imagePath={"/assets/icons/client-folder-white.svg"}
-                        remWidth={0.9}
-                        remHeight={0.9}
-                        alt={"Route"}
-                      />
-                      <span>{route}</span>
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        onClick={() => {
+                          router.push(route.href);
+                        }}
+                        className="flex cursor-pointer items-center gap-2 rounded-md bg-black-txt px-3 py-[0.35rem] font-semibold leading-normal text-white"
+                      >
+                        <RemSizeImage
+                          imagePath={"/assets/icons/client-folder-white.svg"}
+                          remWidth={0.9}
+                          remHeight={0.9}
+                          alt={"Route"}
+                        />
+                        <span>{route?.name}</span>
+                      </span>
+                      <span
+                        onClick={() => {
+                          setOpenClientPage(true);
+                        }}
+                        className="flex cursor-pointer items-center gap-2 rounded-md bg-primary-blue px-3 py-[0.35rem] font-semibold leading-normal text-white"
+                      >
+                        <RemSizeImage
+                          imagePath={"/assets/icons/client-folder-white.svg"}
+                          remWidth={0.9}
+                          remHeight={0.9}
+                          alt={"Client"}
+                        />
+                        <span>Client Page</span>
+                      </span>
+                    </div>
                   </li>
                 );
               }
@@ -45,7 +72,10 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
               return (
                 <li
                   key={index}
-                  className="cursor-pointer flex gap-1 items-center text-[0.813rem]"
+                  className="flex cursor-pointer items-center gap-1 !text-xs"
+                  onClick={() => {
+                    router.push(route.href);
+                  }}
                 >
                   <RemSizeImage
                     imagePath={"/assets/icons/arrow-down-gray.svg"}
@@ -54,19 +84,29 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                     alt={"Route"}
                     className={" -rotate-90"}
                   />
-                  <span className="flex items-center gap-2 leading-none bg-secondary-blue py-[0.35rem] px-3 rounded-md font-semibold">
+                  <span className="flex items-center gap-2 rounded-md bg-secondary-blue px-3 py-[0.35rem] font-semibold leading-normal">
                     <RemSizeImage
                       imagePath={"/assets/icons/non-client-folder.svg"}
                       remWidth={0.9}
                       remHeight={0.9}
                       alt={"Route"}
                     />
-                    <span>{route}</span>
+                    <span>{route.name}</span>
                   </span>
                 </li>
               );
             })}
           </ul>
+          {openClientPage && (
+            <ClientPageDrawer
+              isOpen={openClientPage}
+              setIsOpen={setOpenClientPage}
+              onClose={() => {
+                setOpenClientPage(false);
+              }}
+              showFooter={false}
+            />
+          )}
         </div>
       )}
     </>

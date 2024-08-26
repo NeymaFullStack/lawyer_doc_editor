@@ -12,6 +12,7 @@ import { toggleCollapsibleListOpenState } from "@/utils/component-utils";
 import OptionButton from "./buttons/OptionButton";
 import LoganDropDown from "./LoganDropDown";
 import { uniqueId } from "lodash";
+import CopyButton from "./buttons/CopyButton";
 
 const CollapsibleList = ({
   items,
@@ -138,30 +139,30 @@ const CollapsibleItem = ({
   const { currentDocument } = useSelector((state) => state.documentReducer);
   const [articleInputValue, setArticleInputValue] = useState("");
   const [isAddButtonHovered, setisAddButtonHovered] = useState(false);
-  const copiedContent = useSelector(
-    (state) => state.documentReducer.copiedContent,
-  );
+  // const copiedContent = useSelector(
+  //   (state) => state.documentReducer.copiedContent,
+  // );
   const { collapsibleListOpenState } = useSelector(
     (state) => state.documentIndexingReducer,
   );
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  // const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
-  // Event handler to update cursor position
-  const handleMouseMove = (event) => {
-    setCursorPosition({ x: event.clientX, y: event.clientY });
-  };
-  useEffect(() => {
-    if (window !== undefined && copiedContent) {
-      // copiedContent?.id && window.
-      window.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      setCursorPosition({ x: 0, y: 0 });
-    };
-  }, [copiedContent]);
-  // const toggleOpen = () => setitem?.IsOpen(!item?.isOpen);
-  console.log(item.id, collapsibleItemOpenState?.isOpen);
+  // // Event handler to update cursor position
+  // const handleMouseMove = (event) => {
+  //   setCursorPosition({ x: event.clientX, y: event.clientY });
+  // };
+  // useEffect(() => {
+  //   if (window !== undefined && copiedContent) {
+  //     // copiedContent?.id && window.
+  //     window.addEventListener("mousemove", handleMouseMove);
+  //   }
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //     setCursorPosition({ x: 0, y: 0 });
+  //   };
+  // }, [copiedContent]);
+  // // const toggleOpen = () => setitem?.IsOpen(!item?.isOpen);
+  // console.log("copied", copiedContent);
 
   const content = (
     <div
@@ -324,11 +325,27 @@ const CollapsibleItem = ({
         {hovered &&
           (level > 0 || (level == 0 && articleParentType !== "document")) && (
             <div className="mr-2 flex items-center gap-2">
-              <button
+              <CopyButton
+                className="ml-3 hidden group-hover:inline-block"
                 onClick={(e) => {
                   appDispatch(
                     documentAction.setCopiedContent({
-                      content: item,
+                      title: item.title,
+                      index: item.index,
+                      id: item.id,
+                      type: item.articleType || item.type,
+                    }),
+                  );
+                  e.stopPropagation();
+                }}
+              />
+              {/* <button
+                onClick={(e) => {
+                  appDispatch(
+                    documentAction.setCopiedContent({
+                      title: item.title,
+                      index: item.index,
+                      id: item.id,
                       type: item.articleType || item.type,
                     }),
                   );
@@ -337,7 +354,7 @@ const CollapsibleItem = ({
                 className={`h-full w-[3.313rem] cursor-pointer items-center justify-center rounded-md bg-secondary-blue py-[0.15rem] text-xs font-medium text-primary-blue ${hovered ? "visible" : "invisible"} `}
               >
                 Copy
-              </button>
+              </button> */}
               <LoganDropDown
                 placement="bottomRight"
                 trigger={"click"}
@@ -405,7 +422,7 @@ const CollapsibleItem = ({
 
   return (
     <>
-      {copiedContent?.content && (
+      {/* {copiedContent?.content && (
         <div
           style={{
             left: cursorPosition.x + 5 + "px",
@@ -435,7 +452,7 @@ const CollapsibleItem = ({
             <span>{copiedContent?.content?.title}</span>
           </div>
         </div>
-      )}
+      )} */}
       {isDragAndDrop && articleAction ? (
         <Draggable draggableId={item?.id?.toString()} index={index}>
           {(provided, snapshot) => (

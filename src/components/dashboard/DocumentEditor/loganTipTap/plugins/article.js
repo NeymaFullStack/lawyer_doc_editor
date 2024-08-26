@@ -335,7 +335,7 @@ const ArticleExtention = Extension.create({
                   articleOccurance = 1;
                 }
               });
-              console.log("articlesList", articlesList);
+              // console.log("articlesList", articlesList);
               updateArticles(articlesList);
               if (tr.docChanged) {
                 dispatch(tr);

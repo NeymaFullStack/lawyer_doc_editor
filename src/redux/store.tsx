@@ -20,3 +20,5 @@ export const store = configureStore({
   },
   middleware: [thunk],
 });
+
+// export type RootState = ReturnType<typeof store.getState>;

@@ -1,3 +1,4 @@
+import CopyButton from "@/components/generic/buttons/CopyButton";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { copiedContentType } from "@/constants/enums";
 import { documentAction } from "@/redux/documentSlice";
@@ -22,25 +23,25 @@ function VariableField({
   });
 
   const [variable, setVariable] = useState(variableProperties);
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  // const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
-  // Event handler to update cursor position
-  const handleMouseMove = (event) => {
-    setCursorPosition({ x: event.clientX, y: event.clientY });
-  };
-  useEffect(() => {
-    if (window !== undefined && copiedContent) {
-      // copiedContent?.id && window.
-      window.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [copiedContent]);
+  // // Event handler to update cursor position
+  // const handleMouseMove = (event) => {
+  //   setCursorPosition({ x: event.clientX, y: event.clientY });
+  // };
+  // useEffect(() => {
+  //   if (window !== undefined && copiedContent) {
+  //     // copiedContent?.id && window.
+  //     window.addEventListener("mousemove", handleMouseMove);
+  //   }
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  // }, [copiedContent]);
   // console.log("copied", copiedContent);
   return (
     <div className="flex">
-      {copiedContent?.content?.variable &&
+      {/* {copiedContent?.content?.variable &&
         copiedContent?.content?.definition == variable?.definition && (
           <div
             style={{
@@ -59,7 +60,7 @@ function VariableField({
               {copiedContent?.content?.variable}
             </span>
           </div>
-        )}
+        )} */}
       <div className="group flex-1">
         <div className="flex w-full items-center gap-2">
           {editVariableState.variable ? (
@@ -117,45 +118,57 @@ function VariableField({
               )}
             </div>
           ) : (
-            <div
-              className={
-                "flex h-[1.5rem] items-center gap-2 " +
-                (variable.definition ? "group-hover:text-primary-blue" : "")
-              }
-            >
-              {variable.definition && (
-                <button
-                  onClick={() => {
-                    appDispatch(
-                      documentAction.setCopiedContent({
-                        content: variable,
-                        type: copiedContentType.Variable,
-                      }),
-                    );
-                  }}
-                  className=" m-auto hidden  h-full w-[3.313rem] items-center justify-center rounded-md bg-blue-gradient text-white group-hover:flex"
-                >
-                  Copy
-                </button>
-              )}
-              <span
-                onSelect={(e) => {
-                  e.preventDefault();
-                }}
-                className=" cursor-default "
-                onDoubleClick={() => {
-                  setEditVariableState({
-                    ...editVariableState,
-                    variable: true,
-                  });
-                }}
-              >
-                {variable?.variable}
-              </span>
-              {/* <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
-                {1}
-              </span> */}
-            </div>
+            <CopyButton
+              className="ml-3 hidden group-hover:inline-block"
+              onClick={(e) => {
+                e.stopPropagation();
+                appDispatch(
+                  documentAction.setCopiedContent({
+                    title: variable.definition,
+                    type: copiedContentType.Variable,
+                  }),
+                );
+              }}
+            />
+            // <div
+            //   className={
+            //     "flex h-[1.5rem] items-center gap-2 " +
+            //     (variable.definition ? "group-hover:text-primary-blue" : "")
+            //   }
+            // >
+            //   {variable.definition && (
+            //     <button
+            //       onClick={() => {
+            //         appDispatch(
+            //           documentAction.setCopiedContent({
+            //             title: variable.definition,
+            //             type: copiedContentType.Variable,
+            //           }),
+            //         );
+            //       }}
+            //       className=" m-auto hidden  h-full w-[3.313rem] items-center justify-center rounded-md bg-blue-gradient text-white group-hover:flex"
+            //     >
+            //       Copy
+            //     </button>
+            //   )}
+            //   <span
+            //     onSelect={(e) => {
+            //       e.preventDefault();
+            //     }}
+            //     className=" cursor-default "
+            //     onDoubleClick={() => {
+            //       setEditVariableState({
+            //         ...editVariableState,
+            //         variable: true,
+            //       });
+            //     }}
+            //   >
+            //     {variable?.variable}
+            //   </span>
+            //   {/* <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
+            //     {1}
+            //   </span> */}
+            // </div>
           )}
         </div>
         <div

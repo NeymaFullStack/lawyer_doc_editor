@@ -1,5 +1,27 @@
 import { documentActions, documentStatus } from "@/constants/enums";
 import { createSlice } from "@reduxjs/toolkit";
+import { object } from "zod";
+
+// export interface CopiedContent {
+//   type: string;
+//   title: string;
+//   index?: number | string;
+//   id?: number | string;
+// }
+
+// interface documentInitalState {
+//   gptQuery: {
+//     type: string;
+//     text: string;
+//   };
+//   editorUpdate: null | object;
+//   chatMessages: Array<object>;
+//   documentLoading: boolean;
+//   currentDocument: null | object;
+//   activeDocumentAction: string;
+//   exportDoc: boolean;
+//   copiedContent: CopiedContent | null;
+// }
 
 const documentInitalState = {
   gptQuery: { type: "usedTyped", text: "generate something" },

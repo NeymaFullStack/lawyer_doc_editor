@@ -26,11 +26,11 @@ import {
 function Directory({ client = false }) {
   const appDispatch = useDispatch();
   const pathname = usePathname();
-  const { slug } = useParams();
   const router = useRouter();
   const { folderListView, openModalType, refreshDirectory } = useSelector(
     (state) => state.folderNavigationReducer,
   );
+  const { slug } = useParams();
   const [directoryData, setDirectoryData] = useState({
     listData: [],
     foldersList: [],

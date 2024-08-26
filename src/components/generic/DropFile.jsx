@@ -4,8 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Dragger from "antd/es/upload/Dragger";
 import { Button } from "antd";
 import RemSizeImage from "./RemSizeImage";
+import { cn } from "@/utils/shadcn-utils";
 
-function DropFile({ onUpload, customClass, height }) {
+function DropFile({ onUpload, customClass, height, className, fileTypes }) {
   const [filehovering, setFileHovering] = useState(false);
 
   return (
@@ -29,13 +30,17 @@ function DropFile({ onUpload, customClass, height }) {
         e.preventDefault();
         console.log("hover");
       }}
+      className={className}
     >
       <Dragger
         // ref={dropRef}
-        accept={[`.docx`, ".pdf"]}
+        accept={fileTypes || [`.docx`, ".pdf"]}
         customRequest={onUpload}
         showUploadList={false}
-        className={`${filehovering ? "ln-logan-drop-area-active" : "ln-logan-drop-area"}`}
+        className={cn(
+          "ln-logan-drop-area",
+          filehovering && "ln-logan-drop-area-active",
+        )}
         multiple={false}
         rootClassName={customClass}
         height={height || "4.5rem"}
