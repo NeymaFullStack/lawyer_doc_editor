@@ -1,6 +1,5 @@
 "use client";
 import React, { useLayoutEffect, useState } from "react";
-import DocumentState from "./DocumentState";
 import { Button } from "antd";
 import SaveCurrentDocumentModal from "../DocumentEditor/documentAction/SaveCurrentDocumentModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
@@ -26,6 +25,7 @@ function DashboardHeader() {
   const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
   const [showDocEditHeader, setShowEditHeader] = useState(false);
+  // const [showDocEditHeader, setShowEditHeader] = useState(false);
 
   const { folderListView, breadCrumbs: folderRoutes } = useSelector(
     (state) => state.folderNavigationReducer,
@@ -38,19 +38,19 @@ function DashboardHeader() {
     { id: 1, name: "wk one", href: "/dashboard/1" },
     { id: 2, name: "wk two", href: "/dashboard/2/3" },
   ]);
-  console.log("mad", currentDocument);
+  console.log("mad", params);
 
   useLayoutEffect(() => {
     if (pathname.startsWith("/dashboard")) {
       let lastProjectId;
       if (params?.slug) {
         lastProjectId = params?.slug[params?.slug - 1];
+        !showDocEditHeader && setShowEditHeader(false);
       } else if (params?.docId && currentDocument?.project_id) {
         lastProjectId = currentDocument.project_id;
+        !showDocEditHeader && setShowEditHeader(true);
       } else {
-        // breadCrumbs.length !== 0 && setBreadCrumbs([]);
-        // debugger;
-        // return;
+        showDocEditHeader && setShowEditHeader(false);
       }
       //call Api to get breadcrumbs and
       // updateBreadcrumbs(res);
@@ -93,7 +93,7 @@ function DashboardHeader() {
             </Button>
             <Button
               onClick={async () => {
-                let responsePdf = await exportDocumentPdf(
+                let { data: responsePdf } = await exportDocumentPdf(
                   currentDocument?.id,
                   currentDocumentVersion?.version_id,
                 );
@@ -109,13 +109,8 @@ function DashboardHeader() {
                 // }
                 // console.log("responsePdf", responsePdf);
                 // const buffer = binaryStringToArrayBuffer(responsePdf);
-                const pdfBlob = new Blob([responsePdf.data], {
-                  type: "application/pdf",
-                });
-
-                const fileUrl = URL.createObjectURL(pdfBlob);
-                const w = window.open(fileUrl, "_blank");
-                w && w.focus();
+                console.log("responsePdf?.link", responsePdf?.link);
+                window.open(responsePdf?.link, "_blank", "noopener,noreferrer");
               }}
               icon={
                 <RemSizeImage

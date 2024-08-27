@@ -35,8 +35,7 @@ export const getAllNotifications = cache(async () => {
 
 export const markAllNotificationSeen = cache(async () => {
   try {
-    const res = await Api.get(markAllNotificationSeenUrl);
-    return res?.data;
+    Api.put(markAllNotificationSeenUrl);
   } catch (error) {
     //dispatch action for global error dialog box
     console.log("error 123", error);

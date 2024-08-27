@@ -1,12 +1,18 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import RemSizeImage from "../generic/RemSizeImage";
 import NotificationBox from "./NotificationBox";
-import { getAllNotifications } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import {
+  getAllNotifications,
+  markAllNotificationSeen,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { appAction } from "@/redux/appSlice";
 import { useSelector } from "react-redux";
+import EventSource from "@/utils/polyfills/eventSource";
 import { getNewNotificationsUrl } from "@/api/serviceUrl";
+import { getCookie } from "cookies-next";
 // const notifications = [
 //   {
 //     name: "Alexandra Martin",
@@ -59,10 +65,15 @@ function Notification() {
   const [unreadCount, setUnreadCount] = useState(0);
   const { notificationsList } = useSelector((state) => state.appReducer);
   useEffect(() => {
-    const eventSource = new EventSource(getNewNotificationsUrl);
+    const eventSource = new EventSource(`${getNewNotificationsUrl}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(getCookie("authToken"))}`,
+      },
+    });
 
     eventSource.onmessage = (event) => {
-      const newNotification = JSON.parse(event.data);
+      const newNotification = JSON.parse(JSON.parse(event.data));
+      console.log("newNotification", newNotification);
       let newNotificationList = [newNotification, ...notificationsList];
       const unreadCount = _.filter(newNotificationList, {
         status: "UNREAD",
@@ -75,7 +86,7 @@ function Notification() {
       eventSource.close();
     };
     return () => {
-      eventSource.close();
+      eventSource && eventSource.close();
     };
   }, [notificationsList]);
 
@@ -119,6 +130,7 @@ function Notification() {
 
   function onClose() {
     setIsNotificationOpen(false);
+    markAllNotificationSeen();
     if (notificationsList.length > 0) {
       const updatedItems = _.map(notificationsList, (item) =>
         _.assign({}, item, { status: "READ" }),
