@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 export default function middleware(req, res) {
   // Check if the user is logged in
   const token = req.cookies.get("authToken");
+  // console.log("meko", token, !!!token);
+  // !!!token && NextResponse.redirect(new URL(`/login`, req.url));
   const hasTokenExpired = isTokenExpired(token?.value);
+
   if (hasTokenExpired && req.nextUrl.pathname !== "/login") {
     return NextResponse.redirect(new URL(`/login`, req.url));
   } else if (!hasTokenExpired && req.nextUrl.pathname == "/login") {

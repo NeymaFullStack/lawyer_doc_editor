@@ -56,9 +56,11 @@ export type FormData = z.infer<typeof formSchema>;
 export function CompanyInformationForm({
   isEditing,
   onSaveChanges,
+  closeDrawer,
 }: {
   isEditing: boolean;
   onSaveChanges: (data: FormData) => void;
+  closeDrawer: () => void;
 }) {
   const appDispatch = useDispatch();
   const [isFileUploadModalOpen, setIsFileUploadModalOpen] =
@@ -154,6 +156,7 @@ export function CompanyInformationForm({
                               allowCopy: true,
                               onClickCopy: () => {
                                 handleCopy(fieldItem?.key);
+                                closeDrawer();
                               },
                             }}
                             placeholder={fieldItem.placeholder}
@@ -178,6 +181,7 @@ export function CompanyInformationForm({
                                   allowCopy: true,
                                   onClickCopy: () => {
                                     handleCopy(fieldItem?.key);
+                                    closeDrawer();
                                   },
                                 }}
                                 isEditing={isEditing}

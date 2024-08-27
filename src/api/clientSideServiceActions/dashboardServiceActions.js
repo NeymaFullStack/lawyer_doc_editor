@@ -8,6 +8,7 @@ import {
   exportDocumentPdfUrl,
   getAllNotificationsUrl,
   getAppendixContnetUrl,
+  getBreadCrumbsUrl,
   getClientFoldersListUrl,
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
@@ -45,6 +46,16 @@ export const markAllNotificationSeen = cache(async () => {
 export const getClientFolderList = cache(async () => {
   try {
     const res = await Api.get(getClientFoldersListUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+});
+
+export const getBreadCrumbs = cache(async (projectId) => {
+  try {
+    const res = await Api.get(`${getBreadCrumbsUrl}/${projectId}`);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

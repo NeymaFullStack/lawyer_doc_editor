@@ -7,13 +7,14 @@ export const userLoginUrl = "/auth/login";
 //app
 export const getAllNotificationsUrl = "/notification/all";
 export const markAllNotificationSeenUrl = "/notification/all/read";
-export const getNewNotificationsUrl =
-  "http://localhost:7003/notification/listen";
+export const getNewNotificationsUrl = "/notification/listen";
 
 // dashboard
 export const createConversationUrl = "/chat/conversation";
 export const getRecentDocumentsUrl = "/document/recent/list";
 export const getClientFoldersListUrl = "/folder/client/all";
+export const getBreadCrumbsUrl = "/folder/root/hierarchy";
+
 export const getFolderDetailsUrl = "/folder";
 export const getDocumentContentByVersionIdUrl = "/document/";
 export const createFolderUrl = "/folder";

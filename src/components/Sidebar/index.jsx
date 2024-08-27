@@ -11,20 +11,25 @@ import LoganDropDown from "../generic/LoganDropDown";
 import FolderDocCreation from "../dashboard/Navigation/FolderDocCreation";
 import WorkSpaceSelector from "./WorkSpaceSelector";
 import Notification from "./Notification";
+import CopiedTag from "@/components/generic/CopiedTag";
+import { useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
 
 function Sidebar() {
   const appDispatch = useDispatch();
   const activeMenuItem = useSelector(
     (state) => state?.appReducer?.activeMenuItem,
   );
+  const router = useRouter();
 
   return (
     <aside
       id="logo-sidebar"
-      className="absolute left-0 top-0 h-screen w-60 -translate-x-full text-xs transition-transform sm:translate-x-0"
+      className="absolute left-0 top-0 z-20 h-screen w-60 -translate-x-full text-xs transition-transform sm:translate-x-0"
       aria-label="Sidebar"
     >
       {<FolderDocCreation />}
+      {<CopiedTag />}
       <div className="h-full overflow-y-auto py-4">
         <div className="my-[1.875rem] mb-16 ml-5">
           <Link href="/dashboard">
@@ -185,7 +190,10 @@ function Sidebar() {
           <li className="pl-5">
             <div
               className={"flex cursor-pointer items-center gap-4"}
-              onClick={() => onClickMenuItem("dashboard")}
+              onClick={() => {
+                deleteCookie("authToken");
+                location.reload();
+              }}
             >
               <RemSizeImage
                 imagePath={"/assets/icons/logout-icon.svg"}

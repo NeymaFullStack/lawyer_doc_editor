@@ -72,6 +72,7 @@ function ClientPageDrawer({
         <CompanyInformationForm
           isEditing={isEditing}
           onSaveChanges={onSaveChanges}
+          closeDrawer={onClose}
         />
       }
     />

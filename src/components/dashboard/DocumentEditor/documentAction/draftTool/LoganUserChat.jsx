@@ -109,7 +109,7 @@ function LoganUserChat() {
         return (
           <div className="flex items-start gap-5 bg-two px-8 py-4 text-black">
             <RemSizeImage
-              imagePath={"/assets/icons/msg-user.svg"}
+              imagePath={"/assets/icons/user-img.svg"}
               remWidth={1.751}
               remHeight={1.751}
               alt={"User"}

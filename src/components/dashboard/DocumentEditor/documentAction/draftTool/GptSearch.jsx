@@ -108,12 +108,16 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                onSendQuery();
+                !documentLoading && onSendQuery();
               }
             }}
           />
           <div className="flex h-full w-[1rem] items-center gap-3">
-            <button onClick={onSendQuery}>
+            <button
+              onClick={() => {
+                !documentLoading && onSendQuery();
+              }}
+            >
               {chatQuery.length > 0 && (
                 <RemSizeImage
                   imagePath={

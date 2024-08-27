@@ -118,57 +118,42 @@ function VariableField({
               )}
             </div>
           ) : (
-            <CopyButton
-              className="ml-3 hidden group-hover:inline-block"
-              onClick={(e) => {
-                e.stopPropagation();
-                appDispatch(
-                  documentAction.setCopiedContent({
-                    title: variable.definition,
-                    type: copiedContentType.Variable,
-                  }),
-                );
-              }}
-            />
-            // <div
-            //   className={
-            //     "flex h-[1.5rem] items-center gap-2 " +
-            //     (variable.definition ? "group-hover:text-primary-blue" : "")
-            //   }
-            // >
-            //   {variable.definition && (
-            //     <button
-            //       onClick={() => {
-            //         appDispatch(
-            //           documentAction.setCopiedContent({
-            //             title: variable.definition,
-            //             type: copiedContentType.Variable,
-            //           }),
-            //         );
-            //       }}
-            //       className=" m-auto hidden  h-full w-[3.313rem] items-center justify-center rounded-md bg-blue-gradient text-white group-hover:flex"
-            //     >
-            //       Copy
-            //     </button>
-            //   )}
-            //   <span
-            //     onSelect={(e) => {
-            //       e.preventDefault();
-            //     }}
-            //     className=" cursor-default "
-            //     onDoubleClick={() => {
-            //       setEditVariableState({
-            //         ...editVariableState,
-            //         variable: true,
-            //       });
-            //     }}
-            //   >
-            //     {variable?.variable}
-            //   </span>
-            //   {/* <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
-            //     {1}
-            //   </span> */}
-            // </div>
+            <div
+              className={
+                "flex h-[1.5rem] items-center gap-2 " +
+                (variable.definition ? "group-hover:text-primary-blue" : "")
+              }
+            >
+              <CopyButton
+                className=" hidden group-hover:flex"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  appDispatch(
+                    documentAction.setCopiedContent({
+                      title: variable.definition,
+                      type: copiedContentType.Variable,
+                    }),
+                  );
+                }}
+              />
+              <span
+                onSelect={(e) => {
+                  e.preventDefault();
+                }}
+                className=" cursor-default "
+                onDoubleClick={() => {
+                  setEditVariableState({
+                    ...editVariableState,
+                    variable: true,
+                  });
+                }}
+              >
+                {variable?.variable}
+              </span>
+              {/* <span className="rounded-md bg-six px-[0.313rem] py-[0.063rem]">
+                {1}
+              </span> */}
+            </div>
           )}
         </div>
         <div

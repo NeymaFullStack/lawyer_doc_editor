@@ -483,7 +483,7 @@ const TiptapEditor = () => {
 
         <div
           ref={editorRef}
-          className="relative my-2 h-full  w-[90%] overflow-y-scroll  bg-white "
+          className="relative z-0 my-2 h-full  w-[90%] overflow-y-scroll  bg-white "
         >
           {activeDocumentVersion && (
             <EditorContent
@@ -536,17 +536,20 @@ const TiptapEditor = () => {
     let pos = transaction?.curSelection?.from;
     if (copiedContent && textInsertRef.current === true) {
       textInsertRef.current = false;
-      if (copiedContent.type === copiedContentType.Variable) {
-        const textContent = copiedContent?.content.definition;
+      if (
+        copiedContent.type === copiedContentType.Variable ||
+        copiedContent.type === copiedContentType.Company
+      ) {
+        const textContent = copiedContent?.title;
         editor.commands.insertContentAt(
           Number(pos),
-          `<span id=${copiedContent?.content?.variable} class="doc-variable">${textContent}</span>`,
+          `<span  class="doc-variable">${textContent}</span>`,
           { updateSelection: true },
         );
       } else {
         editor.commands.insertContentAt(
           Number(pos),
-          `<span id=${copiedContent?.content?.id} class=${copiedContent.type === copiedContentType.Appendix ? "doc-appendix-tag" : "doc-article-tag"}>Article ${copiedContent?.content.index}- ${copiedContent?.content?.title}</span>`,
+          `<span id=${copiedContent?.id} class=${copiedContent.type === copiedContentType.Appendix ? "doc-appendix-tag" : "doc-article-tag"}>${copiedContent.type === copiedContentType.Appendix ? "Appendix" : "Article"} ${copiedContent?.index} - ${copiedContent?.title}</span>`,
           { updateSelection: true },
         );
       }

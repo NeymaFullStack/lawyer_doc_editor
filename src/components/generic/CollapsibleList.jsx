@@ -174,7 +174,7 @@ const CollapsibleItem = ({
         setHovered(false);
         e.stopPropagation();
       }}
-      className={`${collapsibleItemOpenState?.isOpen && level == 0 ? "rounded-lg border " : `relative ${!last ? "border-b" : ""} ${!collapsibleItemOpenState?.isOpen && !item.input ? "py-2" : ""}`}`}
+      className={` ${collapsibleItemOpenState?.isOpen && level == 0 ? "rounded-lg border " : `relative ${!last ? "border-b" : ""} ${!collapsibleItemOpenState?.isOpen && !item.input ? "py-2" : ""}`}`}
     >
       <div
         onClick={() => {
@@ -185,7 +185,7 @@ const CollapsibleItem = ({
               appDispatch,
             );
         }}
-        className={`flex items-center justify-between ${collapsibleItemOpenState?.isOpen ? "border-b py-2" : " bg-white"} ${hovered ? "pb-2" : ""}`}
+        className={`group flex items-center justify-between ${collapsibleItemOpenState?.isOpen ? "border-b py-2" : " bg-white"} ${hovered ? "pb-2" : ""}`}
       >
         <div
           style={{ marginLeft: `${level / 2 + 0.15}rem` }}
@@ -292,7 +292,7 @@ const CollapsibleItem = ({
           </div>
           {articleAction && !collapsibleItemOpenState?.isOpen && (
             <div
-              className={`absolute -bottom-[.635rem]  left-0 right-0  flex w-full items-center  bg-white  ${hovered ? "visible" : "invisible"}`}
+              className={`invisible absolute  -bottom-[.635rem] left-0  right-0 flex w-full  items-center bg-white group-hover:visible`}
             >
               <span
                 className={`h-[1px] flex-1 ${isAddButtonHovered ? "bg-primary-blue" : "bg-secondary-blue"}`}
@@ -313,7 +313,7 @@ const CollapsibleItem = ({
                   imagePath={`/assets/icons/add-${isAddButtonHovered ? "white" : "blue"}-outline.svg`}
                   remWidth={0.65}
                   remHeight={1.125}
-                  alt={"Close"}
+                  alt={"add"}
                 />
               </button>
               <span
@@ -322,24 +322,23 @@ const CollapsibleItem = ({
             </div>
           )}
         </div>
-        {hovered &&
-          (level > 0 || (level == 0 && articleParentType !== "document")) && (
-            <div className="mr-2 flex items-center gap-2">
-              <CopyButton
-                className="ml-3 hidden group-hover:inline-block"
-                onClick={(e) => {
-                  appDispatch(
-                    documentAction.setCopiedContent({
-                      title: item.title,
-                      index: item.index,
-                      id: item.id,
-                      type: item.articleType || item.type,
-                    }),
-                  );
-                  e.stopPropagation();
-                }}
-              />
-              {/* <button
+        {(level > 0 || (level == 0 && articleParentType !== "document")) && (
+          <div className="mr-2 flex items-center gap-2">
+            <CopyButton
+              className="hidden group-hover:flex"
+              onClick={(e) => {
+                appDispatch(
+                  documentAction.setCopiedContent({
+                    title: item.title,
+                    index: item.index,
+                    id: item.id,
+                    type: item.articleType || item.type,
+                  }),
+                );
+                e.stopPropagation();
+              }}
+            />
+            {/* <button
                 onClick={(e) => {
                   appDispatch(
                     documentAction.setCopiedContent({
@@ -355,39 +354,37 @@ const CollapsibleItem = ({
               >
                 Copy
               </button> */}
-              <LoganDropDown
-                placement="bottomRight"
-                trigger={"click"}
-                baseElement={
-                  <button className="p-1" onClick={(e) => e.stopPropagation()}>
-                    <OptionButton />
-                  </button>
-                }
-                customDropDownMenu={({ closeMenu }) => (
-                  <ul className="text-md rounded-xl bg-white p-1 shadow-out-lg">
-                    <li
-                      onClick={() => {
-                        //delete itme logic
-                        articleAction("delete", item.id, level);
-                        closeMenu();
-                      }}
-                      className="flex cursor-pointer items-center gap-2 rounded-lg p-2 py-1 pr-4 hover:bg-five hover:text-primary-blue"
-                    >
-                      <RemSizeImage
-                        imagePath={"/assets/icons/delete-outline.svg"}
-                        remWidth={0.9}
-                        remHeight={0.9}
-                        alt={"delete"}
-                      />
-                      <span className=" font-medium text-black-txt">
-                        Delete
-                      </span>
-                    </li>
-                  </ul>
-                )}
-              />
-            </div>
-          )}
+            <LoganDropDown
+              placement="bottomRight"
+              trigger={"click"}
+              baseElement={
+                <button className="p-1" onClick={(e) => e.stopPropagation()}>
+                  <OptionButton />
+                </button>
+              }
+              customDropDownMenu={({ closeMenu }) => (
+                <ul className="text-md rounded-xl bg-white p-1 shadow-out-lg">
+                  <li
+                    onClick={() => {
+                      //delete itme logic
+                      articleAction("delete", item.id, level);
+                      closeMenu();
+                    }}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg p-2 py-1 pr-4 hover:bg-five hover:text-primary-blue"
+                  >
+                    <RemSizeImage
+                      imagePath={"/assets/icons/delete-outline.svg"}
+                      remWidth={0.9}
+                      remHeight={0.9}
+                      alt={"delete"}
+                    />
+                    <span className=" font-medium text-black-txt">Delete</span>
+                  </li>
+                </ul>
+              )}
+            />
+          </div>
+        )}
       </div>
       {collapsibleItemOpenState?.isOpen && item.children && (
         <Droppable droppableId={`${item.id}`} type={`subitem-${level}`}>

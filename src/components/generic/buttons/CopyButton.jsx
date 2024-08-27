@@ -1,36 +1,15 @@
 import { Button } from "@/components/shadcn-components/ui/button";
 import RemSizeImage from "../RemSizeImage";
 import { cn } from "@/utils/shadcn-utils";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { copiedContentType, tagInsertionType } from "@/constants/enums";
+import React, { useState } from "react";
 
 function CopyButton({ onClick, className, ...props }) {
   const [isBeingHovered, setIsBeingHovered] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const copiedContent = useSelector(
-    (state) => state.documentReducer.copiedContent,
-  );
-
-  // Event handler to update cursor position
-  const handleMouseMove = (event) => {
-    setCursorPosition({ x: event?.clientX, y: event?.clientY });
-  };
-  useEffect(() => {
-    if (window !== undefined && copiedContent) {
-      // copiedContent?.id && window.
-      window.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [copiedContent]);
-  // console.log("copied", copiedContent);
 
   return (
     <>
-      {copiedContent !== null &&
+      {/* {copiedContent !== null &&
         copiedContent?.title &&
         copiedContent?.type && (
           <div
@@ -38,17 +17,30 @@ function CopyButton({ onClick, className, ...props }) {
               left: cursorPosition.x + 5 + "px",
               top: cursorPosition.y + "px",
             }}
-            className={`fixed flex items-center gap-2 rounded-md border-[2px] border-dotted ${copiedContent.type === copiedContentType.Appendix ? "border-appendix-1 text-appendix-1" : " border-primary-blue text-primary-blue"}  p-1 `}
+            className={cn(
+              `fixed rounded-md border-[2px] border-dotted border-primary-blue p-1 px-2 text-primary-blue`,
+              copiedContent.type === copiedContentType.Appendix &&
+                "border-appendix-1 text-appendix-1",
+              copiedContent.type === copiedContentType.Variable &&
+                "border-var text-var",
+            )}
           >
-            <div className="ml-1 flex items-center gap-2 text-sm font-semibold ">
+            <div
+              className={cn(
+                " text-sm font-semibold ",
+                getTagIcon() && "flex items-center gap-2",
+              )}
+            >
               <div className="flex items-center">
-                <RemSizeImage
-                  className={"mr-1"}
-                  imagePath={`/assets/icons/docaction/${copiedContent.type === copiedContentType.Appendix ? "appendix" : "article-icon"}.svg`}
-                  remWidth={0.5}
-                  remHeight={0.5}
-                  alt={"article"}
-                />
+                {getTagIcon() && (
+                  <RemSizeImage
+                    className={"mr-1"}
+                    imagePath={`/assets/icons/docaction/${getTagIcon()}.svg`}
+                    remWidth={0.5}
+                    remHeight={0.5}
+                    alt={"article"}
+                  />
+                )}
                 {copiedContent.type === copiedContentType.Appendix &&
                   `Appendix ${copiedContent?.index} -`}
                 {copiedContent.type === copiedContentType.Appendix &&
@@ -57,11 +49,12 @@ function CopyButton({ onClick, className, ...props }) {
               <span>{copiedContent?.title}</span>
             </div>
           </div>
-        )}
+        )} */}
       <Button
         onClick={(e) => {
           onClick(e);
           setIsCopied(true);
+          e.stopPropagation();
         }}
         onMouseEnter={() => setIsBeingHovered(true)}
         onMouseLeave={() => {
@@ -80,7 +73,7 @@ function CopyButton({ onClick, className, ...props }) {
             className="mr-2"
           />
         )}
-        copy
+        <span>copy</span>
       </Button>
     </>
   );

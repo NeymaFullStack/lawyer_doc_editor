@@ -8,12 +8,12 @@ import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
 import {
   useParams,
   usePathname,
-  useRouter,
   useSelectedLayoutSegments,
 } from "next/navigation";
 import {
   createNewDocumentVersion,
   exportDocumentPdf,
+  getBreadCrumbs,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import FolderNavigationHeader from "./FolderNavigationHeader";
@@ -25,33 +25,31 @@ function DashboardHeader() {
   const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
   const [showDocEditHeader, setShowEditHeader] = useState(false);
-  // const [showDocEditHeader, setShowEditHeader] = useState(false);
 
-  const { folderListView, breadCrumbs: folderRoutes } = useSelector(
+  const { folderListView } = useSelector(
     (state) => state.folderNavigationReducer,
   );
   const { currentDocumentVersion } = useSelector(
     (state) => state.documentVersioningReducer,
   );
   const { currentDocument } = useSelector((state) => state.documentReducer);
-  const [breadCrumbs, setBreadCrumbs] = useState([
-    { id: 1, name: "wk one", href: "/dashboard/1" },
-    { id: 2, name: "wk two", href: "/dashboard/2/3" },
-  ]);
+  const [breadCrumbs, setBreadCrumbs] = useState([]);
   console.log("mad", params);
 
   useLayoutEffect(() => {
     if (pathname.startsWith("/dashboard")) {
       let lastProjectId;
       if (params?.slug) {
-        lastProjectId = params?.slug[params?.slug - 1];
-        !showDocEditHeader && setShowEditHeader(false);
+        lastProjectId = params?.slug[params?.slug?.length - 1];
+        showDocEditHeader && setShowEditHeader(false);
       } else if (params?.docId && currentDocument?.project_id) {
         lastProjectId = currentDocument.project_id;
         !showDocEditHeader && setShowEditHeader(true);
       } else {
         showDocEditHeader && setShowEditHeader(false);
+        setBreadCrumbs([]);
       }
+      lastProjectId && fetchBreadCrumbs(lastProjectId);
       //call Api to get breadcrumbs and
       // updateBreadcrumbs(res);
     }
@@ -140,7 +138,9 @@ function DashboardHeader() {
           segments={segments}
         />
       )}
-      <NavigationBreadCrumbs breadCrumbs={breadCrumbs} />
+      {breadCrumbs.length > 0 && (
+        <NavigationBreadCrumbs breadCrumbs={breadCrumbs} />
+      )}
     </header>
   );
 
@@ -163,10 +163,15 @@ function DashboardHeader() {
     }
   }
 
+  async function fetchBreadCrumbs(projectId) {
+    const { data } = await getBreadCrumbs(projectId);
+    data?.length > 0 && updateBreadcrumbs(data);
+  }
+
   async function updateBreadcrumbs(rawBreadcrumbs) {
     // call api to get names of folderids
     const breadcrumbPaths = rawBreadcrumbs.map((item, index) => ({
-      name: item.name,
+      name: item.title,
       href: `/dashboard/${rawBreadcrumbs
         .slice(0, index + 1)
         .map((item, index) => {

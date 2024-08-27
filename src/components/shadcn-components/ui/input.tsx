@@ -57,7 +57,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </span>
         {allowCopy && (
           <CopyButton
-            className="ml-3 hidden group-hover:inline-block"
+            className="ml-3 hidden group-hover:flex"
             onClick={onClickCopy}
           />
         )}

@@ -65,26 +65,32 @@ function Notification() {
   const [unreadCount, setUnreadCount] = useState(0);
   const { notificationsList } = useSelector((state) => state.appReducer);
   useEffect(() => {
-    const eventSource = new EventSource(`${getNewNotificationsUrl}`, {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(getCookie("authToken"))}`,
-      },
-    });
+    let NotificatioEventUrl = `http://localhost:7003${getNewNotificationsUrl}`;
+    // let NotificatioEventUrl = `http://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:7003${getNewNotificationsUrl}`;
+    let eventSource;
+    if (getCookie("authToken")) {
+      eventSource = new EventSource(`${NotificatioEventUrl}`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(getCookie("authToken"))}`,
+        },
+      });
 
-    eventSource.onmessage = (event) => {
-      const newNotification = JSON.parse(JSON.parse(event.data));
-      console.log("newNotification", newNotification);
-      let newNotificationList = [newNotification, ...notificationsList];
-      const unreadCount = _.filter(newNotificationList, {
-        status: "UNREAD",
-      }).length;
-      setUnreadCount(unreadCount);
-      appDispatch(appAction.setNotificationsList(newNotificationList));
-    };
+      eventSource.onmessage = (event) => {
+        const newNotification = JSON.parse(JSON.parse(event.data));
+        console.log("newNotification", newNotification);
+        let newNotificationList = [newNotification, ...notificationsList];
+        const unreadCount = _.filter(newNotificationList, {
+          status: "UNREAD",
+        }).length;
+        setUnreadCount(unreadCount);
+        appDispatch(appAction.setNotificationsList(newNotificationList));
+      };
 
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
+      eventSource.onerror = () => {
+        eventSource.close();
+      };
+    }
+
     return () => {
       eventSource && eventSource.close();
     };
@@ -119,7 +125,7 @@ function Notification() {
   );
   async function getAllNotification() {
     const res = await getAllNotifications();
-    if (res.length > 0) {
+    if (res?.length > 0) {
       const unreadCount = _.filter(res, {
         status: "UNREAD",
       }).length;

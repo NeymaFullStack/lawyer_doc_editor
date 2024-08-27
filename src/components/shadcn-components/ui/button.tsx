@@ -26,7 +26,7 @@ const buttonVariants = cva(
           "border border-primary-blue text-primary-blue bg-white",
         "primary-blue-1": "bg-secondary-blue text-primary-blue",
         "primary-blue-1-dotted":
-          "bg-secondary-blue text-primary-blue border border-dotted border-primary-blue",
+          "flex items-center bg-secondary-blue text-primary-blue border border-dotted border-primary-blue",
       },
       size: {
         default: "h-9 px-3 py-2",
