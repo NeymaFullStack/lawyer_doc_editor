@@ -11,9 +11,7 @@ function FolderNavigationHeader({ folderListView = false, segments }) {
 
   return (
     <div className="flex w-full items-center justify-between">
-      <div className="w-[50%]">
-        <LoganAutoComplete />
-      </div>
+      <div className="w-[50%]">{/* <LoganAutoComplete /> */}</div>
       <div className="mr-4 flex items-center gap-3">
         <div className="flex items-center gap-[0.688rem] rounded-[0.43rem] bg-six px-[0.946rem] py-[0.43rem]">
           {folderListView ? (

@@ -1,32 +1,45 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import React from "react";
+import React, { useState } from "react";
 
 function DocFolder({ onClickFolder, folder, nonClient = false }) {
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <div
+      onMouseEnter={() => {
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+      }}
       onClick={() => {
         onClickFolder(folder);
       }}
-      className="flex cursor-pointer items-center justify-between rounded-xl bg-white p-5 py-4 pr-3 text-xs font-semibold text-black-txt shadow-out "
+      className="group flex cursor-pointer items-center rounded-xl bg-white p-5  py-4 text-xs  font-semibold text-black-txt shadow-out hover:bg-secondary-blue "
     >
-      <div className="flex items-center gap-3">
-        <RemSizeImage
-          imagePath={
-            nonClient
-              ? "/assets/icons/non-client-folder.svg"
-              : "/assets/icons/client-folder.svg"
-          }
-          remWidth={1.313}
-          remHeight={1.313}
-          alt={"Client Folder"}
-        />
-        <span>{folder?.title}</span>
+      <div className="flex  max-w-[85%] items-center gap-3">
+        <div className="min-w-fit">
+          <RemSizeImage
+            imagePath={
+              nonClient
+                ? "/assets/icons/non-client-folder.svg"
+                : isHovered
+                  ? "/assets/icons/client-folder-blue-bg.svg"
+                  : "/assets/icons/client-folder.svg"
+            }
+            remWidth={1.313}
+            remHeight={1.313}
+            alt={"Client Folder"}
+          />
+        </div>
+        <span className="truncate group-hover:text-primary-blue">
+          {folder?.title}
+        </span>
       </div>
       <button
-        className="ml-2 "
         onClick={(e) => {
           e.stopPropagation();
         }}
+        className="ml-auto"
       >
         <RemSizeImage
           imagePath={"/assets/icons/blue-option-hoz.svg"}

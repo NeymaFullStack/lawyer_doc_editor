@@ -54,13 +54,13 @@ const formSchema = z.object({
 export type FormData = z.infer<typeof formSchema>;
 
 export function CompanyInformationForm({
-  isEditing,
+  isEditing = true,
   onSaveChanges,
-  closeDrawer,
+  closeDrawer = () => {},
 }: {
-  isEditing: boolean;
+  isEditing?: boolean;
   onSaveChanges: (data: FormData) => void;
-  closeDrawer: () => void;
+  closeDrawer?: () => void;
 }) {
   const appDispatch = useDispatch();
   const [isFileUploadModalOpen, setIsFileUploadModalOpen] =

@@ -3,22 +3,30 @@ import React, { useState } from "react";
 import RemSizeImage from "./RemSizeImage";
 import { useRouter } from "next/navigation";
 import ClientPageDrawer from "../dashboard/clientPage/ClientPageDrawer";
+import { dashboardRoute } from "@/constants/routes";
 
 function NavigationBreadCrumbs({ breadCrumbs }) {
   const router = useRouter();
   const [openClientPage, setOpenClientPage] = useState(false);
+  const [clientRoute, setClientRoute] = useState("");
   console.log("bread", breadCrumbs);
   return (
     <>
       {breadCrumbs.length > 0 && (
         <div className="flex items-center gap-3">
           {
-            <RemSizeImage
-              imagePath={"/assets/icons/bread-crumb.svg"}
-              remWidth={1.023}
-              remHeight={1.023}
-              alt={"New"}
-            />
+            <button
+              onClick={() => {
+                router.push(dashboardRoute);
+              }}
+            >
+              <RemSizeImage
+                imagePath={"/assets/icons/bread-crumb.svg"}
+                remWidth={1.023}
+                remHeight={1.023}
+                alt={"New"}
+              />
+            </button>
           }
           <ul className="flex items-center gap-2">
             {breadCrumbs.map((route, index) => {
@@ -53,6 +61,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                       <span
                         onClick={() => {
                           setOpenClientPage(true);
+                          setClientRoute(route.href);
                         }}
                         className="flex cursor-pointer items-center gap-2 rounded-md bg-primary-blue px-3 py-[0.35rem] font-semibold leading-normal text-white"
                       >
@@ -99,6 +108,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
           </ul>
           {openClientPage && (
             <ClientPageDrawer
+              clientRoute={clientRoute}
               isOpen={openClientPage}
               setIsOpen={setOpenClientPage}
               onClose={() => {

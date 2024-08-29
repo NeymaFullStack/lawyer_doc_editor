@@ -14,6 +14,7 @@ import Notification from "./Notification";
 import CopiedTag from "@/components/generic/CopiedTag";
 import { useRouter } from "next/navigation";
 import { deleteCookie } from "cookies-next";
+import { dashboardRoute } from "@/constants/routes";
 
 function Sidebar() {
   const appDispatch = useDispatch();
@@ -32,17 +33,20 @@ function Sidebar() {
       {<CopiedTag />}
       <div className="h-full overflow-y-auto py-4">
         <div className="my-[1.875rem] mb-16 ml-5">
-          <Link href="/dashboard">
-            <div className={"w-[50%]"}>
-              <Image
-                src="/assets/icons/logan-logo.svg"
-                height={25}
-                width={100}
-                alt="Logan"
-                layout="responsive"
-              />
-            </div>
-          </Link>
+          <div
+            className={"w-[50%] cursor-pointer"}
+            onClick={() => {
+              router.push(dashboardRoute);
+            }}
+          >
+            <Image
+              src="/assets/icons/logan-logo.svg"
+              height={25}
+              width={100}
+              alt="Logan"
+              layout="responsive"
+            />
+          </div>
         </div>
         <WorkSpaceSelector />
         <LoganDropDown

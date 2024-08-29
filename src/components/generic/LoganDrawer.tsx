@@ -13,7 +13,6 @@ export interface LoganDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   setIsOpen: () => void;
-
   header?: React.ReactNode;
   body?: React.ReactNode;
   showFooter?: boolean;
@@ -38,7 +37,7 @@ const LoganDrawer: React.FC<LoganDrawerProps> = ({
         aria-placeholder=""
         className="drw-content ml-auto h-full w-[45vw] rounded-none border-none bg-collapse  focus-visible:!outline-0"
       >
-        <DrawerHeader className=" shadow-out-b  border-b-[1px] border-b-secondary-blue p-4 px-6">
+        <DrawerHeader className=" border-b-[1px]  border-b-secondary-blue p-4 px-6 shadow-out-b">
           {header}
         </DrawerHeader>
         <div className="p-8">{body}</div>

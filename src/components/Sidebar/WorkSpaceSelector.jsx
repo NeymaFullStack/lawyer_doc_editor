@@ -9,7 +9,7 @@ import RemSizeImage from "../generic/RemSizeImage";
 import { debounce } from "lodash";
 function WorkSpaceSelector() {
   let [isSelectorHovered, setIsSelectorHovered] = useState(false);
-  let [isDropDownOpen, SetIsDropDownOpen] = useState(false);
+  let [isDropDownOpen, setIsDropDownOpen] = useState(false);
   let [dropDownList, setDropDownList] = useState([]);
   let containerRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,7 +94,7 @@ function WorkSpaceSelector() {
   return (
     <div
       onClick={() => {
-        SetIsDropDownOpen(true);
+        setIsDropDownOpen(true);
       }}
       onMouseEnter={() => {
         setIsSelectorHovered(true);
@@ -120,7 +120,13 @@ function WorkSpaceSelector() {
           </span>
         </div>
 
-        <button className="ml-2">
+        <button
+          className="ml-2"
+          onClick={(e) => {
+            setIsDropDownOpen((prev) => !prev);
+            e.stopPropagation();
+          }}
+        >
           <RemSizeImage
             imagePath={`/assets/icons/${isSelectorHovered ? "solid-blue-arrowdown-icon" : "solid-lightblue-arrowdown-icon"}.svg`}
             remWidth={1.343}
@@ -200,7 +206,7 @@ function WorkSpaceSelector() {
   );
 
   function onClose() {
-    SetIsDropDownOpen(false);
+    setIsDropDownOpen(false);
   }
 }
 

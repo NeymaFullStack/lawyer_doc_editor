@@ -22,6 +22,13 @@ export const dtYYMMDD12hrFormat = (date, current = false) => {
   return formattedDateTime;
 };
 
+export const dtYYMMDDat12hrFormat = (date, current = false) => {
+  let formattedDate = dayjs(date).format("YYYY-MM-DD");
+  let formattedTime = current ? "Now" : dayjs(date).format("h:mmA");
+  let formattedDateTime = `${formattedDate} at ${formattedTime}`;
+  return formattedDateTime;
+};
+
 export const getTimePassed = (dateTime) => {
   const now = dayjs();
   const past = dayjs(dateTime);

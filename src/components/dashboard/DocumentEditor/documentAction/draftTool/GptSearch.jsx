@@ -5,7 +5,7 @@ import {
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { documentAction } from "@/redux/documentSlice";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 let recognition;
@@ -23,6 +23,8 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
   const { documentLoading, currentDocument } = useSelector(
     (state) => state.documentReducer,
   );
+  const textareaRef = useRef(null);
+
   const { currentDocumentVersion } = useSelector(
     (state) => state.documentVersioningReducer,
   );
@@ -57,91 +59,85 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
   return (
     <div
       className={
-        "bg-two p-2 " +
-        (isTooltip ? "w-full rounded-lg shadow-out-lg" : "border-t-[1px]  px-4")
+        "flex gap-2 bg-two p-2 py-2" +
+        (isTooltip
+          ? "w-full rounded-lg shadow-out-lg"
+          : " border-t-[1px]  px-2")
       }
       aria-label="Chat Field"
     >
-      <div className="flex gap-2">
-        {isTooltip && (
-          <button onClick={onCloseToolTip}>
-            <RemSizeImage
-              imagePath={"/assets/icons/cross-icon.svg"}
-              remWidth={1.25}
-              remHeight={1.125}
-              alt={"Close"}
-            />
-            {/* <Image
-              src={"/assets/icons/cross-icon.svg"}
-              width={20}
-              height={20}
-              alt="Send Button"
-            /> */}
-          </button>
-        )}
-        <button onClick={listening ? stopListening : startListening}>
+      {isTooltip && (
+        <button onClick={onCloseToolTip}>
           <RemSizeImage
-            imagePath={"/assets/icons/mike-icon.svg"}
-            remWidth={isTooltip ? 2 : 2.5}
-            remHeight={isTooltip ? 2 : 2.5}
-            alt={"Mike"}
+            imagePath={"/assets/icons/cross-icon.svg"}
+            remWidth={1.25}
+            remHeight={1.125}
+            alt={"Close"}
           />
         </button>
-        <div
+      )}
+      <button
+        onClick={listening ? stopListening : startListening}
+        className="mb-auto"
+      >
+        <RemSizeImage
+          imagePath={"/assets/icons/mike-icon.svg"}
+          remWidth={isTooltip ? 2 : 2.5}
+          remHeight={isTooltip ? 2 : 2.5}
+          alt={"Mike"}
+        />
+      </button>
+      <div
+        className={"flex flex-1 items-center gap-2 rounded-lg bg-six px-3 py-1"}
+      >
+        <textarea
+          name={"query"}
+          disabled={documentLoading}
+          autoComplete="off"
+          autoFocus
+          ref={textareaRef}
+          value={chatQuery}
           className={
-            " flex flex-1 items-center gap-2 rounded-lg bg-six px-3 " +
-            (!isTooltip ? "h-[2.5rem]" : "h-[2rem]")
+            "flex-1  bg-six px-2 pl-1 text-xs  text-black-txt outline-none " +
+            (!isTooltip
+              ? "h-[1rem] max-h-[8rem] resize-none overflow-hidden"
+              : "h-[2.5rem]")
           }
-        >
-          <input
-            disabled={documentLoading}
-            autoComplete="off"
-            autoFocus
-            value={chatQuery}
-            type="text"
-            className={
-              " h-[100%] flex-1 bg-six px-3 pl-1 text-xs text-black-txt outline-none "
+          style={{ overflowY: "16px", minHeight: "16px" }}
+          onChange={(e) => {
+            setChatQuery(e.target.value);
+            // e.target.style.height = "auto"; // Reset the height
+            e.target.style.height = "1rem";
+            e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scrollHeight
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              !documentLoading && onSendQuery();
             }
-            onChange={(e) => {
-              setChatQuery(e.target.value);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                !documentLoading && onSendQuery();
-              }
-            }}
-          />
-          <div className="flex h-full w-[1rem] items-center gap-3">
-            <button
-              onClick={() => {
-                !documentLoading && onSendQuery();
-              }}
-            >
-              {chatQuery.length > 0 && (
-                <RemSizeImage
-                  imagePath={
-                    isTooltip
-                      ? "/assets/icons/right-tick.svg"
-                      : "/assets/icons/send-icon.svg"
-                  }
-                  remWidth={1.173}
-                  remHeight={1.082}
-                  alt={"Send Button"}
-                />
-              )}
-            </button>
-          </div>
-        </div>
+          }}
+        />
 
-        {/* <Image
-            onClick={listening ? stopListening : startListening}
-            className=" cursor-pointer"
-            src={"/assets/icons/mike-icon.svg"}
-            width={32}
-            height={32}
-            alt="Highlighter"
-          /> */}
+        <div className="flex h-full w-[1rem] items-center gap-3">
+          <button
+            onClick={() => {
+              !documentLoading && onSendQuery();
+            }}
+          >
+            {chatQuery.length > 0 && (
+              <RemSizeImage
+                imagePath={
+                  isTooltip
+                    ? "/assets/icons/right-tick.svg"
+                    : "/assets/icons/send-icon.svg"
+                }
+                remWidth={1.173}
+                remHeight={1.082}
+                alt={"Send Button"}
+              />
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

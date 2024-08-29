@@ -1,14 +1,15 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import React from "react";
 import parse from "html-react-parser";
+import { dtYYMMDDat12hrFormat } from "@/utils/dateUtils";
 
-function DocFile({ onClickDoc, doc, nonClient = false }) {
+function DocFile({ onClickDoc, doc, nonClient = false, ...props }) {
   return (
     <div
       onClick={() => {
         onClickDoc(doc);
       }}
-      className={`flex w-[13rem] flex-col gap-2 ${
+      className={`flex w-[13rem] flex-col gap-2 hover:bg-secondary-blue ${
         nonClient ? "bg-blanc" : "bg-six"
       } cursor-pointer rounded-lg px-4 py-3`}
     >
@@ -27,8 +28,8 @@ function DocFile({ onClickDoc, doc, nonClient = false }) {
           <span>Intellectual Property Portfolio</span>
         </span>
       </div>
-      <h3 className=" text-xs font-semibold text-black ">
-        {doc.document_name}
+      <h3 className=" truncate text-xs font-semibold text-black">
+        {doc?.document_name}
       </h3>
       <div className="h-[5.1rem] overflow-y-hidden bg-white p-4 pb-1">
         <div className="h-[98%] overflow-y-hidden">
@@ -38,7 +39,7 @@ function DocFile({ onClickDoc, doc, nonClient = false }) {
         </div>
       </div>
       <div className="mt-1 flex items-center justify-between text-[0.48rem]">
-        <span>Last modified on 10-24-2023 at 9:27 am</span>
+        <span>Last modified on {dtYYMMDDat12hrFormat(doc?.created_at)}</span>
         <span
           onClick={(e) => {
             e.stopPropagation();

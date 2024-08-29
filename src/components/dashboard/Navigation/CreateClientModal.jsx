@@ -6,6 +6,7 @@ import { createFolder } from "@/api/clientSideServiceActions/dashboardServiceAct
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { modalType } from "./FolderDocCreation";
+import { CompanyInformationForm } from "../clientPage/ClientPageBody";
 
 function CreateClientModal({
   open,
@@ -14,6 +15,7 @@ function CreateClientModal({
   formValues: { clientName = "" },
 }) {
   const appDispatch = useDispatch();
+  const [showClientDetails, setShowClientDetails] = useState(false);
   // console.log("clientName", clientName);
   return (
     <>
@@ -22,79 +24,104 @@ function CreateClientModal({
         modalOpen={open}
         width={"43.188rem"}
         footer
+        className={"overflow-hidden"}
         customFooter={
-          <div className="mt-2 flex items-center gap-3">
-            <Button
-              onClick={() => {
-                onClickCreateDoc();
-              }}
-              icon={
-                <RemSizeImage
-                  imagePath={"/assets/icons/add-white.svg"}
-                  remWidth={1.343}
-                  remHeight={1.343}
-                  alt={"Add"}
-                />
-              }
-              className={`btn text-xs ${
-                clientName.length > 0
-                  ? "btn--primary"
-                  : "!bg-secondary-blue  text-disable-blu hover:!text-disable-blu"
-              } `}
-            >
-              Create Your Client First Document
-            </Button>
-            <span>or</span>
-            <Button
-              onClick={() => {
-                clientName.length > 1 && onClickSaveClose();
-              }}
-              className={`btn btn--primary-trans ${
-                clientName.length < 1 && "cursor-default opacity-30"
-              }`}
-            >
-              Save and Close
-            </Button>
-          </div>
+          <>
+            {showClientDetails ? (
+              <div className="mt-4 flex items-center gap-3">
+                <Button
+                  onClick={() => {
+                    onClickCreateDoc();
+                  }}
+                  icon={
+                    <RemSizeImage
+                      imagePath={"/assets/icons/add-white.svg"}
+                      remWidth={1.343}
+                      remHeight={1.343}
+                      alt={"Add"}
+                    />
+                  }
+                  className={`btn text-xs ${
+                    clientName.length > 0
+                      ? "btn--primary"
+                      : "!bg-secondary-blue  text-disable-blu hover:!text-disable-blu"
+                  } `}
+                >
+                  Create Your Client First Document
+                </Button>
+                <span>or</span>
+                <Button
+                  onClick={() => {
+                    clientName.length > 1 && onClickSaveClose();
+                  }}
+                  className={`btn btn--primary-trans ${
+                    clientName.length < 1 && "cursor-default opacity-30"
+                  }`}
+                >
+                  Save and Close
+                </Button>
+              </div>
+            ) : (
+              <Button
+                onClick={() => {
+                  clientName.length > 0 && setShowClientDetails(true);
+                }}
+                className={`btn btn--primary`}
+              >
+                Continue
+              </Button>
+            )}
+          </>
         }
       >
-        <h2 className="text-2xl font-bold text-black">New Client</h2>
-        <div className="mt-4">
-          <Form
-            labelCol={{ span: 24 }} // Adjust label column span as needed
-            wrapperCol={{ span: 24 }} // Adjust wrapper column span as needed
-            validateTrigger={[]}
-          >
-            <Form.Item
-              initialValue={clientName}
-              name="clientName"
-              label={"Client Name *"}
-              rules={[{ required: true, message: "Field Required" }]}
+        <h2 className="text-2xl font-bold text-black">
+          {showClientDetails ? (
+            <>
+              <span text>Want to</span>
+              <span className="text-primary-blue">add more</span>
+              <span>about your client?</span>
+              <span className="font-medium">{`(Optional)`}</span>
+            </>
+          ) : (
+            <>
+              <span>New</span> <span className="text-primary-blue">Client</span>
+            </>
+          )}
+        </h2>
+        {showClientDetails && (
+          <p className="mt-3 text-xs">
+            You can always add or update these details later from the Client
+            Page.
+          </p>
+        )}
+        <div className="no-scrollbar  my-4 max-h-[70vh] overflow-y-scroll">
+          {showClientDetails ? (
+            <div className="my-8">
+              <CompanyInformationForm onSaveChanges={(data) => {}} />
+            </div>
+          ) : (
+            <Form
+              labelCol={{ span: 24 }} // Adjust label column span as needed
+              wrapperCol={{ span: 24 }} // Adjust wrapper column span as needed
+              validateTrigger={[]}
             >
-              <Input
-                value={clientName}
-                onChange={(e) => {
-                  saveDocFolderFieldValues({ clientName: e.target.value });
-                }}
-                autoComplete="off"
-                placeholder="Enter your name"
-              />
-            </Form.Item>
-          </Form>
-          {/* <label
-            htmlFor="doc-name"
-            className="text-[0.784rem] text-black font-semibold mt-10"
-          >
-            Client Name *
-          </label>
-          <input
-            autoComplete="off"
-            onChange={(e) => setClientName(e.target.value)}
-            value={clientName}
-            id="folder-name"
-            type="text"
-            className="my-4 focus:border-primary-blue border-[0.063rem] w-full border-secondary-blue h-[2.813rem] mt-2 rounded-xl pl-4 text-primary-gray text-sm"
-          ></input> */}
+              <Form.Item
+                initialValue={clientName}
+                name="clientName"
+                label={"Client Name *"}
+                rules={[{ required: true, message: "Field Required" }]}
+              >
+                <Input
+                  value={clientName}
+                  onChange={(e) => {
+                    saveDocFolderFieldValues({ clientName: e.target.value });
+                  }}
+                  autoComplete="off"
+                  placeholder="Enter your name"
+                />
+              </Form.Item>
+            </Form>
+          )}
         </div>
       </LoganModal>
     </>

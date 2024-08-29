@@ -44,8 +44,17 @@
   }
 }
 .ant-modal {
+  &-content {
+    max-height: 90vh !important;
+  }
+  margin: 0 !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) !important;
   .ant-modal-footer {
     margin: 0 !important;
+    // position: absolute !important;
+    // bottom: 0 !important;
   }
 
   .ant-modal-close {

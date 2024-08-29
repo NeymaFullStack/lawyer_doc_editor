@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, { experimental_taintObjectReference, useState } from "react";
 import LoganDrawer, { LoganDrawerProps } from "../../generic/LoganDrawer";
 import RemSizeImage from "../../generic/RemSizeImage";
 import { Button } from "../../shadcn-components/ui/button";
 import { DrawerTitle } from "../../shadcn-components/ui/drawer";
 import { CompanyInformationForm, FormData } from "./ClientPageBody";
+import { useRouter } from "next/navigation";
+import { dashboardRoute } from "@/constants/routes";
+
+export interface clientPagerProps extends LoganDrawerProps {
+  clientRoute: string;
+}
 
 function ClientPageDrawer({
   isOpen,
   onClose,
   showFooter,
   setIsOpen,
-}: LoganDrawerProps) {
+  clientRoute,
+}: clientPagerProps) {
   console.log("open", isOpen);
   const [isEditing, setIsEditing] = useState(false);
+  const router = useRouter();
   return (
     <LoganDrawer
       isOpen={isOpen}
@@ -38,6 +46,10 @@ function ClientPageDrawer({
             <Button
               disabled={isEditing}
               variant={`${isEditing ? "secondary" : "primary-blue"}`}
+              onClick={() => {
+                !isEditing && router.push(`${clientRoute}`);
+                onClose();
+              }}
             >
               <RemSizeImage
                 imagePath={`/assets/icons/${isEditing ? "client-folder-white" : "client-folder-blue-1"}.svg`}

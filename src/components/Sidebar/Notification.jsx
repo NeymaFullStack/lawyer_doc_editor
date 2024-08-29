@@ -63,38 +63,44 @@ function Notification() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(240);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [eventSourceRetry, setEventSourceRetry] = useState(true);
   const { notificationsList } = useSelector((state) => state.appReducer);
   useEffect(() => {
     let NotificatioEventUrl = `http://localhost:7003${getNewNotificationsUrl}`;
     // let NotificatioEventUrl = `http://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:7003${getNewNotificationsUrl}`;
     let eventSource;
     if (getCookie("authToken")) {
-      eventSource = new EventSource(`${NotificatioEventUrl}`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(getCookie("authToken"))}`,
-        },
-      });
+      try {
+        eventSource = new EventSource(`${NotificatioEventUrl}`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(getCookie("authToken"))}`,
+          },
+        });
 
-      eventSource.onmessage = (event) => {
-        const newNotification = JSON.parse(JSON.parse(event.data));
-        console.log("newNotification", newNotification);
-        let newNotificationList = [newNotification, ...notificationsList];
-        const unreadCount = _.filter(newNotificationList, {
-          status: "UNREAD",
-        }).length;
-        setUnreadCount(unreadCount);
-        appDispatch(appAction.setNotificationsList(newNotificationList));
-      };
-
-      eventSource.onerror = () => {
-        eventSource.close();
-      };
+        eventSource.onmessage = (event) => {
+          const newNotification = JSON.parse(JSON.parse(event.data));
+          console.log("newNotification", newNotification);
+          let newNotificationList = [newNotification, ...notificationsList];
+          const unreadCount = _.filter(newNotificationList, {
+            status: "UNREAD",
+          }).length;
+          setUnreadCount(unreadCount);
+          appDispatch(appAction.setNotificationsList(newNotificationList));
+        };
+        eventSource.onerror = () => {
+          eventSource.close();
+          setEventSourceRetry((prev) => !prev);
+        };
+      } catch (error) {
+        console.log(error);
+        setEventSourceRetry((prev) => !prev);
+      }
     }
 
     return () => {
       eventSource && eventSource.close();
     };
-  }, [notificationsList]);
+  }, [eventSourceRetry]);
 
   useEffect(() => {
     getAllNotification();

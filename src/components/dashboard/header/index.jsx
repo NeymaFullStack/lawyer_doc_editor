@@ -39,8 +39,8 @@ function DashboardHeader() {
   useLayoutEffect(() => {
     if (pathname.startsWith("/dashboard")) {
       let lastProjectId;
-      if (params?.slug) {
-        lastProjectId = params?.slug[params?.slug?.length - 1];
+      if (params?.folderId) {
+        lastProjectId = params?.folderId;
         showDocEditHeader && setShowEditHeader(false);
       } else if (params?.docId && currentDocument?.project_id) {
         lastProjectId = currentDocument.project_id;
@@ -64,7 +64,7 @@ function DashboardHeader() {
         />
       )}
       {showDocEditHeader ? (
-        <div className="flex w-full items-center justify-between px-7">
+        <div className="flex w-full items-center justify-between pr-7">
           <h2 className="text-lg font-semibold">
             {currentDocument?.document_name}
           </h2>
@@ -122,14 +122,14 @@ function DashboardHeader() {
             >
               Export
             </Button>
-            <button>
+            {/* <button>
               <RemSizeImage
                 imagePath={"/assets/icons/option-icon.svg"}
                 remWidth={0.25}
                 remHeight={1.041}
                 alt={"Options"}
               />
-            </button>
+            </button> */}
           </div>
         </div>
       ) : (
@@ -172,12 +172,7 @@ function DashboardHeader() {
     // call api to get names of folderids
     const breadcrumbPaths = rawBreadcrumbs.map((item, index) => ({
       name: item.title,
-      href: `/dashboard/${rawBreadcrumbs
-        .slice(0, index + 1)
-        .map((item, index) => {
-          return String(item?.id);
-        })
-        .join("/")}`,
+      href: `/dashboard/${item.id}`,
     }));
     setBreadCrumbs(breadcrumbPaths);
     // appDispatch(folderNavigationAction.setBreadCrumbs(breadcrumbPaths));

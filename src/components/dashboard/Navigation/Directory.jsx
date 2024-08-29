@@ -3,7 +3,6 @@ import Sort from "@/components/generic/Sort";
 import { sortStringTableList } from "@/utils/generic";
 import React, { useEffect, useState } from "react";
 import DocFolder from "./DocFolder";
-import { onClickFolder } from "@/utils/dashboard/navigation-utils";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,15 +21,16 @@ import {
   getClientFolderList,
   getFolderDetails,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { dashboardRoute } from "@/constants/routes";
 
-function Directory({ client = false }) {
+function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
   const appDispatch = useDispatch();
   const pathname = usePathname();
   const router = useRouter();
   const { folderListView, openModalType, refreshDirectory } = useSelector(
     (state) => state.folderNavigationReducer,
   );
-  const { slug } = useParams();
+  const { folderId } = useParams();
   const [directoryData, setDirectoryData] = useState({
     listData: [],
     foldersList: [],
@@ -55,55 +55,55 @@ function Directory({ client = false }) {
           onClose={() => {
             appDispatch(folderNavigationAction.setOpenModalType(""));
           }}
-          parentFolderId={slug[slug.length - 1]}
+          parentFolderId={folderId}
         />
       )}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          {client ? (
-            <h2 className="font-semibold text-black ">Client Folders</h2>
-          ) : (
-            <>
-              {!folderListView && (
-                <h2 className="font-semibold text-black ">Folders</h2>
-              )}
-            </>
-          )}
+      {!loading && (
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            {client ? (
+              <h2 className="font-semibold text-black ">Client Folders</h2>
+            ) : (
+              <>
+                {!folderListView && (
+                  <h2 className="font-semibold text-black ">Folders</h2>
+                )}
+              </>
+            )}
+            {!folderListView && (
+              <Sort
+                onClickSort={(sortOrder) => {
+                  setDirectoryData({
+                    ...directoryData,
+                    foldersList: sortStringTableList(
+                      directoryData?.foldersList,
+                      sortOrder,
+                      "title",
+                    ),
+                  });
+                }}
+                title={"Name"}
+              />
+            )}
+          </div>
           {!folderListView && (
-            <Sort
-              onClickSort={(sortOrder) => {
-                setDirectoryData({
-                  ...directoryData,
-                  foldersList: sortStringTableList(
-                    directoryData?.foldersList,
-                    sortOrder,
-                    "title",
-                  ),
-                });
-              }}
-              title={"Name"}
-            />
+            <div className="grid grid-cols-5 gap-x-6 gap-y-5">
+              {directoryData?.foldersList?.map((folder, index) => {
+                return (
+                  <DocFolder
+                    nonClient={!client}
+                    onClickFolder={(folder) => onClickFolder(folder)}
+                    key={folder?.id}
+                    folder={folder}
+                  />
+                );
+              })}
+            </div>
           )}
         </div>
-        {!folderListView && (
-          <div className="grid grid-cols-6 gap-x-6 gap-y-5">
-            {directoryData?.foldersList?.map((folder, index) => {
-              return (
-                <DocFolder
-                  nonClient={!client}
-                  onClickFolder={(folder) =>
-                    onClickFolder(folder, pathname, router)
-                  }
-                  key={folder?.id}
-                  folder={folder}
-                />
-              );
-            })}
-          </div>
-        )}
-      </div>
+      )}
 
-      {!folderListView && !client && (
+      {!loading && !folderListView && !client && (
         <div className="flex w-full flex-col gap-4">
           <div className="flex items-center gap-4">
             <h2 className="font-semibold text-black ">Documents</h2>
@@ -136,9 +136,9 @@ function Directory({ client = false }) {
           </div>
         </div>
       )}
-      {folderListView && directoryData?.listData.length > 0 && (
+      {!loading && folderListView && directoryData?.listData.length > 0 && (
         <LoganTable
-          onClickRow={(folder) => onClickFolder(folder, pathname, router)}
+          onClickRow={(folder) => onClickFolder(folder)}
           tableColumns={
             client
               ? clientFoldersListTableColumns(
@@ -167,10 +167,11 @@ function Directory({ client = false }) {
         listData: clientFolderList,
       });
     }
+    setLoading(false);
   }
 
   async function fetchFolderList() {
-    const res = await getFolderDetails({ id: slug[slug.length - 1] });
+    const res = await getFolderDetails({ id: folderId });
     if (res?.sub_projects?.length || res?.documents?.length > 0) {
       setDirectoryData({
         ...directoryData,
@@ -178,11 +179,16 @@ function Directory({ client = false }) {
         documentsList: res?.documents,
         listData: [...res.sub_projects, res?.documents],
       });
+      res?.parent_id === null && setIsFolderClient(true);
     }
+    setLoading(false);
+  }
+
+  function onClickFolder(folder) {
+    folder?.id && router.push(`${dashboardRoute}/${folder?.id}`);
   }
 
   function onClickDoc(doc) {
-    appDispatch(folderNavigationAction.setBreadCrumbs(slug));
     router.push(`/dashboard/doc-edit/${doc.id}`);
   }
 }
