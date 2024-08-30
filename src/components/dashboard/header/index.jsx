@@ -25,6 +25,7 @@ function DashboardHeader() {
   const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
   const [showDocEditHeader, setShowEditHeader] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { folderListView } = useSelector(
     (state) => state.folderNavigationReducer,
@@ -90,7 +91,9 @@ function DashboardHeader() {
               Save
             </Button>
             <Button
+              loading={loading}
               onClick={async () => {
+                setLoading(true);
                 let { data: responsePdf } = await exportDocumentPdf(
                   currentDocument?.id,
                   currentDocumentVersion?.version_id,
@@ -109,6 +112,7 @@ function DashboardHeader() {
                 // const buffer = binaryStringToArrayBuffer(responsePdf);
                 console.log("responsePdf?.link", responsePdf?.link);
                 window.open(responsePdf?.link, "_blank", "noopener,noreferrer");
+                setLoading(false);
               }}
               icon={
                 <RemSizeImage
@@ -133,10 +137,7 @@ function DashboardHeader() {
           </div>
         </div>
       ) : (
-        <FolderNavigationHeader
-          folderListView={folderListView}
-          segments={segments}
-        />
+        <FolderNavigationHeader folderListView={folderListView} />
       )}
       {breadCrumbs.length > 0 && (
         <NavigationBreadCrumbs breadCrumbs={breadCrumbs} />

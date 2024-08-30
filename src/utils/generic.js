@@ -1,33 +1,51 @@
-export function sortStringTableList(listdata, sortOrder, sortParam) {
-  let newSortedList = [...listdata];
+import dayjs from "dayjs";
 
+export function sortStringTableList(listData, sortOrder, sortParam) {
+  let newSortedList = [...listData];
   if (sortOrder === "ascend") {
-    newSortedList.sort((a, b) => {
+    newSortedList = newSortedList.sort((a, b) => {
       return a[sortParam].localeCompare(b[sortParam]);
     });
-    return newSortedList;
-  } else {
-    newSortedList.sort((a, b) => {
+  } else if (sortOrder === "descend") {
+    newSortedList = newSortedList.sort((a, b) => {
       return b[sortParam].localeCompare(a[sortParam]);
     });
-    return newSortedList;
   }
+  // console.log("sortedList", newSortedList);
+  // debugger;
+  return newSortedList;
 }
 
-export function sortNumbersTableList(listdata, sortOrder, sortParam) {
-  let newSortedList = [...listdata];
+export function sortByDateTableList(listData, sortOrder, sortParam) {
+  let newSortedList = [...listData];
 
   if (sortOrder === "ascend") {
-    newSortedList.sort((a, b) => {
+    newSortedList = newSortedList.sort((a, b) => {
+      return dayjs(a[sortParam]) - dayjs(b[sortParam]);
+    });
+  } else if (sortOrder === "descend") {
+    newSortedList = newSortedList.sort((a, b) => {
+      return dayjs(b[sortParam]) - dayjs(a[sortParam]);
+    });
+  }
+  // debugger;
+  return newSortedList;
+}
+
+export function sortByNumberTableList(listData, sortOrder, sortParam) {
+  let newSortedList = [...listData];
+
+  if (sortOrder === "ascend") {
+    newSortedList = newSortedList.sort((a, b) => {
       return a[sortParam] - b[sortParam];
     });
-    return newSortedList;
-  } else {
-    newSortedList.sort((a, b) => {
+  } else if (sortOrder === "descend") {
+    newSortedList = newSortedList.sort((a, b) => {
       return b[sortParam] - a[sortParam];
     });
-    return newSortedList;
   }
+  // debugger;
+  return newSortedList;
 }
 
 export const editorTextToBeReplaceRegex = `/\\"([^"]*)\\"/g`;

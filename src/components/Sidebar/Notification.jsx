@@ -13,51 +13,8 @@ import { useSelector } from "react-redux";
 import EventSource from "@/utils/polyfills/eventSource";
 import { getNewNotificationsUrl } from "@/api/serviceUrl";
 import { getCookie } from "cookies-next";
-// const notifications = [
-//   {
-//     name: "Alexandra Martin",
-//     message:
-//       "tagged you in a comment on the document Corporate Governance Guidelines.",
-//     timestamp: dayjs(),
-//     avatar: "https://via.placeholder.com/40",
-//   },
-//   {
-//     name: "Diana Hawthorne",
-//     message: 'has invited you to join the "Heritage LLP" workspace.',
-//     timestamp: dayjs(),
-//     avatar: "https://via.placeholder.com/40",
-//     actions: [{ label: "Accept" }, { label: "Deny" }],
-//   },
-//   {
-//     name: "Alexandra Martin",
-//     message:
-//       "tagged you in a comment on the document Corporate Governance Guidelines.",
-//     timestamp: dayjs(),
-//     avatar: "https://via.placeholder.com/40",
-//   },
-//   {
-//     name: "Diana Hawthorne",
-//     message: 'has invited you to join the "Heritage LLP" workspace.',
-//     timestamp: dayjs(),
-//     avatar: "https://via.placeholder.com/40",
-//     actions: [{ label: "Accept" }, { label: "Deny" }],
-//   },
-//   {
-//     name: "Alexandra Martin",
-//     message:
-//       "tagged you in a comment on the document Corporate Governance Guidelines.",
-//     timestamp: dayjs(),
-//     avatar: "https://via.placeholder.com/40",
-//   },
-//   {
-//     name: "Diana Hawthorne",
-//     message: 'has invited you to join the "Heritage LLP" workspace.',
-//     timestamp: dayjs(),
-//     avatar: "https://via.placeholder.com/40",
-//     actions: [{ label: "Accept" }, { label: "Deny" }],
-//   },
-//   // Add more notifications here...
-// ];
+import { API_URL } from "@/api/apiMethod";
+
 function Notification() {
   const appDispatch = useDispatch();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -66,7 +23,7 @@ function Notification() {
   const [eventSourceRetry, setEventSourceRetry] = useState(true);
   const { notificationsList } = useSelector((state) => state.appReducer);
   useEffect(() => {
-    let NotificatioEventUrl = `http://localhost:7003${getNewNotificationsUrl}`;
+    let NotificatioEventUrl = `${API_URL}${getNewNotificationsUrl}`;
     // let NotificatioEventUrl = `http://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:7003${getNewNotificationsUrl}`;
     let eventSource;
     if (getCookie("authToken")) {
@@ -79,7 +36,7 @@ function Notification() {
 
         eventSource.onmessage = (event) => {
           const newNotification = JSON.parse(JSON.parse(event.data));
-          console.log("newNotification", newNotification);
+          // console.log("newNotification", newNotification);
           let newNotificationList = [newNotification, ...notificationsList];
           const unreadCount = _.filter(newNotificationList, {
             status: "UNREAD",

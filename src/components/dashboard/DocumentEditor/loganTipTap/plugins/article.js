@@ -10,6 +10,7 @@ const ArticleExtention = Extension.create({
 
   addProseMirrorPlugins() {
     let updateArticles = this.options.updateArticles;
+    console.log("this", this.options);
     return [
       new Plugin({
         props: {
@@ -21,8 +22,6 @@ const ArticleExtention = Extension.create({
             // const parentNode = $from.node(-1); // -1 to get the parent node
             const currentNode = $from.node();
             const parentNode = $from.node($from.depth - 1);
-            const grandParentNode = $from.node($from.depth - 2);
-            const greatGrandParentNode = $from.node($from.depth - 3);
 
             // debugger;
             let newTr = tr;

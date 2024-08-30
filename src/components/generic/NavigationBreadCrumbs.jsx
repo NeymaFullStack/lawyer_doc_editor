@@ -13,7 +13,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
   return (
     <>
       {breadCrumbs.length > 0 && (
-        <div className="flex items-center gap-3">
+        <div className="flex w-full items-center gap-3 pr-4">
           {
             <button
               onClick={() => {
@@ -28,21 +28,23 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
               />
             </button>
           }
-          <ul className="flex items-center gap-2">
+          <ul className="no-scrollbar flex items-center gap-2 overflow-x-scroll">
             {breadCrumbs.map((route, index) => {
               if (index == 0) {
                 return (
                   <li
                     key={index}
-                    className=" flex  items-center gap-1 !text-xs text-[0.813rem]"
+                    className="flex min-w-fit items-center gap-1 !text-xs "
                   >
-                    <RemSizeImage
-                      imagePath={"/assets/icons/arrow-down-gray.svg"}
-                      remWidth={0.9}
-                      remHeight={0.9}
-                      alt={"Route"}
-                      className={" -rotate-90"}
-                    />
+                    <div className="min-w-fit">
+                      <RemSizeImage
+                        imagePath={"/assets/icons/arrow-down-gray.svg"}
+                        remWidth={0.9}
+                        remHeight={0.9}
+                        alt={"Route"}
+                        className={" -rotate-90"}
+                      />
+                    </div>
                     <div className="flex items-center gap-2">
                       <span
                         onClick={() => {
@@ -56,7 +58,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                           remHeight={0.9}
                           alt={"Route"}
                         />
-                        <span>{route?.name}</span>
+                        <span className="w-[4rem] truncate">{route?.name}</span>
                       </span>
                       <span
                         onClick={() => {
@@ -71,7 +73,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                           remHeight={0.9}
                           alt={"Client"}
                         />
-                        <span>Client Page</span>
+                        <span className="w-[4.2rem] truncate">Client Page</span>
                       </span>
                     </div>
                   </li>
@@ -81,18 +83,20 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
               return (
                 <li
                   key={index}
-                  className="flex cursor-pointer items-center gap-1 !text-xs"
+                  className="flex min-w-fit cursor-pointer items-center gap-1 !text-xs"
                   onClick={() => {
                     router.push(route.href);
                   }}
                 >
-                  <RemSizeImage
-                    imagePath={"/assets/icons/arrow-down-gray.svg"}
-                    remWidth={0.9}
-                    remHeight={0.9}
-                    alt={"Route"}
-                    className={" -rotate-90"}
-                  />
+                  <div className="min-w-fit">
+                    <RemSizeImage
+                      imagePath={"/assets/icons/arrow-down-gray.svg"}
+                      remWidth={0.9}
+                      remHeight={0.9}
+                      alt={"Route"}
+                      className={" -rotate-90"}
+                    />
+                  </div>
                   <span className="flex items-center gap-2 rounded-md bg-secondary-blue px-3 py-[0.35rem] font-semibold leading-normal">
                     <RemSizeImage
                       imagePath={"/assets/icons/non-client-folder.svg"}
@@ -100,7 +104,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                       remHeight={0.9}
                       alt={"Route"}
                     />
-                    <span>{route.name}</span>
+                    <span className="w-[4rem] truncate">{route.name}</span>
                   </span>
                 </li>
               );

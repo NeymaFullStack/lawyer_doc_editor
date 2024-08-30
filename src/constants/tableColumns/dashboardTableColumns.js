@@ -1,7 +1,11 @@
 import { documentStatus } from "../enums";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import Sort from "@/components/generic/Sort";
-import { sortNumbersTableList, sortStringTableList } from "@/utils/generic";
+import {
+  sortByDateTableList,
+  sortNumbersTableList,
+  sortStringTableList,
+} from "@/utils/generic";
 import { dtFormat } from "@/utils/dateUtils";
 import Tag from "@/components/generic/Tag";
 const foldersToShow = 4;
@@ -120,13 +124,20 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
   return [
     {
       label: "",
+      class: () => "w-[20%]",
+
       customHead: (column) => {
         return (
-          <span className="flex items-center gap-4 ">
+          <span className="flex items-center gap-4 pl-2">
             <span>Name</span>
             <Sort
               onClickSort={(sortOrder) => {
-                setListData(sortStringTableList(listData, sortOrder, "title"));
+                setListData((prev) => {
+                  return {
+                    ...prev,
+                    listData: sortStringTableList(listData, sortOrder, "title"),
+                  };
+                });
               }}
             />
           </span>
@@ -134,14 +145,16 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
       },
       customView: (row) => {
         return (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pl-2">
             <RemSizeImage
               imagePath={"/assets/icons/client-folder.svg"}
               remWidth={1.313}
               remHeight={1.313}
               alt={"Client Folder"}
             />
-            <span className=" font-semibold text-black">{row.title}</span>
+            <span className="truncate font-semibold text-black hover:text-primary-blue">
+              {row.title}
+            </span>
           </div>
         );
       },
@@ -155,14 +168,23 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
             <span>Last Modified</span>
             <Sort
               onClickSort={(sortOrder) => {
-                setListData(
-                  sortNumbersTableList(listData, sortOrder, "lastModified"),
-                );
+                setListData((prev) => {
+                  return {
+                    ...prev,
+                    listData: sortByDateTableList(
+                      listData,
+                      sortOrder,
+                      "updated_at",
+                    ),
+                  };
+                });
               }}
             />
           </span>
         );
       },
+      class: () => "hover:text-primary-blue w-[20%]",
+
       format: (row) => {
         return dtFormat(row?.updated_at);
       },
@@ -170,6 +192,7 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
     },
     {
       label: "Folders",
+      class: () => "w-[40%]",
       customView: (row) => {
         let folders = row?.sub_projects;
         if (folders?.length <= 0) {
@@ -210,19 +233,19 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
     {
       label: "",
       id: "",
-      class: () => "text-right",
+      class: () => "text-right w-[10%]",
       customView: (row) => {
         return (
           <button
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="mr-1"
+            className="mr-3"
           >
             <RemSizeImage
               imagePath={"/assets/icons/blue-option-hoz.svg"}
-              remWidth={1.125}
-              remHeight={1.125}
+              remWidth={0.5}
+              remHeight={0.5}
               alt="option"
               className={"rotate-90"}
             />
@@ -239,26 +262,34 @@ export const foldersListTableColumns = (setListData, listData) => {
       label: "",
       customHead: (column) => {
         return (
-          <span className="flex items-center gap-4 ">
+          <span className="ml-2 flex items-center gap-4">
             <span>Name</span>
             <Sort
               onClickSort={(sortOrder) => {
-                setListData(sortStringTableList(listData, sortOrder, "title"));
+                setListData((prev) => {
+                  return {
+                    ...prev,
+                    listData: sortStringTableList(listData, sortOrder, "title"),
+                  };
+                });
               }}
             />
           </span>
         );
       },
+      class: () => "w-[20%]",
       customView: (row) => {
         return (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3  pl-2">
             <RemSizeImage
-              imagePath={"/assets/icons/non-client-folder.svg"}
+              imagePath={`/assets/icons/${Object.keys(row).includes("version") ? "doc-icon" : "non-client-folder"}.svg`}
               remWidth={1.313}
               remHeight={1.313}
               alt={"Client Folder"}
             />
-            <span className=" font-semibold text-black">{row.title}</span>
+            <span className="truncate font-semibold text-black hover:text-primary-blue">
+              {row.title}
+            </span>
           </div>
         );
       },
@@ -272,9 +303,16 @@ export const foldersListTableColumns = (setListData, listData) => {
             <span>Last Modified</span>
             <Sort
               onClickSort={(sortOrder) => {
-                setListData(
-                  sortNumbersTableList(listData, sortOrder, "lastModified"),
-                );
+                setListData((prev) => {
+                  return {
+                    ...prev,
+                    listData: sortByDateTableList(
+                      listData,
+                      sortOrder,
+                      "updated_at",
+                    ),
+                  };
+                });
               }}
             />
           </span>
@@ -283,14 +321,17 @@ export const foldersListTableColumns = (setListData, listData) => {
       format: (row) => {
         return dtFormat(row?.updated_at);
       },
+      class: () => "hover:text-primary-blue w-[20%]",
       id: "updated_at",
     },
     {
       label: "Folders",
       id: "folders",
+      class: () => "w-[40%]",
+
       customView: (row) => {
         let folders = row?.sub_projects;
-        if (folders?.length <= 0 || !folders) {
+        if (folders?.length <= 0) {
           return "NA";
         }
         let folderLimitExceed = folders?.length > foldersToShow;
@@ -327,19 +368,19 @@ export const foldersListTableColumns = (setListData, listData) => {
     {
       label: "",
       id: "",
-      class: () => "text-right",
+      class: () => "text-right w-[10%]",
       customView: (row) => {
         return (
           <button
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="mr-1"
+            className="mr-3"
           >
             <RemSizeImage
               imagePath={"/assets/icons/blue-option-hoz.svg"}
-              remWidth={1.125}
-              remHeight={1.125}
+              remWidth={0.5}
+              remHeight={0.5}
               alt="option"
               className={"rotate-90"}
             />

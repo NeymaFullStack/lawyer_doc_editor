@@ -2,7 +2,7 @@
 import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { Button, Form } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EmplacementFoldersList from "./EmplacementFoldersList";
 import { sliceMapUpToaKey } from "@/utils/dashboard/navigation-utils";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
@@ -17,6 +17,32 @@ function ChooseEmplacementModal({
   formValues,
 }) {
   const appDispatch = useDispatch();
+  const scrollContainerRef = useRef(null);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const handleScrollToEnd = () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTo({
+          left: scrollContainerRef.current.scrollWidth,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    const observer = new ResizeObserver(handleScrollToEnd);
+
+    if (contentRef.current) {
+      observer.observe(contentRef.current);
+    }
+
+    // Scroll to the end on initial render
+    handleScrollToEnd();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <LoganModal
@@ -78,24 +104,29 @@ function ChooseEmplacementModal({
             />
           </div>
         </div>
-        <div className="flex h-full flex-1 flex-col gap-2 overflow-x-hidden">
+        <div className="flex h-full flex-1 flex-col gap-2 overflow-x-hidden px-[0.001px]">
           <h4 className=" ml-2 font-semibold text-black-txt">Folders</h4>
-          <ul className="flex w-full flex-1 overflow-x-scroll rounded-lg bg-white py-3 pl-2 pr-3">
-            {[...formValues.emplacement.path.keys()].map((item, index) => {
-              return (
-                <li
-                  key={index}
-                  className="min-w-[10rem] max-w-[10rem] border-r-2 border-[#F0F5FC] px-2"
-                >
-                  <EmplacementFoldersList
-                    selectedFolder={formValues.emplacement.selectedFolder}
-                    onClickFolder={onClickFolder}
-                    parentFolderId={item}
-                  />
-                </li>
-              );
-            })}
-          </ul>
+          <div
+            ref={scrollContainerRef}
+            className="mx-2 flex w-full flex-1 overflow-x-scroll rounded-lg bg-white py-3 pl-2 pr-3"
+          >
+            <ul ref={contentRef} className="flex">
+              {[...formValues.emplacement.path.keys()].map((item, index) => {
+                return (
+                  <li
+                    key={index}
+                    className="min-w-[10rem] max-w-[10rem] border-r-2 border-[#F0F5FC] px-2"
+                  >
+                    <EmplacementFoldersList
+                      selectedFolder={formValues.emplacement.selectedFolder}
+                      onClickFolder={onClickFolder}
+                      parentFolderId={item}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
     </LoganModal>

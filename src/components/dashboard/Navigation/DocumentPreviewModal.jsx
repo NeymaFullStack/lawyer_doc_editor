@@ -26,7 +26,7 @@ function DocumentPreviewModal({
 }) {
   const appDispatch = useDispatch();
   const router = useRouter();
-  const { slug } = useParams();
+  const params = useParams();
   const [loading, setLoading] = useState(false);
   const { newAppendixState } = useSelector(
     (state) => state.documentIndexingReducer,
@@ -128,7 +128,7 @@ function DocumentPreviewModal({
       });
       res.id && createNewDocument(res.id);
     } else {
-      formValues.emplacement.selectedFolder &&
+      (formValues.emplacement.selectedFolder || params?.folderId) &&
         createNewDocument(formValues.emplacement.selectedFolder);
     }
   }
@@ -151,7 +151,6 @@ function DocumentPreviewModal({
         );
         onClose();
       }
-      setLoading(false);
 
       // appDispatch(
       //   documentIndexingAction.setNewAppendixState({
@@ -163,17 +162,17 @@ function DocumentPreviewModal({
     } else {
       let res = await createDocument(formValues?.isImport ? true : false, {
         document_name: formValues?.documentTopic,
-        project_id: parentFolderId,
+        project_id: params?.folderId ? params?.folderId : parentFolderId,
         content: formValues?.previewTemplate,
       });
 
       if (res) {
         appDispatch(documentAction.setCurrentDocument(res));
-        appDispatch(folderNavigationAction.setBreadCrumbs(slug));
         router.push(`/dashboard/doc-edit/${res?.id}`);
         onClose();
       }
     }
+    setLoading(false);
   }
 }
 

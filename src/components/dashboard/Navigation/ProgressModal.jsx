@@ -58,10 +58,7 @@ function ProgressModal({ open, onClose, cancelAiTemplateGeneration }) {
                   modalType.CREATE_DOCUMENT,
                 ),
               );
-              onClose(true, {
-                language: { label: "English", value: "en" },
-                legalPlayground: { label: "United States", value: "US" },
-              });
+              onClose(true);
             }}
             icon={
               <RemSizeImage

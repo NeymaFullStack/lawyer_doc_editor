@@ -114,6 +114,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               !documentLoading && onSendQuery();
+              setChatQuery("");
             }
           }}
         />
@@ -122,6 +123,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
           <button
             onClick={() => {
               !documentLoading && onSendQuery();
+              setChatQuery("");
             }}
           >
             {chatQuery.length > 0 && (

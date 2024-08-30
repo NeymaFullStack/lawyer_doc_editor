@@ -5,9 +5,11 @@ import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import React from "react";
 import { modalType } from "../Navigation/FolderDocCreation";
 import { useDispatch } from "react-redux";
+import { useParams } from "next/navigation";
 
-function FolderNavigationHeader({ folderListView = false, segments }) {
+function FolderNavigationHeader({ folderListView = false }) {
   const appDispatch = useDispatch();
+  const params = useParams();
 
   return (
     <div className="flex w-full items-center justify-between">
@@ -122,7 +124,9 @@ function FolderNavigationHeader({ folderListView = false, segments }) {
             <span>New Document</span>
           </div>
         ),
-        key: modalType.EMPLACEMENT,
+        key: params.folderId
+          ? modalType.CREATE_DOCUMENT
+          : modalType.EMPLACEMENT,
       },
       {
         label: (
@@ -139,7 +143,7 @@ function FolderNavigationHeader({ folderListView = false, segments }) {
         key: "importDoc",
       },
     ];
-    if (segments.length <= 0) {
+    if (!!!params?.folderId) {
       menu.shift();
     }
     return {

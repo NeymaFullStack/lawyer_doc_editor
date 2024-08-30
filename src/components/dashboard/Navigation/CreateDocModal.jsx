@@ -63,7 +63,7 @@ function CreateDocModal({
     });
   }, []);
 
-  console.log("ANT", formValues);
+  // console.log("ANT", formValues);
 
   return (
     <LoganModal
@@ -155,7 +155,11 @@ function CreateDocModal({
               label="Pick Your Language"
               name="language"
               className="mb-2 flex-1"
-              initialValue={{ label: "English", value: "en" }}
+              initialValue={
+                formValues?.language
+                  ? formValues.language
+                  : { label: "English", value: "en" }
+              }
             >
               <Select
                 options={languageOptions}
@@ -177,7 +181,11 @@ function CreateDocModal({
               className="mb-2"
               label="Choose Your Legal Playground"
               name="playground"
-              initialValue={{ label: "United States", value: "US" }}
+              initialValue={
+                formValues?.legalPlayground
+                  ? formValues?.legalPlayground
+                  : { label: "United States", value: "US" }
+              }
             >
               <Select
                 onChange={(value, option) => {

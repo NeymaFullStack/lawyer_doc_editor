@@ -1,4 +1,14 @@
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/shadcn-components/ui/table";
+import { cn } from "@/utils/shadcn-utils";
 
 function LoganTable({
   tableColumns,
@@ -11,85 +21,103 @@ function LoganTable({
   rowKey,
 }) {
   return (
-    <table
-      className={`w-full table-auto border-collapse  text-primary-gray ${className}`}
-    >
+    <Table className={cn("", className)}>
       {!hideHeader && (
         <MemoizedTableHeader
           headTitles={tableColumns}
           headerClass={headerClass}
         />
       )}
-      <tbody className={`rounded-lg text-xs ${bodyClass}`}>
+      <TableBody className={cn("text-xs", bodyClass)}>
         {listData &&
-          listData.map((row, rindex) => (
-            <tr
+          listData.map((row, rIndex) => (
+            <TableRow
               key={row[rowKey]}
-              className={`border-b-[0.094rem] border-secondary-blue bg-white ${
-                onClickRow ? "cursor-pointer" : ""
-              }`}
-              onClick={() => {
+              className={cn("bg-white", onClickRow && "cursor-pointer")}
+              onDoubleClick={() => {
                 onClickRow(row);
+              }}
+              onClick={() => {
+                // onClickRow(row);
               }}
             >
               {tableColumns &&
-                tableColumns.map(
-                  (column, cindex) =>
+                tableColumns.map((column, cIndex) => {
+                  // Check if it's the first or last row and first or last column
+                  const isFirstRow = rIndex === 0;
+                  const isLastRow = rIndex === listData.length - 1;
+                  const isFirstColumn = cIndex === 0;
+                  const isLastColumn = cIndex === tableColumns.length - 1;
+
+                  // Determine the classes to apply
+                  const classes = `${isFirstRow && isFirstColumn ? "rounded-tl-xl" : ""} ${isFirstRow && isLastColumn ? "rounded-tr-xl" : ""} ${isLastRow && isFirstColumn ? "rounded-bl-xl" : ""} ${isLastRow && isLastColumn ? "rounded-br-xl" : ""} 
+              `;
+                  return (
                     (column.customView && (
-                      <td
-                        key={cindex}
-                        className={`px-3 py-4 text-left  ${
-                          column?.class ? column.class(row[column.id]) : ""
-                        }`}
+                      <TableCell
+                        key={cIndex}
+                        className={cn(
+                          `px-3 py-3 text-left ${classes}`,
+                          column?.class && column.class(row[column.id]),
+                        )}
                       >
                         {column.customView(row)}
-                      </td>
+                      </TableCell>
                     )) ||
                     (column?.format && (
-                      <td
+                      <TableCell
                         // onClick={onClickRow ? () => onClickRow(row) : () => {}}
-                        key={cindex}
-                        className={`px-3 py-4 text-left  ${
-                          column?.class ? column.class(row[column.id]) : ""
-                        }`}
+                        key={cIndex}
+                        className={cn(
+                          `px-3 py-3 text-left ${classes}`,
+                          column?.class && column.class(row[column.id]),
+                        )}
                       >
                         {column?.format(row)}
-                      </td>
+                      </TableCell>
                     )) || (
-                      <td
+                      <TableCell
                         // onClick={onClickRow ? () => onClickRow(row) : () => {}}
-                        key={cindex}
-                        className={`px-3 py-4 text-left  ${
-                          column?.class ? column.class(row[column.id]) : ""
-                        }`}
+                        key={cIndex}
+                        className={cn(
+                          `px-3 py-3 text-left ${classes}`,
+                          column?.class && column.class(row[column.id]),
+                        )}
                       >
                         {row[column.id] || "NA"}
-                      </td>
-                    ),
-                )}
-            </tr>
+                      </TableCell>
+                    )
+                  );
+                })}
+            </TableRow>
           ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
 }
 export default LoganTable;
 
-const TableHeader = ({ headTitles, headerClass }) => {
+const LoganTableHeader = ({ headTitles, headerClass }) => {
   return (
-    <thead
-      className={` border-secondary-blue text-[0.813rem] font-semibold  text-black-txt ${headerClass}`}
+    <TableHeader
+      className={` text-[0.813rem] font-semibold  text-black-txt ${headerClass}`}
     >
-      <tr>
+      <TableRow className=" border-none">
         {headTitles &&
           headTitles?.map((column, index) => (
-            <th key={index} className={`px-3 py-4 text-left`}>
+            <TableHead
+              key={index}
+              className={cn(
+                `px-3 py-3 text-left`,
+                column.class && column.class(),
+              )}
+            >
               {column.customHead ? column.customHead(column) : column.label}
-            </th>
+            </TableHead>
           ))}
-      </tr>
-    </thead>
+      </TableRow>
+    </TableHeader>
   );
 };
 
-const MemoizedTableHeader = React.memo(TableHeader);
+const MemoizedTableHeader = React.memo(LoganTableHeader);

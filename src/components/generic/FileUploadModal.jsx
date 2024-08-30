@@ -5,37 +5,46 @@ import DropFile from "./DropFile";
 import { Button } from "../shadcn-components/ui/button";
 import FilePreview from "@/components/generic/FilePreview";
 
-function FileUploadModal({ isOpen, onClose }) {
+function FileUploadModal({ isOpen, onClose, onClickSave }) {
   const [file, setFile] = useState(null);
-  console.log("file", file);
+  // console.log("file", file);
   return (
     <LoganModal
-      applyButtonText={"Save"}
-      cancelButtonText={"Cancel"}
       modalOpen={isOpen}
       onClickCancel={onClose}
-      onClickApply={() => {}}
       width={"30rem"}
-      footerleft
+      customFooter={
+        <Button
+          className="mt-4"
+          onClick={() => {
+            file && onClickSave();
+          }}
+          variant={file ? "primary-blue" : "secondary"}
+        >
+          Save
+        </Button>
+      }
     >
       <h2 className="text-2xl font-bold text-black">Upload Logo</h2>
-      {file ? (
-        <FilePreview
-          deleteFile={() => {
-            setFile(null);
-          }}
-          file={file}
-        />
-      ) : (
-        <DropFile
-          className={"!mt-7"}
-          height={"9rem"}
-          fileTypes={[".png", "jpeg", "jpg"]}
-          onUpload={({ file }) => {
-            setFile(file);
-          }}
-        />
-      )}
+      <div className="h-[9rem]">
+        {file ? (
+          <FilePreview
+            deleteFile={() => {
+              setFile(null);
+            }}
+            file={file}
+          />
+        ) : (
+          <DropFile
+            height={"9rem"}
+            className={"mt-4"}
+            fileTypes={[".png", "jpeg", "jpg"]}
+            onUpload={({ file }) => {
+              setFile(file);
+            }}
+          />
+        )}
+      </div>
     </LoganModal>
   );
 }

@@ -8,10 +8,9 @@ function Folder() {
   const [loading, setLoading] = useState(true);
   const [isFolderClient, setIsFolderClient] = useState(false);
   return (
-    <main className=" h-full w-full  overflow-hidden rounded-tl-lg border-[0.063rem] border-secondary-blue  bg-six p-4 pr-3">
+    <main className=" h-full w-full  overflow-hidden rounded-tl-lg border-[0.063rem] border-secondary-blue bg-six  pb-8  pr-3">
       {loading && <Loader />}
-
-      <div className="flex h-full flex-col gap-8 overflow-y-auto px-6 py-1">
+      <div className="my-4 flex h-full flex-col gap-8 overflow-y-auto px-6 py-1 ">
         {isFolderClient && <RecentDocuments />}
         <Directory
           setIsFolderClient={setIsFolderClient}

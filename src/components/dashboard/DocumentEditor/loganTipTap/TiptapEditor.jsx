@@ -274,7 +274,7 @@ const TiptapEditor = () => {
           }
         });
       }
-      console.log();
+      // console.log();
       editor.commands.insertContentAt(
         nextAppendixPos,
         newAppendixState?.content,
@@ -315,7 +315,7 @@ const TiptapEditor = () => {
       //     }
       //   });
       // }
-      console.log("pos", deletionNodeStartPos, deletionNodeEndPos);
+      // console.log("pos", deletionNodeStartPos, deletionNodeEndPos);
       editor.commands.deleteRange({
         from: deletionNodeStartPos,
         to: deletionNodeEndPos,
@@ -329,7 +329,7 @@ const TiptapEditor = () => {
       reorderAppendixState?.sourceItem?.id &&
       reorderAppendixState?.destinationItem?.id
     ) {
-      console.log("reorderAppendixState", reorderAppendixState);
+      // console.log("reorderAppendixState", reorderAppendixState);
       const { doc } = editor.state;
       let foundSourceNode = null;
       let foundDestinationNode = null;
@@ -337,7 +337,7 @@ const TiptapEditor = () => {
       let sourceReorderEndPos = doc.content.size;
       let destinationReorderStartPos = doc.content.size;
       let destinationReorderEndPos = doc.content.size;
-      console.log("reorderAppendixState", reorderAppendixState);
+      // console.log("reorderAppendixState", reorderAppendixState);
       let pos = doc.content.size;
       if (reorderAppendixState.isRoot) {
         doc.forEach((node, offset) => {

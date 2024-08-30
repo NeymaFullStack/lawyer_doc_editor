@@ -6,13 +6,15 @@ import React, { useState } from "react";
 import RemSizeImage from "../generic/RemSizeImage";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
+import { useParams } from "next/navigation";
 
 function NewButtonActionsDropDown({ onClose }) {
   const appDispatch = useDispatch();
+  const params = useParams();
 
   return (
     <ul className="rounded-xl bg-white p-2 pr-4 text-xs shadow-out-lg">
-      {sideBarDropDownMenu?.map((item, index) => {
+      {sideBarDropDownMenu(params)?.map((item, index) => {
         let element;
         if (item?.type === "divider") {
           element = <Divider className="m-0 my-1" />;

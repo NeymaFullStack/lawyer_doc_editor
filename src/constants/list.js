@@ -2,10 +2,10 @@ import Image from "next/image";
 import { documentActions, documentStatus } from "./enums";
 import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
 
-export const sideBarDropDownMenu = [
+export const sideBarDropDownMenu = (params) => [
   {
     label: "New Document",
-    key: modalType.EMPLACEMENT,
+    key: params.folderId ? modalType.CREATE_DOCUMENT : modalType.EMPLACEMENT,
     type: "action",
     icon: "/assets/icons/new-doc.svg",
   },

@@ -217,7 +217,7 @@ function createArticleInsertionItem(
       }
 
       let newTr = tr;
-      console.log("docSize", tr.doc.nodeSize);
+      // console.log("docSize", tr.doc.nodeSize);
       newTr = newTr.deleteRange(andPos, andPos + 1);
 
       if (newArticle) {
@@ -234,7 +234,7 @@ function createArticleInsertionItem(
       // debugger;
       view.focus();
       newTr.setSelection(selection);
-      console.log("view", view);
+      // console.log("view", view);
       dispatch(newTr);
     },
   };

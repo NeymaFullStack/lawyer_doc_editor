@@ -44,7 +44,7 @@ function CopiedTag() {
     return "";
   }
 
-  console.log("copedContent", copiedContent);
+  // console.log("copedContent", copiedContent);
   return (
     copiedContent !== null &&
     copiedContent?.title &&

@@ -23,9 +23,13 @@ import {
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { dashboardRoute } from "@/constants/routes";
 
-function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
+function Directory({
+  isDashboard = false,
+  setLoading,
+  loading,
+  setIsFolderClient,
+}) {
   const appDispatch = useDispatch();
-  const pathname = usePathname();
   const router = useRouter();
   const { folderListView, openModalType, refreshDirectory } = useSelector(
     (state) => state.folderNavigationReducer,
@@ -38,7 +42,7 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
   });
 
   useEffect(() => {
-    client ? fetchClientList() : fetchFolderList();
+    isDashboard ? fetchClientList() : fetchFolderList();
   }, [refreshDirectory]);
 
   useEffect(() => {
@@ -47,8 +51,9 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // console.log("directory", directoryData);
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex h-full w-full flex-col items-start gap-6">
       {openModalType === modalType.NEW_FOLDER && (
         <CreateFolderModal
           open={openModalType === modalType.NEW_FOLDER}
@@ -58,10 +63,10 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
           parentFolderId={folderId}
         />
       )}
-      {!loading && (
-        <div className="flex flex-col gap-4">
+      {!loading && !folderListView && (
+        <div className="flex w-full flex-col gap-4">
           <div className="flex items-center gap-4">
-            {client ? (
+            {isDashboard ? (
               <h2 className="font-semibold text-black ">Client Folders</h2>
             ) : (
               <>
@@ -86,12 +91,13 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
               />
             )}
           </div>
+
           {!folderListView && (
-            <div className="grid grid-cols-5 gap-x-6 gap-y-5">
+            <div className="grid grid-cols-4 gap-x-6 gap-y-5">
               {directoryData?.foldersList?.map((folder, index) => {
                 return (
                   <DocFolder
-                    nonClient={!client}
+                    nonClient={!isDashboard}
                     onClickFolder={(folder) => onClickFolder(folder)}
                     key={folder?.id}
                     folder={folder}
@@ -103,7 +109,7 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
         </div>
       )}
 
-      {!loading && !folderListView && !client && (
+      {!loading && !folderListView && !isDashboard && (
         <div className="flex w-full flex-col gap-4">
           <div className="flex items-center gap-4">
             <h2 className="font-semibold text-black ">Documents</h2>
@@ -140,7 +146,7 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
         <LoganTable
           onClickRow={(folder) => onClickFolder(folder)}
           tableColumns={
-            client
+            isDashboard
               ? clientFoldersListTableColumns(
                   setDirectoryData,
                   directoryData?.listData,
@@ -151,7 +157,7 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
                 )
           }
           rowKey="id"
-          className=" -mt-6 w-full"
+          className="w-full table-fixed"
           listData={directoryData?.listData}
         />
       )}
@@ -159,10 +165,10 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
   );
 
   async function fetchClientList() {
+    !loading && setLoading(false);
     const clientFolderList = await getClientFolderList();
     if (clientFolderList?.length > 0) {
       setDirectoryData({
-        ...directoryData,
         foldersList: clientFolderList,
         listData: clientFolderList,
       });
@@ -171,13 +177,20 @@ function Directory({ client = false, setLoading, loading, setIsFolderClient }) {
   }
 
   async function fetchFolderList() {
+    !loading && setLoading(false);
     const res = await getFolderDetails({ id: folderId });
-    if (res?.sub_projects?.length || res?.documents?.length > 0) {
+    if (res?.sub_projects?.length > 0 || res?.documents?.length > 0) {
       setDirectoryData({
-        ...directoryData,
         foldersList: res.sub_projects,
-        documentsList: res?.documents,
-        listData: [...res.sub_projects, res?.documents],
+        documentsList: res?.documents.map((doc, index) => {
+          return { ...doc, title: doc.document_name };
+        }),
+        listData: [
+          ...res.sub_projects,
+          ...res?.documents.map((doc, index) => {
+            return { ...doc, title: doc.document_name };
+          }),
+        ],
       });
       res?.parent_id === null && setIsFolderClient(true);
     }

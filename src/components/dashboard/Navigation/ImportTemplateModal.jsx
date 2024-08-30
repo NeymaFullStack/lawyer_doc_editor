@@ -1,5 +1,4 @@
 import { importDoc } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import DocxThumbnail from "@/components/generic/DocxThumnail";
 import DropFile from "@/components/generic/DropFile";
 import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
@@ -8,6 +7,7 @@ import { Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { modalType } from "./FolderDocCreation";
+import FilePreview from "@/components/generic/FilePreview";
 
 function ImportTemplateModal({
   open,
@@ -82,32 +82,27 @@ function ImportTemplateModal({
       }
     >
       <h2 className="text-2xl font-bold text-black">
-        Import a <span className="text-primary-blue">Template</span>
+        Import a <span className="text-primary-blue">Documents</span>
       </h2>
-      <div className="my-3 mb-4 text-sm  text-primary-gray">
-        <span>Accepted file formats:</span>{" "}
-        <span className="font-medium text-black-txt">
-          .doc, .docx, .org, .pdf
-        </span>
-      </div>
-      <DropFile height={"8.5rem"} onUpload={onUpload} />
-      {file && (
-        <div className="mt-2 flex items-center gap-2 rounded-lg bg-six p-2">
+      {!file ? (
+        <>
+          <div className="my-3 mb-4 text-sm  text-primary-gray">
+            <span>Accepted file formats:</span>{" "}
+            <span className="font-medium text-black-txt">
+              .doc, .docx, .org, .pdf
+            </span>
+          </div>
+          <DropFile height={"8.5rem"} onUpload={onUpload} />
+        </>
+      ) : (
+        <div className="mt-2 h-full w-full">
           {/* <DocxThumbnail docxHtmlContent={file} /> */}
-          <span>{file.name}</span>
-          <div
-            onClick={() => {
+          <FilePreview
+            file={file}
+            deleteFile={() => {
               setFile(null);
             }}
-            className="cursor-pointer"
-          >
-            <RemSizeImage
-              imagePath={"/assets/icons/delete-gray.svg"}
-              remWidth={1}
-              remHeight={1}
-              alt={"delete"}
-            />
-          </div>
+          />
         </div>
       )}
     </LoganModal>
@@ -116,16 +111,21 @@ function ImportTemplateModal({
   async function onUpload({ file }) {
     // TODO: info.file send to backend api save the response to file list for showing those files
     let formData = new FormData();
-
+    // console.log("file", file);
     formData.append("file", file);
-    const {
-      data: { data: content },
-    } = await importDoc(formData);
-    saveDocFolderFieldValues({
-      previewTemplate: content,
-      documentTopic: file.name.split(".")[0],
-    });
-    setFile({ content: content, name: file.name.split(".")[0] });
+    const res = await importDoc(formData);
+    if (res) {
+      saveDocFolderFieldValues({
+        previewTemplate: res,
+        documentTopic: file.name.split(".")[0],
+      });
+      setFile({
+        content: res,
+        type: file?.type,
+        name: file.name.split(".")[0],
+      });
+    }
+    return Promise.resolve();
   }
 }
 

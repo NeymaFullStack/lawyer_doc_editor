@@ -15,9 +15,9 @@ function PositionToolTip({
       onClose();
     }
   };
-  console.log("containerRef", containerRef.getBoundingClientRect());
-  console.log("position", position);
-  console.log("toolTipRef", toolTipRef?.current);
+  // console.log("containerRef", containerRef.getBoundingClientRect());
+  // console.log("position", position);
+  // console.log("toolTipRef", toolTipRef?.current);
 
   useEffect(() => {
     isOpen && document.addEventListener("click", handleClickOutside);
@@ -89,7 +89,7 @@ function PositionToolTip({
 
   return (
     <div
-      className={`shadow-3d fixed z-10 w-fit rounded-xl border bg-white p-2 text-primary-gray `}
+      className={`fixed z-10 w-fit rounded-xl border bg-white p-2 text-primary-gray shadow-3d `}
       ref={toolTipRef}
       style={{
         display: isOpen ? "block" : "none",

@@ -155,7 +155,7 @@ export const importDoc = async (queryParams = {}) => {
         "Content-type": "multipart/form-data",
       },
     });
-    return res;
+    return res?.data?.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);

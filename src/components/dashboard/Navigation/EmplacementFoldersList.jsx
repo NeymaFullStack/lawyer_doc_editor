@@ -35,7 +35,7 @@ function EmplacementFoldersList({
                 remHeight={1.1}
                 alt={"Client Folder"}
               />
-              <span className="w-[4rem] overflow-hidden text-nowrap text-xs font-medium text-black-txt">
+              <span className="truncate text-nowrap text-xs font-medium text-black-txt">
                 {folder?.title}
               </span>
             </li>

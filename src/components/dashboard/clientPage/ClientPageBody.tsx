@@ -91,6 +91,7 @@ export function CompanyInformationForm({
     <Form {...form}>
       {isFileUploadModalOpen && (
         <FileUploadModal
+          onClickSave={() => {}}
           isOpen={isFileUploadModalOpen}
           onClose={() => {
             setIsFileUploadModalOpen(false);
@@ -219,7 +220,7 @@ export function CompanyInformationForm({
   );
 
   function handleCopy(key: keyof FormData) {
-    console.log("form", form.getValues(key));
+    // console.log("form", form.getValues(key));
     appDispatch(
       documentAction.setCopiedContent({
         title: form.getValues(key),

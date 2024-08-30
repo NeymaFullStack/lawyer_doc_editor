@@ -14,6 +14,7 @@ function Toolbars({ quillPages, visiblePage }) {
   const appDispatch = useDispatch();
   const [openDuplicateDocModal, setOpenDuplicateDocModal] = useState(false);
   const [openRestoreDocModal, setOpenRestoreDocModal] = useState(false);
+
   const { selectedDocumentVersion } = useSelector(
     (state) => state.documentVersioningReducer,
   );
