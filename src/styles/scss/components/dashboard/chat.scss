@@ -1,0 +1,22 @@
+.lt-ai-chat {
+  @apply leading-relaxed tracking-normal #{!important};
+  ul {
+    @apply my-2;
+  }
+  li {
+    @apply my-2;
+  }
+  h2,
+  h1 {
+    @apply mb-3 border-b-[1px] pb-1 text-sm font-semibold;
+  }
+}
+
+.lt-chat-inst {
+  h2,
+  li,
+  ul,
+  p {
+    @apply text-primary-gray;
+  }
+}

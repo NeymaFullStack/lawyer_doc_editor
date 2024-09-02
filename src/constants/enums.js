@@ -5,6 +5,7 @@ export const documentActions = {
   VersionHistory: "versionHistory",
   Preview: "preview",
   Reference: "reference",
+  ToolToggle: "tootleToggle",
 };
 
 export const documentStatus = {

@@ -23,7 +23,7 @@ function LoganChatBox() {
       className="flex flex-1 flex-col overflow-hidden bg-white"
       aria-label="Logan ChatGpt"
     >
-      <h2 className="flex h-[3.3rem] items-center border-b-[0.063rem] border-secondary-blue px-[0.8rem] text-sm font-semibold text-primary-gray">
+      <h2 className="flex h-[2.997rem] items-center rounded-tr-lg border-b-[0.063rem] border-secondary-blue px-[0.8rem] text-sm font-semibold text-primary-gray">
         AI Chat
       </h2>
       <div className="flex-1 overflow-hidden  bg-two pr-[0.14rem] text-[0.7rem]">

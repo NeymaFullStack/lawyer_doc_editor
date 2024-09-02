@@ -13,7 +13,7 @@ function Dashboard() {
       {loading && <Loader />}
 
       <div className="my-4 flex h-full flex-col gap-8 overflow-y-auto px-6 py-1 ">
-        <RecentDocuments />
+        {!loading && <RecentDocuments />}
         <Directory setLoading={setLoading} loading={loading} isDashboard />
       </div>
     </main>

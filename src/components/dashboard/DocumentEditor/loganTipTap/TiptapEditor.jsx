@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import ToolBar from "./ToolBar";
@@ -44,8 +44,12 @@ import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import * as Y from "yjs";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { useUserDetails } from "@/hooks";
+import { FontSize } from "./marks/fontStyle";
 import { getUserColor } from "@/utils/generic";
 import LoganTagsMenu from "./LoganTagsMenu";
+import { cn } from "@/utils/shadcn-utils";
+import TextAlign from "@tiptap/extension-text-align";
+import FontFamily from "@tiptap/extension-font-family";
 
 const doc = new Y.Doc();
 
@@ -91,9 +95,12 @@ const TiptapEditor = () => {
   const [tagInsertionState, setTagInsertionState] = useState(
     initialTagInsertionState,
   );
-  const { copiedContent, activeDocumentAction, currentDocument } = useSelector(
-    (state) => state.documentReducer,
-  );
+  const {
+    copiedContent,
+    activeDocumentAction,
+    currentDocument,
+    isEditorToolHidden,
+  } = useSelector((state) => state.documentReducer);
 
   const [articleInsertionState, setArticleInsertionState] = useState(
     initialArticleInsertionState,
@@ -125,12 +132,18 @@ const TiptapEditor = () => {
   const editor = useEditor(
     {
       extensions: [
+        FontSize,
         StarterKit.configure({
           heading: false, // Disable the default heading extension
           paragraph: false,
         }),
+        FontFamily,
         Collaboration.configure({
           document: doc,
+        }),
+        TextAlign.configure({
+          types: ["heading", "paragraph"],
+          alignments: ["left", "center", "right", "justify"],
         }),
         // CollaborationCursor.configure({
         //   provider,
@@ -337,7 +350,6 @@ const TiptapEditor = () => {
       let sourceReorderEndPos = doc.content.size;
       let destinationReorderStartPos = doc.content.size;
       let destinationReorderEndPos = doc.content.size;
-      // console.log("reorderAppendixState", reorderAppendixState);
       let pos = doc.content.size;
       if (reorderAppendixState.isRoot) {
         doc.forEach((node, offset) => {
@@ -441,7 +453,15 @@ const TiptapEditor = () => {
           onClose={cancelDeletion}
         />
       )}
-      <div className="flex h-[calc(100%-3rem)] w-full flex-col items-center overflow-hidden p-1 pr-3">
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className={cn(
+          "flex h-[calc(100%-3rem)] w-full flex-col items-center overflow-y-hidden overflow-x-scroll p-1 pr-3",
+          !isEditorToolHidden && "w-[44.563rem]",
+        )}
+      >
         {articleInsertionState?.isOpen && (
           <ArticleMenu
             editorRef={editorRef.current}
@@ -467,7 +487,7 @@ const TiptapEditor = () => {
           />
         )}
 
-        <div className="mt-1 flex w-[90%] items-center  gap-2">
+        <div className="mt-1 flex w-[40.5rem] items-center  gap-2">
           {activeDocumentAction !== documentActions.Draft && (
             <Tag textColor={"text-primary-blue"} bgColor={"bg-secondary-blue"}>
               Document
@@ -483,12 +503,21 @@ const TiptapEditor = () => {
 
         <div
           ref={editorRef}
-          className="relative z-0 my-2 h-full  w-[90%] overflow-y-scroll  bg-white "
+          className="relative z-0 my-2 h-full w-[40.5rem]  overflow-y-scroll bg-white  transition-all "
         >
           {activeDocumentVersion && (
             <EditorContent
               editor={editor}
-              className={` flex min-h-full w-full flex-col border-[0.125rem] px-10 py-2  ${activeDocumentAction !== documentActions.VersionHistory && editor?.isFocused ? "border-primary-blue" : ""} ${editor && activeDocumentVersion?.is_auto_saved !== null ? (activeDocumentVersion?.is_auto_saved ? "auto-save" : "save") : ""}`}
+              className={cn(
+                `flex min-h-full w-full flex-col border-[0.125rem] px-10 py-2`,
+                activeDocumentAction !== documentActions.VersionHistory &&
+                  editor?.isFocused &&
+                  "border-primary-blue",
+                editor &&
+                  activeDocumentVersion?.is_auto_saved === true &&
+                  "auto-save",
+                activeDocumentVersion?.is_auto_saved === false && "save",
+              )}
             />
           )}
         </div>

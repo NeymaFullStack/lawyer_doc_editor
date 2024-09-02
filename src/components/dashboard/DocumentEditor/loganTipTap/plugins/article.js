@@ -10,10 +10,13 @@ const ArticleExtention = Extension.create({
 
   addProseMirrorPlugins() {
     let updateArticles = this.options.updateArticles;
-    console.log("this", this.options);
+    console.log("this", this.options.onTextSelectionEvent);
     return [
       new Plugin({
         props: {
+          handleClick: (view, event) => {
+            // updateArticles([])
+          },
           handleKeyDown: (view, event) => {
             const { state, dispatch } = view;
             const { selection, tr, doc } = state;
@@ -65,7 +68,9 @@ const ArticleExtention = Extension.create({
                 let nodeBeforeDivArticle = doc.resolve(
                   $from.before($from.depth - 1),
                 ).nodeBefore;
+                debugger;
                 if (nodeBeforeDivArticle.type.name === "paragraph") {
+                  debugger;
                   let paragraphPos = findNodePosFromNode(
                     doc,
                     nodeBeforeDivArticle,
@@ -75,11 +80,12 @@ const ArticleExtention = Extension.create({
                     paragraphPos + nodeBeforeDivArticle.nodeSize,
                   );
                   dispatch(newTr);
-                  return true;
+                  return false;
                 } else if (
                   nodeBeforeDivArticle.type.name === "classIdDiv" &&
                   nodeBeforeDivArticle.attrs.class === "doc-article"
                 ) {
+                  debugger;
                   return true;
                 }
               }

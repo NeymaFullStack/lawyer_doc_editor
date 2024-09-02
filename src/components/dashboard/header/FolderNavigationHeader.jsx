@@ -125,7 +125,7 @@ function FolderNavigationHeader({ folderListView = false }) {
           </div>
         ),
         key: params.folderId
-          ? modalType.CREATE_DOCUMENT
+          ? modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION
           : modalType.EMPLACEMENT,
       },
       {

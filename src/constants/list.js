@@ -5,7 +5,9 @@ import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
 export const sideBarDropDownMenu = (params) => [
   {
     label: "New Document",
-    key: params.folderId ? modalType.CREATE_DOCUMENT : modalType.EMPLACEMENT,
+    key: params.folderId
+      ? modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION
+      : modalType.EMPLACEMENT,
     type: "action",
     icon: "/assets/icons/new-doc.svg",
   },

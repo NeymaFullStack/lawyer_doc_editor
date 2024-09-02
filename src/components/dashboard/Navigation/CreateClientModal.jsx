@@ -28,7 +28,7 @@ function CreateClientModal({
         customFooter={
           <>
             {showClientDetails ? (
-              <div className="mt-4 flex items-center gap-3">
+              <div className="mt-4 flex items-center gap-3 pb-4">
                 <Button
                   onClick={() => {
                     onClickCreateDoc();
@@ -78,7 +78,7 @@ function CreateClientModal({
           {showClientDetails ? (
             <>
               <span text>Want to</span>
-              <span className="text-primary-blue">add more</span>
+              <span className="text-primary-blue">{" add more "}</span>
               <span>about your client?</span>
               <span className="font-medium">{`(Optional)`}</span>
             </>
@@ -94,9 +94,9 @@ function CreateClientModal({
             Page.
           </p>
         )}
-        <div className="no-scrollbar  my-4 max-h-[70vh] overflow-y-scroll">
+        <div className="no-scrollbar  mb-4 mt-1 max-h-[70vh] overflow-y-scroll">
           {showClientDetails ? (
-            <div className="my-8">
+            <div className="mx-3 my-8">
               <CompanyInformationForm onSaveChanges={(data) => {}} />
             </div>
           ) : (

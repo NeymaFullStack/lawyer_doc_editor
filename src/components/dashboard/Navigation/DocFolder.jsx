@@ -14,7 +14,7 @@ function DocFolder({ onClickFolder, folder, nonClient = false }) {
       onDoubleClick={() => {
         onClickFolder(folder);
       }}
-      className="group flex cursor-pointer items-center rounded-xl bg-white p-5  py-4 text-xs  font-semibold text-black-txt shadow-out hover:bg-secondary-blue "
+      className="group flex  items-center rounded-xl bg-white p-5  py-4 text-xs  font-semibold text-black-txt shadow-out hover:bg-secondary-blue "
     >
       <div className="flex  max-w-[90%] items-center gap-3">
         <div className="min-w-fit">

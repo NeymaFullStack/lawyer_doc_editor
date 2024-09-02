@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useRef } from "react";
+import parse from "html-react-parser";
 
 function LoganUserChat() {
   const { chatMessages, documentLoading, gptQuery } = useSelector(
@@ -147,7 +148,9 @@ function LoganUserChat() {
               remHeight={1.751}
               alt={"Logan Gpt"}
             />
-            <p className="text-justify text-black-txt">{message?.message}</p>
+            <div className="lt-ai-chat text-justify !text-black-txt">
+              {parse(message?.message)}
+            </div>
           </div>
         );
     }

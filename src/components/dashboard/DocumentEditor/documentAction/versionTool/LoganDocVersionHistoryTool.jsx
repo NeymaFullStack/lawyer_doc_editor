@@ -52,11 +52,8 @@ function LoganDocVersionHistoryTool() {
   // );
 
   return (
-    <div
-      className="h-full w-[26.5rem] overflow-hidden bg-white"
-      aria-label="Logan Document Version History"
-    >
-      <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
+    <div aria-label="Logan Document Version History">
+      <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
         <h2 className="text-sm font-semibold text-primary-gray">Versioning</h2>
         <div className="flex items-center gap-1 ">
           {/* <Button

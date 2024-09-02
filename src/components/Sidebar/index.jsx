@@ -160,8 +160,8 @@ function Sidebar() {
             </div>
           </li> */}
         </ul>
-        <ul className="absolute bottom-0 mb-5 flex w-full flex-col gap-2">
-          <li className="pl-5">MORE</li>
+        <ul className="absolute bottom-0 mb-5 flex w-full flex-col gap-2 ">
+          <li className="pl-5 !text-primary-gray">MORE</li>
           <li className="pl-5">
             <div
               className={"flex cursor-pointer items-center gap-4"}
@@ -174,7 +174,7 @@ function Sidebar() {
                 alt="Settings"
               />
 
-              <span>Settings</span>
+              <span className={"!text-primary-gray"}>Settings</span>
             </div>
           </li>
           <li className="pl-5">
@@ -188,7 +188,7 @@ function Sidebar() {
                 remHeight={1.25}
                 alt="Account"
               />
-              <span>Help</span>
+              <span className={"!text-primary-gray"}>Help</span>
             </div>
           </li>
           <li className="pl-5">
@@ -205,7 +205,7 @@ function Sidebar() {
                 remHeight={1.25}
                 alt="Account"
               />
-              <span>Logout</span>
+              <span className={"!text-primary-gray"}>Logout</span>
             </div>
           </li>
           <li className="mx-3 mt-3 flex items-center gap-2 rounded-xl border-[1px] border-secondary-blue px-2 py-2">

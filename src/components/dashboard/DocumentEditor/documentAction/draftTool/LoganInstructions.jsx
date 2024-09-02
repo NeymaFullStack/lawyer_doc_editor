@@ -4,7 +4,7 @@ import React from "react";
 
 function LoganInstructions() {
   return (
-    <div className="flex  items-center justify-center text-justify">
+    <div className="lt-chat-inst flex  items-center justify-center text-justify">
       <div className="px-16 py-8">
         <div className="m-auto flex flex-col items-center gap-1 ">
           <RemSizeImage
@@ -19,7 +19,7 @@ function LoganInstructions() {
             {`I am Logan, your AI-powered legal assistant designed to revolutionize the way you handle legal documents. Here's how I can assist you:`}
           </p>
         </div>
-        <ul className="mt-5 flex list-disc flex-col gap-1 leading-4">
+        <ul className="mt-5 flex list-disc flex-col gap-1 leading-4 ">
           <li>
             <strong>Content Review:</strong> Access my ability to review
             documents and related files for advice and improvements.

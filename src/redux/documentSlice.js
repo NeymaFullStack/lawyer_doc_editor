@@ -32,6 +32,7 @@ const documentInitalState = {
   activeDocumentAction: documentActions.Draft,
   exportDoc: false,
   copiedContent: null,
+  isEditorToolHidden: true,
 };
 
 export const documentSlice = createSlice({
@@ -76,6 +77,9 @@ export const documentSlice = createSlice({
     },
     setDocumentLoading: (state, action) => {
       return { ...state, documentLoading: action.payload };
+    },
+    toggleToolOpen: (state, action) => {
+      return { ...state, isEditorToolHidden: !state.isEditorToolHidden };
     },
     resetDocumentSlice: (state, action) => {
       return { ...documentInitalState };

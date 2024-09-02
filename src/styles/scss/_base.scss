@@ -86,7 +86,7 @@ html {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
-  font-size: 1.11vw !important;
+  font-size: 16px !important;
 }
 
 // /* Adjust base font size for larger screens (1441px to 1920px) */
@@ -136,7 +136,7 @@ hr {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: #a3a7af;
+  @apply text-black-txt;
 }
 
 a {

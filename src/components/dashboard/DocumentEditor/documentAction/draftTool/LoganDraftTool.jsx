@@ -5,7 +5,7 @@ import LoganChatBox from "./LoganChatBox";
 
 function LoganDraftTool() {
   return (
-    <div className="flex h-full w-[26.5rem] flex-col overflow-hidden">
+    <div className="flex h-full flex-col">
       <LoganChatBox />
       {/* <LoganDocumentBase /> */}
     </div>

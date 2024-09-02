@@ -8,12 +8,19 @@ import LoganDocVersionHistoryTool from "./versionTool/LoganDocVersionHistoryTool
 import LoganDraftTool from "./draftTool/LoganDraftTool";
 import LoganVariableTool from "./variableTool/LoganVariableTool";
 import LoganReferenceTool from "./referenceTool/LoganReferenceTool";
+import { cn } from "@/utils/shadcn-utils";
 
 function LoganTools() {
-  const activeDocumentAction = useSelector(
-    (state) => state.documentReducer.activeDocumentAction,
+  const { activeDocumentAction, isEditorToolHidden } = useSelector(
+    (state) => state.documentReducer,
   );
-  return <>{switchTool()}</>;
+  return (
+    !isEditorToolHidden && (
+      <div className={cn("h-full w-[26.5rem] overflow-hidden bg-white")}>
+        {switchTool()}
+      </div>
+    )
+  );
 
   function switchTool() {
     switch (activeDocumentAction) {

@@ -144,7 +144,9 @@ function Directory({
       )}
       {!loading && folderListView && directoryData?.listData.length > 0 && (
         <LoganTable
-          onClickRow={(folder) => onClickFolder(folder)}
+          onClickRow={(row) => {
+            row?.version ? onClickDoc(row) : onClickFolder(row);
+          }}
           tableColumns={
             isDashboard
               ? clientFoldersListTableColumns(

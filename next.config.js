@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const path = require("path");
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "logandocuments.s3.amazonaws.com",
+        pathname: "**",
+      },
+    ],
+  },
   output: "standalone",
   reactStrictMode: false,
   sassOptions: {

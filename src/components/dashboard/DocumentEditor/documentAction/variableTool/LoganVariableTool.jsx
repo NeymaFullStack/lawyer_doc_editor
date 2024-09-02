@@ -29,53 +29,12 @@ function LoganVariableTool() {
   // }, [activeDocumentVersion]);
   // console.log("varilanle List", variableList);
   return (
-    <div
-      className="flex h-full w-[26.5rem] flex-col  overflow-hidden bg-white "
-      aria-label="Logan Document Version History"
-    >
-      <div className="flex h-[3.3rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
+    <div className="flex flex-col" aria-label="Logan Document Version History">
+      <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
         <h2 className="text-sm font-semibold text-primary-gray">
           Variables and Definitions
         </h2>
         <div className="flex items-center gap-2 ">
-          {/* <Button
-            className="btn btn--secondary !py-4"
-            icon={
-              <RemSizeImage
-                imagePath={"/assets/icons/sort-icon.svg"}
-                remWidth={1.343}
-                remHeight={1.343}
-                alt={"Sort"}
-              />
-              // <Image
-              //   src={"/assets/icons/sort-icon.svg"}
-              //   height={21.49}
-              //   width={21.49}
-              //   alt="New"
-              // />
-            }
-          >
-            By Date
-          </Button> */}
-          {/* <Button
-            className="btn btn--secondary !py-4"
-            icon={
-              <RemSizeImage
-                imagePath={"/assets/icons/all-doc.svg"}
-                remWidth={1.343}
-                remHeight={1.343}
-                alt={"All Doc"}
-              />
-              // <Image
-              //   src={"/assets/icons/all-doc.svg"}
-              //   height={21.49}
-              //   width={21.49}
-              //   alt="New"
-              // />
-            }
-          >
-            All
-          </Button> */}
           <button
             onClick={addNewVariable}
             onMouseEnter={(e) => {

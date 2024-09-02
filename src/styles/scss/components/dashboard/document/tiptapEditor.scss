@@ -26,7 +26,7 @@
   .tiptap {
     @include logan-doc;
 
-    @apply flex-1 break-words break-all text-[1rem] #{!important};
+    @apply flex-1  text-[1rem] #{!important};
 
     ul {
       @apply list-disc pl-4;

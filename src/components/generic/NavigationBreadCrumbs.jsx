@@ -104,7 +104,9 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                       remHeight={0.9}
                       alt={"Route"}
                     />
-                    <span className="w-[4rem] truncate">{route.name}</span>
+                    <span className="w-[4rem] truncate text-primary-gray">
+                      {route.name}
+                    </span>
                   </span>
                 </li>
               );
