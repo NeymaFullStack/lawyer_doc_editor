@@ -4,11 +4,6 @@ import React from "react";
 import dynamic from "next/dynamic";
 import TipTapEditor from "@/components/dashboard/DocumentEditor/loganTipTap/TiptapEditor";
 
-const LoganEditor = dynamic(
-  () => import("@/components/dashboard/DocumentEditor/loganEditor/LoganEditor"),
-  { ssr: false },
-);
-
 async function Page() {
   return (
     <div className="flex w-full flex-1 overflow-hidden">

@@ -117,14 +117,14 @@ function LoganDocVersionHistoryTool() {
                   let collapseItem = {
                     key: item.label,
                     label: (
-                      <div className="text-sm font-semibold text-primary-gray">
+                      <div className="truncate text-sm font-semibold text-primary-gray">
                         {item.label}
                       </div>
                     ),
                     children: item?.details.map((item) => {
                       return (
                         <div key={item.label}>
-                          <div className="text-xs font-semibold text-primary-gray">
+                          <div className="truncate text-xs font-semibold text-primary-gray">
                             {item.label}
                           </div>
                           <ul className="mt-1">
@@ -148,7 +148,7 @@ function LoganDocVersionHistoryTool() {
                   let collapseItem = {
                     key: item.label,
                     label: (
-                      <div className="text-sm font-semibold text-primary-gray">
+                      <div className="truncate text-sm font-semibold text-primary-gray">
                         {item.label}
                       </div>
                     ),

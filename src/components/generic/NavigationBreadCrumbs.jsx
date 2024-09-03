@@ -58,7 +58,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                           remHeight={0.9}
                           alt={"Route"}
                         />
-                        <span className="w-[4rem] truncate">{route?.name}</span>
+                        <span className="">{route?.name}</span>
                       </span>
                       <span
                         onClick={() => {
@@ -73,7 +73,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                           remHeight={0.9}
                           alt={"Client"}
                         />
-                        <span className="w-[4.2rem] truncate">Client Page</span>
+                        <span>Client Page</span>
                       </span>
                     </div>
                   </li>
@@ -104,9 +104,7 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                       remHeight={0.9}
                       alt={"Route"}
                     />
-                    <span className="w-[4rem] truncate text-primary-gray">
-                      {route.name}
-                    </span>
+                    <span className="text-primary-gray">{route.name}</span>
                   </span>
                 </li>
               );

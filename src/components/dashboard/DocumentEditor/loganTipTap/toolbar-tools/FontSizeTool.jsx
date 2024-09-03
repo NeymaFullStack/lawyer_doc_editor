@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@/components/shadcn-components/ui/button";
 import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/shadcn-components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/shadcn-components/ui/popover";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 
 const FONT_SIZES = [
@@ -33,7 +32,9 @@ const FontSizeTool = ({ editor }) => {
   const [selectedSize, setSelectedSize] = useState("10");
   useEffect(() => {
     editor.getAttributes("textStyle")?.fontSize
-      ? setSelectedSize(editor.getAttributes("textStyle")?.fontSize)
+      ? setSelectedSize(
+          editor.getAttributes("textStyle")?.fontSize.replace("pt", ""),
+        )
       : setSelectedSize("10");
   }, [editor?.state?.selection]);
 
@@ -42,53 +43,51 @@ const FontSizeTool = ({ editor }) => {
   );
 
   const handleSelect = (value) => {
-    if (editor) {
-      editor?.chain().focus().setFontSize(value).run();
-      setSelectedSize(value);
-    }
+    editor?.chain().focus().setFontSize(value).run();
+    setSelectedSize(value);
   };
 
   return (
-    <Select onValueChange={handleSelect} value={selectedSize}>
-      <SelectTrigger
-        onClick={(e) => {
-          e.stopPropagation();
-          debugger;
-        }}
-        className=" ml-1 !h-[1.5rem] w-[3.5rem] rounded-md p-2 focus:ring-0"
-        dropDownicon={
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* The trigger button shows the currently selected alignment */}
+        <Button
+          variant="outline"
+          className="ml-1  !h-[1.5rem] w-[4rem]  rounded-md p-2 hover:bg-white focus:ring-0"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <span>{selectedSize}pt</span>
           <RemSizeImage
             imagePath={"/assets/icons/quillicons/arrow-down.svg"}
             remWidth={1}
             remHeight={1}
             alt="Dropdown"
-            className={"-mr-[5px]"}
+            className={"ml-auto"}
           />
-        }
-      >
-        <SelectValue placeholder="10pt" />
-      </SelectTrigger>
-      <SelectContent className="max-h-60 w-fit min-w-fit">
-        {fontSizes.map((size) => (
-          <SelectItem
-            className="w-[3rem] cursor-pointer"
-            key={size}
-            value={size}
-          >
-            {size}pt
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="no-scrollbar  max-h-60  w-fit overflow-y-scroll p-2">
+        {/* List of alignment options as buttons */}
+        <div className="flex flex-col space-y-1">
+          {fontSizes.map((size) => (
+            <Button
+              key={size}
+              variant={selectedSize === size ? "secondary" : "ghost"}
+              className="!h-[1.5rem] w-[3rem]  py-1 text-left"
+              onClick={(e) => {
+                handleSelect(size);
+                e.stopPropagation();
+              }}
+            >
+              {size}pt
+            </Button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
-
-  function getCurrentFontSize(currentSelectedFontSize) {
-    for (const size of FONT_SIZES) {
-      if (currentSelectedFontSize == size) {
-        return size;
-      }
-    }
-  }
 };
 
 export default FontSizeTool;

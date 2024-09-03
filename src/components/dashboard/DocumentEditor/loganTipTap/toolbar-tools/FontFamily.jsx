@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@/components/shadcn-components/ui/button";
 import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/shadcn-components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/shadcn-components/ui/popover";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 
 const FONT_FAMILY_OPTIONS = [
@@ -30,55 +29,60 @@ const FontFamily = ({ editor }) => {
 
   const handleSelect = (value) => {
     console.log("value", value);
-    if (editor) {
-      editor.chain().focus().setFontFamily(value).run();
-      setSelectedFontFamily(value);
-    }
+
+    editor.chain().focus().setFontFamily(value).run();
+    setSelectedFontFamily(value);
   };
 
   console.log("ediotr", selectedFontFamily);
 
   return (
-    <Select onValueChange={handleSelect} value={selectedFontFamily}>
-      <SelectTrigger
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        className=" ml-1 !h-[1.5rem] w-[5.5rem] rounded-md p-2 focus:ring-0 [&>span]:truncate"
-        dropDownicon={
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* The trigger button shows the currently selected alignment */}
+        <Button
+          variant="outline"
+          className="ml-1  !h-[1.5rem] w-[5.5rem]  rounded-md p-2 hover:bg-white focus:ring-0"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <span className="w-[80%] truncate text-left">
+            {selectedFontFamily.charAt(0).toUpperCase() +
+              selectedFontFamily.slice(1)}
+          </span>
+
           <RemSizeImage
             imagePath={"/assets/icons/quillicons/arrow-down.svg"}
             remWidth={1}
             remHeight={1}
             alt="Dropdown"
-            className={"-mr-[5px]"}
+            className={"ml-auto max-w-full flex-1"}
           />
-        }
-      >
-        <SelectValue placeholder="left" />
-      </SelectTrigger>
-      <SelectContent className="max-h-60 w-fit min-w-[5rem] ">
-        {FONT_FAMILY_OPTIONS.map((fontFamily) => (
-          <SelectItem
-            className="cursor-pointer justify-start"
-            key={fontFamily?.value}
-            value={fontFamily?.value}
-          >
-            {fontFamily?.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="no-scrollbar ml-[3.8rem] max-h-60 w-fit min-w-fit overflow-y-scroll p-2">
+        {/* List of alignment options as buttons */}
+        <div className="flex flex-col space-y-2">
+          {FONT_FAMILY_OPTIONS.map((fontFamily) => (
+            <Button
+              key={fontFamily?.value}
+              variant={
+                selectedFontFamily === fontFamily.value ? "secondary" : "ghost"
+              }
+              className="![&>span]:w-[3.5rem] ![&>span]:truncate  !h-[1.5rem] py-1 text-left"
+              onClick={(e) => {
+                handleSelect(fontFamily.value);
+                e.stopPropagation();
+              }}
+            >
+              {fontFamily?.label}
+            </Button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
-
-  function getCurrentSelectedFontFamily() {
-    for (const fontFamily of FONT_FAMILY_OPTIONS) {
-      if (editor.isActive({ fontFamily: fontFamily.value })) {
-        return fontFamily.value;
-      }
-    }
-    return "inter";
-  }
 };
 
 export default FontFamily;

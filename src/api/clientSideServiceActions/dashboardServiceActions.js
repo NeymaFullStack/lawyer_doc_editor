@@ -83,17 +83,15 @@ export const getFolderDetails = cache(async ({ id }) => {
   }
 });
 
-export const CreateConversation =
-  (url, queryParams = {}) =>
-  async (dispatch) => {
-    try {
-      const res = await Api.post(url);
-      return res;
-    } catch (error) {
-      //dispatch action for global error dialog box
-      console.log(error);
-    }
-  };
+export const CreateConversation = (url) => async () => {
+  try {
+    const res = await Api.post(url);
+    return res;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
 
 export const getDocumentData = cache(async (url) => {
   try {
@@ -105,7 +103,7 @@ export const getDocumentData = cache(async (url) => {
   }
 });
 
-export const getDocumentContentByVersionId = async (url, queryParams = {}) => {
+export const getDocumentContentByVersionId = async (url) => {
   try {
     const res = await Api.get(url);
     return res?.data;

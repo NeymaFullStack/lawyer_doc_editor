@@ -32,6 +32,8 @@ import {
 } from "@/utils/dashboard/editor-utils";
 import { CustomHeading } from "./extensions/heading";
 import ArticleExtention from "./plugins/article";
+import StoreCursorPositionExtension from "./extensions/storeCursorPositionExtension";
+
 import CustomListItem from "./extensions/listItem";
 import ArticleMenu from "./ArticleMenu";
 import ArticleInsertion from "./plugins/artcleInsertion";
@@ -40,12 +42,9 @@ import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
 import { customParagraph } from "./extensions/paragraph";
 import { createCollapsibleListOpenState } from "@/utils/component-utils";
 import Collaboration from "@tiptap/extension-collaboration";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import * as Y from "yjs";
-import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { useUserDetails } from "@/hooks";
 import { FontSize } from "./marks/fontStyle";
-import { getUserColor } from "@/utils/generic";
 import LoganTagsMenu from "./LoganTagsMenu";
 import { cn } from "@/utils/shadcn-utils";
 import TextAlign from "@tiptap/extension-text-align";
@@ -132,6 +131,7 @@ const TiptapEditor = () => {
   const editor = useEditor(
     {
       extensions: [
+        StoreCursorPositionExtension,
         FontSize,
         StarterKit.configure({
           heading: false, // Disable the default heading extension
@@ -454,9 +454,6 @@ const TiptapEditor = () => {
         />
       )}
       <div
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
         className={cn(
           "flex h-[calc(100%-3rem)] w-full flex-col items-center overflow-y-hidden overflow-x-scroll p-1 pr-3",
           !isEditorToolHidden && "w-[44.563rem]",
@@ -496,7 +493,7 @@ const TiptapEditor = () => {
           <h2
             className={`text-lg font-semibold text-black-txt ${currentDocument?.document_name ? "" : "invisible"}`}
           >
-            {currentDocument?.document_name || "xyz"}
+            {currentDocument?.document_name}
           </h2>
           {/* <span className="text-xs">28 Pages</span> */}
         </div>

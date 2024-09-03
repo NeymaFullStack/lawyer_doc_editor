@@ -33,6 +33,8 @@ const documentInitalState = {
   exportDoc: false,
   copiedContent: null,
   isEditorToolHidden: true,
+  editor: {},
+  toolbar: { highlighter: false },
 };
 
 export const documentSlice = createSlice({
@@ -83,6 +85,16 @@ export const documentSlice = createSlice({
     },
     resetDocumentSlice: (state, action) => {
       return { ...documentInitalState };
+    },
+    setEditorToolbarState: (state, action) => {
+      return {
+        ...state,
+
+        toolbar: {
+          ...state?.toolbar,
+          [action.payload]: !state?.toolbar[action.payload],
+        },
+      };
     },
   },
 });

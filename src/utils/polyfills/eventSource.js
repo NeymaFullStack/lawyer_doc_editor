@@ -1,4 +1,4 @@
-import { NativeEventSource, EventSourcePolyfill } from "event-source-polyfill";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 const EventSource = EventSourcePolyfill;
 export default EventSource;

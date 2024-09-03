@@ -59,7 +59,7 @@ function DocumentVersion({ docVersion }) {
           />
         )}
         <span
-          className={`font-semibold text-black ${selectedDocumentVersion?.version_id === docVersion?.version_id ? "text-primary-blue" : ""}`}
+          className={`truncate font-semibold text-black ${selectedDocumentVersion?.version_id === docVersion?.version_id ? "text-primary-blue" : ""}`}
         >
           {docVersion?.is_auto_saved === null
             ? currentDocument?.document_name

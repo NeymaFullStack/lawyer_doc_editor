@@ -99,9 +99,10 @@ export const classIdSpan = Node.create({
   },
   addCommands() {
     return {
+      ...this.parent?.(),
       replaceTextInNodeWithClassAndValue:
         (prevText, newText) =>
-        ({ state, dispatch }) => {
+        ({ state, dispatch, commands }) => {
           if (prevText === newText) {
             return false;
           }
@@ -111,6 +112,7 @@ export const classIdSpan = Node.create({
           doc.descendants((node, pos) => {
             if (
               node.type.name === "classIdSpan" &&
+              node.attrs.class === "doc-variable" &&
               node?.textContent === prevText
             ) {
               const mappedPos = trMapping.map(pos);

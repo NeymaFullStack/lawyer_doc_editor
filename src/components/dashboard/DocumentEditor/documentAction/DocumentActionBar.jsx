@@ -26,11 +26,7 @@ function DocumentActionBar() {
           }}
         >
           <RemSizeImage
-            imagePath={
-              isEditorToolHidden
-                ? "/assets/icons/drawer-close.svg"
-                : "/assets/icons/drawer-close.svg"
-            }
+            imagePath={"/assets/icons/drawer-close.svg"}
             remWidth={2.063}
             remHeight={2.063}
             alt={"toggle-tool"}
@@ -41,7 +37,7 @@ function DocumentActionBar() {
       </li>
       {documentActionsList(activeDocumentAction).map((item, index) => {
         return (
-          <li key={nanoid()}>
+          <li key={index}>
             <button onClick={() => onClickActionTool(item.value)}>
               <RemSizeImage
                 imagePath={item.icon}

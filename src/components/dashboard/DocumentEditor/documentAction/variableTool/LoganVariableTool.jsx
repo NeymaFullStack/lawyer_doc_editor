@@ -29,7 +29,10 @@ function LoganVariableTool() {
   // }, [activeDocumentVersion]);
   // console.log("varilanle List", variableList);
   return (
-    <div className="flex flex-col" aria-label="Logan Document Version History">
+    <div
+      className="flex h-full flex-col"
+      aria-label="Logan Document Version History"
+    >
       <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
         <h2 className="text-sm font-semibold text-primary-gray">
           Variables and Definitions
@@ -75,8 +78,8 @@ function LoganVariableTool() {
           placeholder="Search For a Variable Id Or Value..."
         ></input>
       </div>
-      <div className="flex-1 overflow-y-scroll p-4 text-xs">
-        <ul>
+      <div className="flex-1 overflow-y-hidden p-4 text-xs">
+        <ul className="h-full overflow-y-scroll">
           {variableList
             .filter((item) => {
               if (!varibaleSearch) {

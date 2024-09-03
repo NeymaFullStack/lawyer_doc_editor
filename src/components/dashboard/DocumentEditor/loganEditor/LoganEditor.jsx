@@ -429,7 +429,6 @@ const LoganEditor = () => {
                   </div> */}
                   <div
                     onClick={(e) => {
-                      e.stopPropagation();
                       !documentLoading && isDocumentActionDraft;
                       appDispatch(quillAction.setActiveQuillId(quill.id));
                     }}
