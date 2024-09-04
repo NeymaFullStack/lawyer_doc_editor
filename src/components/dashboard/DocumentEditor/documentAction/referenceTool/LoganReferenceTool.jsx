@@ -23,7 +23,7 @@ function LoganReferenceTool() {
   // useEffect(() => {
   //   !isAppendixActive && !openAppendixMenu && setOpenAppendixMenu(true);
   // }, [isAppendixActive]);
-  // console.log("pop", articleList, collapsibleListOpenState);
+  console.log("pop", articleList, collapsibleListOpenState);
 
   const manageArticles = (actionType, id, level, articleInputValue = "") => {
     manipulateItems(
@@ -36,7 +36,10 @@ function LoganReferenceTool() {
     );
   };
   return (
-    <div className="flex flex-col" aria-label="Logan Document Version History">
+    <div
+      className="flex h-full flex-col"
+      aria-label="Logan Document Version History"
+    >
       <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
         <h2 className="text-sm font-semibold text-primary-gray">Index</h2>
         {/* <div className="flex items-center gap-2 ">
@@ -104,13 +107,11 @@ function LoganReferenceTool() {
           items={articleList.slice(0, 1)}
           isDragAndDrop={true}
           articleAction={manageArticles}
-          collapsibleListOpenState={collapsibleListOpenState.slice(0, 1)}
         />
         <CollapsibleList
           items={articleList.slice(1)}
           isDragAndDrop={true}
           articleAction={manageArticles}
-          collapsibleListOpenState={collapsibleListOpenState.slice(1)}
         />
         {/* <Collapse
           bordered={false}

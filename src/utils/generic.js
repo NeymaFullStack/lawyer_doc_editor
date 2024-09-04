@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-
+import { flatMapDeep } from "lodash";
+//list utils
 export function sortStringTableList(listData, sortOrder, sortParam) {
   let newSortedList = [...listData];
   if (sortOrder === "ascend") {
@@ -48,8 +49,16 @@ export function sortByNumberTableList(listData, sortOrder, sortParam) {
   return newSortedList;
 }
 
+export const flattenArray = (array) => {
+  return flatMapDeep(array, (item) => [
+    item,
+    ...flattenArray(item.children || []),
+  ]);
+};
+
 export const editorTextToBeReplaceRegex = `/\\"([^"]*)\\"/g`;
 
+//Optimisation
 export const debounce = (fn, delay) => {
   let timeout;
   return (...args) => {
@@ -60,6 +69,7 @@ export const debounce = (fn, delay) => {
   };
 };
 
+//random colors
 export const userColors = Object.freeze([
   "#fb7185",
   "#fdba74",

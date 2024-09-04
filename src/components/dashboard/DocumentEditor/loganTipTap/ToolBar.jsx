@@ -6,10 +6,10 @@ import FontSizeTool from "./toolbar-tools/FontSizeTool";
 import Alignment from "./toolbar-tools/Alignment";
 import FontFamily from "./toolbar-tools/FontFamily";
 import Highlighter from "./toolbar-tools/Highlighter";
+import Zoom from "./toolbar-tools/Zoom";
 
 function ToolBar({ editor }) {
   const toolbarRef = useRef(null);
-  const [zoom, setZoom] = useState(100);
   useEffect(() => {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
@@ -202,29 +202,7 @@ function ToolBar({ editor }) {
                 </button>
               </div>
             )}
-            <div className="flex !h-[1.5rem] w-[4.2rem] items-center justify-evenly gap-[0.5] rounded-lg bg-white px-1">
-              <button
-                disabled={zoom <= 50}
-                className="cursor-pointer px-1 text-[1rem] font-medium leading-tight"
-                onClick={() => {
-                  zoom > 50 && setZoom((prev) => prev - 10);
-                }}
-              >
-                -
-              </button>
-              <span className="flex min-w-[1.8rem] max-w-[1.8rem] justify-center text-[0.65rem] leading-tight">
-                {zoom}%
-              </span>
-              <button
-                disabled={zoom >= 200}
-                className="cursor-pointer px-1  text-[1rem] font-medium leading-tight"
-                onClick={() => {
-                  zoom < 200 && setZoom((prev) => prev + 10);
-                }}
-              >
-                +
-              </button>
-            </div>
+            <Zoom />
           </div>
         </>
       )}
@@ -232,4 +210,4 @@ function ToolBar({ editor }) {
   );
 }
 
-export default ToolBar;
+export default React.memo(ToolBar);

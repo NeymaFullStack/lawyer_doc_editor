@@ -185,12 +185,16 @@ function createArticleInsertionItem(
 
       let newArticle = null;
       if (articleInsertionType === "article") {
-        newArticle = schema.nodes.classIdDiv.create({ class: "doc-article" }, [
-          schema.nodes.heading.create(
-            { level: 2, id: crypto.randomUUID() },
-            schema.text(text),
-          ),
-        ]);
+        console.log("testId", crypto.randomUUID());
+        newArticle = schema.nodes.classIdDiv.create(
+          { class: "doc-article", id: crypto.randomUUID() },
+          [
+            schema.nodes.heading.create(
+              { level: 2, class: "article-heading" },
+              schema.text(text),
+            ),
+          ],
+        );
       } else if (articleInsertionType === "subArticle") {
         newArticle = state.schema.nodes.listItem.create(
           {

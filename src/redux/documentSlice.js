@@ -34,7 +34,7 @@ const documentInitalState = {
   copiedContent: null,
   isEditorToolHidden: true,
   editor: {},
-  toolbar: { highlighter: false },
+  toolbar: { highlighter: false, zoom: 100 },
 };
 
 export const documentSlice = createSlice({
@@ -46,6 +46,7 @@ export const documentSlice = createSlice({
         ...state,
         activeDocumentAction: action.payload,
         copiedContent: null,
+        isEditorToolHidden: false,
       };
     },
     setCurrentDocument: (state, action) => {
@@ -86,15 +87,17 @@ export const documentSlice = createSlice({
     resetDocumentSlice: (state, action) => {
       return { ...documentInitalState };
     },
-    setEditorToolbarState: (state, action) => {
+    toogleEditorToolbarState: (state, action) => {
       return {
         ...state,
-
         toolbar: {
           ...state?.toolbar,
           [action.payload]: !state?.toolbar[action.payload],
         },
       };
+    },
+    setEditorToolbarState: (state, action) => {
+      return { ...state, toolbar: { ...state.toolbar, ...action?.payload } };
     },
   },
 });

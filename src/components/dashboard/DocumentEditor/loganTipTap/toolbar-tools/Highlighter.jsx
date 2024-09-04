@@ -15,7 +15,7 @@ function Highlighter() {
       size={"icon"}
       variant={"link"}
       onClick={() => {
-        appDispatch(documentAction.setEditorToolbarState("highlighter"));
+        appDispatch(documentAction.toggleEditorToolbarState("highlighter"));
       }}
     >
       <RemSizeImage

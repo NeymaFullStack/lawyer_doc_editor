@@ -52,7 +52,10 @@ export const classIdSpan = Node.create({
   addNodeView() {
     return ({ node, getPos, editor }) => {
       const dom = document.createElement("span");
-      if (node.attrs.class === null) {
+      if (
+        node.attrs.class === null ||
+        node.attrs.class === "doc-article-title"
+      ) {
         return;
       }
       // Apply all attributes to the DOM element

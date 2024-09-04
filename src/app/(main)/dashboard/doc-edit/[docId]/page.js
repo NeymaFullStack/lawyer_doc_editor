@@ -7,7 +7,7 @@ import TipTapEditor from "@/components/dashboard/DocumentEditor/loganTipTap/Tipt
 async function Page() {
   return (
     <div className="flex w-full flex-1 overflow-hidden">
-      <main className="flex h-full flex-1 rounded-t-lg border-[0.063rem] border-secondary-blue bg-six">
+      <main className="flex h-full flex-1 overflow-x-auto rounded-t-lg border-[0.063rem] border-secondary-blue bg-six">
         <section className="h-full flex-1">
           <TipTapEditor />
         </section>

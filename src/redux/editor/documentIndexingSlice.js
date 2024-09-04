@@ -1,4 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { enableMapSet } from "immer";
+
+// Enable Map/Set support for Immer
+enableMapSet();
 
 export const documentIndexingSlice = createSlice({
   name: "documentIndexing",

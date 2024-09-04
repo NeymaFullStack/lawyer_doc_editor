@@ -13,12 +13,12 @@ import OptionButton from "./buttons/OptionButton";
 import LoganDropDown from "./LoganDropDown";
 import { uniqueId } from "lodash";
 import CopyButton from "./buttons/CopyButton";
+import ArticleList from "../dashboard/DocumentEditor/documentAction/referenceTool/ArticleList";
 
 const CollapsibleList = ({
   items,
   isDragAndDrop = false,
   articleAction = undefined,
-  collapsibleListOpenState,
 }) => {
   const appDispatch = useDispatch();
   // console.log("collapse", collapsibleListOpenState);
@@ -40,13 +40,6 @@ const CollapsibleList = ({
                 isDragAndDrop={isDragAndDrop}
                 level={0}
                 articleParentType={item.articleType}
-                collapsibleItemOpenState={
-                  collapsibleListOpenState?.length > 0
-                    ? collapsibleListOpenState.find(
-                        (collapseItem, index) => collapseItem.id === item.id,
-                      )
-                    : {}
-                }
               />
             ))}
             {provided.placeholder}
@@ -131,7 +124,6 @@ const CollapsibleItem = ({
   isDragAndDrop,
   last = false,
   articleParentType,
-  collapsibleItemOpenState,
 }) => {
   const appDispatch = useDispatch();
 
@@ -142,7 +134,7 @@ const CollapsibleItem = ({
   // const copiedContent = useSelector(
   //   (state) => state.documentReducer.copiedContent,
   // );
-  const { collapsibleListOpenState } = useSelector(
+  const { collapsibleListOpenState, articleList } = useSelector(
     (state) => state.documentIndexingReducer,
   );
   // const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -174,18 +166,19 @@ const CollapsibleItem = ({
         setHovered(false);
         e.stopPropagation();
       }}
-      className={` ${collapsibleItemOpenState?.isOpen && level == 0 ? "rounded-lg border " : `relative ${!last ? "border-b" : ""} ${!collapsibleItemOpenState?.isOpen && !item.input ? "py-2" : ""}`}`}
+      className={` ${collapsibleListOpenState.get(item.id) && level == 0 ? "rounded-lg border " : `relative ${!last ? "border-b" : ""} ${!collapsibleListOpenState.get(item.id) && !item.input ? "py-2" : ""}`}`}
     >
       <div
         onClick={() => {
           item?.children?.length > 0 &&
             toggleCollapsibleListOpenState(
+              articleList,
               collapsibleListOpenState,
               item.id,
               appDispatch,
             );
         }}
-        className={`group flex items-center justify-between ${collapsibleItemOpenState?.isOpen ? "border-b py-2" : " bg-white"} ${hovered ? "pb-2" : ""}`}
+        className={`group flex items-center justify-between ${collapsibleListOpenState.get(item.id) ? "border-b py-2" : " bg-white"} ${hovered ? "pb-2" : ""}`}
       >
         <div
           style={{ marginLeft: `${level / 2 + 0.15}rem` }}
@@ -193,7 +186,7 @@ const CollapsibleItem = ({
         >
           <div className="flex items-center gap-2">
             <RemSizeImage
-              className={`ml-1 cursor-pointer py-2  ${collapsibleItemOpenState?.isOpen ? "rotate-90" : ""}`}
+              className={`ml-1 cursor-pointer py-2  ${collapsibleListOpenState.get(item.id) ? "rotate-90" : ""}`}
               imagePath={"/assets/icons/docaction/expand-blue.svg"}
               remWidth={0.45}
               remHeight={0.5}
@@ -290,7 +283,7 @@ const CollapsibleItem = ({
               </span>
             )}
           </div>
-          {articleAction && !collapsibleItemOpenState?.isOpen && (
+          {articleAction && !collapsibleListOpenState.get(item.id) && (
             <div
               className={`invisible absolute  -bottom-[.635rem] left-0  right-0 flex w-full  items-center bg-white group-hover:visible`}
             >
@@ -386,7 +379,7 @@ const CollapsibleItem = ({
           </div>
         )}
       </div>
-      {collapsibleItemOpenState?.isOpen && item.children && (
+      {collapsibleListOpenState.get(item.id) && item.children && (
         <Droppable droppableId={`${item.id}`} type={`subitem-${level}`}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -400,13 +393,6 @@ const CollapsibleItem = ({
                   isDragAndDrop={isDragAndDrop}
                   last={item?.children?.length === index + 1}
                   articleParentType={articleParentType}
-                  collapsibleItemOpenState={
-                    collapsibleItemOpenState?.children?.length > 0
-                      ? collapsibleItemOpenState?.children.find(
-                          (collapseItem, index) => collapseItem.id === child.id,
-                        )
-                      : {}
-                  }
                 />
               ))}
               {provided.placeholder}

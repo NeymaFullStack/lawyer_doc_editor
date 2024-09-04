@@ -30,6 +30,7 @@ import {
   findNodePosFromId,
   findNodePosFromNode,
 } from "@/utils/dashboard/editor-utils";
+import { flattenArray } from "@/utils/generic";
 import { CustomHeading } from "./extensions/heading";
 import ArticleExtention from "./plugins/article";
 import StoreCursorPositionExtension from "./extensions/storeCursorPositionExtension";
@@ -49,6 +50,7 @@ import LoganTagsMenu from "./LoganTagsMenu";
 import { cn } from "@/utils/shadcn-utils";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
+import Zoom from "./toolbar-tools/Zoom";
 
 const doc = new Y.Doc();
 
@@ -99,6 +101,7 @@ const TiptapEditor = () => {
     activeDocumentAction,
     currentDocument,
     isEditorToolHidden,
+    toolbar,
   } = useSelector((state) => state.documentReducer);
 
   const [articleInsertionState, setArticleInsertionState] = useState(
@@ -178,6 +181,7 @@ const TiptapEditor = () => {
         }),
         ArticleExtention.configure({
           updateArticles: (articles) => {
+            console.log("newArticleState", articles);
             appDispatch(documentIndexingAction.setArticlesList(articles));
           },
         }),
@@ -415,9 +419,14 @@ const TiptapEditor = () => {
   useEffect(() => {
     if (
       (collapsibleListOpenState === null && articleList?.length > 0) ||
-      articleList.length !== collapsibleListOpenState?.length
+      flattenArray(articleList).length !==
+        flattenArray(collapsibleListOpenState)?.length
     ) {
-      createCollapsibleListOpenState(articleList, appDispatch);
+      createCollapsibleListOpenState(
+        articleList,
+        appDispatch,
+        collapsibleListOpenState,
+      );
     }
   }, [articleList]);
 
@@ -442,9 +451,9 @@ const TiptapEditor = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEditVariable]);
-  // console.log(!!editor?.getText());
+  console.log("dog", editor);
   return (
-    <div className="logan-tiptap h-full">
+    <div className="logan-tiptap h-full w-full">
       <ToolBar editor={editor} />
       {openArticleDeleteConfirmModal && (
         <ArticleDeleteConfirmationModal
@@ -455,8 +464,7 @@ const TiptapEditor = () => {
       )}
       <div
         className={cn(
-          "flex h-[calc(100%-3rem)] w-full flex-col items-center overflow-y-hidden overflow-x-scroll p-1 pr-3",
-          !isEditorToolHidden && "w-[44.563rem]",
+          "flex h-[calc(100%-3rem)] w-full flex-col items-center justify-center overflow-y-hidden overflow-x-scroll p-1 pr-3",
         )}
       >
         {articleInsertionState?.isOpen && (
@@ -484,12 +492,14 @@ const TiptapEditor = () => {
           />
         )}
 
-        <div className="mt-1 flex w-[40.5rem] items-center  gap-2">
-          {activeDocumentAction !== documentActions.Draft && (
-            <Tag textColor={"text-primary-blue"} bgColor={"bg-secondary-blue"}>
-              Document
-            </Tag>
-          )}
+        <div
+          className={`mt-1   flex w-[40.5rem] items-center  gap-2`}
+          style={{ zoom: `${toolbar.zoom || 100}%` }}
+        >
+          <Tag textColor={"text-primary-blue"} bgColor={"bg-secondary-blue"}>
+            Document
+          </Tag>
+
           <h2
             className={`text-lg font-semibold text-black-txt ${currentDocument?.document_name ? "" : "invisible"}`}
           >
@@ -500,7 +510,8 @@ const TiptapEditor = () => {
 
         <div
           ref={editorRef}
-          className="relative z-0 my-2 h-full w-[40.5rem]  overflow-y-scroll bg-white  transition-all "
+          className={`relative z-0 my-2 h-full w-[40.5rem]  overflow-y-scroll bg-white  transition-all `}
+          style={{ zoom: `${toolbar.zoom || 100}%` }}
         >
           {activeDocumentVersion && (
             <EditorContent
@@ -587,7 +598,7 @@ const TiptapEditor = () => {
   function setEditorContent(content) {
     editor?.commands.setContent(content);
     // editor?.commands.setContent(
-    //   '<p style=""><img src="cid:i.0"/><span style=""></span></p><p style=""><span style="font-weight: bold; color: rgb(0, 171, 68); font-size: 14pt;">Ankit <span style="font-weight: bold; color: rgb(250, 171, 70); font-size: 14pt;" id="company_name" class="doc-variable">Your Company</span></span></p><p style=""><span style="color: rgb(102, 102, 102); font-size: 10pt;"><span id="street_address" class="doc-variable">123 Your Street</span></span></p><p style=""><span style="color: rgb(102, 102, 102); font-size: 10pt;"><span id="city_and_state" class="doc-variable">Your City, ST 12345</span></span></p><p style=""><span style="color: rgb(102, 102, 102); font-size: 10pt;"><span id="contact_number" class="doc-variable">(123) 456-7890</span></span></p><p style=""><span style="">Project Name</span><span style="color: rgb(53, 55, 68); font-size: 36pt; font-family: Proxima Nova;"></span></p><p style=""><span style="font-weight: bold; color: rgb(102, 102, 102); font-size: 14pt;">4</span><span style="font-weight: bold; font-size: 14pt;">th</span><span style="font-weight: bold; font-size: 14pt;"> September 20XX</span><span style="font-weight: bold; color: rgb(102, 102, 102); font-size: 14pt;"></span></p><section><div class="doc-article" id="5dedc7c4-9302-4061-8a00-03dd428f9bf2"><h2 class="article-heading" id="2fa0ed0a-53b5-4ded-a18c-0a78580cecb9">OVERVIEW</h2></div></section><p style=""><span style="">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper. </span></p><section><div class="doc-article" id="fe5035f6-14ee-4c60-9998-222425a708b5"><h2 class="article-heading" id="f43e5abe-1b36-40f7-8c55-baae768af7df">GOALS</h2></div></section><ul><li><span style="font-family: Proxima Nova;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</span><span style="font-family: Proxima Nova;"></span></li><li><span style="">S</span><span style="font-family: Proxima Nova;">ed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span><span style=""></span></li></ul><section><div class="doc-article" id="62b9f3de-c68b-4ea1-a3b6-cc8efd30ded3"><h2 class="article-heading" id="bba3213f-96a5-4997-a828-726e27bfdc7a">SPECIFICATIONS</h2></div></section><p style=""><span style="">Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.</span><span style="font-family: Proxima Nova;"></span></p><section><div class="doc-article" id="1ae16472-526d-4b93-8d97-c60234d28e54"><h2 class="article-heading" id="2791b7d7-51ac-4fb0-a9ca-26745817dce5">MILESTONES</h2></div></section><p style=""><span style="">Lorem Ipsum</span><span style="font-weight: bold; font-size: 14pt; font-family: Proxima Nova;"></span></p><p style=""><span style="font-family: Proxima Nova;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span></p><p style=""><span style="">Dolor Sit Amet</span></p><p style=""><span style="font-family: Proxima Nova;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span><span style="font-size: 13pt;"></span></p>',
+    //   '<h1 style="text-align: center">Non-Disclosure Agreement (NDA)</h1><hr><div class="doc-article" id="e4ef1a6b-e020-4a44-8acb-4a22dd6c3b99"><h2 class="article-heading" id="4f91925f-61c2-45d1-a570-fcb445017034"><span class="doc-article-title" contenteditable="false">Article 1 - </span>Parties</h2><p>This Non-Disclosure Agreement (the "Agreement") is entered into as of [Insert Date] by and between [Party A Name], with its principal office located at [Party A Address] (the "Disclosing Party"), and [Party B Name], with its principal office located at [Party B Address] (the "Receiving Party"). Both parties may be referred to individually as a "Party" or collectively as the "Parties."</p><ul><li id="9fcc0d1f-0595-4784-9cce-8e59f2b217fd" data-index="1.1"><p><strong>one.one: </strong></p><ul><li id="67d689c4-fe01-4892-bca3-91c15e846a93" data-index="1.1.1"><p><strong>one.one.oen: </strong></p><ul><li id="6bc6cb8b-4c5d-486b-83ab-043413ca68d1" data-index="1.1.1.1"><p><strong>one.one......: </strong></p></li></ul></li></ul></li></ul></div><div class="doc-article" id="35fb68e6-a1ac-4c35-832d-acd8d48a03df"><h2 class="article-heading" id="102447dd-efcc-4539-85c0-fea22634117f"><span class="doc-article-title" contenteditable="false">Article 2 - </span>Definition of Confidential Information</h2><p>For purposes of this Agreement, "Confidential Information" includes but is not limited to all information, whether verbal, electronic, written, or in any other form, which is disclosed by the Disclosing Party to the Receiving Party, including but not limited to business strategies, technical processes, software, and designs.</p></div><div class="doc-article" id="acaedbd3-8706-4144-9bad-92c444472e34"><h2 class="article-heading" id="0d74e99d-b892-4511-b3de-f4ac2acff5e1"><span class="doc-article-title" contenteditable="false">Article 3 - </span>Obligations of Receiving Party</h2><p>The Receiving Party agrees to: (i) maintain the confidentiality of the Confidential Information; (ii) refrain from disclosing such Confidential Information to any third party without prior written consent from the Disclosing Party; (iii) use such Confidential Information solely to evaluate or pursue a business relationship with the Disclosing Party; (iv) safeguard the Confidential Information from unauthorized use, disclosure, or theft.</p></div><div class="doc-article" id="106522d5-0033-418c-8042-3b7709fd0493"><h2 class="article-heading" id="e6adc5dc-4e1e-4c7b-90a4-bbb272c4ef14"><span class="doc-article-title" contenteditable="false">Article 4 - </span>Exclusions from Confidential Information</h2><p>Confidential Information does not include information that: (a) was publicly known prior to the time of disclosure by the Disclosing Party; (b) becomes publicly known after disclosure, other than as a result of a breach of this Agreement by the Receiving Party; (c) is independently developed by the Receiving Party without use of or reference to the Disclosing Party\'s Confidential Information.</p></div><div class="doc-article" id="6b2b977d-155b-4056-a732-6dfcfcf7fa72"><h2 class="article-heading" id="eb0e1552-64f3-40d9-b436-51ecfa37ec32"><span class="doc-article-title" contenteditable="false">Article 5 - </span>Term</h2><p>The obligations of this Agreement shall commence on the date of this Agreement and shall continue indefinitely until the Confidential Information no longer qualifies as confidential.</p></div><div class="doc-article" id="9da5e093-5384-4a1c-82d2-f1f80624dcf8"><h2 class="article-heading" id="a25a9669-a6c9-4b61-af8c-3c3886881b37"><span class="doc-article-title" contenteditable="false">Article 6 - </span>Return of Materials</h2><p>Upon termination of this Agreement, the Receiving Party agrees to return all materials containing Confidential Information to the Disclosing Party or to destroy all such materials and certify the destruction to the Disclosing Party, at the Disclosing Party\'s option.</p></div><div class="doc-article" id="45343877-79f1-4d10-be0c-d92954cf06b5"><h2 class="article-heading" id="855b9adf-6b82-45b0-a588-67b6f1869d04"><span class="doc-article-title" contenteditable="false">Article 7 - </span>No License</h2><p>Nothing in this Agreement grants the Receiving Party any rights in or to the Confidential Information except as expressly set forth herein.</p></div><div class="doc-article" id="508e2502-e7bb-43df-beed-347430d11487"><h2 class="article-heading" id="9e125df7-7cbe-4d07-a7df-808c6890dfb7"><span class="doc-article-title" contenteditable="false">Article 8 - </span>Miscellaneous</h2><p>This Agreement represents the entire agreement between the Parties with respect to its subject matter and supersedes all prior discussions, agreements, or understandings of any kind. This Agreement may be amended only by written agreement signed by both Parties. This Agreement is governed by and construed in accordance with the laws of the United States, without giving effect to any principles of conflicts of law.</p><p>IN WITNESS WHEREOF, the Parties hereto have executed this Non-Disclosure Agreement as of the Effective Date.</p><p>[Name of Party A]</p><p>By: ___________________________</p><p>Title: _________________________</p><p>Date: __________________________</p><p>[Name of Party B]</p><p>By: ___________________________</p><p>Title: _________________________</p><p>Date: __________________________</p></div>',
     // );
   }
 
@@ -627,74 +638,6 @@ const TiptapEditor = () => {
         );
     }
   }
-
-  // function extractArticles(jsonContent) {
-  //   let articles = jsonContent?.content
-  //     ?.filter((item) => {
-  //       return (
-  //         item.type === "classIdDiv" && item?.attrs?.class === "doc-article"
-  //       );
-  //     })
-  //     .map((item, index) => {
-  //       return {
-  //         id: item?.content?.[0]?.attrs?.id,
-  //         articleName: item?.content?.[0]?.content?.[1]?.text,
-  //         index: index + 1,
-  //         children: extractNestedArticles(
-  //           item.content[item.content.length - 1],
-  //         ),
-  //       };
-  //     });
-  //   appDispatch(documentIndexingAction.setArticlesList(articles));
-  //   function extractNestedArticles(children) {
-  //     if (
-  //       children &&
-  //       children.type === "bulletList" &&
-  //       children.content.length > 0
-  //     ) {
-  //       children.content.forEach((item, index) => {
-  //         return {
-  //           id: item.attrs.id,
-  //           articleName: item?.content?.[0]?.content?.[1]?.text,
-  //           index: index + 1,
-  //           children: extractNestedArticles(
-  //             item.content[item.content.length - 1],
-  //           ),
-  //         };
-  //       });
-  //     }
-  //   }
-  // }
-
-  // function handleArticlesUpdate(tr) {
-  //   if (
-  //     tr.curSelection?.$cursor?.parent?.firstChild?.attrs?.class ===
-  //     "doc-article-title"
-  //   ) {
-  //     let articleId = tr.curSelection.$cursor.parent.attrs.id;
-  //     let updatedTextContent =
-  //       tr.curSelection?.$cursor?.parent.content.length <= 1
-  //         ? ""
-  //         : tr.curSelection.$cursor.parent.lastChild.textContent;
-  //     if (articleId) {
-  //       let newArticleList = articleList.map((item, index) => {
-  //         if (
-  //           item.id === articleId &&
-  //           updatedTextContent !== item.articleName
-  //         ) {
-  //           editor.commands.replaceTextInNodeWithClassAndValue(
-  //             `Article xyz- ${item.articleName}`,
-  //             `Article xyz- ${updatedTextContent}`,
-  //           );
-  //           return { ...item, articleName: updatedTextContent };
-  //         }
-  //         return item;
-  //       });
-  //       appDispatch(documentIndexingAction.setArticlesList(newArticleList));
-  //       // console.log("articles", newArticleList);
-  //     }
-  //   }
-  // }
 
   function confirmDeletion() {
     if (nodeToDelete) {

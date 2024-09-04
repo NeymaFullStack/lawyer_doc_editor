@@ -10,7 +10,8 @@ const ArticleExtention = Extension.create({
 
   addProseMirrorPlugins() {
     let updateArticles = this.options.updateArticles;
-    console.log("this", this.options.onTextSelectionEvent);
+    const editor = this.editor;
+    console.log("this");
     return [
       new Plugin({
         props: {
@@ -29,6 +30,7 @@ const ArticleExtention = Extension.create({
             // debugger;
             let newTr = tr;
             let ifCursorRightBeforeArticleHeading = false;
+
             if (
               currentNode.type.name === "heading" &&
               currentNode.attrs.id &&
@@ -39,55 +41,48 @@ const ArticleExtention = Extension.create({
             ) {
               ifCursorRightBeforeArticleHeading = true;
             }
-
-            if (event.key === "Enter") {
-              if (ifCursorRightBeforeArticleHeading) {
+            if (ifCursorRightBeforeArticleHeading) {
+              if (event.key === "Enter") {
                 //Behaviour when user pressed "Enter" when cursor is right before Article heading"
-                const newParagraphNode = state.schema.nodes.paragraph.create();
-                newTr = newTr.insert(
-                  $from.before($from.depth - 1),
-                  newParagraphNode,
-                );
-                newTr = newTr.setMeta("addToHistory", true);
-                dispatch(
-                  newTr.setSelection(
-                    TextSelection.near(newTr.doc.resolve(from)),
-                  ),
-                );
+                editor
+                  .chain()
+                  .insertContentAt($from.before($from.depth - 1), {
+                    type: "paragraph",
+                  })
+                  .run();
                 return true;
-              }
-              return false;
-            } else if (event.key === " ") {
-              if (ifCursorRightBeforeArticleHeading) {
-                //Behaviour when user pressed "Space" when cursor is right before Article heading"
-                return true;
-              }
-            } else if (event.key === "Backspace") {
-              if (ifCursorRightBeforeArticleHeading) {
-                //Behaviour when user pressed "Backspace" when cursor is right before Article heading"
-                let nodeBeforeDivArticle = doc.resolve(
+              } else if (event.key === "Backspace") {
+                const nodeBeforeDivArticle = doc.resolve(
                   $from.before($from.depth - 1),
                 ).nodeBefore;
-                debugger;
-                if (nodeBeforeDivArticle.type.name === "paragraph") {
-                  debugger;
-                  let paragraphPos = findNodePosFromNode(
-                    doc,
-                    nodeBeforeDivArticle,
-                  );
-                  newTr = newTr.deleteRange(
-                    paragraphPos,
-                    paragraphPos + nodeBeforeDivArticle.nodeSize,
-                  );
-                  dispatch(newTr);
-                  return false;
+
+                if (nodeBeforeDivArticle?.type.name === "paragraph") {
+                  // console.log(
+                  //   doc.nodeAt(findNodePosFromNode(doc, nodeBeforeDivArticle)),
+                  //   doc.nodeAt($from.before($from.depth - 1)),
+                  // );
+                  editor
+                    .chain()
+                    .focus()
+                    .deleteRange({
+                      from: findNodePosFromNode(doc, nodeBeforeDivArticle),
+                      to:
+                        findNodePosFromNode(doc, nodeBeforeDivArticle) +
+                        nodeBeforeDivArticle.nodeSize,
+                    })
+                    .run();
+                  return true;
                 } else if (
-                  nodeBeforeDivArticle.type.name === "classIdDiv" &&
-                  nodeBeforeDivArticle.attrs.class === "doc-article"
+                  nodeBeforeDivArticle?.type.name === "classIdDiv" &&
+                  nodeBeforeDivArticle?.attrs.class === "doc-article"
                 ) {
-                  debugger;
+                  return true;
+                } else {
                   return true;
                 }
+              } else {
+                //Behaviour when user pressed "Space" when cursor is right before Article heading"
+                return true;
               }
             }
           },
@@ -112,59 +107,17 @@ const ArticleExtention = Extension.create({
                   id: "doc",
                 },
               ];
-              const setIndexForListItems = (listNode, parentIndex = []) => {
-                let index = 1;
-                let articleList = [];
-                listNode.forEach((child, offset) => {
-                  if (child.type.name === "listItem") {
-                    let uniqueId = child.attrs["id"] || crypto.randomUUID();
-                    const dataIndex = [...parentIndex, index].join(".");
-                    const pos = findNodePosFromNode(tr.doc, child);
-                    tr = tr.setNodeMarkup(pos, undefined, {
-                      ...child.attrs,
-                      "data-index": dataIndex,
-                      id: uniqueId,
-                    });
-                    let article = {
-                      id: uniqueId,
-                      title: String(child.textContent)
-                        .split(" ")
-                        .slice(0, 4)
-                        .join(" "),
-                      index: dataIndex,
-                      type: tagInsertionType.SubArticle,
-                    };
-                    child.forEach((grandChild) => {
-                      if (
-                        grandChild.type.name === "bulletList" ||
-                        grandChild.type.name === "orderedList"
-                      ) {
-                        article = {
-                          ...article,
-                          children: setIndexForListItems(grandChild, [
-                            ...parentIndex,
-                            index,
-                          ]),
-                        };
-                      }
-                    });
-                    articleList.push(article);
-                    index++;
-                  }
-                });
-                return articleList;
-              };
+
               let newAppendexSeprator = {
                 sepratorAppendixHeading: "",
                 separatorHeadingStartPos: undefined,
                 separatorHeadingEndPos: undefined,
                 id: null,
               };
-              tr.doc.forEach((node, offset, index) => {
+              state.doc.forEach((node, offset, index) => {
                 let pos = offset;
-
                 const mappedPos = trMapping.map(pos);
-                // debugger;
+                // handling insertion and manipulation of appendix
                 if (node.attrs.class === "appendix-separator") {
                   articleOccurance = 1;
                   newAppendexSeprator.id = node.attrs.id;
@@ -260,55 +213,89 @@ const ArticleExtention = Extension.create({
                   node.type.name === "classIdDiv" &&
                   node.attrs.class === "doc-article"
                 ) {
-                  const newNode = state.schema.nodes.classIdSpan.create(
-                    { class: `doc-article-title` },
-                    state.schema.text(`Article ${articleOccurance} - `),
-                  );
-                  let h2Node;
-                  node.forEach((child) => {
+                  // handling insertion of doc-article-title tag (eg : Article 1)
+                  let h2Node = null;
+                  node.forEach((child, childPos) => {
                     if (
                       child.type.name === "heading" &&
-                      child.attrs.id &&
-                      child.attrs?.level === 2
+                      child.attrs?.level === 2 &&
+                      child.attrs?.class === "article-heading"
                     ) {
-                      h2Node = child;
-                    }
-                  });
-                  const h2Pos = mappedPos + 1;
-                  let hasCustomNode = false;
-                  let customNodePos;
-
-                  h2Node?.descendants((childNode, childPos) => {
-                    if (childNode.type.name === "classIdSpan") {
-                      hasCustomNode = true;
-                      customNodePos = h2Pos + childPos;
-                    }
-                    // debugger;
-                  });
-
-                  if (
-                    hasCustomNode &&
-                    typeof customNodePos !== undefined &&
-                    h2Node.content.firstChild.textContent
-                  ) {
-                    let artcleIndex = h2Node?.content?.firstChild?.textContent
-                      ?.split(" ")[1]
-                      ?.split(" - ")[0];
-
-                    if (Number(artcleIndex) !== articleOccurance) {
-                      const slice = new Slice(Fragment.from(newNode), 0, 0);
-
-                      tr.replace(
-                        h2Pos + 1,
-                        h2Pos + 1 + h2Node.content.firstChild.nodeSize,
-                        slice,
+                      const h2Pos = trMapping.map(
+                        findNodePosFromNode(state.doc, child),
                       );
+                      if (h2Node !== null) {
+                        // console.log(
+                        //   "testing 1",
+                        //   state.doc.nodeAt(childPos + 2),
+                        // );
+                        const slice = tr.doc.slice(
+                          h2Pos,
+                          mappedPos + node.nodeSize - 2,
+                        );
+                        const docArticleNode =
+                          tr.doc.type.schema.nodes.classIdDiv.create(
+                            { class: "doc-article", id: crypto.randomUUID() },
+                            slice.content,
+                          );
+
+                        tr.insert(
+                          mappedPos + node.nodeSize,
+                          Fragment.from(docArticleNode),
+                        );
+                        tr.delete(h2Pos, mappedPos + node.nodeSize - 2);
+                        // debugger;
+
+                        // editor.commands.cut(
+                        //   {
+                        //     from: h2Pos,
+                        //     to: mappedPos + node.nodeSize - 2,
+                        //   },
+                        //   mappedPos + node.nodeSize,
+                        // );
+                      } else {
+                        h2Node = child;
+                        let docArticleTitleFound = false;
+                        const newarticleTagNode =
+                          state.schema.nodes.classIdSpan.create(
+                            { class: `doc-article-title` },
+                            state.schema.text(`Article ${articleOccurance} - `),
+                          );
+                        const docArticleTitleSlice = new Slice(
+                          Fragment.from(newarticleTagNode),
+                          0,
+                          0,
+                        );
+
+                        h2Node?.forEach((childNode, childPos) => {
+                          if (
+                            childNode.type.name === "classIdSpan" &&
+                            childNode.attrs.class === "doc-article-title"
+                          ) {
+                            const docArticleTitlePos = trMapping.map(
+                              findNodePosFromNode(state.doc, childNode),
+                            );
+
+                            let artcleIndex = Number(
+                              childNode.textContent
+                                ?.split(" ")[1]
+                                ?.split(" - ")[0],
+                            );
+                            docArticleTitleFound = true;
+                            if (artcleIndex !== articleOccurance) {
+                              tr.replace(
+                                docArticleTitlePos,
+                                docArticleTitlePos + childNode.nodeSize,
+                                docArticleTitleSlice,
+                              );
+                            }
+                          }
+                        });
+                        !docArticleTitleFound &&
+                          tr.insert(h2Pos + 1, docArticleTitleSlice.content);
+                      }
                     }
-                  } else {
-                    h2Node?.type.name === "heading" &&
-                      tr.insert(h2Pos + 1, newNode);
-                    tr.setMeta("addToHistory", true);
-                  }
+                  });
                   let article = {
                     id: node?.attrs?.id,
                     title: h2Node?.lastChild?.textContent,
@@ -322,12 +309,15 @@ const ArticleExtention = Extension.create({
                     ) {
                       article = {
                         ...article,
-                        children: setIndexForListItems(child, [
-                          articleOccurance,
-                        ]),
+                        children: setIndexForListItems(
+                          child,
+                          [articleOccurance],
+                          tr,
+                        ),
                       };
                     }
                   });
+
                   let lastArticle = articlesList[articlesList.length - 1];
                   lastArticle = {
                     ...lastArticle,
@@ -340,10 +330,53 @@ const ArticleExtention = Extension.create({
                   articleOccurance = 1;
                 }
               });
+              tr.docChanged && dispatch(tr);
+
               // console.log("articlesList", articlesList);
               updateArticles(articlesList);
-              if (tr.docChanged) {
-                dispatch(tr);
+
+              // recursive function for handinliong articles and subarticles
+              function setIndexForListItems(listNode, parentIndex = []) {
+                let index = 1;
+                let articleList = [];
+                listNode.forEach((child, offset) => {
+                  if (child.type.name === "listItem") {
+                    let uniqueId = child.attrs["id"] || crypto.randomUUID();
+                    const dataIndex = [...parentIndex, index].join(".");
+                    const pos = findNodePosFromNode(tr.doc, child);
+                    tr = tr.setNodeMarkup(pos, undefined, {
+                      ...child.attrs,
+                      "data-index": dataIndex,
+                      id: uniqueId,
+                    });
+                    let article = {
+                      id: uniqueId,
+                      title: String(child.textContent)
+                        .split(" ")
+                        .slice(0, 4)
+                        .join(" "),
+                      index: dataIndex,
+                      type: tagInsertionType.SubArticle,
+                    };
+                    child.forEach((grandChild) => {
+                      if (
+                        grandChild.type.name === "bulletList" ||
+                        grandChild.type.name === "orderedList"
+                      ) {
+                        article = {
+                          ...article,
+                          children: setIndexForListItems(grandChild, [
+                            ...parentIndex,
+                            index,
+                          ]),
+                        };
+                      }
+                    });
+                    articleList.push(article);
+                    index++;
+                  }
+                });
+                return articleList;
               }
             },
           };

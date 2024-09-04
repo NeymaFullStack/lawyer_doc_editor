@@ -1,7 +1,6 @@
 import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
 import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
-import { Snowburst_One } from "next/font/google";
 
 export const findNodePosFromNode = (doc, node) => {
   let nodePos = null;
