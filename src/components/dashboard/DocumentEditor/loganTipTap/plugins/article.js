@@ -4,6 +4,7 @@ import { Extension } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
 import { padStart, uniqueId } from "lodash";
+const navigationKeys = ["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"];
 
 const ArticleExtention = Extension.create({
   name: "article",
@@ -27,6 +28,9 @@ const ArticleExtention = Extension.create({
             const parentNode = $from.node($from.depth - 1);
 
             console.log("key", event.key);
+            if (navigationKeys.includes(event.key)) {
+              return false;
+            }
             let ifCursorRightBeforeArticleHeading = false;
 
             if (

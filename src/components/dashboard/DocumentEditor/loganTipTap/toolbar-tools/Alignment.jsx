@@ -39,11 +39,7 @@ const Alignment = ({ editor }) => {
     if (editor && getCurrentSelectedAlign() !== value) {
       // Apply the new alignment and focus on the editor.
 
-      editor
-        .chain()
-        .focus(editor?.storage?.storeCursorPosition?.lastCursorPosition?.anchor)
-        .setTextAlign(value)
-        .run();
+      editor.chain().focus().setTextAlign(value).run();
       setSelectedAlignment(value);
     }
   };

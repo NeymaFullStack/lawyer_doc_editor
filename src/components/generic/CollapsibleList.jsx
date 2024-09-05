@@ -164,7 +164,7 @@ const CollapsibleItem = ({
         setHovered(false);
         e.stopPropagation();
       }}
-      className={` ${collapsibleListOpenState.get(item.id) && level == 0 ? "rounded-lg border " : `relative ${!last ? "border-b" : ""} ${!collapsibleListOpenState.get(item.id) && !item.input ? "py-2" : ""}`}`}
+      className={` ${collapsibleListOpenState?.get(item.id) && level == 0 ? "rounded-lg border " : `relative ${!last ? "border-b" : ""} ${!collapsibleListOpenState.get(item.id) && !item.input ? "py-2" : ""}`}`}
     >
       <div
         onClick={() => {
@@ -176,7 +176,7 @@ const CollapsibleItem = ({
               appDispatch,
             );
         }}
-        className={`group flex items-center justify-between ${collapsibleListOpenState.get(item.id) ? "border-b py-2" : " bg-white"} ${hovered ? "pb-2" : ""}`}
+        className={`group flex items-center justify-between ${collapsibleListOpenState?.get(item.id) ? "border-b py-2" : " bg-white"} ${hovered ? "pb-2" : ""}`}
       >
         <div
           style={{ marginLeft: `${level / 2 + 0.15}rem` }}
@@ -184,7 +184,7 @@ const CollapsibleItem = ({
         >
           <div className="flex items-center gap-2">
             <RemSizeImage
-              className={`ml-1 cursor-pointer py-2  ${collapsibleListOpenState.get(item.id) ? "rotate-90" : ""}`}
+              className={`ml-1 cursor-pointer py-2  ${collapsibleListOpenState?.get(item.id) ? "rotate-90" : ""}`}
               imagePath={"/assets/icons/docaction/expand-blue.svg"}
               remWidth={0.45}
               remHeight={0.5}
@@ -377,7 +377,7 @@ const CollapsibleItem = ({
           </div>
         )}
       </div>
-      {collapsibleListOpenState.get(item.id) && item.children && (
+      {collapsibleListOpenState?.get(item.id) && item.children && (
         <Droppable droppableId={`${item.id}`} type={`subitem-${level}`}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>

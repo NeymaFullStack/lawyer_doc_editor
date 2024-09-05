@@ -1,19 +1,12 @@
 import Paragraph from "@tiptap/extension-paragraph";
-import { findParentNode } from "prosemirror-utils";
 
 export const customParagraph = Paragraph.extend({
   content: "inline*",
   addAttributes() {
     return {
-      class: {
-        default: null,
-      },
-      id: {
-        default: null,
-      },
-      style: {
-        default: null,
-      },
+      ...this.parent?.(),
+      class: { default: null },
+      id: { default: null },
     };
   },
   parseHTML() {
@@ -35,8 +28,6 @@ export const customParagraph = Paragraph.extend({
     const { class: className, ...restAttributes } = HTMLAttributes;
     // Check if the class name is "appendix-seprator" and apply contenteditable attribute
     if (className === "appendix-seprator") {
-      debugger;
-
       return [
         "p",
         { class: className, contenteditable: "false", ...restAttributes },
@@ -52,12 +43,12 @@ export const customParagraph = Paragraph.extend({
       Backspace: ({ editor }) => {
         const { $from, $to } = editor.state.selection;
         // Check if the paragraph is empty
-        const isEmptyParagraph = $from.parent.content.size === 0;
+        const isEmptyParagraph = $from?.parent?.content.size === 0;
 
-        const prevNodePos = $from.before();
-        const prevResolvedPos = editor.state.doc.resolve(prevNodePos);
+        const prevNodePos = $from?.before();
+        const prevResolvedPos = editor.state.doc?.resolve(prevNodePos);
 
-        const nextNodePos = $to.after();
+        const nextNodePos = $to?.after();
 
         // Find the nodes at those positions
         const prevNode = prevResolvedPos.nodeBefore;
@@ -72,11 +63,11 @@ export const customParagraph = Paragraph.extend({
           const tr = editor.state.tr;
 
           // Delete the empty paragraph without merging surrounding content
-          tr.delete($from.before(), $to.after());
+          tr.delete($from?.before(), $to?.after());
 
           // Reset selection to avoid merging nodes
           const newSelection = editor.state.selection.constructor.near(
-            tr.doc.resolve($from.before()),
+            tr.doc?.resolve($from?.before()),
           );
           tr.setSelection(newSelection);
 
@@ -94,17 +85,26 @@ export const customParagraph = Paragraph.extend({
 
         let parentNode = $cursor.node(-1);
         let currentNode = $cursor.node();
-        let startingPos = $cursor.before();
-        let endingPos = $cursor.after();
+        let startingPos = $cursor?.before();
+        let endingPos = $cursor?.after();
         if (currentNode && currentNode.attrs.class === "article-heading") {
           // Insert a new paragraph without inheriting the class
           if ($cursor.pos - 1 === startingPos) {
-            commands.insertContentAt($from.before(-1), {
-              type: "paragraph",
-              attrs: {},
-            });
+            editor
+              .chain()
+              .insertContentAt($from?.before(-1), {
+                type: "paragraph",
+                attrs: {},
+              })
+              .setTextSelection($cursor.pos + 2)
+              .run();
+            // commands.insertContentAt($from.before(-1), {
+            //   type: "paragraph",
+            //   attrs: {},
+            // });
+            // commands.setNodeSelection($cursor.pos);
           } else if ($cursor.pos + 1 === endingPos) {
-            commands.insertContentAt($from.after(), {
+            commands.insertContentAt($from?.after(), {
               type: "paragraph",
               attrs: {},
             });
@@ -120,7 +120,7 @@ export const customParagraph = Paragraph.extend({
           parentNode.attrs.class === "doc-article" &&
           parentNode.lastChild !== $from.node()
         ) {
-          commands.insertContentAt($from.after(), {
+          commands.insertContentAt($from?.after(), {
             type: "paragraph",
             attrs: {},
           });

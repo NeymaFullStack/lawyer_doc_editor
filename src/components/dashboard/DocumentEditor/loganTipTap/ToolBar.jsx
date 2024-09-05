@@ -15,7 +15,6 @@ function ToolBar({ editor }) {
     const handleEditorBlur = (event) => {
       // Check if the blur event was triggered by a click on a toolbar button
       event.preventDefault(); // Prevent losing focus
-
       if (
         (toolbar &&
           (toolbar === event.target || toolbar.contains(event.target))) ||
@@ -200,4 +199,4 @@ function ToolBar({ editor }) {
   );
 }
 
-export default React.memo(ToolBar);
+export default ToolBar;

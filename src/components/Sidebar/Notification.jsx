@@ -45,7 +45,6 @@ function Notification() {
         };
         eventSource.onerror = () => {
           eventSource.close();
-          setEventSourceRetry((prev) => !prev);
         };
       } catch (error) {
         console.log(error);
