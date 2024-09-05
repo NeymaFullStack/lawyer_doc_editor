@@ -3,7 +3,7 @@ import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Extension } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
-import { padStart } from "lodash";
+import { padStart, uniqueId } from "lodash";
 
 const ArticleExtention = Extension.create({
   name: "article",
@@ -11,7 +11,6 @@ const ArticleExtention = Extension.create({
   addProseMirrorPlugins() {
     let updateArticles = this.options.updateArticles;
     const editor = this.editor;
-    console.log("this");
     return [
       new Plugin({
         props: {
@@ -21,14 +20,13 @@ const ArticleExtention = Extension.create({
           handleKeyDown: (view, event) => {
             const { state, dispatch } = view;
             const { selection, tr, doc } = state;
-            const { $from, $to, from, $anchor, node } = selection;
+            const { $from, $to, from, $anchor } = selection;
             // Check if the selection is within your classIdDiv wrapper
             // const parentNode = $from.node(-1); // -1 to get the parent node
             const currentNode = $from.node();
             const parentNode = $from.node($from.depth - 1);
 
-            // debugger;
-            let newTr = tr;
+            console.log("key", event.key);
             let ifCursorRightBeforeArticleHeading = false;
 
             if (
@@ -42,25 +40,12 @@ const ArticleExtention = Extension.create({
               ifCursorRightBeforeArticleHeading = true;
             }
             if (ifCursorRightBeforeArticleHeading) {
-              if (event.key === "Enter") {
-                //Behaviour when user pressed "Enter" when cursor is right before Article heading"
-                editor
-                  .chain()
-                  .insertContentAt($from.before($from.depth - 1), {
-                    type: "paragraph",
-                  })
-                  .run();
-                return true;
-              } else if (event.key === "Backspace") {
+              if (event.key === "Backspace") {
                 const nodeBeforeDivArticle = doc.resolve(
                   $from.before($from.depth - 1),
                 ).nodeBefore;
 
                 if (nodeBeforeDivArticle?.type.name === "paragraph") {
-                  // console.log(
-                  //   doc.nodeAt(findNodePosFromNode(doc, nodeBeforeDivArticle)),
-                  //   doc.nodeAt($from.before($from.depth - 1)),
-                  // );
                   editor
                     .chain()
                     .focus()
@@ -225,27 +210,22 @@ const ArticleExtention = Extension.create({
                         findNodePosFromNode(state.doc, child),
                       );
                       if (h2Node !== null) {
-                        // console.log(
-                        //   "testing 1",
-                        //   state.doc.nodeAt(childPos + 2),
+                        // const slice = tr.doc.slice(
+                        //   h2Pos,
+                        //   mappedPos + node.nodeSize - 2,
                         // );
-                        const slice = tr.doc.slice(
-                          h2Pos,
-                          mappedPos + node.nodeSize - 2,
-                        );
-                        const docArticleNode =
-                          tr.doc.type.schema.nodes.classIdDiv.create(
-                            { class: "doc-article", id: crypto.randomUUID() },
-                            slice.content,
-                          );
-
-                        tr.insert(
-                          mappedPos + node.nodeSize,
-                          Fragment.from(docArticleNode),
-                        );
-                        tr.delete(h2Pos, mappedPos + node.nodeSize - 2);
+                        // const docArticleNode =
+                        //   tr.doc.type.schema.nodes.classIdDiv.create(
+                        //     { class: "doc-article", id: uniqueId() },
+                        //     slice.content,
+                        //   );
                         // debugger;
-
+                        // tr.insert(
+                        //   mappedPos + node.nodeSize,
+                        //   Fragment.from(docArticleNode),
+                        // );
+                        // tr.delete(h2Pos, mappedPos + node.nodeSize - 2);
+                        // debugger;
                         // editor.commands.cut(
                         //   {
                         //     from: h2Pos,
@@ -324,7 +304,6 @@ const ArticleExtention = Extension.create({
                     children: [...lastArticle.children, article],
                   };
                   articlesList[articlesList.length - 1] = lastArticle;
-                  // console.log("ant", articlesList);
                   articleOccurance++;
                 } else {
                   articleOccurance = 1;
@@ -332,7 +311,6 @@ const ArticleExtention = Extension.create({
               });
               tr.docChanged && dispatch(tr);
 
-              // console.log("articlesList", articlesList);
               updateArticles(articlesList);
 
               // recursive function for handinliong articles and subarticles
@@ -341,16 +319,17 @@ const ArticleExtention = Extension.create({
                 let articleList = [];
                 listNode.forEach((child, offset) => {
                   if (child.type.name === "listItem") {
-                    let uniqueId = child.attrs["id"] || crypto.randomUUID();
+                    let uid = child.attrs["id"] || uniqueId();
+                    console.log("uidfix", uid);
                     const dataIndex = [...parentIndex, index].join(".");
                     const pos = findNodePosFromNode(tr.doc, child);
                     tr = tr.setNodeMarkup(pos, undefined, {
                       ...child.attrs,
                       "data-index": dataIndex,
-                      id: uniqueId,
+                      id: uid,
                     });
                     let article = {
-                      id: uniqueId,
+                      id: uid,
                       title: String(child.textContent)
                         .split(" ")
                         .slice(0, 4)

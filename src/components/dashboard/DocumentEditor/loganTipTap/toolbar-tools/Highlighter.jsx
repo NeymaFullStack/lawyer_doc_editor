@@ -8,7 +8,6 @@ import RemSizeImage from "@/components/generic/RemSizeImage";
 function Highlighter() {
   const appDispatch = useDispatch();
   const { highlighter } = useSelector((state) => state.documentReducer.toolbar);
-  console.log("highlighter", highlighter);
 
   return (
     <Button

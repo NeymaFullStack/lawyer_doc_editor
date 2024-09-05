@@ -36,7 +36,6 @@ function CollapsibleArticle({ item, showArticleTag }) {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [copiedContent]);
-  // console.log("copied", copiedContent);
 
   return (
     <>

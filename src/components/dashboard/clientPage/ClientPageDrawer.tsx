@@ -18,7 +18,6 @@ function ClientPageDrawer({
   setIsOpen,
   clientRoute,
 }: clientPagerProps) {
-  // console.log("open", isOpen);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
   return (

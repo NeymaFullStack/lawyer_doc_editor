@@ -16,7 +16,6 @@ function CreateClientModal({
 }) {
   const appDispatch = useDispatch();
   const [showClientDetails, setShowClientDetails] = useState(false);
-  // console.log("clientName", clientName);
   return (
     <>
       <LoganModal

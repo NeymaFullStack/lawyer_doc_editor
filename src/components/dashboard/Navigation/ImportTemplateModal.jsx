@@ -111,7 +111,6 @@ function ImportTemplateModal({
   async function onUpload({ file }) {
     // TODO: info.file send to backend api save the response to file list for showing those files
     let formData = new FormData();
-    // console.log("file", file);
     formData.append("file", file);
     const res = await importDoc(formData);
     if (res) {

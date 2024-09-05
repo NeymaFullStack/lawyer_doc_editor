@@ -13,17 +13,8 @@ function ToolBar({ editor }) {
   useEffect(() => {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
-      console.log(
-        "event",
-        event.relatedTarget,
-        event.target,
-        event.currentTarget,
-        editor.view.dom,
-        event,
-      );
-      console.log(editor?.storage?.storeCursorPosition?.lastCursorPosition),
-        // Check if the blur event was triggered by a click on a toolbar button
-        event.preventDefault(); // Prevent losing focus
+      // Check if the blur event was triggered by a click on a toolbar button
+      event.preventDefault(); // Prevent losing focus
 
       if (
         (toolbar &&
@@ -31,7 +22,6 @@ function ToolBar({ editor }) {
         event.target === editor.view.dom ||
         editor.view.dom.contains(event.target)
       ) {
-        // console.log("editor", editor);
         // editor.chain().focus().run(); // Re-focus the editor
       } else {
         // editor.chain().blur().run();

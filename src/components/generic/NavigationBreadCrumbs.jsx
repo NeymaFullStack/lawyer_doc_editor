@@ -9,7 +9,6 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
   const router = useRouter();
   const [openClientPage, setOpenClientPage] = useState(false);
   const [clientRoute, setClientRoute] = useState("");
-  console.log("bread", breadCrumbs);
   return (
     <>
       {breadCrumbs.length > 0 && (

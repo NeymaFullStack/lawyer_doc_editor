@@ -38,10 +38,7 @@ const Alignment = ({ editor }) => {
   const handleSelect = (value) => {
     if (editor && getCurrentSelectedAlign() !== value) {
       // Apply the new alignment and focus on the editor.
-      console.log(
-        "pos",
-        editor?.storage?.storeCursorPosition?.lastCursorPosition?.anchor,
-      );
+
       editor
         .chain()
         .focus(editor?.storage?.storeCursorPosition?.lastCursorPosition?.anchor)

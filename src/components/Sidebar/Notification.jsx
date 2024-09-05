@@ -36,7 +36,6 @@ function Notification() {
 
         eventSource.onmessage = (event) => {
           const newNotification = JSON.parse(JSON.parse(event.data));
-          // console.log("newNotification", newNotification);
           let newNotificationList = [newNotification, ...notificationsList];
           const unreadCount = _.filter(newNotificationList, {
             status: "UNREAD",
@@ -63,7 +62,6 @@ function Notification() {
     getAllNotification();
   }, []);
 
-  // console.log("notificationsList", notificationsList);
   return (
     <div
       className=" ml-auto cursor-pointer"

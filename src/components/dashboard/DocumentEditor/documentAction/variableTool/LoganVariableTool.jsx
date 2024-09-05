@@ -27,7 +27,6 @@ function LoganVariableTool() {
   //     activeDocumentVersion.version_id &&
   //     fetchDocumentVariables();
   // }, [activeDocumentVersion]);
-  // console.log("varilanle List", variableList);
   return (
     <div
       className="flex h-full flex-col"

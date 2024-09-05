@@ -36,8 +36,6 @@ function ProgressModal({ open, onClose, cancelAiTemplateGeneration }) {
     };
   }, []);
 
-  // console.log(progress);
-
   return (
     <LoganModal
       onClickCancel={() => {

@@ -34,7 +34,6 @@ function LoganQuill({
   onTextSelection,
 }) {
   const quillRef = useRef();
-  // console.log("render");
   return (
     <ReactQuill
       id={`ql-${quillId}`}

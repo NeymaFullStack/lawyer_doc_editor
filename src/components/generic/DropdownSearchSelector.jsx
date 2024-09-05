@@ -126,7 +126,6 @@ export default DropdownSearchSelector;
 
 // function App() {
 //   const handleSelect = (item) => {
-//     console.log("Selected:", item);
 //   };
 
 //   return (

@@ -12,7 +12,6 @@ export const getClientFolderList = cache(async (auth) => {
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box
-    console.log("error 123", error);
   }
 });
 

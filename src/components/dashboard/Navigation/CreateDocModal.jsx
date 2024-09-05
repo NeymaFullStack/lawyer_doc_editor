@@ -63,8 +63,6 @@ function CreateDocModal({
     });
   }, []);
 
-  // console.log("ANT", formValues);
-
   return (
     <LoganModal
       modalOpen={open}

@@ -7,7 +7,6 @@ import FilePreview from "@/components/generic/FilePreview";
 
 function FileUploadModal({ isOpen, onClose, onClickSave }) {
   const [file, setFile] = useState(null);
-  // console.log("file", file);
   return (
     <LoganModal
       modalOpen={isOpen}

@@ -220,7 +220,6 @@ export function CompanyInformationForm({
   );
 
   function handleCopy(key: keyof FormData) {
-    // console.log("form", form.getValues(key));
     appDispatch(
       documentAction.setCopiedContent({
         title: form.getValues(key),

@@ -21,7 +21,6 @@ const CollapsibleList = ({
   articleAction = undefined,
 }) => {
   const appDispatch = useDispatch();
-  // console.log("collapse", collapsibleListOpenState);
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId={`root-${uniqueId()}`} type="item">
@@ -154,7 +153,6 @@ const CollapsibleItem = ({
   //   };
   // }, [copiedContent]);
   // // const toggleOpen = () => setitem?.IsOpen(!item?.isOpen);
-  // console.log("copied", copiedContent);
 
   const content = (
     <div

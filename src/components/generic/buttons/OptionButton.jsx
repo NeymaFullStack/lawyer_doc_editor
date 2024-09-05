@@ -3,7 +3,6 @@ import RemSizeImage from "../RemSizeImage";
 
 function OptionButton() {
   let [isButtonHovered, seIsButtonHovered] = useState(false);
-  // console.log("render");
   return (
     <div
       className=" cursor-pointer  "

@@ -181,7 +181,6 @@ const TiptapEditor = () => {
         }),
         ArticleExtention.configure({
           updateArticles: (articles) => {
-            console.log("newArticleState", articles);
             appDispatch(documentIndexingAction.setArticlesList(articles));
           },
         }),
@@ -291,7 +290,6 @@ const TiptapEditor = () => {
           }
         });
       }
-      // console.log();
       editor.commands.insertContentAt(
         nextAppendixPos,
         newAppendixState?.content,
@@ -322,17 +320,7 @@ const TiptapEditor = () => {
           deletionNodeEndPos = pos + node.nodeSize;
         }
       });
-      // if (foundNode === null) {
-      //   doc.forEach((node, offset) => {
-      //     if (
-      //       node.attrs.class == "appendix-separator" &&
-      //       nextAppendixPos == doc.content.size
-      //     ) {
-      //       nextAppendixPos = offset;
-      //     }
-      //   });
-      // }
-      // console.log("pos", deletionNodeStartPos, deletionNodeEndPos);
+
       editor.commands.deleteRange({
         from: deletionNodeStartPos,
         to: deletionNodeEndPos,
@@ -346,7 +334,6 @@ const TiptapEditor = () => {
       reorderAppendixState?.sourceItem?.id &&
       reorderAppendixState?.destinationItem?.id
     ) {
-      // console.log("reorderAppendixState", reorderAppendixState);
       const { doc } = editor.state;
       let foundSourceNode = null;
       let foundDestinationNode = null;
@@ -451,7 +438,6 @@ const TiptapEditor = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEditVariable]);
-  console.log("dog", editor);
   return (
     <div className="logan-tiptap h-full w-full">
       <ToolBar editor={editor} />
@@ -603,7 +589,6 @@ const TiptapEditor = () => {
   }
 
   function handleChange({ editor, transaction }) {
-    // console.log("bbb", articleInsertionState);
     if (articleInsertionState.initiate) {
       setArticleInsertionState(initialArticleInsertionState);
     } else if (articleInsertionState.isOpen) {
@@ -611,7 +596,6 @@ const TiptapEditor = () => {
     }
 
     // handleArticlesUpdate(transaction);
-    // console.log("contentJSOn", jsonContent);
     // extractArticles(editor.getJSON());
 
     let content = editor.getHTML();

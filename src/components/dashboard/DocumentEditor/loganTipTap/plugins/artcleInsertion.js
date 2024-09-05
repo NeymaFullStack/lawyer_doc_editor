@@ -1,6 +1,7 @@
 import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Extension } from "@tiptap/core";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
+import { uniqueId } from "lodash";
 
 const ArticleInsertion = Extension.create({
   name: "articleInsertion",
@@ -16,7 +17,6 @@ const ArticleInsertion = Extension.create({
             const parentNode = $from.node($from.depth - 1);
             // const grandParentNode = $from.node($from.depth - 2);
             // const greatGrandParentNode = $from.node($from.depth - 3);
-            console.log("key", event.key);
             if (event.key === "&") {
               let menuItems = [];
               // debugger;
@@ -153,7 +153,6 @@ const ArticleInsertion = Extension.create({
                   ),
                 );
               }
-              // console.log("event",event.getBoundingClientRect())
               this.options.openArticleInsertionMenu(
                 menuItems,
                 view.coordsAtPos(from),
@@ -185,9 +184,8 @@ function createArticleInsertionItem(
 
       let newArticle = null;
       if (articleInsertionType === "article") {
-        console.log("testId", crypto.randomUUID());
         newArticle = schema.nodes.classIdDiv.create(
-          { class: "doc-article", id: crypto.randomUUID() },
+          { class: "doc-article", id: uniqueId() },
           [
             schema.nodes.heading.create(
               { level: 2, class: "article-heading" },
@@ -198,7 +196,7 @@ function createArticleInsertionItem(
       } else if (articleInsertionType === "subArticle") {
         newArticle = state.schema.nodes.listItem.create(
           {
-            id: crypto.randomUUID(),
+            id: uniqueId(),
           },
           state.schema.nodes.paragraph.create(
             {},
@@ -210,7 +208,7 @@ function createArticleInsertionItem(
           {},
           state.schema.nodes.listItem.create(
             {
-              id: crypto.randomUUID(),
+              id: uniqueId(),
             },
             state.schema.nodes.paragraph.create(
               {},
@@ -221,7 +219,6 @@ function createArticleInsertionItem(
       }
 
       let newTr = tr;
-      // console.log("docSize", tr.doc.nodeSize);
       newTr = newTr.deleteRange(andPos, andPos + 1);
 
       if (newArticle) {
@@ -238,7 +235,6 @@ function createArticleInsertionItem(
       // debugger;
       view.focus();
       newTr.setSelection(selection);
-      // console.log("view", view);
       dispatch(newTr);
     },
   };

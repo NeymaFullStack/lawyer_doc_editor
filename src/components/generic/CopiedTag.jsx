@@ -33,7 +33,6 @@ function CopiedTag() {
       });
     };
   }, [copiedContent]);
-  // console.log("copied", copiedContent);
 
   function getTagIcon() {
     if (copiedContent.type === copiedContentType.Appendix) {
@@ -44,7 +43,6 @@ function CopiedTag() {
     return "";
   }
 
-  // console.log("copedContent", copiedContent);
   return (
     copiedContent !== null &&
     copiedContent?.title &&

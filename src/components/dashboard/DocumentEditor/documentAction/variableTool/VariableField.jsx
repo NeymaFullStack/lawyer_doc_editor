@@ -38,7 +38,6 @@ function VariableField({
   //     window.removeEventListener("mousemove", handleMouseMove);
   //   };
   // }, [copiedContent]);
-  // console.log("copied", copiedContent);
   return (
     <div className="flex">
       {/* {copiedContent?.content?.variable &&

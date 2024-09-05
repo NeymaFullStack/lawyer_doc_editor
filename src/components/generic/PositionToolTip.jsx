@@ -15,9 +15,6 @@ function PositionToolTip({
       onClose();
     }
   };
-  // console.log("containerRef", containerRef.getBoundingClientRect());
-  // console.log("position", position);
-  // console.log("toolTipRef", toolTipRef?.current);
 
   useEffect(() => {
     isOpen && document.addEventListener("click", handleClickOutside);

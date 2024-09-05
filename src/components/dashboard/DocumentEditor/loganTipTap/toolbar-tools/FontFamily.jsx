@@ -28,13 +28,9 @@ const FontFamily = ({ editor }) => {
   }, [editor?.state?.selection]);
 
   const handleSelect = (value) => {
-    console.log("value", value);
-
     editor.chain().focus().setFontFamily(value).run();
     setSelectedFontFamily(value);
   };
-
-  console.log("ediotr", selectedFontFamily);
 
   return (
     <Popover>

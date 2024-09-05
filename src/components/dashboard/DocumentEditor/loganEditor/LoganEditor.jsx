@@ -323,12 +323,7 @@ const LoganEditor = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDocumentAction, currentDocumentVersion]);
-  // console.log(
-  //   "versions",
-  //   currentDocumentVersion,
-  //   selectedDocumentVersion,
-  //   activeDocumentVersion,
-  // );
+
   // useEffect(() => {
   //   if (activeQuillId !== 0 && activeQuillId !== quillId) {
   //     quillRefs.current?.[0].editor.container.classList.remove(
@@ -356,12 +351,10 @@ const LoganEditor = () => {
   // }, [visiblePageId, isDocumentActionDraft]);
 
   // useEffect(() => {
-  //   // console.log(quillRefs?.current[0]);
   //   if (quillRefs?.current?.length > 0) {
   //     quillRefs?.current?.[0].editor.clipboard.addMatcher(
   //       Node.ELEMENT_NODE,
   //       function (node, delta) {
-  //         console.log("node", node); // Check if the pasted content contains font sizes
   //         if (
   //           node.parentNode &&
   //           node.parentNode.nodeName === "SPAN" &&
@@ -378,17 +371,13 @@ const LoganEditor = () => {
   //             //   op.attributes = {};
   //             // }
   //             // op.attributes.Size = fontSize;
-  //             console.log("op", op);
   //           });
   //         }
-  //         console.log("delta", delta);
   //         return delta;
   //       }
   //     );
   //   }
   // }, [quillRefs]);
-  // console.log("document", currentDocumentVersion, activeDocumentVersion);
-  // console.log("versions", currentDocumentVersion);
 
   return (
     <div className="flex h-full w-full flex-col" aria-label="Editor">
@@ -534,7 +523,6 @@ const LoganEditor = () => {
   }
 
   function onTextSelection(range, source, editor) {
-    // console.log(textInsertRef.current);
     if (
       copiedContent?.content &&
       copiedContent?.type === copiedContentType.Variable &&
@@ -575,7 +563,6 @@ const LoganEditor = () => {
       if (608 - left <= 240) {
         gptleftPosition = 608 - 465;
       }
-      // console.log("selectedText", editor.getText(range.index, range.length));
       appDispatch(
         quillAction.setGptSearchProperties({
           top: top + height + 15,

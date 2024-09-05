@@ -17,7 +17,7 @@ const BackSlashAction = Extension.create({
             const parentNode = $from.node($from.depth - 1);
             // const grandParentNode = $from.node($from.depth - 2);
             // const greatGrandParentNode = $from.node($from.depth - 3);
-            // console.log("key", event.key);
+
             if (event.key === "/") {
               this.options.openBackSlashActionModal(
                 view.coordsAtPos(from),
@@ -58,7 +58,6 @@ const BackSlashAction = Extension.create({
               //     menuItems,
               //     view.coordsAtPos(from),
               //   );
-              // console.log("event",event.getBoundingClientRect())
               //   this.options.openArticleInsertionMenu(
               //     menuItems,
               //     view.coordsAtPos(from),

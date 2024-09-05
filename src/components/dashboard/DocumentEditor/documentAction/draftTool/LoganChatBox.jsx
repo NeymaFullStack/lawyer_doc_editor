@@ -17,7 +17,6 @@ function LoganChatBox() {
     currentDocument?.id && fetchUserChat();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDocument]);
-  // console.log("current document", currentDocument?.id);
   return (
     <div
       className="flex flex-1 flex-col overflow-hidden bg-white"

@@ -1,6 +1,7 @@
 import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
 import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
+import { uniqueId } from "lodash";
 
 export const findNodePosFromNode = (doc, node) => {
   let nodePos = null;
@@ -57,8 +58,6 @@ export const manipulateItems = (
   level,
   articleInputValue,
 ) => {
-  const uuid = () => crypto.randomUUID();
-
   let updateditems = recursiveManipulation(
     items,
     id,
@@ -98,7 +97,7 @@ export const manipulateItems = (
               tempItems.splice(i + 1, 0, {
                 input: true,
                 children: [],
-                id: uuid(),
+                id: uniqueId(),
               });
             }
             return tempItems;
@@ -109,7 +108,7 @@ export const manipulateItems = (
               tempItems[i + 1] = {
                 title: articleInputValue,
                 children: [],
-                id: uuid(),
+                id: uniqueId(),
                 index: newIndex,
                 type: level > 0 && (level === 1 ? "Article" : "SubArticle"),
               };

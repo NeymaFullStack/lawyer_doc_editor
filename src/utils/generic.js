@@ -12,8 +12,7 @@ export function sortStringTableList(listData, sortOrder, sortParam) {
       return b[sortParam].localeCompare(a[sortParam]);
     });
   }
-  // console.log("sortedList", newSortedList);
-  // debugger;
+
   return newSortedList;
 }
 

@@ -16,12 +16,10 @@ function DropFile({ onUpload, customClass, height, className, fileTypes }) {
     <div
       onDragEnter={(e) => {
         e.preventDefault();
-        // console.log("enter");
         !filehovering && setFileHovering(true);
       }}
       onDragLeave={(e) => {
         e.preventDefault();
-        // console.log("leave");
         filehovering && setFileHovering(false);
       }}
       onDrop={(e) => {
@@ -31,7 +29,6 @@ function DropFile({ onUpload, customClass, height, className, fileTypes }) {
       onDragOver={(e) => {
         !filehovering && setFileHovering(true);
         e.preventDefault();
-        // console.log("hover");
       }}
       className={className}
     >

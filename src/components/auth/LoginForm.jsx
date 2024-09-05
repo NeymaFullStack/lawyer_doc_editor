@@ -7,7 +7,6 @@ import { useState } from "react";
 function LoginForm() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const router = useRouter();
-  // console.log("login", loginData);
   return (
     <form
       className="w-[22rem] space-y-4 md:space-y-8"

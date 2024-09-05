@@ -51,7 +51,6 @@ function Directory({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // console.log("directory", directoryData);
   return (
     <div className="flex h-full w-full flex-col items-start gap-6">
       {openModalType === modalType.NEW_FOLDER && (

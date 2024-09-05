@@ -35,7 +35,6 @@ function DashboardHeader() {
   );
   const { currentDocument } = useSelector((state) => state.documentReducer);
   const [breadCrumbs, setBreadCrumbs] = useState([]);
-  console.log("mad", params);
 
   useLayoutEffect(() => {
     if (pathname.startsWith("/dashboard")) {
@@ -98,7 +97,6 @@ function DashboardHeader() {
                   currentDocument?.id,
                   currentDocumentVersion?.version_id,
                 );
-                // console.log("responsePdf", responsePdf);
                 // function binaryStringToArrayBuffer(binaryString) {
                 //   const length = binaryString.length;
                 //   const arrayBuffer = new ArrayBuffer(length);
@@ -108,9 +106,7 @@ function DashboardHeader() {
                 //   }
                 //   return arrayBuffer;
                 // }
-                // console.log("responsePdf", responsePdf);
                 // const buffer = binaryStringToArrayBuffer(responsePdf);
-                console.log("responsePdf?.link", responsePdf?.link);
                 window.open(responsePdf?.link, "_blank", "noopener,noreferrer");
                 setLoading(false);
               }}

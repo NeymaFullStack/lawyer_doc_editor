@@ -24,33 +24,6 @@ function LoganDocVersionHistoryTool() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDocumentVersion, filters]);
 
-  // console.log(
-  //   versionList.map((item) => {
-  //     if (item.details) {
-  //     } else if (item?.version_details && item?.version_details.length > 0) {
-  //       debugger;
-  //       let collapseItem = {
-  //         key: item.label,
-  //         label: item.label,
-  //         children: (
-  //           <ul>
-  //             {item?.version_details.map((version) => {
-  //               console.log("version", version);
-  //               return (
-  //                 <li key={version.version_id}>
-  //                   <DocumentVersion docVersion={version} />
-  //                 </li>
-  //               );
-  //             })}
-  //           </ul>
-  //         ),
-  //       };
-  //       console.log("items", collapseItem);
-  //       return collapseItem;
-  //     }
-  //   }),
-  // );
-
   return (
     <div aria-label="Logan Document Version History">
       <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">

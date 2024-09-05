@@ -104,7 +104,6 @@ export function toggleCollapsibleListOpenState(
     }),
   );
   let targetIdOpenStateHierarchy = createHierarchyMap(data, targetId);
-  console.log("maps", targetIdOpenStateHierarchy, resetOpenstate);
   function createHierarchyMap(list, targetId) {
     function findPathToTarget(items, targetId, map = new Map()) {
       for (let item of items) {
