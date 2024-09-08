@@ -18,9 +18,16 @@
   pre,
   blockquote,
   figure,
-  hr {
-    color: #383d44 !important;
+  hr,
+  span {
+    color: #383d44;
     font-family: "Inter";
+  }
+
+  span[style*="font-size"] {
+    line-height: 1; /* or a relative value that works best */
+    display: inline-block; /* Ensures the span respects its font-size and line-height */
+    vertical-align: middle; /* Aligns text vertically in the middle */
   }
 
   h1,
@@ -29,7 +36,7 @@
   h4,
   h5,
   h6 {
-    padding-top: 0.5rem !important;
+    padding-top: 0.5rem;
     margin: 0.5rem 0 0.3rem; /* Adjusted margins */
     font-weight: bold;
   }
@@ -37,7 +44,7 @@
   h1 {
     font-size: 1.5rem; /* Reduced size */
     margin-bottom: 0.5rem;
-    font-weight: 800 !important;
+    font-weight: 800;
   }
   h2 {
     font-size: 1rem; /* Reduced size */

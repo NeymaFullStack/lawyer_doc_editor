@@ -144,7 +144,7 @@ function DocumentPreviewModal({
       if (res) {
         appDispatch(
           documentIndexingAction.setNewAppendixState({
-            // content: `<p id="${uniqueId()}" class="appendix-seprator"><span class="annex-tag">Annex</span>&nbsp;<span class="appendeix-index">01</span>&nbsp;&nbsp;&nbsp;<span class="sep-heading">Anexx 1</span></p><p class="annex-tag-para"><span class="annex-tag">Annex</span></p><h1 class="annex-heading">Annex-01</h1>`,
+            // content: `<p id="${nanoid()}" class="appendix-seprator"><span class="annex-tag">Annex</span>&nbsp;<span class="appendeix-index">01</span>&nbsp;&nbsp;&nbsp;<span class="sep-heading">Anexx 1</span></p><p class="annex-tag-para"><span class="annex-tag">Annex</span></p><h1 class="annex-heading">Annex-01</h1>`,
             content: res?.content,
           }),
         );
@@ -153,7 +153,7 @@ function DocumentPreviewModal({
 
       // appDispatch(
       //   documentIndexingAction.setNewAppendixState({
-      //     content: `<p id="${uniqueId()}" class="appendix-seprator"><span class="annex-tag">Annex</span>&nbsp;<span class="appendix-index">01</span>&nbsp;&nbsp;&nbsp;<span class="sep-heading">Anexx 1</span></p><p class="annex-tag-para"><span class="annex-tag">Annex</span></p><h1 class="annex-heading">Annex-01</h1>`,
+      //     content: `<p id="${nanoid()}" class="appendix-seprator"><span class="annex-tag">Annex</span>&nbsp;<span class="appendix-index">01</span>&nbsp;&nbsp;&nbsp;<span class="sep-heading">Anexx 1</span></p><p class="annex-tag-para"><span class="annex-tag">Annex</span></p><h1 class="annex-heading">Annex-01</h1>`,
       //     // content: res.data,
       //   }),
       // );

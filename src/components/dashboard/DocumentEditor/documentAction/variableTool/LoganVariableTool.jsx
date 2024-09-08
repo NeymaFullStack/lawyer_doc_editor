@@ -1,20 +1,18 @@
 import { Button } from "antd";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import VariableField from "./VariableField";
-import { nanoid } from "nanoid";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getDocumentVariables,
-  updateDocumentVariables,
-} from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { updateDocumentVariables } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
+import { nanoid } from "nanoid";
 
 function LoganVariableTool() {
   const appDispatch = useDispatch();
   const [varibaleSearch, setVariableSearch] = useState();
   const [addVariableButtonHover, setAddVariableButtonHover] = useState(false);
+  const documentIdRef = useRef(null);
   const { activeDocumentVersion } = useSelector(
     (state) => state.documentVersioningReducer,
   );
@@ -22,11 +20,21 @@ function LoganVariableTool() {
     (state) => state.documentVariableReducer,
   );
 
+  const memoisedUpdateVariable = useCallback(() => {
+    return updateVariableList;
+  }, [
+    variableList,
+    activeDocumentVersion?.id,
+    activeDocumentVersion.version_id,
+  ]);
+  console.log("variableList", variableList);
   // useEffect(() => {
-  //   activeDocumentVersion.id &&
-  //     activeDocumentVersion.version_id &&
-  //     fetchDocumentVariables();
-  // }, [activeDocumentVersion]);
+  //   if (activeDocumentVersion?.id && activeDocumentVersion.version_id)
+  //     documentIdRef.current = {
+  //       documentId: activeDocumentVersion?.id,
+  //       versionId: activeDocumentVersion.version_id,
+  //     };
+  // }, [activeDocumentVersion?.id, activeDocumentVersion.version_id]);
   return (
     <div
       className="flex h-full flex-col"
@@ -91,12 +99,11 @@ function LoganVariableTool() {
             })
             .map((variable, index) => {
               return (
-                <li key={variable.variable} className="my-2">
+                <li key={variable.id} className="my-2">
                   <VariableField
-                    variableProperties={variable}
-                    addNew={variable.new ? true : false}
+                    selectedVariableProperties={variable}
                     index={index}
-                    updateVariableList={updateVariableList}
+                    updateVariableList={memoisedUpdateVariable()}
                   />
                 </li>
               );
@@ -109,9 +116,9 @@ function LoganVariableTool() {
   function addNewVariable() {
     let tempVariableList = [...variableList];
     tempVariableList.unshift({
-      variable: "",
+      variable_name: "",
       definition: "",
-      new: true,
+      id: nanoid(),
     });
     appDispatch(documentVariableAction.setVariableList(tempVariableList));
   }
@@ -125,14 +132,23 @@ function LoganVariableTool() {
   //     appDispatch(documentVariableAction.setVariableList(data));
   // }
 
-  async function updateVariableList(variable, varIndex = -1) {
+  async function updateVariableList(
+    variable,
+    varIndex = -1,
+    action = "update",
+  ) {
     let varList = [...variableList];
     if (varIndex < 0) {
       varList.unshift(variable);
     } else {
-      varList[varIndex] = variable;
+      if (action === "update") {
+        varList[varIndex] = variable;
+      } else {
+        varList.splice(varIndex, 1);
+      }
     }
-    if (activeDocumentVersion?.id && activeDocumentVersion.version_id) {
+
+    if (activeDocumentVersion?.id && activeDocumentVersion?.version_id) {
       let { data } = await updateDocumentVariables(
         {
           documentId: activeDocumentVersion.id,

@@ -1,12 +1,21 @@
 import { Button } from "@/components/shadcn-components/ui/button";
 import RemSizeImage from "../RemSizeImage";
 import { cn } from "@/utils/shadcn-utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 function CopyButton({ onClick, className, ...props }) {
   const [isBeingHovered, setIsBeingHovered] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-
+  const copiedContent = useSelector(
+    (state) => state.documentReducer.copiedContent,
+  );
+  console.log("coopiedContent", copiedContent);
+  useEffect(() => {
+    if (copiedContent === null && isCopied) {
+      setIsCopied(false);
+    }
+  }, [copiedContent]);
   return (
     <>
       {/* {copiedContent !== null &&
@@ -61,7 +70,7 @@ function CopyButton({ onClick, className, ...props }) {
           setIsBeingHovered(false);
         }}
         size={"xs"}
-        className={cn("duration-75", className)}
+        className={cn("z-[999] duration-75", className)}
         variant={`${isCopied ? "primary-blue-1-dotted" : isBeingHovered ? "primary-blue" : "primary-blue-1"}`}
       >
         {isCopied && (
@@ -73,7 +82,7 @@ function CopyButton({ onClick, className, ...props }) {
             className="mr-2"
           />
         )}
-        <span>copy</span>
+        <span>{isCopied ? "copied" : "copy"}</span>
       </Button>
     </>
   );

@@ -36,7 +36,7 @@ const Alignment = ({ editor }) => {
 
   // Function to handle alignment selection.
   const handleSelect = (value) => {
-    if (editor && getCurrentSelectedAlign() !== value) {
+    if (editor) {
       // Apply the new alignment and focus on the editor.
 
       editor.chain().focus().setTextAlign(value).run();

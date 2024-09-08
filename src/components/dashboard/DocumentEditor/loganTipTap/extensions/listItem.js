@@ -84,7 +84,7 @@ const CustomListItem = Node.create({
   //               if (textInRange) {
   //                 newListItem = state.schema.nodes.listItem.create(
   //                   {
-  //                     id: uniqueId(),
+  //                     id: nanoid(),
   //                   },
   //                   state.schema.nodes.paragraph.create(
   //                     {},
@@ -94,7 +94,7 @@ const CustomListItem = Node.create({
   //               } else {
   //                 newListItem = state.schema.nodes.listItem.create(
   //                   {
-  //                     id: uniqueId(),
+  //                     id: nanoid(),
   //                   },
   //                   state.schema.nodes.paragraph.create({}),
   //                 );

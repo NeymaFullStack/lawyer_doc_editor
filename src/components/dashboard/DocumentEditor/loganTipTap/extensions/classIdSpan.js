@@ -14,6 +14,7 @@ export const classIdSpan = Node.create({
 
   addAttributes() {
     return {
+      ...this.parent?.(),
       class: {
         default: null,
       },
@@ -21,6 +22,9 @@ export const classIdSpan = Node.create({
         default: null,
       },
       style: {
+        default: null,
+      },
+      "data-key": {
         default: null,
       },
     };
@@ -34,6 +38,7 @@ export const classIdSpan = Node.create({
           class: dom.getAttribute("class"),
           id: dom.getAttribute("id"),
           style: dom.getAttribute("style"),
+          "data-key": dom.getAttribute("data-key"),
         }),
       },
     ];
@@ -76,7 +81,10 @@ export const classIdSpan = Node.create({
 
       // Handle click event to add/remove 'is-selected' class
       dom.addEventListener("click", () => {
-        if (node.attrs.class?.includes("doc-variable")) {
+        if (
+          node.attrs.class?.includes("doc-variable") ||
+          node.attrs.class?.includes("doc-article-tag")
+        ) {
           dom.classList.add("is-selected");
 
           const { state, dispatch } = editor.view;

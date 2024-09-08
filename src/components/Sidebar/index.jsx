@@ -30,7 +30,7 @@ function Sidebar() {
       aria-label="Sidebar"
     >
       {<FolderDocCreation />}
-      {<CopiedTag />}
+
       <div className="h-full overflow-y-auto py-4">
         <div className="my-[1.875rem] mb-16 ml-5">
           <div

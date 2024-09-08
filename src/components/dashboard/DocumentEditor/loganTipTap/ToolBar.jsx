@@ -7,14 +7,19 @@ import Alignment from "./toolbar-tools/Alignment";
 import FontFamily from "./toolbar-tools/FontFamily";
 import Highlighter from "./toolbar-tools/Highlighter";
 import Zoom from "./toolbar-tools/Zoom";
+import { useDispatch } from "react-redux";
+import { documentAction } from "@/redux/documentSlice";
 
 function ToolBar({ editor }) {
   const toolbarRef = useRef(null);
+  const appDispatch = useDispatch();
   useEffect(() => {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
       // Check if the blur event was triggered by a click on a toolbar button
+      appDispatch(documentAction.setCopiedContent(null));
       event.preventDefault(); // Prevent losing focus
+
       if (
         (toolbar &&
           (toolbar === event.target || toolbar.contains(event.target))) ||

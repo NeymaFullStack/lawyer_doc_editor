@@ -63,9 +63,9 @@ export const getBreadCrumbs = cache(async (projectId) => {
   }
 });
 
-export const getRecentDocumentList = cache(async () => {
+export const getRecentDocumentList = cache(async (queryParams) => {
   try {
-    const res = await Api.get(getRecentDocumentsUrl);
+    const res = await Api.get(getRecentDocumentsUrl, { params: queryParams });
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

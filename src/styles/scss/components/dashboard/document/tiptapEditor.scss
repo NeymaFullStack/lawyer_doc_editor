@@ -24,9 +24,8 @@
     }
   }
   .tiptap {
+    @apply z-0;
     @include logan-doc;
-
-    @apply flex-1  text-[1rem] #{!important};
 
     ul {
       @apply list-disc pl-4;
@@ -40,12 +39,17 @@
     .doc-variable {
       @apply rounded-md bg-[#FFF5FD] px-[0.4em] py-[0.1em] text-[#FF26C2];
     }
+
+    .doc-variable.is-selected {
+      @apply bg-[#fae4f5];
+    }
+
     .doc-article {
+      &-title {
+        @apply text-primary-gray;
+      }
       @apply my-3;
       h2 {
-        span {
-          @apply text-primary-gray;
-        }
         @apply text-[1rem] font-semibold;
       }
       ul {
@@ -77,12 +81,13 @@
     .doc-article-tag {
       @apply rounded-md bg-secondary-blue px-[0.4em] py-[0.1em] text-primary-blue;
     }
+    .doc-article-tag.is-selected {
+      @apply bg-blue-100;
+    }
     .doc-appendix-tag {
       @apply rounded-md bg-appendix px-[0.4em] py-[0.1em] text-appendix-1;
     }
-    .is-selected {
-      @apply bg-[#fae4f5];
-    }
+
     .appendix-separator {
       @apply left-0  right-0 my-6 flex items-center justify-center overflow-visible bg-six py-4 text-appendix-1 #{!important};
       .sep-heading {

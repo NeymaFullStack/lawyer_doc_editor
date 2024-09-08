@@ -1,14 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import RemSizeImage from "./RemSizeImage";
 import { useRouter } from "next/navigation";
 import ClientPageDrawer from "../dashboard/clientPage/ClientPageDrawer";
 import { dashboardRoute } from "@/constants/routes";
 
-function NavigationBreadCrumbs({ breadCrumbs }) {
+function NavigationBreadCrumbs({ breadCrumbs: fetchedBreadCrumbs }) {
   const router = useRouter();
   const [openClientPage, setOpenClientPage] = useState(false);
   const [clientRoute, setClientRoute] = useState("");
+  const [breadCrumbs, setBreadCrumbs] = useState([]);
+
+  useLayoutEffect(() => {
+    if (fetchedBreadCrumbs.length > 3) {
+      let sanitisedBreadCrumbs = [
+        fetchedBreadCrumbs[0],
+        { type: "ellipsis" },
+        fetchedBreadCrumbs[fetchedBreadCrumbs.length - 2],
+        fetchedBreadCrumbs[fetchedBreadCrumbs.length - 1],
+      ];
+      setBreadCrumbs(sanitisedBreadCrumbs);
+    } else {
+      setBreadCrumbs(fetchedBreadCrumbs);
+    }
+  }, [fetchedBreadCrumbs]);
   return (
     <>
       {breadCrumbs.length > 0 && (
@@ -73,6 +88,28 @@ function NavigationBreadCrumbs({ breadCrumbs }) {
                           alt={"Client"}
                         />
                         <span>Client Page</span>
+                      </span>
+                    </div>
+                  </li>
+                );
+              } else if (route.type === "ellipsis") {
+                return (
+                  <li
+                    key={index}
+                    className="flex h-full min-w-fit cursor-pointer items-center gap-1 !text-xs"
+                  >
+                    <div className="min-w-fit">
+                      <RemSizeImage
+                        imagePath={"/assets/icons/arrow-down-gray.svg"}
+                        remWidth={0.9}
+                        remHeight={0.9}
+                        alt={"Route"}
+                        className={" -rotate-90"}
+                      />
+                    </div>
+                    <div className="flex h-[1.824rem] flex-col justify-center gap-2 rounded-md bg-secondary-blue px-3 py-[0.35rem] font-semibold">
+                      <span className="h-[0.625rem] text-lg leading-[0] text-primary-gray">
+                        ...
                       </span>
                     </div>
                   </li>

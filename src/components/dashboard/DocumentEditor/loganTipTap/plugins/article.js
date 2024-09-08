@@ -220,7 +220,7 @@ const ArticleExtention = Extension.create({
                         // );
                         // const docArticleNode =
                         //   tr.doc.type.schema.nodes.classIdDiv.create(
-                        //     { class: "doc-article", id: uniqueId() },
+                        //     { class: "doc-article", id: nanoid() },
                         //     slice.content,
                         //   );
                         // debugger;
@@ -323,7 +323,7 @@ const ArticleExtention = Extension.create({
                 let articleList = [];
                 listNode.forEach((child, offset) => {
                   if (child.type.name === "listItem") {
-                    let uid = child.attrs["id"] || uniqueId();
+                    let uid = child.attrs["id"] || nanoid();
                     console.log("uidfix", uid);
                     const dataIndex = [...parentIndex, index].join(".");
                     const pos = findNodePosFromNode(tr.doc, child);

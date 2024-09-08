@@ -53,7 +53,7 @@ function CopiedTag() {
           top: cursorPosition.y + "px",
         }}
         className={cn(
-          `z-999 fixed min-w-fit whitespace-nowrap rounded-md border-[2px] border-dotted border-primary-blue p-1 px-2 text-primary-blue`,
+          `fixed z-50 min-w-fit whitespace-nowrap rounded-md border-[2px] border-dotted border-primary-blue p-1 px-2 text-primary-blue`,
           copiedContent.type === copiedContentType.Appendix &&
             "border-appendix-1 text-appendix-1",
           copiedContent.type === copiedContentType.Variable &&

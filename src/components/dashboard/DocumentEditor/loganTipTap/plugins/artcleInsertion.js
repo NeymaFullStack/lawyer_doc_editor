@@ -1,7 +1,7 @@
 import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
 import { Extension } from "@tiptap/core";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
-import { uniqueId } from "lodash";
+import { nanoid } from "nanoid";
 
 const ArticleInsertion = Extension.create({
   name: "articleInsertion",
@@ -185,7 +185,7 @@ function createArticleInsertionItem(
       let newArticle = null;
       if (articleInsertionType === "article") {
         newArticle = schema.nodes.classIdDiv.create(
-          { class: "doc-article", id: uniqueId() },
+          { class: "doc-article", id: nanoid() },
           [
             schema.nodes.heading.create(
               { level: 2, class: "article-heading" },
@@ -196,7 +196,7 @@ function createArticleInsertionItem(
       } else if (articleInsertionType === "subArticle") {
         newArticle = state.schema.nodes.listItem.create(
           {
-            id: uniqueId(),
+            id: nanoid(),
           },
           state.schema.nodes.paragraph.create(
             {},
@@ -208,7 +208,7 @@ function createArticleInsertionItem(
           {},
           state.schema.nodes.listItem.create(
             {
-              id: uniqueId(),
+              id: nanoid(),
             },
             state.schema.nodes.paragraph.create(
               {},

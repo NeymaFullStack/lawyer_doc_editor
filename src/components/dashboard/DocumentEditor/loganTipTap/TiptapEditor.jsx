@@ -6,8 +6,14 @@ import Underline from "@tiptap/extension-underline";
 import ToolBar from "./ToolBar";
 import Tag from "@/components/generic/Tag";
 import { useDispatch, useSelector } from "react-redux";
-import { copiedContentType, documentActions } from "@/constants/enums";
+import {
+  copiedContentType,
+  documentActions,
+  tagInsertionType,
+} from "@/constants/enums";
 import { documentAction } from "@/redux/documentSlice";
+import { nanoid } from "nanoid";
+
 import {
   getDocumentContentByVersionIdUrl,
   getDocumentDataUrl,
@@ -51,6 +57,7 @@ import { cn } from "@/utils/shadcn-utils";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import Zoom from "./toolbar-tools/Zoom";
+import CopiedTag from "@/components/generic/CopiedTag";
 
 const doc = new Y.Doc();
 
@@ -215,7 +222,7 @@ const TiptapEditor = () => {
     currentDocumentVersion?.id &&
       currentDocumentVersion?.version_id &&
       fetchDocumentVariables();
-  }, [currentDocumentVersion, articleList]);
+  }, [currentDocumentVersion?.id, currentDocumentVersion?.version_id]);
 
   useEffect(() => {
     activeDocumentAction === documentActions.Preview ||
@@ -273,6 +280,34 @@ const TiptapEditor = () => {
       const { doc } = editor.state;
       let foundNode = null;
       let nextAppendixPos = doc.content.size;
+      if (
+        newAppendixState.additionItemType === tagInsertionType.Article ||
+        newAppendixState.additionItemType === tagInsertionType.SubArticle
+      ) {
+        doc.descendants((node, pos) => {
+          if (node?.attrs?.id === newAppendixState?.id) {
+            let foundNodeResolvePos = doc.resolve(pos);
+            let insertionPos = pos + foundNodeResolvePos.nodeAfter.nodeSize;
+            let insertionContent = "";
+            if (
+              newAppendixState.additionItemType === tagInsertionType.Article
+            ) {
+              insertionContent = `<div class="doc-article" id=${nanoid()}><h2 class="article-heading" id=${nanoid()}>${newAppendixState.content}</h2></div>`;
+            } else if (
+              newAppendixState.additionItemType === tagInsertionType.SubArticle
+            ) {
+              insertionContent = `<li id=${nanoid()}><p>${newAppendixState.content}<p></li>`;
+            }
+            editor
+              .chain()
+              .focus()
+              .insertContentAt(insertionPos, insertionContent)
+              .run();
+          }
+        });
+        appDispatch(documentIndexingAction.resetNewAppendixState());
+        return;
+      }
       doc.descendants((node, pos) => {
         if (node.attrs.id === newAppendixState?.id) {
           foundNode = node;
@@ -306,6 +341,18 @@ const TiptapEditor = () => {
       let foundNode = null;
       let deletionNodeEndPos = doc.content.size;
       let deletionNodeStartPos = doc.content.size;
+      if (
+        deleteAppendixState.additionItemType === tagInsertionType.Article ||
+        deleteAppendixState.additionItemType === tagInsertionType.SubArticle
+      ) {
+        doc.descendants((node, pos) => {
+          if (node?.attrs?.id === newAppendixState?.id) {
+            editor.chain().focus().setNodeSelection(pos).deleteNode().run();
+          }
+        });
+        appDispatch(documentIndexingAction.resetNewAppendixState());
+        return;
+      }
       doc.descendants((node, pos) => {
         if (
           node.attrs.id === deleteAppendixState?.id &&
@@ -423,23 +470,13 @@ const TiptapEditor = () => {
         currentEditVariable?.previousDefinition,
         currentEditVariable?.currentDefinition,
       );
-      // let contenthtml = editor?.getHTML();
-      // contenthtml = String(contenthtml).replaceAll(
-      //   `>${currentEditVariable?.previousDefinition}<`,
-      //   `>${currentEditVariable?.currentDefinition}<`,
-      // );
-      // setEditorContent(String(contenthtml));
-      // debouncedUpdateContent(
-      //   contenthtml,
-      //   currentDocument.id,
-      //   currentDocumentVersion.version_id,
-      // );
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEditVariable]);
   return (
     <div className="logan-tiptap h-full w-full">
+      {<CopiedTag />}
       <ToolBar editor={editor} />
       {openArticleDeleteConfirmModal && (
         <ArticleDeleteConfirmationModal
@@ -566,13 +603,13 @@ const TiptapEditor = () => {
         const textContent = copiedContent?.title;
         editor.commands.insertContentAt(
           Number(pos),
-          `<span  class="doc-variable">${textContent}</span>`,
+          `<span  class="doc-variable" >${textContent}</span>`,
           { updateSelection: true },
         );
       } else {
         editor.commands.insertContentAt(
           Number(pos),
-          `<span id=${copiedContent?.id} class=${copiedContent.type === copiedContentType.Appendix ? "doc-appendix-tag" : "doc-article-tag"}>${copiedContent.type === copiedContentType.Appendix ? "Appendix" : "Article"} ${copiedContent?.index} - ${copiedContent?.title}</span>`,
+          `<span data-key=${copiedContent?.id} class=${copiedContent.type === copiedContentType.Appendix ? "doc-appendix-tag" : "doc-article-tag"}>${copiedContent.type === copiedContentType.Appendix ? "Appendix" : "Article"} ${copiedContent?.index} - ${copiedContent?.title}</span>`,
           { updateSelection: true },
         );
       }

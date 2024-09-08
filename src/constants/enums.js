@@ -51,3 +51,10 @@ export const documentType = {
   document: "Document",
   appendix: "Appendix",
 };
+
+export const indexingManipulationTypes = {
+  ADDITEM: "addItem",
+  DELETEINPUT: "deleteInput",
+  DELETE: "delete",
+  ADDARTICLE: "addArticle",
+};

@@ -1,7 +1,8 @@
 import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
+import { indexingManipulationTypes, tagInsertionType } from "@/constants/enums";
 import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
-import { uniqueId } from "lodash";
+import { nanoid } from "nanoid";
 
 export const findNodePosFromNode = (doc, node) => {
   let nodePos = null;
@@ -58,84 +59,81 @@ export const manipulateItems = (
   level,
   articleInputValue,
 ) => {
-  let updateditems = recursiveManipulation(
-    items,
-    id,
-    actionType,
-    level,
-    articleInputValue,
-  );
-  if (level > 0 && (actionType === "addNew" || actionType === "delete")) {
+  if (actionType) {
+  }
+  if (
+    (level > 0 && actionType === indexingManipulationTypes.ADDITEM) ||
+    actionType === indexingManipulationTypes.DELETEINPUT
+  ) {
+    let updateditems = recursiveManipulation(items, id);
     dispatch(documentIndexingAction.setArticlesList(updateditems));
+  } else if (level === 0 && actionType === indexingManipulationTypes.ADDITEM) {
+    dispatch(
+      folderNavigationAction.setOpenModalType(
+        modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
+      ),
+    );
+    dispatch(
+      documentIndexingAction.setNewAppendixState({
+        id: id,
+        additionItemType: tagInsertionType.Appendix,
+      }),
+    );
+  } else if (actionType === indexingManipulationTypes.ADDARTICLE) {
+    let additionItemType = null;
+    if (level === 1) {
+      additionItemType = tagInsertionType.Article;
+    } else if (level > 1) {
+      additionItemType = tagInsertionType.SubArticle;
+    }
+    dispatch(
+      documentIndexingAction.setNewAppendixState({
+        additionItemType: additionItemType,
+        content: articleInputValue,
+      }),
+    );
+  } else if (actionType === indexingManipulationTypes.DELETE) {
+    let deletionItemType = null;
+    if (level === 0) {
+      deletionItemType = tagInsertionType.Appendix;
+    } else if (level === 1) {
+      deletionItemType = tagInsertionType.Article;
+    } else if (level > 1) {
+      deletionItemType = tagInsertionType.SubArticle;
+    }
+    dispatch(
+      documentIndexingAction.setDeleteAppendixState({
+        id: id,
+        deletionItemType: deletionItemType,
+      }),
+    );
   }
 
-  function recursiveManipulation(
-    items,
-    id,
-    actionType,
-    level,
-    articleInputValue,
-  ) {
+  function recursiveManipulation(items, id) {
     let tempItems = [...items];
     for (let i = 0; i < tempItems.length; i++) {
       const item = { ...tempItems[i] };
       if (item.id === id) {
-        switch (actionType) {
-          case "addNew":
-            if (level === 0) {
-              dispatch(
-                folderNavigationAction.setOpenModalType(
-                  modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
-                ),
-              );
-              dispatch(
-                documentIndexingAction.setNewAppendixState({
-                  id: id,
-                }),
-              );
-            } else {
-              tempItems.splice(i + 1, 0, {
-                input: true,
-                children: [],
-                id: uniqueId(),
-              });
-            }
-            return tempItems;
-
-          case "saveNew":
-            if (tempItems[i + 1] && tempItems[i + 1].input) {
-              const newIndex = parseInt(item.index) + 1;
-              tempItems[i + 1] = {
-                title: articleInputValue,
-                children: [],
-                id: uniqueId(),
-                index: newIndex,
-                type: level > 0 && (level === 1 ? "Article" : "SubArticle"),
-              };
-            }
-            return true;
-
-          case "delete": {
-            if (item?.input) {
-              tempItems.splice(i, 1);
-              return tempItems;
-            } else {
-              dispatch(
-                documentIndexingAction.setDeleteAppendixState({
-                  id: id,
-                }),
-              );
-            }
-          }
+        if (actionType === indexingManipulationTypes.ADDITEM) {
+          let uid = nanoid();
+          console.log("uid", uid);
+          tempItems.splice(i + 1, 0, {
+            input: true,
+            children: [],
+            id: uid,
+          });
+          dispatch(
+            documentIndexingAction.setNewAppendixState({
+              id: id,
+            }),
+          );
         }
+        if (actionType === indexingManipulationTypes.DELETEINPUT) {
+          tempItems.splice(i, 1);
+        }
+        return tempItems;
       } else if (item.children) {
-        const result = recursiveManipulation(
-          item.children,
-          id,
-          actionType,
-          level,
-          articleInputValue,
-        );
+        const result = recursiveManipulation(item.children, id);
         tempItems[i] = { ...item, children: result };
       }
     }
