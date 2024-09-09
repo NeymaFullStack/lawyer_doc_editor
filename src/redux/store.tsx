@@ -7,6 +7,7 @@ import { folderNavigationSlice } from "./folderNavigationSlice";
 import { documentVersioningSlice } from "./editor/documentVersioningSlice";
 import { documentVariableSlice } from "./editor/documentVariableSlice";
 import { documentIndexingSlice } from "./editor/documentIndexingSlice";
+import { commentsSlice } from "./editor/commentsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     documentVersioningReducer: documentVersioningSlice.reducer,
     documentVariableReducer: documentVariableSlice.reducer,
     documentIndexingReducer: documentIndexingSlice.reducer,
+    commentsReducer: commentsSlice.reducer,
   },
   middleware: [thunk],
 });

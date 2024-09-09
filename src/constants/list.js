@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { documentActions, documentStatus } from "./enums";
+import { documentActions } from "./enums";
 import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
 
 export const sideBarDropDownMenu = (params) => [
@@ -85,6 +84,13 @@ export const documentActionsList = (activeDocumentAction) => {
     //       ? "/assets/icons/docaction/preview-doc-active.svg"
     //       : "/assets/icons/docaction/preview-doc.svg",
     // },
+    {
+      value: documentActions.Comments,
+      icon:
+        activeDocumentAction === documentActions.Comments
+          ? "/assets/icons/docaction/comments-active.svg"
+          : "/assets/icons/docaction/comments.svg",
+    },
   ];
 };
 

@@ -1,6 +1,6 @@
 "use client";
-
-import { useEditor, EditorContent, useEditorState } from "@tiptap/react";
+import { useMemo } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import ToolBar from "./ToolBar";
@@ -27,16 +27,13 @@ import {
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import { useParams } from "next/navigation";
 import { classIdSpan } from "./extensions/classIdSpan";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { documentIndexingAction } from "@/redux/editor/documentIndexingSlice";
 import ArticleDeleteConfirmationModal from "./ArticleDeleteConfirmationModal";
 import { classIdDiv } from "./extensions/classIdDiv";
-import {
-  findNodePosFromId,
-  findNodePosFromNode,
-} from "@/utils/dashboard/editor-utils";
-import { flattenArray } from "@/utils/generic";
+import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
+import { flattenArray, getUserColor } from "@/utils/generic";
 import { CustomHeading } from "./extensions/heading";
 import ArticleExtention from "./plugins/article";
 import StoreCursorPositionExtension from "./extensions/storeCursorPositionExtension";
@@ -49,15 +46,21 @@ import { documentVariableAction } from "@/redux/editor/documentVariableSlice";
 import { customParagraph } from "./extensions/paragraph";
 import { createCollapsibleListOpenState } from "@/utils/component-utils";
 import Collaboration from "@tiptap/extension-collaboration";
+import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
-import { useUserDetails } from "@/hooks";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import { FontSize } from "./marks/fontStyle";
+import CommentExtension from "./extensions/comments";
+
+import { useUserDetails } from "@/hooks";
 import LoganTagsMenu from "./LoganTagsMenu";
 import { cn } from "@/utils/shadcn-utils";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
-import Zoom from "./toolbar-tools/Zoom";
 import CopiedTag from "@/components/generic/CopiedTag";
+import Comments from "./extensions/comments";
+import { commentsAction } from "@/redux/editor/commentsSlice";
+import AddCommentModal from "../commentTool/addCommnetModal";
 
 const doc = new Y.Doc();
 
@@ -110,6 +113,8 @@ const TiptapEditor = () => {
     isEditorToolHidden,
     toolbar,
   } = useSelector((state) => state.documentReducer);
+  const { isAddCommentModalOpen, selectedTextPosition, isTextSelected } =
+    useSelector((state) => state.commentsReducer);
 
   const [articleInsertionState, setArticleInsertionState] = useState(
     initialArticleInsertionState,
@@ -128,15 +133,14 @@ const TiptapEditor = () => {
       [],
     );
 
-  // const provider = useMemo(() => {
-  //   return new TiptapCollabProvider({
-  //     name: docId,
-  //     baseUrl:
-  //       "ws://ec2-54-201-201-255.us-west-2.compute.amazonaws.com:5555/collaboration",
-  //     // token: "notoken", // Your JWT token
-  //     document: doc,
-  //   });
-  // }, [docId]);
+  const provider = useMemo(() => {
+    return new TiptapCollabProvider({
+      name: docId,
+      baseUrl: "ws://localhost:1234/collaboration/",
+      // token: "notoken", // Your JWT token
+      document: doc,
+    });
+  }, [docId]);
 
   const editor = useEditor(
     {
@@ -155,13 +159,19 @@ const TiptapEditor = () => {
           types: ["heading", "paragraph"],
           alignments: ["left", "center", "right", "justify"],
         }),
-        // CollaborationCursor.configure({
-        //   provider,
-        //   user: {
-        //     name: `${first_name} ${last_name}`,
-        //     color: getUserColor(`${first_name} ${last_name}`),
-        //   },
-        // }),
+        CollaborationCursor.configure({
+          provider,
+          user: {
+            name: `${first_name} ${last_name}`,
+            color: getUserColor(`${first_name} ${last_name}`),
+          },
+        }),
+        Comments.configure({
+          handleClick: (commentId, color) => {
+            console.log("In TiptapEditor Comments handleClick");
+            console.log(commentId, color);
+          },
+        }),
         ArticleInsertion.configure({
           openArticleInsertionMenu: (menuItems, pos) => {
             setArticleInsertionState({
@@ -201,6 +211,7 @@ const TiptapEditor = () => {
             setOpenArticleDeleteConfirmModal(true);
           },
         }),
+        CommentExtension,
       ],
       injectCSS: true,
       autofocus: true,
@@ -210,8 +221,34 @@ const TiptapEditor = () => {
       onSelectionUpdate: handleSelection,
       onUpdate: handleChange,
     },
-    // [provider, first_name, last_name],
+    [],
   );
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateSelectionState = () => {
+      const { from, to } = editor.state.selection;
+      const { view } = editor;
+
+      const start = view.coordsAtPos(from);
+      appDispatch(
+        commentsAction.setSelectedTextPosition({
+          top: start.top,
+          left: start.left,
+          isTextSelected: from !== to,
+        }),
+      );
+    };
+
+    // Listen to selection changes
+    editor.on("selectionUpdate", updateSelectionState);
+
+    // Cleanup the listener on unmount
+    return () => {
+      editor.off("selectionUpdate", updateSelectionState);
+    };
+  }, [editor]);
 
   useEffect(() => {
     editor && fetchDocumentData();
@@ -512,6 +549,17 @@ const TiptapEditor = () => {
             }}
             position={tagInsertionState?.pos}
             view={editor.view}
+          />
+        )}
+        {isAddCommentModalOpen && (
+          <AddCommentModal
+            isOpen={isAddCommentModalOpen}
+            onClose={() => {
+              appDispatch(commentsAction.setIsAddCommentModalOpen(false));
+            }}
+            position={selectedTextPosition || {}}
+            editorRef={editorRef.current}
+            editor={editor}
           />
         )}
 

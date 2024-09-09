@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Button } from "antd";
 import SaveCurrentDocumentModal from "../DocumentEditor/documentAction/SaveCurrentDocumentModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
@@ -161,7 +161,7 @@ function DashboardHeader() {
   }
 
   async function fetchBreadCrumbs(projectId) {
-    const { data } = await getBreadCrumbs(projectId);
+    const { data = {} } = await getBreadCrumbs(projectId);
     data?.length > 0 && updateBreadcrumbs(data);
   }
 

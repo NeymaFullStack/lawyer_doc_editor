@@ -6,6 +6,7 @@ export const documentActions = {
   Preview: "preview",
   Reference: "reference",
   ToolToggle: "tootleToggle",
+  Comments: "comments",
 };
 
 export const documentStatus = {

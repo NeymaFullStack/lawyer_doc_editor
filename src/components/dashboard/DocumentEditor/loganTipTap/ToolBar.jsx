@@ -1,7 +1,7 @@
 "use client";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { cn } from "@/utils/shadcn-utils";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import FontSizeTool from "./toolbar-tools/FontSizeTool";
 import Alignment from "./toolbar-tools/Alignment";
 import FontFamily from "./toolbar-tools/FontFamily";
@@ -9,10 +9,26 @@ import Highlighter from "./toolbar-tools/Highlighter";
 import Zoom from "./toolbar-tools/Zoom";
 import { useDispatch } from "react-redux";
 import { documentAction } from "@/redux/documentSlice";
+import { useSelector } from "react-redux";
+import { documentActions } from "@/constants/enums";
+import { commentsAction } from "@/redux/editor/commentsSlice";
 
 function ToolBar({ editor }) {
   const toolbarRef = useRef(null);
   const appDispatch = useDispatch();
+  const { activeDocumentAction } = useSelector(
+    (state) => state.documentReducer,
+  );
+  const { isAddCommentModalOpen } = useSelector(
+    (state) => state.commentsReducer,
+  );
+  const handleAddComment = () => {
+    if (isAddCommentModalOpen) {
+      appDispatch(commentsAction.setIsAddCommentModalOpen(false));
+    } else {
+      appDispatch(commentsAction.setIsAddCommentModalOpen(true));
+    }
+  };
   useEffect(() => {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
@@ -48,15 +64,18 @@ function ToolBar({ editor }) {
       {editor && (
         <>
           <div className="flex items-center gap-1">
-            {
-              <Highlighter /> /*<button>
-          <RemSizeImage
-            imagePath={"/assets/icons/quillicons/comment.svg"}
-            remWidth={1.8}
-            remHeight={1.8}
-            alt="Comment"
-          />
-        </button>
+            <Highlighter />
+            {activeDocumentAction === documentActions.Comments && (
+              <button onClick={handleAddComment}>
+                <RemSizeImage
+                  imagePath={"/assets/icons/quillicons/comment.svg"}
+                  remWidth={1.8}
+                  remHeight={1.8}
+                  alt="Comment"
+                />
+              </button>
+            )}
+            {/*
         <button>
           <RemSizeImage
             imagePath={"/assets/icons/search-blue.svg"}
@@ -70,8 +89,7 @@ function ToolBar({ editor }) {
           remWidth={0.15}
           remHeight={0.1}
           alt="Separator"
-        /> */
-            }
+        /> */}
             <button onClick={() => editor.commands.undo()}>
               <RemSizeImage
                 imagePath={"/assets/icons/quillicons/undo-icon.svg"}
