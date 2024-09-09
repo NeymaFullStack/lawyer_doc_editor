@@ -1,8 +1,8 @@
-// import { Mark } from "@tiptap/core";
+import { Mark } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
-import { TextStyle } from "@tiptap/extension-text-style";
+// import { TextStyle } from "@tiptap/extension-text-style";
 
-const CommentHighlight = TextStyle.extend({
+const CommentHighlight = Mark.create({
   name: "commentHighlight",
 
   addOptions() {
@@ -42,13 +42,7 @@ const CommentHighlight = TextStyle.extend({
   parseHTML() {
     return [
       {
-        tag: "span",
-        getAttrs: (dom) => ({
-          class: dom.getAttribute("class"),
-          id: dom.getAttribute("id"),
-          style: dom.getAttribute("style"),
-          "data-comment-id": dom.getAttribute("data-comment-id"),
-        }),
+        tag: "span[data-comment-id]",
       },
     ];
   },

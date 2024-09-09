@@ -49,7 +49,7 @@ import Collaboration from "@tiptap/extension-collaboration";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-import { FontSize } from "./marks/fontStyle";
+// import { FontSize } from "./marks/fontStyle";
 import CommentExtension from "./extensions/comments";
 
 import { useUserDetails } from "@/hooks";
@@ -58,7 +58,6 @@ import { cn } from "@/utils/shadcn-utils";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import CopiedTag from "@/components/generic/CopiedTag";
-import Comments from "./extensions/comments";
 import { commentsAction } from "@/redux/editor/commentsSlice";
 import AddCommentModal from "../commentTool/addCommnetModal";
 
@@ -146,7 +145,7 @@ const TiptapEditor = () => {
     {
       extensions: [
         StoreCursorPositionExtension,
-        FontSize,
+        // FontSize,
         StarterKit.configure({
           heading: false, // Disable the default heading extension
           paragraph: false,
@@ -166,7 +165,7 @@ const TiptapEditor = () => {
             color: getUserColor(`${first_name} ${last_name}`),
           },
         }),
-        Comments.configure({
+        CommentExtension.configure({
           handleClick: (commentId, color) => {
             console.log("In TiptapEditor Comments handleClick");
             console.log(commentId, color);
