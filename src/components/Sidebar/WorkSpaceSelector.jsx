@@ -206,7 +206,10 @@ function WorkSpaceSelector() {
   );
 
   function onClose() {
-    setIsDropDownOpen(false);
+    if (isDropDownOpen) {
+      debugger;
+      setIsDropDownOpen(false);
+    }
   }
 }
 

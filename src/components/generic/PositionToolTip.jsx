@@ -9,7 +9,10 @@ function PositionToolTip({
 }) {
   const toolTipRef = useRef(null);
   const [toolTipRect, setToolTipRect] = useState(null);
-  const [toolTipPos, setToolTipPos] = useState(null);
+  const [toolTipPos, setToolTipPos] = useState({
+    top: -9999, // Initially place it off-screen
+    left: -9999,
+  });
   const handleClickOutside = (event) => {
     if (toolTipRef.current && !toolTipRef.current.contains(event.target)) {
       onClose();
@@ -85,18 +88,87 @@ function PositionToolTip({
   }, []);
 
   return (
-    <div
-      className={`fixed z-10 w-fit rounded-xl border bg-white p-2 text-primary-gray shadow-3d `}
-      ref={toolTipRef}
-      style={{
-        display: isOpen ? "block" : "none",
-        top: toolTipPos?.top ? toolTipPos?.top : position.top + 15,
-        left: toolTipPos?.left ? toolTipPos?.left : position.left + 15,
-      }}
-    >
-      {children}
-    </div>
+    <>
+      {toolTipPos?.top && toolTipPos?.left && (
+        <div
+          className={`fixed z-10 w-fit rounded-xl border border-none bg-white p-2 text-primary-gray shadow-3d outline-none`}
+          ref={toolTipRef}
+          style={{
+            top: toolTipPos?.top,
+            left: toolTipPos?.left,
+            visibility: toolTipPos.top === -9999 ? "hidden" : "visible", // Hide until properly positioned
+          }}
+        >
+          {children}
+        </div>
+      )}
+    </>
   );
 }
 
 export default PositionToolTip;
+
+// import React, { useEffect, useRef } from "react";
+// import {
+//   useFloating,
+//   shift,
+//   flip,
+//   offset,
+//   autoUpdate,
+//   autoPlacement,
+// } from "@floating-ui/react";
+
+// function PositionToolTip({ children, onClose, isOpen, position }) {
+//   const toolTipRef = useRef(null);
+
+//   // Use `useFloating` hook to manage the floating element (tooltip)
+//   const { x, y, strategy, refs, update } = useFloating({
+//     placement: "bottom-start", // default placement, can be customized
+//     whileElementsMounted: autoUpdate,
+//     middleware: [
+//       offset(12), // Adds space between reference and tooltip
+//       shift(), // Prevents it from overflowing the container boundary
+//     ],
+//   });
+
+//   // Adjust the tooltip position when `isOpen` or `position` changes
+//   useEffect(() => {
+//     if (isOpen && position) {
+//       refs.setReference({
+//         getBoundingClientRect: () => ({
+//           width: 0,
+//           height: 0,
+//           top: position.top,
+//           left: position.left,
+//           right: position.left,
+//           bottom: position.top,
+//         }),
+//       });
+//     }
+//   }, [isOpen, position, refs]);
+
+//   // Automatically update the tooltip position on window resize or scroll
+//   useEffect(() => {
+//     if (toolTipRef.current) {
+//       return autoUpdate(refs.reference, refs.floating, update);
+//     }
+//   }, [refs, update]);
+
+//   return (
+//     <div
+//       onBlur={onClose}
+//       className={`fixed z-10 w-fit rounded-xl border bg-white p-2 text-primary-gray shadow-3d`}
+//       ref={refs.setFloating} // Set the floating element reference
+//       style={{
+//         display: isOpen ? "block" : "none",
+//         position: strategy,
+//         top: y ?? 0, // Use floating UI's calculated position
+//         left: x ?? 0, // Use floating UI's calculated position
+//       }}
+//     >
+//       {children}
+//     </div>
+//   );
+// }
+
+// export default PositionToolTip;

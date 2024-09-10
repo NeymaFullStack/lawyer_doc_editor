@@ -88,7 +88,9 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
         />
       </button>
       <div
-        className={"flex flex-1 items-center gap-2 rounded-lg bg-six px-3 py-1"}
+        className={
+          "flex flex-1 items-center gap-2 overflow-y-scroll rounded-lg bg-six px-3 py-1"
+        }
       >
         <textarea
           name={"query"}
@@ -100,7 +102,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
           className={
             "flex-1  bg-six px-2 pl-1 text-xs  text-black-txt outline-none " +
             (!isTooltip
-              ? "h-[1rem] max-h-[8rem] resize-none overflow-hidden"
+              ? "h-[1rem] max-h-[8rem] resize-none overflow-x-hidden overflow-y-scroll"
               : "h-[2.5rem]")
           }
           style={{ overflowY: "16px", minHeight: "16px" }}
@@ -115,6 +117,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
               e.preventDefault();
               !documentLoading && onSendQuery();
               setChatQuery("");
+              textareaRef.current.style.height = "1rem";
             }
           }}
         />
@@ -124,6 +127,7 @@ function GptSearch({ isTooltip = false, onCloseToolTip }) {
             onClick={() => {
               !documentLoading && onSendQuery();
               setChatQuery("");
+              textareaRef.current.style.height = "1rem";
             }}
           >
             {chatQuery.length > 0 && (

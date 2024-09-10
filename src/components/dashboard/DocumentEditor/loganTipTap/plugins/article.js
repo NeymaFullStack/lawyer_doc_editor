@@ -27,7 +27,6 @@ const ArticleExtention = Extension.create({
             const currentNode = $from.node();
             const parentNode = $from.node($from.depth - 1);
 
-            console.log("key", event.key);
             if (navigationKeys.includes(event.key)) {
               return false;
             }
@@ -324,7 +323,6 @@ const ArticleExtention = Extension.create({
                 listNode.forEach((child, offset) => {
                   if (child.type.name === "listItem") {
                     let uid = child.attrs["id"] || nanoid();
-                    console.log("uidfix", uid);
                     const dataIndex = [...parentIndex, index].join(".");
                     const pos = findNodePosFromNode(tr.doc, child);
                     tr = tr.setNodeMarkup(pos, undefined, {

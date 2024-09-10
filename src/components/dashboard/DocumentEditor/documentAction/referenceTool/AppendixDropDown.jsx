@@ -13,16 +13,16 @@ function AppendixDropDown({ onClose }) {
     { id: 5, name: "Document - Updated By Laws", document: false },
   ]);
 
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      window.addEventListener("click", onClose);
-    }
-    return () => {
-      if (typeof window !== undefined) {
-        window.removeEventListener("click", onClose);
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== undefined) {
+  //     window.addEventListener("click", onClose);
+  //   }
+  //   return () => {
+  //     if (typeof window !== undefined) {
+  //       window.removeEventListener("click", onClose);
+  //     }
+  //   };
+  // }, []);
 
   return (
     <div

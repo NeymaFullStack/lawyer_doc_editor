@@ -13,7 +13,6 @@ function LoganReferenceTool() {
     (state) => state.documentIndexingReducer,
   );
 
-  console.log("ArticleList", articleList, collapsibleListOpenState);
   const manageArticles = (actionType, id, level, articleInputValue = "") => {
     manipulateItems(
       appDispatch,

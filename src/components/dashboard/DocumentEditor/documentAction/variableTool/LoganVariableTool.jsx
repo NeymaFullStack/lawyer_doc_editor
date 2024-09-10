@@ -27,7 +27,6 @@ function LoganVariableTool() {
     activeDocumentVersion?.id,
     activeDocumentVersion.version_id,
   ]);
-  console.log("variableList", variableList);
   // useEffect(() => {
   //   if (activeDocumentVersion?.id && activeDocumentVersion.version_id)
   //     documentIdRef.current = {

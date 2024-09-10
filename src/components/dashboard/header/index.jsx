@@ -161,8 +161,8 @@ function DashboardHeader() {
   }
 
   async function fetchBreadCrumbs(projectId) {
-    const { data } = await getBreadCrumbs(projectId);
-    data?.length > 0 && updateBreadcrumbs(data);
+    const res = await getBreadCrumbs(projectId);
+    res?.data?.length > 0 && updateBreadcrumbs(res?.data);
   }
 
   async function updateBreadcrumbs(rawBreadcrumbs) {

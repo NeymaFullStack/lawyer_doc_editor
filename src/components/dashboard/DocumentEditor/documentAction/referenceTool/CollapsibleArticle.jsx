@@ -27,15 +27,15 @@ function CollapsibleArticle({ item, showArticleTag }) {
   //   const toggleExpand = () => {
   //     setIsExpanded(!isExpanded);
   //   };
-  useEffect(() => {
-    if (window !== undefined && copiedContent) {
-      // copiedContent?.id && window.
-      window.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [copiedContent]);
+  // useEffect(() => {
+  //   if (window !== undefined && copiedContent) {
+  //     // copiedContent?.id && window.
+  //     window.addEventListener("mousemove", handleMouseMove);
+  //   }
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  // }, [copiedContent]);
 
   return (
     <>

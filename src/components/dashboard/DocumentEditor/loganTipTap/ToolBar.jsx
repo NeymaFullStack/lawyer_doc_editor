@@ -17,7 +17,6 @@ function ToolBar({ editor }) {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
       // Check if the blur event was triggered by a click on a toolbar button
-      appDispatch(documentAction.setCopiedContent(null));
       event.preventDefault(); // Prevent losing focus
 
       if (
