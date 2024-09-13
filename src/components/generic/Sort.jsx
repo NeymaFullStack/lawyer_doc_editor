@@ -8,7 +8,7 @@ function Sort({ onClickSort, title }) {
     <button
       className={
         title
-          ? "rounded-md p-1 px-2 bg-secondary-blue  flex items-center gap-1 text-xs text-black-txt font-medium"
+          ? "flex items-center gap-1 rounded-md  bg-secondary-blue p-1 px-2 text-xs font-medium text-black-txt"
           : ""
       }
       onClick={() => {
@@ -26,7 +26,7 @@ function Sort({ onClickSort, title }) {
         remWidth={1.125}
         remHeight={1.125}
         alt="sort"
-        className={sortOrder === "ascend" ? "rotate-180" : " "}
+        className={sortOrder === "ascend" ? "" : "rotate-180"}
       />
       {title && <span>{title}</span>}
     </button>

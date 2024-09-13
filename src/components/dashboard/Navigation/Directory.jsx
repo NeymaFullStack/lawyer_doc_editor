@@ -182,7 +182,7 @@ function Directory({
     const res = await getFolderDetails({ id: folderId });
     if (res?.sub_projects?.length > 0 || res?.documents?.length > 0) {
       setDirectoryData({
-        foldersList: res.sub_projects,
+        foldersList: sortStringTableList(res.sub_projects, "ascend", "title"),
         documentsList: res?.documents.map((doc, index) => {
           return { ...doc, title: doc.document_name };
         }),

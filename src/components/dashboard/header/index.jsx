@@ -22,9 +22,8 @@ function DashboardHeader() {
   const appDispatch = useDispatch();
   const params = useParams();
   const pathname = usePathname();
-  const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
-  const [showDocEditHeader, setShowEditHeader] = useState(false);
+  // const [showDocEditHeader, setShowEditHeader] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { folderListView } = useSelector(
@@ -41,12 +40,12 @@ function DashboardHeader() {
       let lastProjectId;
       if (params?.folderId) {
         lastProjectId = params?.folderId;
-        showDocEditHeader && setShowEditHeader(false);
+        // showDocEditHeader && setShowEditHeader(false);
       } else if (params?.docId && currentDocument?.project_id) {
         lastProjectId = currentDocument.project_id;
-        !showDocEditHeader && setShowEditHeader(true);
+        // !showDocEditHeader && setShowEditHeader(true);
       } else {
-        showDocEditHeader && setShowEditHeader(false);
+        // showDocEditHeader && setShowEditHeader(false);
         setBreadCrumbs([]);
       }
       lastProjectId && fetchBreadCrumbs(lastProjectId);
@@ -63,7 +62,7 @@ function DashboardHeader() {
           onClose={() => setOpenSaveCurrentDocModal(false)}
         />
       )}
-      {showDocEditHeader ? (
+      {pathname.includes("doc-edit") ? (
         <div className="flex w-full items-center justify-between pr-7">
           <h2 className="text-lg font-semibold">
             {currentDocument?.document_name}

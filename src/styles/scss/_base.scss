@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -116,6 +122,7 @@ html {
 }
 body {
   overflow: hidden;
+  font-family: "Inter";
 }
 
 body,

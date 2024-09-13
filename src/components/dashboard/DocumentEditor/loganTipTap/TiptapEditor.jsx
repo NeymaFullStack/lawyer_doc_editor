@@ -468,7 +468,6 @@ const TiptapEditor = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEditVariable]);
-  console.log("messy", tagInsertionState);
 
   return (
     <div className="logan-tiptap  h-full w-full">
@@ -625,10 +624,6 @@ const TiptapEditor = () => {
     // );
   }
   function handleChange({ editor, transaction }) {
-    console.log(
-      "equality",
-      editor.getHTML() !== currentDocumentVersion?.docContent,
-    );
     if (editor.getHTML() !== currentDocumentVersion?.docContent) {
       if (articleInsertionState.tooltipActive) {
         setArticleInsertionState(initialArticleInsertionState);

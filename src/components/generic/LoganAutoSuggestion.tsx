@@ -18,6 +18,7 @@ import RemSizeImage from "./RemSizeImage";
 import { useDebounce } from "@/hooks/useDebounce";
 import { navigationSearchItemTypes } from "@/constants/enums";
 import { cn } from "@/utils/shadcn-utils";
+import { nanoid } from "nanoid";
 
 type Props<T extends string> = {
   // selectedValue: T;
@@ -161,7 +162,7 @@ export default function LoganAutoSuggestion<T extends string>({
                 ? items.map((group, index) => {
                     return (
                       <CommandGroup
-                        key={index}
+                        key={nanoid()}
                         heading={
                           <span className="text-primary-gray">
                             {group?.heading ? group?.heading : ""}
@@ -172,19 +173,27 @@ export default function LoganAutoSuggestion<T extends string>({
                           {group?.items.map((option: any, index: number) => {
                             let itemSrc = "";
                             if (
-                              option.type === navigationSearchItemTypes.CLIENT
+                              option?.type === navigationSearchItemTypes.CLIENT
                             ) {
                               itemSrc = "/assets/icons/client-folder.svg";
                             } else if (
-                              option.type === navigationSearchItemTypes.FOLDER
+                              option?.type === navigationSearchItemTypes.FOLDER
                             ) {
                               itemSrc = "/assets/icons/non-client-folder.svg";
                             } else if (
-                              option.type === navigationSearchItemTypes.DOCUMENT
+                              option?.type ===
+                              navigationSearchItemTypes.DOCUMENT
                             ) {
                               itemSrc = "/assets/icons/doc-icon.svg";
                             }
-                            let projectPath = limitItems(option.project_path);
+                            let projectPath = [...option?.project_path];
+                            if (
+                              option?.type ===
+                              navigationSearchItemTypes.DOCUMENT
+                            ) {
+                              projectPath.push(option?.title);
+                            }
+                            projectPath = limitItems(projectPath);
                             return (
                               <CommandItem
                                 key={option.id}
@@ -204,7 +213,7 @@ export default function LoganAutoSuggestion<T extends string>({
                                       if (path?.sep) {
                                         return (
                                           <li
-                                            key={index}
+                                            key={nanoid()}
                                             className="flex items-center"
                                           >
                                             <span className="px-2 text-primary-blue">
@@ -215,7 +224,7 @@ export default function LoganAutoSuggestion<T extends string>({
                                       } else if (path?.ellipsis) {
                                         return (
                                           <li
-                                            key={index}
+                                            key={nanoid()}
                                             className="flex items-center gap-1 px-2"
                                           >
                                             <span className=" text-primary-blue">
@@ -232,7 +241,7 @@ export default function LoganAutoSuggestion<T extends string>({
                                       }
                                       return (
                                         <li
-                                          key={index}
+                                          key={nanoid()}
                                           className="flex items-center "
                                         >
                                           {highlightText(path)}
@@ -310,11 +319,14 @@ export default function LoganAutoSuggestion<T extends string>({
 
     return parts.map((part, index) =>
       regex.test(part) ? (
-        <span key={index} className="text-primary-blue">
+        <span key={nanoid()} className="text-primary-blue">
           {part}
         </span>
       ) : (
-        <span className="text-primary-gray group-hover:text-black-txt">
+        <span
+          key={nanoid()}
+          className="text-primary-gray group-hover:text-black-txt"
+        >
           {part}
         </span>
       ),
