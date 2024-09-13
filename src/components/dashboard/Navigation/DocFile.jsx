@@ -52,22 +52,22 @@ function DocFile({ onClickDoc, doc, nonClient = false, ...props }) {
             <Image
               src={doc?.metadata?.thumbnail_url}
               alt={"document-thumbnail"}
-              layout="fill"
+              priority
+              fill
+              sizes="5"
               // width={6}
               // height={4.5}
-              objectFit={"cover"}
-              className="h-full w-full rounded" // Add a class if you want rounded corners
+              className="h-auto w-auto rounded" // Add a class if you want rounded corners
               quality={100} // Set the quality of the image
             />
           ) : (
             <Image
               src={"/assets/images/thumbnail_image.jpg"}
+              priority
               alt={"Company Logo"}
-              layout="fill"
-              // width={6}
-              // height={4.5}
-              objectFit={"cover"}
-              className="h-full w-full rounded" // Add a class if you want rounded corners
+              fill
+              sizes="5"
+              className=" h-auto w-auto rounded" // Add a class if you want rounded corners
               quality={100} // Set the quality of the image
             />
           )}

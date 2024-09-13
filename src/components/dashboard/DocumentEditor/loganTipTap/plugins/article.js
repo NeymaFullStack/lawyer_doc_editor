@@ -4,6 +4,7 @@ import { Extension } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin, TextSelection } from "@tiptap/pm/state";
 import { padStart, uniqueId } from "lodash";
+import { nanoid } from "nanoid";
 const navigationKeys = ["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"];
 
 const ArticleExtention = Extension.create({

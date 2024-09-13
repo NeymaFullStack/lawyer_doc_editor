@@ -14,6 +14,7 @@ import {
   getDocumentVariablesUrl,
   getDocumentVersionListsUrl,
   getFolderDetailsUrl,
+  getNavigationSuggestionsUrl,
   getRecentDocumentsUrl,
   getUSerChatUrl,
   gptChatUrl,
@@ -42,6 +43,19 @@ export const markAllNotificationSeen = cache(async () => {
     console.log("error 123", error);
   }
 });
+
+export const getNavigationSuggestions = async (controller, queryParams) => {
+  try {
+    const res = await Api.get(getNavigationSuggestionsUrl, {
+      params: queryParams,
+      signal: controller.signal,
+    });
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log("error 123", error);
+  }
+};
 
 export const getClientFolderList = cache(async () => {
   try {

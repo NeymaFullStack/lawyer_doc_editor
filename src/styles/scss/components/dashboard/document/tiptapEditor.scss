@@ -53,28 +53,24 @@
         @apply text-[1rem] font-semibold;
       }
       ul {
+        padding-left: 1.4rem !important;
         ul {
-          margin-left: 2rem;
+          padding-left: 1rem !important;
         }
-        padding-left: 0 !important;
         list-style-type: none !important;
         li {
-          // padding-left: 2rem;
-          /* Center align items vertically */
-          position: relative;
-          p {
-            margin-top: 0;
-          }
+          padding-left: 0.5rem;
         }
-        li::before {
-          float: inline-start; /* Use flexbox to align items */
-          margin-right: 0.8rem;
-          left: 0;
-          top: 0;
-          min-width: 1rem;
-          text-align: left;
+
+        li::marker {
           content: attr(data-index);
           color: #a3a7af !important;
+          unicode-bidi: isolate;
+          font-variant-numeric: tabular-nums;
+          text-transform: none;
+          text-indent: 0px !important;
+          text-align: start !important;
+          text-align-last: start !important;
         }
       }
     }

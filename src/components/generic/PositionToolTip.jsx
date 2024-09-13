@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
+let prevContainerRefLeft = 0;
 function PositionToolTip({
   children,
   onClose,
@@ -13,24 +13,11 @@ function PositionToolTip({
     top: -9999, // Initially place it off-screen
     left: -9999,
   });
-  const handleClickOutside = (event) => {
-    if (toolTipRef.current && !toolTipRef.current.contains(event.target)) {
-      onClose();
-    }
-  };
 
-  useEffect(() => {
-    isOpen && document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-      setToolTipPos(null);
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (toolTipRect && containerRef && position) {
-      let { width: toolTipWidth, height: toolTipHeight } = toolTipRect;
+  const calculateTooltipPosition = () => {
+    if (toolTipRef.current && containerRef && position) {
+      let { width: toolTipWidth, height: toolTipHeight } =
+        toolTipRef.current.getBoundingClientRect();
       let {
         width: containerWidth,
         height: containerHeight,
@@ -38,44 +25,79 @@ function PositionToolTip({
         top: containerTop,
       } = containerRef.getBoundingClientRect();
       let { left: triggerLeft, top: triggerTop } = position;
-      let [toolTipTop, toolTipLeft] = [triggerTop, triggerLeft];
+      let toolTipTop = triggerTop;
+      let toolTipLeft = triggerLeft;
+      if (
+        prevContainerRefLeft !== 0 &&
+        prevContainerRefLeft !== containerLeft
+      ) {
+        toolTipLeft = triggerLeft - (prevContainerRefLeft - containerLeft);
+      }
+      prevContainerRefLeft = containerLeft;
       const horizontalSpace =
-        containerLeft + containerWidth - (triggerLeft + 15);
+        containerLeft + containerWidth - (toolTipLeft + 15);
       const verticalSpace = containerTop + containerHeight - (triggerTop + 15);
+
       if (toolTipWidth > horizontalSpace) {
-        toolTipLeft = triggerLeft - (toolTipWidth - horizontalSpace);
-        toolTipLeft -= 30; //taking extra space into account
+        toolTipLeft = toolTipLeft - (toolTipWidth - horizontalSpace) - 30;
       }
       if (toolTipHeight > verticalSpace) {
-        toolTipTop = triggerTop - (toolTipHeight - verticalSpace);
-        toolTipTop -= 55; //taking extra space into account
+        toolTipTop = triggerTop - (toolTipHeight - verticalSpace) - 55;
       }
       if (toolTipHeight < verticalSpace && toolTipWidth < horizontalSpace) {
-        toolTipLeft += 12; //taking extra space into account
-        toolTipTop += 12; //taking extra space into account
+        toolTipLeft += 12;
+        toolTipTop += 12;
       } else if (
         toolTipHeight < verticalSpace &&
         toolTipWidth > horizontalSpace
       ) {
-        toolTipTop += 20; //taking extra space into account
+        toolTipTop += 20;
       } else if (
         toolTipHeight > verticalSpace &&
         toolTipWidth < horizontalSpace
       ) {
-        toolTipLeft += 20; //taking extra space into account
+        toolTipLeft += 20;
       }
       setToolTipPos({ top: toolTipTop, left: toolTipLeft });
     }
-  }, [position, toolTipRect, containerRef]);
+  };
 
+  const handleClickOutside = (event) => {
+    if (toolTipRef.current && !toolTipRef.current.contains(event.target)) {
+      onClose();
+    }
+  };
+
+  // Handle click outside to close tooltip
   useEffect(() => {
-    const handleResize = (entries) => {
-      for (let entry of entries) {
-        setToolTipRect(entry.contentRect);
-      }
+    if (isOpen) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      setToolTipPos(null);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
     };
+  }, [isOpen]);
 
-    const resizeObserver = new ResizeObserver(handleResize);
+  // Recalculate tooltip position when position or container changes
+  useEffect(() => {
+    calculateTooltipPosition();
+  }, [position, toolTipRef, containerRef]);
+
+  // Observe both tooltip and container size changes
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(calculateTooltipPosition);
+    // const mutationObserver = new MutationObserver(() => {
+    //   calculateTooltipPosition();
+    // });
+
+    if (containerRef) {
+      console.log("node", containerRef.parentNode.parentNode.parentNode);
+      resizeObserver.observe(containerRef.parentNode.parentNode.parentNode);
+      // mutationObserver.observe(containerRef.parentNode.parentNode, {});
+    }
+
     if (toolTipRef.current) {
       resizeObserver.observe(toolTipRef.current);
     }
@@ -84,8 +106,14 @@ function PositionToolTip({
       if (toolTipRef.current) {
         resizeObserver.unobserve(toolTipRef.current);
       }
+      if (containerRef) {
+        resizeObserver.unobserve(containerRef);
+        // mutationObserver.disconnect();
+      }
     };
-  }, []);
+  }, [containerRef, toolTipRef]);
+
+  console.log("pos", toolTipPos);
 
   return (
     <>
@@ -107,68 +135,3 @@ function PositionToolTip({
 }
 
 export default PositionToolTip;
-
-// import React, { useEffect, useRef } from "react";
-// import {
-//   useFloating,
-//   shift,
-//   flip,
-//   offset,
-//   autoUpdate,
-//   autoPlacement,
-// } from "@floating-ui/react";
-
-// function PositionToolTip({ children, onClose, isOpen, position }) {
-//   const toolTipRef = useRef(null);
-
-//   // Use `useFloating` hook to manage the floating element (tooltip)
-//   const { x, y, strategy, refs, update } = useFloating({
-//     placement: "bottom-start", // default placement, can be customized
-//     whileElementsMounted: autoUpdate,
-//     middleware: [
-//       offset(12), // Adds space between reference and tooltip
-//       shift(), // Prevents it from overflowing the container boundary
-//     ],
-//   });
-
-//   // Adjust the tooltip position when `isOpen` or `position` changes
-//   useEffect(() => {
-//     if (isOpen && position) {
-//       refs.setReference({
-//         getBoundingClientRect: () => ({
-//           width: 0,
-//           height: 0,
-//           top: position.top,
-//           left: position.left,
-//           right: position.left,
-//           bottom: position.top,
-//         }),
-//       });
-//     }
-//   }, [isOpen, position, refs]);
-
-//   // Automatically update the tooltip position on window resize or scroll
-//   useEffect(() => {
-//     if (toolTipRef.current) {
-//       return autoUpdate(refs.reference, refs.floating, update);
-//     }
-//   }, [refs, update]);
-
-//   return (
-//     <div
-//       onBlur={onClose}
-//       className={`fixed z-10 w-fit rounded-xl border bg-white p-2 text-primary-gray shadow-3d`}
-//       ref={refs.setFloating} // Set the floating element reference
-//       style={{
-//         display: isOpen ? "block" : "none",
-//         position: strategy,
-//         top: y ?? 0, // Use floating UI's calculated position
-//         left: x ?? 0, // Use floating UI's calculated position
-//       }}
-//     >
-//       {children}
-//     </div>
-//   );
-// }
-
-// export default PositionToolTip;

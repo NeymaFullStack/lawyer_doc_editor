@@ -58,3 +58,9 @@ export const indexingManipulationTypes = {
   DELETE: "delete",
   ADDARTICLE: "addArticle",
 };
+
+export const navigationSearchItemTypes = {
+  CLIENT: "CLIENT",
+  FOLDER: "FOLDER",
+  DOCUMENT: "DOCUMENT",
+};
