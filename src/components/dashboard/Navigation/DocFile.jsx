@@ -90,7 +90,7 @@ function DocFile({
 
       <div className="mt-1 flex items-center justify-between text-[0.48rem]">
         <span>Last modified on {dtYYMMDDat12hrFormat(doc?.created_at)}</span>
-        <span
+        {/* <span
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -101,7 +101,7 @@ function DocFile({
             remHeight={0.4}
             alt={"option"}
           />
-        </span>
+        </span> */}
       </div>
     </div>
   );

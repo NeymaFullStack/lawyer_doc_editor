@@ -46,7 +46,7 @@ export default function LoganAutoSuggestion<T extends string>({
   emptyMessage = "No items.",
   placeholder = "Search Client, Folder And Document",
 }: Props<T>) {
-  const [open, setOpen] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -57,7 +57,7 @@ export default function LoganAutoSuggestion<T extends string>({
 
   useEffect(() => {
     if (debouncedQuery) {
-      if (!controllerRef?.current?.signal.aborted) {
+      if (controllerRef.current && !controllerRef.current.signal.aborted) {
         controllerRef.current.abort();
       }
       controllerRef.current = new AbortController();
@@ -67,7 +67,7 @@ export default function LoganAutoSuggestion<T extends string>({
     }
 
     return () => {
-      if (!controllerRef.current.signal.aborted) {
+      if (controllerRef.current && !controllerRef.current.signal.aborted) {
         controllerRef.current.abort();
       }
     };
@@ -88,12 +88,12 @@ export default function LoganAutoSuggestion<T extends string>({
     // setSelectedValue(value, data);
     onSelectedValueChange(value, data);
     // setSearchValue(inputValue);
-    setOpen(false);
+    setOpenPopup(false);
   };
 
   return (
     <div className="flex items-center">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={openPopup} onOpenChange={setOpenPopup}>
         <Command shouldFilter={false}>
           <PopoverAnchor asChild>
             <div
@@ -116,15 +116,17 @@ export default function LoganAutoSuggestion<T extends string>({
                 value={searchValue}
                 onFocus={() => {
                   setIsFocusActive(true);
-                  setOpen(true);
+                  setOpenPopup(true);
                 }}
                 onBlur={(e) => {
                   setIsFocusActive(false);
-                  // onInputBlur(e);
+                  onInputBlur(e);
                 }}
                 onValueChange={setSearchValue}
-                onKeyDown={(e) => setOpen(e.key !== "Escape")}
-                onMouseDown={() => setOpen((open) => !!searchValue || false)}
+                onKeyDown={(e) => setOpenPopup(e.key !== "Escape")}
+                onMouseDown={() =>
+                  setOpenPopup((open) => !!searchValue || false)
+                }
               >
                 <Input
                   placeholder={placeholder}
@@ -133,7 +135,8 @@ export default function LoganAutoSuggestion<T extends string>({
               </CommandPrimitive.Input>
             </div>
           </PopoverAnchor>
-          {!open && <CommandList aria-hidden="true" className="hidden" />}
+          {/* {!open && <CommandList aria-hidden="true" className="hidden" />} */}
+
           <PopoverContent
             asChild
             onOpenAutoFocus={(e) => e.preventDefault()}
@@ -147,7 +150,7 @@ export default function LoganAutoSuggestion<T extends string>({
             }}
             className={cn(
               "mt-2 w-[--radix-popover-trigger-width] p-2 pr-5 shadow-out-md",
-              !(searchValue?.length > 0) && !(items?.length > 0) && "hidden",
+              !(debouncedQuery?.length > 0) && "hidden",
             )}
           >
             <CommandList>
@@ -253,7 +256,7 @@ export default function LoganAutoSuggestion<T extends string>({
                     );
                   })
                 : null}
-              {!isLoading && !(items?.length > 0) && (
+              {!isLoading && debouncedQuery && items?.length === 0 && (
                 <CommandEmpty>
                   <span className="text-primary-gray">
                     {emptyMessage ?? "No items."}

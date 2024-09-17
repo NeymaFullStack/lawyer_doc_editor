@@ -52,7 +52,7 @@ function DocFolder({
           {folder?.title}
         </span>
       </div>
-      <button
+      {/* <button
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -65,7 +65,7 @@ function DocFolder({
           alt="option"
           className={"rotate-90"}
         />
-      </button>
+      </button> */}
     </div>
   );
 }

@@ -7,8 +7,6 @@ import Alignment from "./toolbar-tools/Alignment";
 import FontFamily from "./toolbar-tools/FontFamily";
 import Highlighter from "./toolbar-tools/Highlighter";
 import Zoom from "./toolbar-tools/Zoom";
-import { useDispatch } from "react-redux";
-import { documentAction } from "@/redux/documentSlice";
 
 function ToolBar({ editor }) {
   const toolbarRef = useRef(null);
@@ -19,12 +17,10 @@ function ToolBar({ editor }) {
       event.preventDefault(); // Prevent losing focus
 
       if (
-        (toolbar &&
-          (toolbar === event.target || toolbar.contains(event.target))) ||
-        event.target === editor.view.dom ||
-        editor.view.dom.contains(event.target)
+        toolbar &&
+        (toolbar === event?.target || toolbar.contains(event.target))
       ) {
-        // editor.chain().focus().run(); // Re-focus the editor
+        editor.chain().focus().run(); // Re-focus the editor
       } else {
         // editor.chain().blur().run();
       }
@@ -71,7 +67,7 @@ function ToolBar({ editor }) {
         /> */
             }
             {
-              <div className={cn("", !editor?.isFocused && "hidden")}>
+              <div>
                 <button onClick={() => editor.commands.undo()}>
                   <RemSizeImage
                     imagePath={"/assets/icons/quillicons/undo-icon.svg"}
@@ -92,7 +88,7 @@ function ToolBar({ editor }) {
             }
           </div>
           <div className="flex items-center gap-2">
-            {editor?.isFocused && (
+            {true && (
               <div className={cn("flex items-center gap-2")}>
                 <div className="tip-fnt-family flex items-center">
                   <RemSizeImage

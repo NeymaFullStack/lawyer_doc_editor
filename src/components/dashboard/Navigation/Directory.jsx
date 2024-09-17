@@ -231,7 +231,7 @@ function Directory({
     const clientFolderList = await getClientFolderList();
     if (clientFolderList?.length > 0) {
       setDirectoryData({
-        foldersList: clientFolderList,
+        foldersList: sortStringTableList(clientFolderList, "ascend", "title"),
         listData: clientFolderList,
       });
     }

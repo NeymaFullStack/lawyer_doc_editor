@@ -149,40 +149,40 @@ export const directoryContextMenuList = (router, item, setOpenRenameModal) => [
       setOpenRenameModal();
     },
   },
-  {
-    label: "Move To",
-    icon: "move-icon.svg",
-    iconUrl: "/assets/icons/move-to.svg",
-    action: "moveTo",
-    onClick: () => {
-      router.push(`/dashboard/${item.id}`);
-    },
-  },
-  {
-    label: "Duplicate",
-    icon: "duplicate-icon.svg",
-    iconUrl: "/assets/icons/duplicate.svg",
-    action: "duplicate",
-    onClick: () => {
-      router.push(`/dashboard/${item.id}`);
-    },
-  },
-  {
-    label: "Download",
-    icon: "download-icon.svg",
-    iconUrl: "/assets/icons/download.svg",
-    action: "download",
-    onClick: () => {
-      router.push(`/dashboard/${item.id}`);
-    },
-  },
-  {
-    label: "Delete",
-    icon: "delete-icon.svg",
-    iconUrl: "/assets/icons/delete-outline.svg",
-    action: "delete",
-    onClick: () => {
-      router.push(`/dashboard/${item.id}`);
-    },
-  },
+  // {
+  //   label: "Move To",
+  //   icon: "move-icon.svg",
+  //   iconUrl: "/assets/icons/move-to.svg",
+  //   action: "moveTo",
+  //   onClick: () => {
+  //     router.push(`/dashboard/${item.id}`);
+  //   },
+  // },
+  // {
+  //   label: "Duplicate",
+  //   icon: "duplicate-icon.svg",
+  //   iconUrl: "/assets/icons/duplicate.svg",
+  //   action: "duplicate",
+  //   onClick: () => {
+  //     router.push(`/dashboard/${item.id}`);
+  //   },
+  // },
+  // {
+  //   label: "Download",
+  //   icon: "download-icon.svg",
+  //   iconUrl: "/assets/icons/download.svg",
+  //   action: "download",
+  //   onClick: () => {
+  //     router.push(`/dashboard/${item.id}`);
+  //   },
+  // },
+  // {
+  //   label: "Delete",
+  //   icon: "delete-icon.svg",
+  //   iconUrl: "/assets/icons/delete-outline.svg",
+  //   action: "delete",
+  //   onClick: () => {
+  //     router.push(`/dashboard/${item.id}`);
+  //   },
+  // },
 ];
