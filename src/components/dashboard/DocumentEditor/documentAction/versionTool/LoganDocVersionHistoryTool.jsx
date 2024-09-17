@@ -25,7 +25,10 @@ function LoganDocVersionHistoryTool() {
   }, [currentDocumentVersion, filters]);
 
   return (
-    <div aria-label="Logan Document Version History">
+    <div
+      aria-label="Logan Document Version History"
+      className="flex h-full flex-col"
+    >
       <div className="flex h-[2.997rem] w-full items-center justify-between border-b-[0.063rem] border-secondary-blue px-[0.8rem]">
         <h2 className="text-sm font-semibold text-primary-gray">Versioning</h2>
         <div className="flex items-center gap-1 ">
@@ -67,82 +70,80 @@ function LoganDocVersionHistoryTool() {
           />
         </div>
       </div>
-      <div className="m-1 mt-2 h-[100%] overflow-hidden">
-        <div className="h-[92%] overflow-y-scroll  p-1 pr-3">
-          <DocumentVersion docVersion={currentDocumentVersion} />
-          <Collapse
-            expandIcon={(panelProps) => {
-              return (
-                <RemSizeImage
-                  className={panelProps.isActive ? " rotate-90" : ""}
-                  imagePath={"/assets/icons/docaction/expand-icon.svg"}
-                  remWidth={0.45}
-                  remHeight={0.5}
-                  alt={"Expand"}
-                />
-              );
-            }}
-            bordered={false}
-            items={versionList
-              .slice(1)
-              .map((item) => {
-                if (item?.details && item?.details.length > 0) {
-                  let collapseItem = {
-                    key: item.label,
-                    label: (
-                      <div className="truncate text-sm font-semibold text-primary-gray">
-                        {item.label}
-                      </div>
-                    ),
-                    children: item?.details.map((item) => {
-                      return (
-                        <div key={item.label}>
-                          <div className="truncate text-xs font-semibold text-primary-gray">
-                            {item.label}
-                          </div>
-                          <ul className="mt-1">
-                            {item?.version_details.map((version) => {
-                              return (
-                                <li key={version.version_id}>
-                                  <DocumentVersion docVersion={version} />
-                                </li>
-                              );
-                            })}
-                          </ul>
+      <div className="h-full flex-1 overflow-y-scroll  p-4 text-xs">
+        <DocumentVersion docVersion={currentDocumentVersion} />
+        <Collapse
+          expandIcon={(panelProps) => {
+            return (
+              <RemSizeImage
+                className={panelProps.isActive ? " rotate-90" : ""}
+                imagePath={"/assets/icons/docaction/expand-icon.svg"}
+                remWidth={0.45}
+                remHeight={0.5}
+                alt={"Expand"}
+              />
+            );
+          }}
+          bordered={false}
+          items={versionList
+            .slice(1)
+            .map((item) => {
+              if (item?.details && item?.details.length > 0) {
+                let collapseItem = {
+                  key: item.label,
+                  label: (
+                    <div className="truncate text-sm font-semibold text-primary-gray">
+                      {item.label}
+                    </div>
+                  ),
+                  children: item?.details.map((item) => {
+                    return (
+                      <div key={item.label}>
+                        <div className="truncate text-xs font-semibold text-primary-gray">
+                          {item.label}
                         </div>
-                      );
-                    }),
-                  };
-                  return collapseItem;
-                } else if (
-                  item?.version_details &&
-                  item?.version_details.length > 0
-                ) {
-                  let collapseItem = {
-                    key: item.label,
-                    label: (
-                      <div className="truncate text-sm font-semibold text-primary-gray">
-                        {item.label}
+                        <ul className="mt-1">
+                          {item?.version_details.map((version) => {
+                            return (
+                              <li key={version.version_id}>
+                                <DocumentVersion docVersion={version} />
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
-                    ),
-                    children: (
-                      <ul>
-                        {item?.version_details.map((version) => {
-                          return (
-                            <li key={version.version_id}>
-                              <DocumentVersion docVersion={version} />
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ),
-                  };
-                  return collapseItem;
-                }
-              })
-              .filter((item) => item !== undefined)}
-          />
-        </div>
+                    );
+                  }),
+                };
+                return collapseItem;
+              } else if (
+                item?.version_details &&
+                item?.version_details.length > 0
+              ) {
+                let collapseItem = {
+                  key: item.label,
+                  label: (
+                    <div className="truncate text-sm font-semibold text-primary-gray">
+                      {item.label}
+                    </div>
+                  ),
+                  children: (
+                    <ul>
+                      {item?.version_details.map((version) => {
+                        return (
+                          <li key={version.version_id}>
+                            <DocumentVersion docVersion={version} />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ),
+                };
+                return collapseItem;
+              }
+            })
+            .filter((item) => item !== undefined)}
+        />
       </div>
     </div>
   );
