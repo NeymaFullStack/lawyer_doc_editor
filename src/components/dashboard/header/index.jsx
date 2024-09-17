@@ -169,6 +169,7 @@ function DashboardHeader() {
     const breadcrumbPaths = rawBreadcrumbs.map((item, index) => ({
       name: item.title,
       href: `/dashboard/${item.id}`,
+      id: item.id,
     }));
     setBreadCrumbs(breadcrumbPaths);
     // appDispatch(folderNavigationAction.setBreadCrumbs(breadcrumbPaths));

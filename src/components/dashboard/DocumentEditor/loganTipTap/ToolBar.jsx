@@ -12,7 +12,6 @@ import { documentAction } from "@/redux/documentSlice";
 
 function ToolBar({ editor }) {
   const toolbarRef = useRef(null);
-  const appDispatch = useDispatch();
   useEffect(() => {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
@@ -71,25 +70,29 @@ function ToolBar({ editor }) {
           alt="Separator"
         /> */
             }
-            <button onClick={() => editor.commands.undo()}>
-              <RemSizeImage
-                imagePath={"/assets/icons/quillicons/undo-icon.svg"}
-                remWidth={1.8}
-                remHeight={1.8}
-                alt="Undo"
-              />
-            </button>
-            <button onClick={() => editor.commands.redo()}>
-              <RemSizeImage
-                imagePath={"/assets/icons/quillicons/redo-icon.svg"}
-                remWidth={1.8}
-                remHeight={1.8}
-                alt="Redo"
-              />
-            </button>
+            {
+              <div className={cn("", !editor?.isFocused && "hidden")}>
+                <button onClick={() => editor.commands.undo()}>
+                  <RemSizeImage
+                    imagePath={"/assets/icons/quillicons/undo-icon.svg"}
+                    remWidth={1.8}
+                    remHeight={1.8}
+                    alt="Undo"
+                  />
+                </button>
+                <button onClick={() => editor.commands.redo()}>
+                  <RemSizeImage
+                    imagePath={"/assets/icons/quillicons/redo-icon.svg"}
+                    remWidth={1.8}
+                    remHeight={1.8}
+                    alt="Redo"
+                  />
+                </button>
+              </div>
+            }
           </div>
           <div className="flex items-center gap-2">
-            {true && (
+            {editor?.isFocused && (
               <div className={cn("flex items-center gap-2")}>
                 <div className="tip-fnt-family flex items-center">
                   <RemSizeImage

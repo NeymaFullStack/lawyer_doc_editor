@@ -59,7 +59,7 @@ export const indexingManipulationTypes = {
   ADDARTICLE: "addArticle",
 };
 
-export const navigationSearchItemTypes = {
+export const navigationItemTypes = {
   CLIENT: "CLIENT",
   FOLDER: "FOLDER",
   DOCUMENT: "DOCUMENT",

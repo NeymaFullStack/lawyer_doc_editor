@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
 import LoganAutoSuggestion from "@/components/generic/LoganAutoSuggestion";
 import { getNavigationSuggestions } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import { navigationSearchItemTypes } from "@/constants/enums";
+import { navigationItemTypes } from "@/constants/enums";
 
 function FolderNavigationHeader({ folderListView = false }) {
   const appDispatch = useDispatch();
@@ -20,7 +20,7 @@ function FolderNavigationHeader({ folderListView = false }) {
         <LoganAutoSuggestion
           fetchSuggestions={getNavigationSuggestions}
           onSelectedValueChange={(value, data) => {
-            if (data.type === navigationSearchItemTypes.DOCUMENT) {
+            if (data.type === navigationItemTypes.DOCUMENT) {
               router.push(`/dashboard/doc-edit/${data.id}`);
             } else {
               router.push(`/dashboard/${data.id}`);

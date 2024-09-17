@@ -16,6 +16,13 @@ export const getBreadCrumbsUrl = "/folder/root/hierarchy";
 export const createFolderUrl = "/folder";
 export const getFolderDetailsUrl = "/folder";
 export const getNavigationSuggestionsUrl = "/search/entities";
+export const createClientUrl = "/clients/create";
+export const renameFolderUrl = (folderId) => `/folder/${folderId}/rename`;
+export const renameDocumentUrl = (documentId) =>
+  `/document/${documentId}/rename`;
+export const getClientOptionalDetailsUrl = "/clients/project";
+export const updateClientOptionalDetailsUrl = (clientId) =>
+  `/clients/project/${clientId}/update`;
 
 //chat
 export const createConversationUrl = "/chat/conversation";

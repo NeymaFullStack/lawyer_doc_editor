@@ -3,12 +3,11 @@ import { createFolder } from "@/api/clientSideServiceActions/dashboardServiceAct
 import LoganModal from "@/components/generic/LoganModal";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { Button, Form, Input } from "antd";
-import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-function CreateFolderModal({ open, onClose, folderHierarchy, parentFolderId }) {
+function CreateFolderModal({ open, onClose, parentFolderId }) {
   const [folderName, SetFolderName] = useState("");
   const appDispatch = useDispatch();
 

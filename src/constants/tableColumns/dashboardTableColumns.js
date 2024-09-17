@@ -1,11 +1,7 @@
 import { documentStatus } from "../enums";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import Sort from "@/components/generic/Sort";
-import {
-  sortByDateTableList,
-  sortNumbersTableList,
-  sortStringTableList,
-} from "@/utils/generic";
+import { sortByDateTableList, sortStringTableList } from "@/utils/generic";
 import { dtFormat } from "@/utils/dateUtils";
 import Tag from "@/components/generic/Tag";
 const foldersToShow = 4;
@@ -230,29 +226,6 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
         return <div className="flex items-center gap-1">{folderTags}</div>;
       },
     },
-    {
-      label: "",
-      id: "",
-      class: () => "text-right w-[10%]",
-      customView: (row) => {
-        return (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="mr-3"
-          >
-            <RemSizeImage
-              imagePath={"/assets/icons/blue-option-hoz.svg"}
-              remWidth={0.5}
-              remHeight={0.5}
-              alt="option"
-              className={"rotate-90"}
-            />
-          </button>
-        );
-      },
-    },
   ];
 };
 
@@ -363,29 +336,6 @@ export const foldersListTableColumns = (setListData, listData) => {
           );
         }
         return <div className="flex items-center gap-1">{folderTags}</div>;
-      },
-    },
-    {
-      label: "",
-      id: "",
-      class: () => "text-right w-[10%]",
-      customView: (row) => {
-        return (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="mr-3"
-          >
-            <RemSizeImage
-              imagePath={"/assets/icons/blue-option-hoz.svg"}
-              remWidth={0.5}
-              remHeight={0.5}
-              alt="option"
-              className={"rotate-90"}
-            />
-          </button>
-        );
       },
     },
   ];

@@ -3,13 +3,13 @@ import { ClientPageFieldType } from "@/types/form";
 export const ClientPageField: ClientPageFieldType[] = [
   {
     label: "Legal Name",
-    key: "legalName",
+    key: "legal_name",
     type: "input",
     placeholder: "Enter Legal Name",
   },
   {
     label: "Company Type",
-    key: "companyType",
+    key: "company_type",
     type: "select",
     placeholder: "Select Company Type",
     options: [
@@ -20,13 +20,13 @@ export const ClientPageField: ClientPageFieldType[] = [
   },
   {
     label: "Registered Address",
-    key: "registeredAddress",
+    key: "registered_address",
     type: "input",
     placeholder: "Enter Address",
   },
   {
     label: "Company Country",
-    key: "companyCountry",
+    key: "company_country",
     type: "select",
     placeholder: "Select Country",
     options: [
@@ -37,31 +37,31 @@ export const ClientPageField: ClientPageFieldType[] = [
   },
   {
     label: "Company Registration Number",
-    key: "companyRegNumber",
+    key: "company_registration_number",
     type: "input",
     placeholder: "Enter Registration Number",
   },
   {
     label: "Tax Identification Number",
-    key: "taxIdNumber",
+    key: "tax_identification_number",
     type: "input",
     placeholder: "Enter Text Id",
   },
   {
     label: "Date of Incorporation",
-    key: "incorporationDate",
+    key: "date_of_incorporation",
     type: "input",
     placeholder: "Enter Date",
   },
   {
     label: "Registered Capital",
-    key: "registeredCapital",
+    key: "registered_capital",
     type: "input",
     placeholder: "Enter Capital",
   },
   {
     label: "Legal Representative",
-    key: "legalRep",
+    key: "legal_representative",
     type: "input",
     placeholder: "Enter Representative Name",
   },

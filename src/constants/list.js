@@ -129,3 +129,60 @@ export const vesionFilterMenuList = (filters) => {
     },
   ];
 };
+
+export const directoryContextMenuList = (router, item, setOpenRenameModal) => [
+  {
+    label: "Open",
+    icon: "open-icon.svg",
+    iconUrl: "/assets/icons/open.svg",
+    action: "open",
+    onClick: () => {
+      router.push(`/dashboard/${item.id}`);
+    },
+  },
+  {
+    label: "Rename",
+    icon: "rename-icon.svg",
+    iconUrl: "/assets/icons/rename.svg",
+    action: "rename",
+    onClick: () => {
+      setOpenRenameModal();
+    },
+  },
+  {
+    label: "Move To",
+    icon: "move-icon.svg",
+    iconUrl: "/assets/icons/move-to.svg",
+    action: "moveTo",
+    onClick: () => {
+      router.push(`/dashboard/${item.id}`);
+    },
+  },
+  {
+    label: "Duplicate",
+    icon: "duplicate-icon.svg",
+    iconUrl: "/assets/icons/duplicate.svg",
+    action: "duplicate",
+    onClick: () => {
+      router.push(`/dashboard/${item.id}`);
+    },
+  },
+  {
+    label: "Download",
+    icon: "download-icon.svg",
+    iconUrl: "/assets/icons/download.svg",
+    action: "download",
+    onClick: () => {
+      router.push(`/dashboard/${item.id}`);
+    },
+  },
+  {
+    label: "Delete",
+    icon: "delete-icon.svg",
+    iconUrl: "/assets/icons/delete-outline.svg",
+    action: "delete",
+    onClick: () => {
+      router.push(`/dashboard/${item.id}`);
+    },
+  },
+];

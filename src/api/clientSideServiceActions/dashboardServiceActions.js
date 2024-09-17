@@ -1,6 +1,7 @@
 import { cache } from "react";
 import Api from "../apiMethod";
 import {
+  createClientUrl,
   createDocumentUrl,
   createFolderUrl,
   createImportedDocumentUrl,
@@ -10,6 +11,7 @@ import {
   getAppendixContnetUrl,
   getBreadCrumbsUrl,
   getClientFoldersListUrl,
+  getClientOptionalDetailsUrl,
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
   getDocumentVersionListsUrl,
@@ -20,7 +22,10 @@ import {
   gptChatUrl,
   importDocUrl,
   markAllNotificationSeenUrl,
+  renameDocumentUrl,
+  renameFolderUrl,
   restoreVersionUrl,
+  updateClientOptionalDetailsUrl,
   updateDocumentVersionContentUrl,
   userLoginUrl,
 } from "../serviceUrl";
@@ -127,10 +132,77 @@ export const getDocumentContentByVersionId = async (url) => {
   }
 };
 
+export const getClientOptionalDetails = async (clietFolderId) => {
+  try {
+    const res = await Api.get(
+      `${getClientOptionalDetailsUrl}/${clietFolderId}`,
+    );
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const updateClientOptionalDetails = async (
+  clietFolderId,
+  queryParams,
+) => {
+  try {
+    const res = await Api.put(
+      updateClientOptionalDetailsUrl(clietFolderId),
+      queryParams,
+      {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      },
+    );
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const createClient = async (queryParams) => {
+  try {
+    const res = await Api.post(createClientUrl, queryParams, {
+      headers: {
+        "Content-type": "multipart/form-data",
+      },
+    });
+    return res?.data?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
 export const createFolder = async (queryParams) => {
   try {
     const res = await Api.post(createFolderUrl, queryParams);
-    return res.data;
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const renameFolder = async (folderId, queryParams) => {
+  try {
+    const res = await Api.put(renameFolderUrl(folderId), queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const renameDocument = async (documentid, queryParams) => {
+  try {
+    const res = await Api.put(renameDocumentUrl(documentid), queryParams);
+    return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);

@@ -1,5 +1,5 @@
 import { Command as CommandPrimitive } from "cmdk";
-import { use, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -16,7 +16,7 @@ import {
 import { Skeleton } from "@/components/shadcn-components/ui/skeleton";
 import RemSizeImage from "./RemSizeImage";
 import { useDebounce } from "@/hooks/useDebounce";
-import { navigationSearchItemTypes } from "@/constants/enums";
+import { navigationItemTypes } from "@/constants/enums";
 import { cn } from "@/utils/shadcn-utils";
 import { nanoid } from "nanoid";
 
@@ -57,7 +57,7 @@ export default function LoganAutoSuggestion<T extends string>({
 
   useEffect(() => {
     if (debouncedQuery) {
-      if (!controllerRef.current.signal.aborted) {
+      if (!controllerRef?.current?.signal.aborted) {
         controllerRef.current.abort();
       }
       controllerRef.current = new AbortController();
@@ -120,7 +120,7 @@ export default function LoganAutoSuggestion<T extends string>({
                 }}
                 onBlur={(e) => {
                   setIsFocusActive(false);
-                  onInputBlur(e);
+                  // onInputBlur(e);
                 }}
                 onValueChange={setSearchValue}
                 onKeyDown={(e) => setOpen(e.key !== "Escape")}
@@ -146,7 +146,7 @@ export default function LoganAutoSuggestion<T extends string>({
               }
             }}
             className={cn(
-              "mt-2 w-[--radix-popover-trigger-width] p-2 shadow-out-md",
+              "mt-2 w-[--radix-popover-trigger-width] p-2 pr-5 shadow-out-md",
               !(searchValue?.length > 0) && !(items?.length > 0) && "hidden",
             )}
           >
@@ -159,47 +159,43 @@ export default function LoganAutoSuggestion<T extends string>({
                 </CommandPrimitive.Loading>
               )}
               {items?.length > 0 && !isLoading
-                ? items.map((group, index) => {
+                ? items?.map((group) => {
                     return (
                       <CommandGroup
                         key={nanoid()}
                         heading={
                           <span className="text-primary-gray">
-                            {group?.heading ? group?.heading : ""}
+                            {group?.heading ?? ""}
                           </span>
                         }
                       >
                         <ul className="pt-1">
-                          {group?.items.map((option: any, index: number) => {
+                          {group?.items?.map((option: any) => {
                             let itemSrc = "";
-                            if (
-                              option?.type === navigationSearchItemTypes.CLIENT
-                            ) {
+                            if (option?.type === navigationItemTypes.CLIENT) {
                               itemSrc = "/assets/icons/client-folder.svg";
                             } else if (
-                              option?.type === navigationSearchItemTypes.FOLDER
+                              option?.type === navigationItemTypes.FOLDER
                             ) {
                               itemSrc = "/assets/icons/non-client-folder.svg";
                             } else if (
-                              option?.type ===
-                              navigationSearchItemTypes.DOCUMENT
+                              option?.type === navigationItemTypes.DOCUMENT
                             ) {
                               itemSrc = "/assets/icons/doc-icon.svg";
                             }
                             let projectPath = [...option?.project_path];
-                            if (
-                              option?.type ===
-                              navigationSearchItemTypes.DOCUMENT
-                            ) {
+                            if (option?.type === navigationItemTypes.DOCUMENT) {
                               projectPath.push(option?.title);
                             }
                             projectPath = limitItems(projectPath);
                             return (
                               <CommandItem
-                                key={option.id}
-                                value={option.id}
+                                key={option?.id}
+                                value={option?.id}
                                 onMouseDown={(e) => e.preventDefault()}
-                                onSelect={() => onSelectItem(option.id, option)}
+                                onSelect={() =>
+                                  onSelectItem(option?.id, option)
+                                }
                               >
                                 <div className="group flex w-full cursor-pointer items-center gap-2 rounded-md">
                                   <RemSizeImage
@@ -208,8 +204,9 @@ export default function LoganAutoSuggestion<T extends string>({
                                     remHeight={1}
                                     alt={"Client / Folder / Document"}
                                   />
-                                  <ul className="flex items-center text-primary-gray">
+                                  <ul className="flex w-full items-center overflow-hidden text-primary-gray">
                                     {projectPath.map((path, index) => {
+                                      // Update when path changes
                                       if (path?.sep) {
                                         return (
                                           <li
@@ -225,7 +222,7 @@ export default function LoganAutoSuggestion<T extends string>({
                                         return (
                                           <li
                                             key={nanoid()}
-                                            className="flex items-center gap-1 px-2"
+                                            className="flex  items-center gap-1 px-2"
                                           >
                                             <span className=" text-primary-blue">
                                               /
@@ -240,12 +237,10 @@ export default function LoganAutoSuggestion<T extends string>({
                                         );
                                       }
                                       return (
-                                        <li
-                                          key={nanoid()}
-                                          className="flex items-center "
-                                        >
-                                          {highlightText(path)}
-                                        </li>
+                                        <Li
+                                          path={path}
+                                          searchValue={searchValue}
+                                        />
                                       );
                                     })}
                                   </ul>
@@ -258,7 +253,7 @@ export default function LoganAutoSuggestion<T extends string>({
                     );
                   })
                 : null}
-              {!isLoading && !(items.length > 0) && (
+              {!isLoading && !(items?.length > 0) && (
                 <CommandEmpty>
                   <span className="text-primary-gray">
                     {emptyMessage ?? "No items."}
@@ -278,10 +273,12 @@ export default function LoganAutoSuggestion<T extends string>({
       const data = await fetchSuggestions(controller, {
         search_text: debouncedValue,
       });
-      let suggestionRes = data?.groups.filter((item: any, index: number) => {
-        return item.items.length > 0;
-      });
-      setItems(suggestionRes);
+      if (data) {
+        let suggestionRes = data?.groups?.filter((item: any, index: number) => {
+          return item?.items?.length > 0;
+        });
+        setItems(suggestionRes);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -290,8 +287,8 @@ export default function LoganAutoSuggestion<T extends string>({
   }
 
   function limitItems(items: any[]) {
-    if (items.length > 3) {
-      return [items[0], { ellipsis: true }, items[items.length - 1]];
+    if (items?.length > 3) {
+      return [items?.[0], { ellipsis: true }, items[items?.length - 1]];
     } else {
       return insertSeparators(items);
     }
@@ -307,29 +304,52 @@ export default function LoganAutoSuggestion<T extends string>({
     });
     return result;
   }
+}
 
-  function highlightText(label: string) {
-    if (!searchValue) return label; // If there's no query, return the label as is.
-    const escapedSearchValue = searchValue.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      "\\$&",
-    );
-    const regex = new RegExp(`(${escapedSearchValue})`, "gi"); // Create a case-insensitive regex
-    const parts = label.split(regex); // Split the label based on the query
+export function highlightText(label: string, searchValue: string) {
+  if (!searchValue) return label; // If there's no query, return the label as is.
+  const escapedSearchValue = searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escapedSearchValue})`, "gi"); // Create a case-insensitive regex
+  const parts = label?.split(regex); // Split the label based on the query
 
-    return parts.map((part, index) =>
-      regex.test(part) ? (
-        <span key={nanoid()} className="text-primary-blue">
-          {part}
-        </span>
-      ) : (
-        <span
-          key={nanoid()}
-          className="text-primary-gray group-hover:text-black-txt"
-        >
-          {part}
-        </span>
-      ),
+  return parts?.map((part, index) => {
+    return regex.test(part) ? (
+      <span key={nanoid()} className="whitespace-pre text-primary-blue">
+        {`${part}`}
+      </span>
+    ) : (
+      <span
+        key={nanoid()}
+        className="whitespace-pre text-primary-gray group-hover:text-black-txt"
+      >
+        {`${part}`}
+      </span>
     );
-  }
+  });
+}
+
+function Li({ path, searchValue }: { path: string; searchValue: string }) {
+  const liRef = useRef<HTMLLIElement>(null);
+
+  // Measure the width and conditionally apply the class
+  const [maxWidthClass, setMaxWidthClass] = useState<string>("max-w-full");
+
+  useEffect(() => {
+    if (liRef.current) {
+      const width = liRef.current.offsetWidth;
+      setMaxWidthClass(width < 175 ? "max-w-fit" : "max-w-full");
+    }
+  }, []);
+  return (
+    <li
+      key={nanoid()}
+      className={cn(
+        "max-w-fit",
+        maxWidthClass === "max-w-full" && "max-w-full truncate",
+      )}
+      ref={liRef}
+    >
+      {highlightText(path, searchValue)}
+    </li>
+  );
 }

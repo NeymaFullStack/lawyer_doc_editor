@@ -1,15 +1,15 @@
 import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { Button } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import parse from "html-react-parser";
 import { modalType } from "./FolderDocCreation";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
+
 import {
+  createClient,
   createDocument,
-  createFolder,
-  getAppendix,
   getAppendixContent,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentAction } from "@/redux/documentSlice";
@@ -22,7 +22,7 @@ function DocumentPreviewModal({
   onClose,
   formValues,
   slugs,
-  createClient,
+  clientCreation,
 }) {
   const appDispatch = useDispatch();
   const router = useRouter();
@@ -117,15 +117,22 @@ function DocumentPreviewModal({
   );
 
   async function onClickCreateDocument() {
+    setLoading(true);
+
     if (newAppendixState?.id) {
       createNewDocument();
       return;
     }
-    if (createClient && formValues?.clientName) {
-      let res = await createFolder({
-        title: formValues?.clientName,
-      });
-      res.id && createNewDocument(res.id);
+    if (clientCreation && formValues?.clientName) {
+      const formData = new FormData();
+      formData.append("title", formValues?.clientName);
+      delete formValues?.clientName;
+      for (let key in formValues?.optionalClientDetails) {
+        formData.append(key, formValues?.optionalClientDetails[key]);
+      }
+      let res = await createClient(formData);
+      res?.project_id && (await createNewDocument(res?.project_id));
+      setLoading(false);
     } else {
       (formValues.emplacement.selectedFolder || params?.folderId) &&
         createNewDocument(formValues.emplacement.selectedFolder);
@@ -133,7 +140,6 @@ function DocumentPreviewModal({
   }
 
   async function createNewDocument(parentFolderId) {
-    setLoading(true);
     if (newAppendixState?.id) {
       let res = await getAppendixContent({
         document_id: currentDocumentVersion?.id,
@@ -144,20 +150,11 @@ function DocumentPreviewModal({
       if (res) {
         appDispatch(
           documentIndexingAction.setNewAppendixState({
-            // content: `<p id="${nanoid()}" class="appendix-seprator"><span class="annex-tag">Annex</span>&nbsp;<span class="appendeix-index">01</span>&nbsp;&nbsp;&nbsp;<span class="sep-heading">Anexx 1</span></p><p class="annex-tag-para"><span class="annex-tag">Annex</span></p><h1 class="annex-heading">Annex-01</h1>`,
             content: res?.content,
           }),
         );
         onClose();
       }
-
-      // appDispatch(
-      //   documentIndexingAction.setNewAppendixState({
-      //     content: `<p id="${nanoid()}" class="appendix-seprator"><span class="annex-tag">Annex</span>&nbsp;<span class="appendix-index">01</span>&nbsp;&nbsp;&nbsp;<span class="sep-heading">Anexx 1</span></p><p class="annex-tag-para"><span class="annex-tag">Annex</span></p><h1 class="annex-heading">Annex-01</h1>`,
-      //     // content: res.data,
-      //   }),
-      // );
-      // onClose();
     } else {
       let res = await createDocument(formValues?.isImport ? true : false, {
         document_name: formValues?.documentTopic,
@@ -171,7 +168,6 @@ function DocumentPreviewModal({
         onClose();
       }
     }
-    setLoading(false);
   }
 }
 

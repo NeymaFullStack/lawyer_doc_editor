@@ -105,7 +105,7 @@ function FolderDocCreation() {
           onClose={closeModal}
           formValues={docFolderFieldValues}
           slugs={segments}
-          createClient={docFolderFieldValues?.createClient}
+          clientCreation={docFolderFieldValues?.clientCreation}
         />
       )}
       {openModalType === modalType?.IMPORT_TEMPLATE && (

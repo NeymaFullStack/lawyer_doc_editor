@@ -1,17 +1,28 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import React from "react";
 import { dtYYMMDDat12hrFormat } from "@/utils/dateUtils";
-import Image from "next/image";
 
-function DocFile({ onClickDoc, doc, nonClient = false, ...props }) {
+import Image from "next/image";
+import { cn } from "@/utils/shadcn-utils";
+
+function DocFile({
+  onClickDoc,
+  doc,
+  nonClient = false,
+  contextMenuActiveId,
+  ...props
+}) {
   return (
     <div
       onClick={() => {
         onClickDoc(doc);
       }}
-      className={`flex w-[13rem] flex-col gap-2 hover:bg-secondary-blue ${
-        nonClient ? "bg-blanc" : "bg-six"
-      } cursor-pointer rounded-lg px-4 py-3`}
+      className={cn(
+        "flex w-[13rem] cursor-pointer flex-col gap-2 rounded-lg border-[1px] border-white px-4 py-3 hover:bg-secondary-blue",
+        nonClient ? "bg-blanc" : "bg-six",
+        contextMenuActiveId === doc?.id &&
+          " border-primary-blue bg-secondary-blue text-primary-blue",
+      )}
     >
       <div className=" flex items-center gap-1 !text-[0.428rem] text-xs !leading-[0.518rem] text-primary-blue">
         <span className=" min-w-[2rem] max-w-[4rem]  truncate rounded-xl bg-secondary-blue px-1 py-[0.125rem]">

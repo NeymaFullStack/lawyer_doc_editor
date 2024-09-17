@@ -1,14 +1,20 @@
-import React, { experimental_taintObjectReference, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LoganDrawer, { LoganDrawerProps } from "../../generic/LoganDrawer";
 import RemSizeImage from "../../generic/RemSizeImage";
 import { Button } from "../../shadcn-components/ui/button";
 import { DrawerTitle } from "../../shadcn-components/ui/drawer";
-import { CompanyInformationForm, FormData } from "./ClientPageBody";
+import CompanyInformationForm, { ClientFormData } from "./ClientPageBody";
 import { useRouter } from "next/navigation";
-import { dashboardRoute } from "@/constants/routes";
+import {
+  getClientOptionalDetails,
+  updateClientOptionalDetails,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
+import Loader from "@/components/generic/Loader";
+import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 
 export interface clientPagerProps extends LoganDrawerProps {
   clientRoute: string;
+  clientFolderId: string;
 }
 
 function ClientPageDrawer({
@@ -17,9 +23,17 @@ function ClientPageDrawer({
   showFooter,
   setIsOpen,
   clientRoute,
+  clientFolderId,
 }: clientPagerProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [clientDetails, setClientDetails] = useState<any>();
   const router = useRouter();
+  const formRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    clientFolderId && getClientData();
+  }, [clientFolderId]);
   return (
     <LoganDrawer
       isOpen={isOpen}
@@ -60,12 +74,30 @@ function ClientPageDrawer({
               Open Folder
             </Button>
             <Button
+              disabled={isLoading}
               onClick={() => {
-                setIsEditing(true);
+                if (
+                  isEditing &&
+                  formRef.current &&
+                  "onUpdateChanges" in formRef.current
+                ) {
+                  (
+                    formRef.current as { onUpdateChanges: () => void }
+                  ).onUpdateChanges();
+                } else {
+                  setIsEditing(true);
+                }
               }}
               variant={`${isEditing ? "primary-blue" : "primary-blue-outline"}`}
             >
-              {!isEditing && (
+              {isLoading && (
+                <Loader
+                  width={"h-[1.2rem]"}
+                  height={"w-[1.2rem]"}
+                  className={"mr-2"}
+                />
+              )}
+              {!isEditing && !isLoading && (
                 <RemSizeImage
                   imagePath={"/assets/icons/blue-pencil.svg"}
                   remWidth={0.9}
@@ -84,14 +116,39 @@ function ClientPageDrawer({
           isEditing={isEditing}
           onSaveChanges={onSaveChanges}
           closeDrawer={onClose}
+          allowCopy={true}
+          formDetails={clientDetails}
+          ref={formRef}
         />
       }
     />
   );
 
-  function onSaveChanges(data: FormData) {
+  async function getClientData() {
+    //call api to get client data
+    const res = await getClientOptionalDetails(clientFolderId);
+    let formData = res?.data;
+    if (!formData) {
+      return;
+    }
+    delete formData.project_id;
+    delete formData.project_path;
+    setClientDetails(formData);
+  }
+
+  async function onSaveChanges(formParams: any) {
+    setIsLoading(true);
+    const formData = new FormData();
+    for (const key in formParams) {
+      formData.append(key, formParams[key]);
+    }
+    console.log("logo", formData.get("logo"));
+    const res = await updateClientOptionalDetails(clientFolderId, formData);
+    if (res?.status === 200) {
+      setIsEditing(false);
+    }
+    setIsLoading(false);
     //call api to save client data and also save the new data pass it to form
   }
 }
-
 export default ClientPageDrawer;
