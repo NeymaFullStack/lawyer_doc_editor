@@ -4,7 +4,7 @@ import { sortStringTableList } from "@/utils/generic";
 import React, { useEffect, useState } from "react";
 import DocFolder from "./DocFolder";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import DocFile from "./DocFile";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
@@ -22,6 +22,10 @@ import {
   getFolderDetails,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { dashboardRoute } from "@/constants/routes";
+import LoganContextMenu from "@/components/generic/LoganContextMenu";
+import { directoryContextMenuList } from "@/constants/list";
+import RenameModal from "./RenameModal";
+import { navigationItemTypes } from "@/constants/enums";
 
 function Directory({
   isDashboard = false,
@@ -40,6 +44,9 @@ function Directory({
     foldersList: [],
     documentsList: [],
   });
+  const [openRenameModal, setOpenRenameModal] = useState(false);
+  const [contextMenuActiveId, setContextMenuActiveId] = useState(0);
+  const [selectedItemsRenameDetails, setItemsRenameDetails] = useState(null);
 
   useEffect(() => {
     isDashboard ? fetchClientList() : fetchFolderList();
@@ -62,6 +69,16 @@ function Directory({
           parentFolderId={folderId}
         />
       )}
+      <RenameModal
+        open={openRenameModal}
+        onClose={() => {
+          setOpenRenameModal(false);
+          setItemsRenameDetails(null);
+        }}
+        currentName={selectedItemsRenameDetails?.currentName}
+        itemType={selectedItemsRenameDetails?.itemType}
+        itemId={selectedItemsRenameDetails?.itemId}
+      />
       {!loading && !folderListView && (
         <div className="flex w-full flex-col gap-4">
           <div className="flex items-center gap-4">
@@ -92,18 +109,40 @@ function Directory({
           </div>
 
           {!folderListView && (
-            <div className="grid grid-cols-4 gap-x-6 gap-y-5">
+            <ul className="grid grid-cols-4 gap-x-6 gap-y-5">
               {directoryData?.foldersList?.map((folder, index) => {
                 return (
-                  <DocFolder
-                    nonClient={!isDashboard}
-                    onClickFolder={(folder) => onClickFolder(folder)}
-                    key={folder?.id}
-                    folder={folder}
-                  />
+                  <li key={folder?.id}>
+                    <LoganContextMenu
+                      onOpenChange={(open) =>
+                        open
+                          ? setContextMenuActiveId(folder?.id)
+                          : setContextMenuActiveId(0)
+                      }
+                      contextMenuItems={directoryContextMenuList(
+                        router,
+                        folder,
+                        () => {
+                          setOpenRenameModal(true);
+                          setItemsRenameDetails({
+                            itemId: folder?.id,
+                            itemType: navigationItemTypes.FOLDER,
+                            currentName: folder?.title,
+                          });
+                        },
+                      )}
+                    >
+                      <DocFolder
+                        nonClient={!isDashboard}
+                        onClickFolder={(folder) => onClickFolder(folder)}
+                        folder={folder}
+                        contextMenuActiveId={contextMenuActiveId}
+                      />
+                    </LoganContextMenu>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           )}
         </div>
       )}
@@ -126,19 +165,41 @@ function Directory({
               title={"Name"}
             />
           </div>
-          <div className="grid grid-cols-5 gap-x-6 gap-y-7">
+          <ul className="grid grid-cols-5 gap-x-6 gap-y-7">
             {directoryData?.documentsList?.length > 0 &&
               directoryData?.documentsList.map((file, index) => {
                 return (
-                  <DocFile
-                    onClickDoc={onClickDoc}
-                    doc={file}
-                    nonClient
-                    key={index}
-                  />
+                  <li key={file?.id}>
+                    <LoganContextMenu
+                      onOpenChange={(open) =>
+                        open
+                          ? setContextMenuActiveId(file?.id)
+                          : setContextMenuActiveId(0)
+                      }
+                      contextMenuItems={directoryContextMenuList(
+                        router,
+                        file,
+                        () => {
+                          setOpenRenameModal(true);
+                          setItemsRenameDetails({
+                            itemId: file?.id,
+                            itemType: navigationItemTypes.DOCUMENT,
+                            currentName: file?.document_name,
+                          });
+                        },
+                      )}
+                    >
+                      <DocFile
+                        onClickDoc={onClickDoc}
+                        doc={file}
+                        nonClient
+                        contextMenuActiveId={contextMenuActiveId}
+                      />
+                    </LoganContextMenu>
+                  </li>
                 );
               })}
-          </div>
+          </ul>
         </div>
       )}
       {!loading && folderListView && directoryData?.listData.length > 0 && (
@@ -170,7 +231,7 @@ function Directory({
     const clientFolderList = await getClientFolderList();
     if (clientFolderList?.length > 0) {
       setDirectoryData({
-        foldersList: clientFolderList,
+        foldersList: sortStringTableList(clientFolderList, "ascend", "title"),
         listData: clientFolderList,
       });
     }
@@ -182,7 +243,7 @@ function Directory({
     const res = await getFolderDetails({ id: folderId });
     if (res?.sub_projects?.length > 0 || res?.documents?.length > 0) {
       setDirectoryData({
-        foldersList: res.sub_projects,
+        foldersList: sortStringTableList(res.sub_projects, "ascend", "title"),
         documentsList: res?.documents.map((doc, index) => {
           return { ...doc, title: doc.document_name };
         }),

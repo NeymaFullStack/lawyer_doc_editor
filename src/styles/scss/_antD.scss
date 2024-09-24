@@ -43,9 +43,12 @@
     display: none !important;
   }
 }
+.ant-modal-wrap {
+}
 .ant-modal {
   &-content {
     max-height: 90vh !important;
+    z-index: 500;
   }
   margin: 0 !important;
   left: 50%;

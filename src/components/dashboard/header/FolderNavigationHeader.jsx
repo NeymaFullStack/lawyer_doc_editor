@@ -1,19 +1,40 @@
-import LoganAutoComplete from "@/components/generic/LoganAutoComplete";
 import LoganDropDown from "@/components/generic/LoganDropDown";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import React from "react";
 import { modalType } from "../Navigation/FolderDocCreation";
 import { useDispatch } from "react-redux";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import LoganAutoSuggestion from "@/components/generic/LoganAutoSuggestion";
+import { getNavigationSuggestions } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { navigationItemTypes } from "@/constants/enums";
 
 function FolderNavigationHeader({ folderListView = false }) {
   const appDispatch = useDispatch();
   const params = useParams();
+  const router = useRouter();
 
   return (
     <div className="flex w-full items-center justify-between">
-      <div className="w-[50%]">{/* <LoganAutoComplete /> */}</div>
+      <div className="w-[50%]">
+        <LoganAutoSuggestion
+          fetchSuggestions={getNavigationSuggestions}
+          onSelectedValueChange={(value, data) => {
+            if (data.type === navigationItemTypes.DOCUMENT) {
+              router.push(`/dashboard/doc-edit/${data.id}`);
+            } else {
+              router.push(`/dashboard/${data.id}`);
+            }
+          }}
+          // selectedValue={selectedValue}
+          // onSelectedValueChange={setSelectedValue}
+          // searchValue={searchValue}
+          // onSearchValueChange={setSearchValue}
+          // items={[]}
+          // isLoading={isLoading}
+          emptyMessage="No Data found."
+        />
+      </div>
       <div className="mr-4 flex items-center gap-3">
         <div className="flex items-center gap-[0.688rem] rounded-[0.43rem] bg-six px-[0.946rem] py-[0.43rem]">
           {folderListView ? (
@@ -82,16 +103,6 @@ function FolderNavigationHeader({ folderListView = false }) {
             </button>
           }
         />
-        {/* <Dropdown menu={getAddButtonDropdownMenu()} trigger={["click"]}>
-              <button>
-                <RemSizeImage
-                  imagePath={"/assets/icons/add-blue.svg"}
-                  remWidth={2.125}
-                  remHeight={2.125}
-                  alt={"New"}
-                />
-              </button>
-            </Dropdown> */}
       </div>
     </div>
   );

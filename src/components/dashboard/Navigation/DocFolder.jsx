@@ -1,7 +1,15 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
+
+import { cn } from "@/utils/shadcn-utils";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-function DocFolder({ onClickFolder, folder, nonClient = false }) {
+function DocFolder({
+  onClickFolder,
+  folder,
+  nonClient = false,
+  contextMenuActiveId,
+}) {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <div
@@ -14,7 +22,11 @@ function DocFolder({ onClickFolder, folder, nonClient = false }) {
       onDoubleClick={() => {
         onClickFolder(folder);
       }}
-      className="group flex cursor-pointer items-center rounded-xl bg-white p-5  py-4 text-xs  font-semibold text-black-txt shadow-out hover:bg-secondary-blue "
+      className={cn(
+        "group flex cursor-pointer items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-xs font-semibold text-black-txt shadow-out hover:bg-secondary-blue ",
+        contextMenuActiveId === folder?.id &&
+          " border-primary-blue bg-secondary-blue text-primary-blue",
+      )}
     >
       <div className="flex  max-w-[90%] items-center gap-3">
         <div className="min-w-fit">
@@ -31,11 +43,16 @@ function DocFolder({ onClickFolder, folder, nonClient = false }) {
             alt={"Client Folder"}
           />
         </div>
-        <span className="truncate group-hover:text-primary-blue">
+        <span
+          // onSelect={(e) => {
+          //   e.preventDefault();
+          // }}
+          className="truncate group-hover:text-primary-blue"
+        >
           {folder?.title}
         </span>
       </div>
-      <button
+      {/* <button
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -48,7 +65,7 @@ function DocFolder({ onClickFolder, folder, nonClient = false }) {
           alt="option"
           className={"rotate-90"}
         />
-      </button>
+      </button> */}
     </div>
   );
 }

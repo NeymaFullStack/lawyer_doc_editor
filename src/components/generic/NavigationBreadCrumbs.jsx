@@ -8,7 +8,6 @@ import { dashboardRoute } from "@/constants/routes";
 function NavigationBreadCrumbs({ breadCrumbs: fetchedBreadCrumbs }) {
   const router = useRouter();
   const [openClientPage, setOpenClientPage] = useState(false);
-  const [clientRoute, setClientRoute] = useState("");
   const [breadCrumbs, setBreadCrumbs] = useState([]);
 
   useLayoutEffect(() => {
@@ -77,7 +76,6 @@ function NavigationBreadCrumbs({ breadCrumbs: fetchedBreadCrumbs }) {
                       <span
                         onClick={() => {
                           setOpenClientPage(true);
-                          setClientRoute(route.href);
                         }}
                         className="flex cursor-pointer items-center gap-2 rounded-md bg-primary-blue px-3 py-[0.35rem] font-semibold leading-normal text-white"
                       >
@@ -148,7 +146,8 @@ function NavigationBreadCrumbs({ breadCrumbs: fetchedBreadCrumbs }) {
           </ul>
           {openClientPage && (
             <ClientPageDrawer
-              clientRoute={clientRoute}
+              clientRoute={breadCrumbs?.[0].href}
+              clientFolderId={breadCrumbs?.[0].id}
               isOpen={openClientPage}
               setIsOpen={setOpenClientPage}
               onClose={() => {

@@ -25,10 +25,8 @@ function VariableField({
 
   const [variable, setVariable] = useState();
   useEffect(() => {
-    console.log("selectedVariableProperties", selectedVariableProperties);
     setVariable({ ...selectedVariableProperties });
   }, [selectedVariableProperties]);
-  console.log("currentVar", variable);
   return (
     <div className="flex">
       <div className="group flex-1">
@@ -240,11 +238,6 @@ function VariableField({
     //   setVariable(variable, index);
     // variable?.definition !== variableProperties?.definition &&
     //   setVariable(variable, index);
-    console.log(
-      "bnn",
-      variable.definition !== selectedVariableProperties?.definition ||
-        variable?.variable_name !== selectedVariableProperties?.variable_name,
-    );
 
     (variable.definition !== selectedVariableProperties?.definition ||
       variable?.variable_name !== selectedVariableProperties?.variable_name) &&

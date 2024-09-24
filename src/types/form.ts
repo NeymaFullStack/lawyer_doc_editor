@@ -1,14 +1,14 @@
-import { FormData } from "@/components/dashboard/clientPage/ClientPageBody";
+import { ClientFormData } from "@/components/dashboard/clientPage/ClientPageBody";
 
 export interface InputField {
-  key: keyof FormData;
+  key: keyof ClientFormData;
   type: "input";
   placeholder: string;
   label: string;
 }
 
 export interface SelectField {
-  key: keyof FormData;
+  key: keyof ClientFormData;
   type: "select";
   placeholder: string;
   options: { label: string; value: string }[];

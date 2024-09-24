@@ -5,11 +5,7 @@ import SaveCurrentDocumentModal from "../DocumentEditor/documentAction/SaveCurre
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useDispatch, useSelector } from "react-redux";
 import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
-import {
-  useParams,
-  usePathname,
-  useSelectedLayoutSegments,
-} from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   createNewDocumentVersion,
   exportDocumentPdf,
@@ -22,10 +18,9 @@ function DashboardHeader() {
   const appDispatch = useDispatch();
   const params = useParams();
   const pathname = usePathname();
-  const segments = useSelectedLayoutSegments();
   const [openSaveCurrentDocModal, setOpenSaveCurrentDocModal] = useState(false);
-  const [showDocEditHeader, setShowEditHeader] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [showDocEditHeader, setShowEditHeader] = useState(false);
+  const [loading, setLoading] = useState({ export: false, save: false });
 
   const { folderListView } = useSelector(
     (state) => state.folderNavigationReducer,
@@ -41,12 +36,12 @@ function DashboardHeader() {
       let lastProjectId;
       if (params?.folderId) {
         lastProjectId = params?.folderId;
-        showDocEditHeader && setShowEditHeader(false);
+        // showDocEditHeader && setShowEditHeader(false);
       } else if (params?.docId && currentDocument?.project_id) {
         lastProjectId = currentDocument.project_id;
-        !showDocEditHeader && setShowEditHeader(true);
+        // !showDocEditHeader && setShowEditHeader(true);
       } else {
-        showDocEditHeader && setShowEditHeader(false);
+        // showDocEditHeader && setShowEditHeader(false);
         setBreadCrumbs([]);
       }
       lastProjectId && fetchBreadCrumbs(lastProjectId);
@@ -63,7 +58,7 @@ function DashboardHeader() {
           onClose={() => setOpenSaveCurrentDocModal(false)}
         />
       )}
-      {showDocEditHeader ? (
+      {pathname.includes("doc-edit") ? (
         <div className="flex w-full items-center justify-between pr-7">
           <h2 className="text-lg font-semibold">
             {currentDocument?.document_name}
@@ -76,6 +71,7 @@ function DashboardHeader() {
             </p>
             {/* <DocumentState /> */}
             <Button
+              loading={loading?.save}
               onClick={onClickSaveButton}
               icon={
                 <RemSizeImage
@@ -90,25 +86,16 @@ function DashboardHeader() {
               Save
             </Button>
             <Button
-              loading={loading}
+              loading={loading?.export}
               onClick={async () => {
-                setLoading(true);
+                setLoading({ ...loading, export: true });
                 let { data: responsePdf } = await exportDocumentPdf(
                   currentDocument?.id,
                   currentDocumentVersion?.version_id,
                 );
-                // function binaryStringToArrayBuffer(binaryString) {
-                //   const length = binaryString.length;
-                //   const arrayBuffer = new ArrayBuffer(length);
-                //   const uint8Array = new Uint8Array(arrayBuffer);
-                //   for (let i = 0; i < length; i++) {
-                //     uint8Array[i] = binaryString.charCodeAt(i);
-                //   }
-                //   return arrayBuffer;
-                // }
-                // const buffer = binaryStringToArrayBuffer(responsePdf);
+
                 window.open(responsePdf?.link, "_blank", "noopener,noreferrer");
-                setLoading(false);
+                setLoading({ ...loading, export: false });
               }}
               icon={
                 <RemSizeImage
@@ -122,14 +109,6 @@ function DashboardHeader() {
             >
               Export
             </Button>
-            {/* <button>
-              <RemSizeImage
-                imagePath={"/assets/icons/option-icon.svg"}
-                remWidth={0.25}
-                remHeight={1.041}
-                alt={"Options"}
-              />
-            </button> */}
           </div>
         </div>
       ) : (
@@ -143,12 +122,14 @@ function DashboardHeader() {
 
   async function onClickSaveButton() {
     // setOpenSaveCurrentDocModal(true);
+    setLoading({ ...loading, save: true });
+
     const res = await createNewDocumentVersion({
       document_id: currentDocument?.id,
       version_id: currentDocumentVersion?.version_id,
       is_auto_saved: false,
     });
-    if (res[0].version_id && res[0].content) {
+    if (res?.[0]?.version_id && res?.[0]?.content) {
       appDispatch(
         documentVersioningAction.setDocumentVersion({
           currentDocumentVersion: {
@@ -158,11 +139,12 @@ function DashboardHeader() {
         }),
       );
     }
+    setLoading({ ...loading, save: false });
   }
 
   async function fetchBreadCrumbs(projectId) {
-    const { data = {} } = await getBreadCrumbs(projectId);
-    data?.length > 0 && updateBreadcrumbs(data);
+    const res = await getBreadCrumbs(projectId);
+    res?.data?.length > 0 && updateBreadcrumbs(res?.data);
   }
 
   async function updateBreadcrumbs(rawBreadcrumbs) {
@@ -170,6 +152,7 @@ function DashboardHeader() {
     const breadcrumbPaths = rawBreadcrumbs.map((item, index) => ({
       name: item.title,
       href: `/dashboard/${item.id}`,
+      id: item.id,
     }));
     setBreadCrumbs(breadcrumbPaths);
     // appDispatch(folderNavigationAction.setBreadCrumbs(breadcrumbPaths));

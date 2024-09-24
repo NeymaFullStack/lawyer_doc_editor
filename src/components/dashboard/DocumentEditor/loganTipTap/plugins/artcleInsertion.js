@@ -20,6 +20,10 @@ const ArticleInsertion = Extension.create({
             if (event.key === "&") {
               let menuItems = [];
               // debugger;
+              if (currentNode.type.name === "heading") {
+                //
+                return false;
+              }
               if (
                 $from.depth == 2 &&
                 currentNode.type.name === "paragraph" &&

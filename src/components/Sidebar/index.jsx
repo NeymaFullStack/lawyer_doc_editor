@@ -42,9 +42,9 @@ function Sidebar() {
             <Image
               src="/assets/icons/logan-logo.svg"
               height={25}
-              width={100}
+              width={120}
               alt="Logan"
-              layout="responsive"
+              priority
             />
           </div>
         </div>

@@ -16,7 +16,8 @@ function FileUploadModal({ isOpen, onClose, onClickSave }) {
         <Button
           className="mt-4"
           onClick={() => {
-            file && onClickSave();
+            file && onClickSave(file);
+            onClose();
           }}
           variant={file ? "primary-blue" : "secondary"}
         >

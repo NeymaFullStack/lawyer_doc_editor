@@ -34,6 +34,19 @@ function CopiedTag() {
     };
   }, [copiedContent]);
 
+  useEffect(() => {
+    const handleEditorBlur = (event) => {
+      // Check if the blur event was triggered by a click on a toolbar button
+      appDispatch(documentAction.setCopiedContent(null));
+      event.preventDefault(); // Prevent losing focus
+    };
+    window?.addEventListener("click", handleEditorBlur);
+
+    return () => {
+      window?.removeEventListener("click", handleEditorBlur);
+    };
+  }, []);
+
   function getTagIcon() {
     if (copiedContent.type === copiedContentType.Appendix) {
       return "appendix";

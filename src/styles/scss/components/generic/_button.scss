@@ -3,7 +3,7 @@
   animation: none !important;
   transition: none !important;
   @apply flex items-center gap-2 rounded-lg 
-      px-4  py-5 text-xs font-semibold outline-none;
+      px-4 py-5 text-xs font-semibold outline-none;
   &:hover {
     color: inherit !important;
   }
@@ -14,14 +14,14 @@
     }
   }
   &--white {
-    @apply border-[1px] border-secondary-blue border-secondary-blue bg-white text-black-txt hover:text-black-txt #{!important};
+    @apply border-[1px] border-secondary-blue bg-white text-black-txt hover:text-black-txt #{!important};
   }
   &--primary {
-    @apply border-none bg-blue-gradient text-white hover:bg-blue-gradient  hover:text-white #{!important};
+    @apply border-[1px]  border-primary-blue bg-blue-gradient text-white hover:bg-blue-gradient  hover:text-white #{!important};
   }
   &--primary-trans {
-    @apply border-none text-primary-blue;
-    border: 0.063rem solid #0e61de !important;
+    @apply border-[1px]  border-primary-blue text-primary-blue;
+
     &:hover {
       color: #0e61de !important;
     }

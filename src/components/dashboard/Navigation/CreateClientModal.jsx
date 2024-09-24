@@ -1,12 +1,13 @@
 import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { Button, Form, Input } from "antd";
-import React, { useEffect, useState } from "react";
-import { createFolder } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import React, { useRef, useState } from "react";
+import { createClient } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { modalType } from "./FolderDocCreation";
-import { CompanyInformationForm } from "../clientPage/ClientPageBody";
+import CompanyInformationForm from "../clientPage/ClientPageBody";
+import { optional } from "zod";
 
 function CreateClientModal({
   open,
@@ -16,6 +17,9 @@ function CreateClientModal({
 }) {
   const appDispatch = useDispatch();
   const [showClientDetails, setShowClientDetails] = useState(false);
+  const formRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <>
       <LoganModal
@@ -27,10 +31,10 @@ function CreateClientModal({
         customFooter={
           <>
             {showClientDetails ? (
-              <div className="mt-4 flex items-center gap-3 pb-4">
+              <div className="mt-4 flex items-center gap-3 ">
                 <Button
                   onClick={() => {
-                    onClickCreateDoc();
+                    formRef?.current?.onClickDocCreation();
                   }}
                   icon={
                     <RemSizeImage
@@ -50,8 +54,10 @@ function CreateClientModal({
                 </Button>
                 <span>or</span>
                 <Button
+                  loading={isLoading}
+                  type="submit"
                   onClick={() => {
-                    clientName.length > 1 && onClickSaveClose();
+                    formRef?.current?.saveAndClose();
                   }}
                   className={`btn btn--primary-trans ${
                     clientName.length < 1 && "cursor-default opacity-30"
@@ -62,8 +68,9 @@ function CreateClientModal({
               </div>
             ) : (
               <Button
+                disabled={clientName?.length < 1}
                 onClick={() => {
-                  clientName.length > 0 && setShowClientDetails(true);
+                  clientName?.length > 0 && setShowClientDetails(true);
                 }}
                 className={`btn btn--primary`}
               >
@@ -76,7 +83,7 @@ function CreateClientModal({
         <h2 className="text-2xl font-bold text-black">
           {showClientDetails ? (
             <>
-              <span text>Want to</span>
+              <span>Want to</span>
               <span className="text-primary-blue">{" add more "}</span>
               <span>about your client?</span>
               <span className="font-medium">{`(Optional)`}</span>
@@ -93,16 +100,26 @@ function CreateClientModal({
             Page.
           </p>
         )}
-        <div className="no-scrollbar  mb-4 mt-1 max-h-[70vh] overflow-y-scroll">
+        <div className="no-scrollbar mb-4 mt-1  max-h-[70vh] overflow-y-scroll">
           {showClientDetails ? (
             <div className="mx-3 my-8">
-              <CompanyInformationForm onSaveChanges={(data) => {}} />
+              <CompanyInformationForm
+                renderInModal={true}
+                ref={formRef}
+                onSaveChanges={(data) => {
+                  onClickSaveClose(data);
+                }}
+                onContinueDocCreation={(data) => {
+                  onClickCreateDoc(data);
+                }}
+              />
             </div>
           ) : (
             <Form
               labelCol={{ span: 24 }} // Adjust label column span as needed
               wrapperCol={{ span: 24 }} // Adjust wrapper column span as needed
               validateTrigger={[]}
+              className="h-[5rem]"
             >
               <Form.Item
                 initialValue={clientName}
@@ -126,22 +143,31 @@ function CreateClientModal({
     </>
   );
 
-  async function onClickSaveClose() {
-    const res = await createFolder({
-      title: clientName,
-    });
+  async function onClickSaveClose(formParams) {
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("title", clientName);
+    for (let key in formParams) {
+      formData.append(key, formParams[key]);
+    }
+    const res = await createClient(formData);
     if (res) {
       onClose();
       appDispatch(folderNavigationAction.toggleRefreshDirectory());
     }
+    setIsLoading(false);
   }
-  function onClickCreateDoc() {
+  function onClickCreateDoc(formParams) {
     appDispatch(
       folderNavigationAction.setOpenModalType(
         modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
       ),
     );
-    onClose(true, { createClient: true });
+    onClose(true, {
+      clientCreation: true,
+      clientName: clientName,
+      optionalClientDetails: formParams,
+    });
   }
 }
 

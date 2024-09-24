@@ -33,7 +33,9 @@
     "src/constants/list.js",
     "src/redux/documentSlice.js",
     "src/redux/store.tsx",
-    "src/components/generic/buttons/CopyButton.jsx"
+    "src/components/generic/buttons/CopyButton.jsx",
+    "src/components/dashboard/header/FolderNavigationHeader.jsx",
+    "src/hooks"
   ],
   "exclude": ["node_modules"]
 }

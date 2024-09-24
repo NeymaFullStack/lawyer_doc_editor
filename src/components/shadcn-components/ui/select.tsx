@@ -6,8 +6,6 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 
 import { cn } from "@/utils/shadcn-utils";
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import { CopyProps } from "./input";
-import CopyButton from "@/components/generic/buttons/CopyButton";
 
 const Select = SelectPrimitive.Root;
 
@@ -18,8 +16,6 @@ const SelectValue = SelectPrimitive.Value;
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
-    isEditing?: boolean;
-    copyProps?: CopyProps;
     dropDownicon?: React.ReactNode;
   }
 >(
@@ -27,21 +23,18 @@ const SelectTrigger = React.forwardRef<
     {
       className,
       children,
-      copyProps: { allowCopy, onClickCopy } = {
-        allowCopy: false,
-        onClickCopy: () => {},
-      },
-      isEditing = true,
+
       dropDownicon,
       ...props
     },
     ref,
   ) => {
-    return isEditing ? (
+    return (
       <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-          "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-secondary-blue bg-white  px-3 py-2 text-xs text-black-txt  ring-offset-primary-blue placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-primary-blue disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus:ring-slate-300 [&>span]:line-clamp-1",
+          "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-secondary-blue bg-white  px-3 py-2 text-xs text-black-txt  ring-offset-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-primary-gray dark:border-slate-800 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus:ring-slate-300 [&>span]:line-clamp-1",
+
           className,
         )}
         {...props}
@@ -60,21 +53,6 @@ const SelectTrigger = React.forwardRef<
           )}
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
-    ) : (
-      <p
-        className={cn(
-          "group flex min-h-7 w-[90%] items-center justify-start break-words rounded-md border border-transparent bg-transparent text-xs  leading-normal text-black-txt",
-          className,
-        )}
-      >
-        {children}
-        {allowCopy && (
-          <CopyButton
-            className="ml-3 hidden group-hover:inline-block"
-            onClick={onClickCopy}
-          />
-        )}
-      </p>
     );
   },
 );
@@ -126,7 +104,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-slate-200 bg-white text-slate-950 shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50",
+        "relative z-[1000] max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-slate-200 bg-white text-slate-950 shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
         className,

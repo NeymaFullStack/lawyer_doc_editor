@@ -1,7 +1,9 @@
 import PositionToolTip from "@/components/generic/PositionToolTip";
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import { tagInsertionType } from "@/constants/enums";
+import { documentActions, tagInsertionType } from "@/constants/enums";
+import { documentAction } from "@/redux/documentSlice";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 const LoganTagsMenu = ({
@@ -12,6 +14,8 @@ const LoganTagsMenu = ({
   view,
   editorRef,
 }) => {
+  const appDispatch = useDispatch();
+
   const [input, setInput] = useState("");
   const { variableList } = useSelector(
     (state) => state.documentVariableReducer,
@@ -21,6 +25,7 @@ const LoganTagsMenu = ({
   );
   const [tagList, setTagList] = useState([]);
   const [filteredTagList, setFilteredTagList] = useState([]);
+
   useEffect(() => {
     let tagList = [];
     if (articleList?.length == 0 && variableList?.length == 0) {
@@ -80,6 +85,11 @@ const LoganTagsMenu = ({
       setFilteredTagList(filteredList);
     }
   }, [input]);
+
+  useEffect(() => {
+    setInput("");
+  }, []);
+
   return (
     <PositionToolTip
       onClose={onClose}
@@ -91,7 +101,7 @@ const LoganTagsMenu = ({
         <h2 className="text-sm">INSERT</h2>
         <div
           className={
-            "mb-2 mt-1 flex h-[1.6rem] flex-1 items-center gap-2 rounded-lg bg-six px-3"
+            "mb-2 mt-2 flex h-[1.6rem] flex-1 items-center gap-2 rounded-lg bg-six px-3 py-1"
           }
         >
           <input
@@ -183,8 +193,13 @@ const LoganTagsMenu = ({
             })}
           </ul>
         ) : (
-          <ul className="flex w-full flex-col gap-2 text-black-txt">
-            <li className=" flex min-w-36 items-center justify-between">
+          <ul className="flex w-full flex-col gap-2 px-1 py-2 text-black-txt">
+            <li
+              className=" flex min-w-36 cursor-pointer items-center justify-between"
+              onClick={() => {
+                onClickActionTool(documentActions.Reference);
+              }}
+            >
               <div className="flex items-center gap-2">
                 <RemSizeImage
                   imagePath={"/assets/icons/docaction/indexing.svg"}
@@ -202,7 +217,12 @@ const LoganTagsMenu = ({
                 className="-rotate-90"
               />
             </li>
-            <li className=" flex min-w-36 items-center justify-between">
+            <li
+              className=" flex min-w-36 cursor-pointer items-center justify-between"
+              onClick={() => {
+                onClickActionTool(documentActions.Reference);
+              }}
+            >
               <div className="flex items-center gap-2">
                 <RemSizeImage
                   imagePath={"/assets/icons/docaction/indexing.svg"}
@@ -220,7 +240,12 @@ const LoganTagsMenu = ({
                 className="-rotate-90"
               />
             </li>
-            <li className=" flex min-w-36 items-center justify-between">
+            <li
+              className=" flex min-w-36 cursor-pointer items-center justify-between"
+              onClick={() => {
+                onClickActionTool(documentActions.VariableTool);
+              }}
+            >
               <div className="flex items-center gap-2">
                 <RemSizeImage
                   imagePath={"/assets/icons/docaction/Variable.svg"}
@@ -238,7 +263,12 @@ const LoganTagsMenu = ({
                 className="-rotate-90"
               />
             </li>
-            <li className=" flex min-w-36 items-center justify-between">
+            <li
+              className=" flex min-w-36 cursor-pointer items-center justify-between"
+              onClick={() => {
+                onClickActionTool(documentActions.VariableTool);
+              }}
+            >
               <div className="flex items-center gap-2">
                 <RemSizeImage
                   imagePath={"/assets/icons/docaction/definition.svg"}
@@ -261,6 +291,10 @@ const LoganTagsMenu = ({
       </div>
     </PositionToolTip>
   );
+
+  function onClickActionTool(tool) {
+    appDispatch(documentAction.setActiveDocumentAction(tool));
+  }
 };
 
 export default LoganTagsMenu;

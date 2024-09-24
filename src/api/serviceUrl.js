@@ -9,29 +9,38 @@ export const getAllNotificationsUrl = "/notification/all";
 export const markAllNotificationSeenUrl = "/notification/all/read";
 export const getNewNotificationsUrl = "/notification/listen";
 
-// dashboard
-export const createConversationUrl = "/chat/conversation";
+// Navigation Dashboard
 export const getRecentDocumentsUrl = "/document/recent/list";
 export const getClientFoldersListUrl = "/folder/client/all";
 export const getBreadCrumbsUrl = "/folder/root/hierarchy";
-
-export const getFolderDetailsUrl = "/folder";
-export const getDocumentContentByVersionIdUrl = "/document/";
 export const createFolderUrl = "/folder";
+export const getFolderDetailsUrl = "/folder";
+export const getNavigationSuggestionsUrl = "/search/entities";
+export const createClientUrl = "/clients/create";
+export const renameFolderUrl = (folderId) => `/folder/${folderId}/rename`;
+export const renameDocumentUrl = (documentId) =>
+  `/document/${documentId}/rename`;
+export const getClientOptionalDetailsUrl = "/clients/project";
+export const updateClientOptionalDetailsUrl = (clientId) =>
+  `/clients/project/${clientId}/update`;
+
+//chat
+export const createConversationUrl = "/chat/conversation";
+export const gptChatUrl = `/chat/conversation`;
+export const getUSerChatUrl = "/chat/document";
+
+//document
+export const getDocumentContentByVersionIdUrl = "/document/";
 export const createDocumentUrl = "/document";
 export const createImportedDocumentUrl = "/document/imports";
-
 export const getDocumentDataUrl = "/document";
 export const getAppendixContnetUrl = "/document/appendix";
-
-export const gptChatUrl = `/chat/conversation`;
 export const getDocumentTemplateUrl = "/document/preview";
 export const getDocumentVariablesUrl = "/document/variables";
 export const getDocumentVersionListsUrl = (documentId) =>
   `/document/${documentId}/version/list`;
 export const createNewDocumentVersionUrl = "/document/version/create";
 export const updateDocumentVersionContentUrl = "/document/content/save";
-export const getUSerChatUrl = "/chat/document";
 export const restoreVersionUrl = "/document/version/restore";
 export const exportDocumentPdfUrl = (documentId, documentVersionId) =>
   `/exports/document/${documentId}/${documentVersionId}/pdf`;

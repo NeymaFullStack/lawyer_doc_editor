@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
+let prevContainerRefLeft = 0;
 function PositionToolTip({
   children,
   onClose,
@@ -9,25 +9,15 @@ function PositionToolTip({
 }) {
   const toolTipRef = useRef(null);
   const [toolTipRect, setToolTipRect] = useState(null);
-  const [toolTipPos, setToolTipPos] = useState(null);
-  const handleClickOutside = (event) => {
-    if (toolTipRef.current && !toolTipRef.current.contains(event.target)) {
-      onClose();
-    }
-  };
+  const [toolTipPos, setToolTipPos] = useState({
+    top: -9999, // Initially place it off-screen
+    left: -9999,
+  });
 
-  useEffect(() => {
-    isOpen && document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-      setToolTipPos(null);
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (toolTipRect && containerRef && position) {
-      let { width: toolTipWidth, height: toolTipHeight } = toolTipRect;
+  const calculateTooltipPosition = () => {
+    if (toolTipRef.current && containerRef && position) {
+      let { width: toolTipWidth, height: toolTipHeight } =
+        toolTipRef.current.getBoundingClientRect();
       let {
         width: containerWidth,
         height: containerHeight,
@@ -35,44 +25,79 @@ function PositionToolTip({
         top: containerTop,
       } = containerRef.getBoundingClientRect();
       let { left: triggerLeft, top: triggerTop } = position;
-      let [toolTipTop, toolTipLeft] = [triggerTop, triggerLeft];
+      let toolTipTop = triggerTop;
+      let toolTipLeft = triggerLeft;
+      if (
+        prevContainerRefLeft !== 0 &&
+        prevContainerRefLeft !== containerLeft
+      ) {
+        toolTipLeft = triggerLeft - (prevContainerRefLeft - containerLeft);
+      }
+      prevContainerRefLeft = containerLeft;
       const horizontalSpace =
-        containerLeft + containerWidth - (triggerLeft + 15);
+        containerLeft + containerWidth - (toolTipLeft + 15);
       const verticalSpace = containerTop + containerHeight - (triggerTop + 15);
+
       if (toolTipWidth > horizontalSpace) {
-        toolTipLeft = triggerLeft - (toolTipWidth - horizontalSpace);
-        toolTipLeft -= 30; //taking extra space into account
+        toolTipLeft = toolTipLeft - (toolTipWidth - horizontalSpace) - 30;
       }
       if (toolTipHeight > verticalSpace) {
-        toolTipTop = triggerTop - (toolTipHeight - verticalSpace);
-        toolTipTop -= 55; //taking extra space into account
+        toolTipTop = triggerTop - (toolTipHeight - verticalSpace) - 55;
       }
       if (toolTipHeight < verticalSpace && toolTipWidth < horizontalSpace) {
-        toolTipLeft += 12; //taking extra space into account
-        toolTipTop += 12; //taking extra space into account
+        toolTipLeft += 12;
+        toolTipTop += 12;
       } else if (
         toolTipHeight < verticalSpace &&
         toolTipWidth > horizontalSpace
       ) {
-        toolTipTop += 20; //taking extra space into account
+        toolTipTop += 20;
       } else if (
         toolTipHeight > verticalSpace &&
         toolTipWidth < horizontalSpace
       ) {
-        toolTipLeft += 20; //taking extra space into account
+        toolTipLeft += 20;
       }
       setToolTipPos({ top: toolTipTop, left: toolTipLeft });
     }
-  }, [position, toolTipRect, containerRef]);
+  };
 
+  const handleClickOutside = (event) => {
+    if (toolTipRef.current && !toolTipRef.current.contains(event.target)) {
+      onClose();
+    }
+  };
+
+  // Handle click outside to close tooltip
   useEffect(() => {
-    const handleResize = (entries) => {
-      for (let entry of entries) {
-        setToolTipRect(entry.contentRect);
-      }
+    if (isOpen) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      setToolTipPos(null);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
     };
+  }, [isOpen]);
 
-    const resizeObserver = new ResizeObserver(handleResize);
+  // Recalculate tooltip position when position or container changes
+  useEffect(() => {
+    calculateTooltipPosition();
+  }, [position, toolTipRef, containerRef]);
+
+  // Observe both tooltip and container size changes
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(calculateTooltipPosition);
+    // const mutationObserver = new MutationObserver(() => {
+    //   calculateTooltipPosition();
+    // });
+
+    if (containerRef) {
+      console.log("node", containerRef.parentNode.parentNode.parentNode);
+      resizeObserver.observe(containerRef.parentNode.parentNode.parentNode);
+      // mutationObserver.observe(containerRef.parentNode.parentNode, {});
+    }
+
     if (toolTipRef.current) {
       resizeObserver.observe(toolTipRef.current);
     }
@@ -81,21 +106,31 @@ function PositionToolTip({
       if (toolTipRef.current) {
         resizeObserver.unobserve(toolTipRef.current);
       }
+      if (containerRef) {
+        resizeObserver.unobserve(containerRef);
+        // mutationObserver.disconnect();
+      }
     };
-  }, []);
+  }, [containerRef, toolTipRef]);
+
+  console.log("pos", toolTipPos);
 
   return (
-    <div
-      className={`fixed z-10 w-fit rounded-xl border bg-white p-2 text-primary-gray shadow-3d `}
-      ref={toolTipRef}
-      style={{
-        display: isOpen ? "block" : "none",
-        top: toolTipPos?.top ? toolTipPos?.top : position.top + 15,
-        left: toolTipPos?.left ? toolTipPos?.left : position.left + 15,
-      }}
-    >
-      {children}
-    </div>
+    <>
+      {toolTipPos?.top && toolTipPos?.left && (
+        <div
+          className={`fixed z-10 w-fit rounded-xl border border-none bg-white p-2 text-primary-gray shadow-3d outline-none`}
+          ref={toolTipRef}
+          style={{
+            top: toolTipPos?.top,
+            left: toolTipPos?.left,
+            visibility: toolTipPos.top === -9999 ? "hidden" : "visible", // Hide until properly positioned
+          }}
+        >
+          {children}
+        </div>
+      )}
+    </>
   );
 }
 

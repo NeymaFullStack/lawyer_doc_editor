@@ -4,7 +4,7 @@ import parse from "html-react-parser";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import DropFile from "@/components/generic/DropFile";
 import { useSelector } from "react-redux";
-import { uploadDocument } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { importDoc } from "@/api/clientSideServiceActions/dashboardServiceActions";
 
 function LoganDocumentBase() {
   const [fileList, setFileList] = useState([]);
@@ -215,10 +215,7 @@ function LoganDocumentBase() {
     // TODO: info.file send to backend api save the response to file list for showing those files
     let formData = new FormData();
     formData.append("file", file);
-    const { data: content } = await uploadDocument(
-      `/documents/${currentDocumentVersion.version_id}/upload`,
-      formData,
-    );
+    const { data: content } = await importDoc(formData);
     setFileList([...fileList, content]);
   }
 }

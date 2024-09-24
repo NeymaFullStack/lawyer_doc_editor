@@ -8,7 +8,6 @@ import FontFamily from "./toolbar-tools/FontFamily";
 import Highlighter from "./toolbar-tools/Highlighter";
 import Zoom from "./toolbar-tools/Zoom";
 import { useDispatch } from "react-redux";
-import { documentAction } from "@/redux/documentSlice";
 import { useSelector } from "react-redux";
 import { documentActions } from "@/constants/enums";
 import { commentsAction } from "@/redux/editor/commentsSlice";
@@ -33,16 +32,13 @@ function ToolBar({ editor }) {
     const toolbar = toolbarRef.current;
     const handleEditorBlur = (event) => {
       // Check if the blur event was triggered by a click on a toolbar button
-      appDispatch(documentAction.setCopiedContent(null));
       event.preventDefault(); // Prevent losing focus
 
       if (
-        (toolbar &&
-          (toolbar === event.target || toolbar.contains(event.target))) ||
-        event.target === editor.view.dom ||
-        editor.view.dom.contains(event.target)
+        toolbar &&
+        (toolbar === event?.target || toolbar.contains(event.target))
       ) {
-        // editor.chain().focus().run(); // Re-focus the editor
+        editor.chain().focus().run(); // Re-focus the editor
       } else {
         // editor.chain().blur().run();
       }

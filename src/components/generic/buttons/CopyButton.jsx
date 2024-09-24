@@ -10,7 +10,6 @@ function CopyButton({ onClick, className, ...props }) {
   const copiedContent = useSelector(
     (state) => state.documentReducer.copiedContent,
   );
-  console.log("coopiedContent", copiedContent);
   useEffect(() => {
     if (copiedContent === null && isCopied) {
       setIsCopied(false);

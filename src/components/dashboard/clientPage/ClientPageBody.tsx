@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { z } from "zod";
+import { unknown, z } from "zod";
 import {
   Form,
   FormControl,
@@ -27,204 +27,341 @@ import { ClientPageField } from "@/constants/typedList";
 import Image from "next/image";
 import { Button } from "@/components/shadcn-components/ui/button";
 import FileUploadModal from "@/components/generic/FileUploadModal";
-import { useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import FilePreview from "@/components/generic/FilePreview";
+import DropFile from "@/components/generic/DropFile";
+import { cn } from "@/utils/shadcn-utils";
+import CopyButton from "@/components/generic/buttons/CopyButton";
 // Define the schema using zod
 const formSchema = z.object({
-  legalName: z.string().min(1, "Legal Name is required"),
-  companyType: z.enum(["Corporation", "LLC", "Partnership"], {
-    required_error: "Company Type is required",
-  }),
-  registeredAddress: z.string().min(1, "Registered Address is required"),
-  companyCountry: z.enum(["USA", "Canada", "UK"], {
-    required_error: "Company Country is required",
-  }),
-  companyRegNumber: z
-    .string()
-    .min(1, "Company Registration Number is required"),
-  taxIdNumber: z.string().min(1, "Tax Identification Number is required"),
-  incorporationDate: z.string().min(1, "Date of Incorporation is required"),
-  registeredCapital: z.string().min(1, "Registered Capital is required"),
-  legalRep: z.string().min(1, "Legal Representative is required"),
-  activity: z.string().min(1, "Activity is required"),
-  website: z.string().min(1, "Website is required"),
-  // logo: z.instanceof(File).optional(),
+  legal_name: z.string().optional(),
+  company_type: z.enum(["Corporation", "LLC", "Partnership", ""]).optional(),
+  registered_address: z.string().optional(),
+  company_country: z.enum(["USA", "Canada", "UK", ""]).optional(),
+  company_registration_number: z.string().optional(),
+  tax_identification_number: z.string().optional(),
+  date_of_incorporation: z.string().optional(),
+  registered_capital: z.string().optional(),
+  legal_representative: z.string().optional(),
+  activity: z.string().optional(),
+  website: z.string().optional(),
+  // logo: z.union([z.instanceof(File), z.literal("")]).optional(),
 });
 
 // Define the TypeScript types for the form data
-export type FormData = z.infer<typeof formSchema>;
+export type ClientFormData = z.infer<typeof formSchema>;
+type CompanyInformationFormRef = HTMLFormElement & {
+  saveAndClose?: () => void; // Adding the submit method to the ref
+  onClickDocCreation?: () => void;
+  onUpdateChanges?: () => void;
+};
 
-export function CompanyInformationForm({
-  isEditing = true,
-  onSaveChanges,
-  closeDrawer = () => {},
-}: {
-  isEditing?: boolean;
-  onSaveChanges: (data: FormData) => void;
-  closeDrawer?: () => void;
-}) {
-  const appDispatch = useDispatch();
-  const [isFileUploadModalOpen, setIsFileUploadModalOpen] =
-    useState<boolean>(false);
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      legalName: "WK Tech Industries 1",
-      companyType: "Corporation",
-      registeredAddress: "500 Innovation Drive, Silicon Valley, CA, 94085 USA",
-      companyCountry: "USA",
-      companyRegNumber: "98-7654321",
-      taxIdNumber: "987654321",
-      incorporationDate: "January 15, 2010",
-      registeredCapital: "$10 million",
-      legalRep: "Grace Williams",
-      activity: "Technology and Software Development",
-      website: "www.wktechindustries.com",
-      // logo: undefined,
+const CompanyInformationForm = forwardRef<
+  CompanyInformationFormRef,
+  {
+    isEditing?: boolean;
+    allowCopy?: boolean;
+    onSaveChanges: (data: ClientFormData) => void;
+    onContinueDocCreation?: (data: ClientFormData) => void;
+    formDetails: ClientFormData;
+    closeDrawer?: () => void;
+    renderInModal?: boolean;
+  }
+>(
+  (
+    {
+      allowCopy = false,
+      isEditing = true,
+      onSaveChanges = () => {},
+      closeDrawer = () => {},
+      renderInModal = false,
+      onContinueDocCreation = () => {},
+      formDetails,
     },
-  });
+    ref,
+  ) => {
+    const appDispatch = useDispatch();
+    const [isFileUploadModalOpen, setIsFileUploadModalOpen] =
+      useState<boolean>(false);
+    const [file, setFile] = useState<File | null | "">(null);
+    const isFileRemoved = useRef(false);
+    const form = useForm<ClientFormData>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        legal_name: formDetails?.legal_name || "",
+        company_type: formDetails?.company_type || "",
+        registered_address: formDetails?.registered_address || "",
+        company_country: formDetails?.company_country || "",
+        company_registration_number:
+          formDetails?.company_registration_number || "",
+        tax_identification_number: formDetails?.tax_identification_number || "",
+        date_of_incorporation: formDetails?.date_of_incorporation || "",
+        registered_capital: formDetails?.registered_capital || "",
+        legal_representative: formDetails?.legal_representative || "",
+        activity: formDetails?.activity || "",
+        website: formDetails?.website || "",
+        // logo: formDetails?.logo || "",
+      },
+    });
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    onSaveChanges(data);
-  };
+    useEffect(() => {
+      if (formDetails && form) {
+        let autoFillDetails: Record<string, string> = {};
+        if ("logo" in formDetails) {
+          setFile(formDetails.logo as File | null | "");
+          const { logo, ...restFormDetails } = formDetails;
+          for (let key in restFormDetails) {
+            autoFillDetails[key] =
+              (restFormDetails as Record<string, string>)[key] || "";
+          }
+          form.reset(autoFillDetails);
+        } else {
+          form.reset(formDetails);
+        }
+      }
+    }, [formDetails, form]);
 
-  return (
-    <Form {...form}>
-      {isFileUploadModalOpen && (
-        <FileUploadModal
-          onClickSave={() => {}}
-          isOpen={isFileUploadModalOpen}
-          onClose={() => {
-            setIsFileUploadModalOpen(false);
-          }}
-        />
-      )}
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
-        <div className="flex items-center gap-5">
-          <div className="flex flex-col gap-3">
-            <label className="text-xs font-medium leading-none">
-              Client Logo
-            </label>
-            <div
-              className="relative border-secondary-blue"
-              style={{ width: "6.5rem", height: "4.5rem" }}
-            >
-              <Image
-                src={"/assets/images/processing-msg.svg"}
-                alt={"Company Logo"}
-                layout="fill"
-                // width={6}
-                // height={4.5}
-                objectFit="cover w-[6rem] h-[4.5rem]"
-                className="rounded" // Add a class if you want rounded corners
-                quality={100} // Set the quality of the image
-              />
+    const onSubmit: SubmitHandler<ClientFormData> = (data, event) => {
+      event?.preventDefault();
+      try {
+        // Attempt to parse the data with the schema
+        // console.log(formSchema.parse(data));
+        // If successful, proceed with your onSaveChanges
+        let submitClientFormData: ClientFormData & {
+          logo?: File | null | "";
+          is_logo_deleted?: boolean;
+        } = { ...data };
+        if (file instanceof File) {
+          submitClientFormData.logo = file;
+        }
+        if (isFileRemoved.current) {
+          submitClientFormData.is_logo_deleted = true;
+        }
+        onSaveChanges(submitClientFormData);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          console.error("Zod Validation Errors:", error.errors);
+        } else {
+          console.error("An unexpected error occurred:", error);
+        }
+      }
+    };
+    useImperativeHandle(
+      ref,
+      () =>
+        ({
+          saveAndClose: () => {
+            form.handleSubmit(onSubmit)();
+          },
+          onClickDocCreation: () => {
+            onContinueDocCreation(formSchema.parse(form.getValues()));
+          },
+          onUpdateChanges: () => {
+            form.handleSubmit(onSubmit)();
+          },
+        }) as CompanyInformationFormRef,
+      [form, onSubmit, onContinueDocCreation],
+    );
+
+    return (
+      <Form {...form}>
+        {isFileUploadModalOpen && !renderInModal && (
+          <FileUploadModal
+            onClickSave={(file: File) => {
+              setFile(file);
+              isFileRemoved.current = false;
+            }}
+            isOpen={isFileUploadModalOpen}
+            onClose={() => {
+              setIsFileUploadModalOpen(false);
+            }}
+          />
+        )}
+        <form ref={ref} className="space-y-6 ">
+          <div className="flex flex-col items-start justify-center gap-5">
+            <div className={cn("flex flex-col justify-center  gap-3")}>
+              <label className="text-xs font-medium leading-none">
+                Client Logo
+              </label>
+
+              {renderInModal && (
+                <>
+                  {file ? (
+                    <FilePreview
+                      deleteFile={() => {
+                        // form.setValue("logo", undefined);
+                        setFile(null);
+                      }}
+                      file={file}
+                      className="mt-0"
+                    />
+                  ) : (
+                    <DropFile
+                      height={"5rem"}
+                      className={""}
+                      customClass=""
+                      fileTypes={[".png", "jpeg", "jpg"]}
+                      onUpload={({ file }: { file: File }) => {
+                        // form.setValue("logo", file);
+                        setFile(file);
+                        isFileRemoved.current = false;
+                      }}
+                    />
+                  )}
+                </>
+              )}
+              <div className="flex items-center ">
+                {!renderInModal && file && (
+                  <div
+                    className="relative border-secondary-blue"
+                    style={{ width: "6.5rem", height: "4.5rem" }}
+                  >
+                    <Image
+                      src={
+                        typeof file === "string"
+                          ? (file as string)
+                          : URL.createObjectURL(file as File)
+                      }
+                      alt={"Company Logo"}
+                      fill
+                      // objectFit="cover "
+                      className="h-[4.5rem] w-[6rem] rounded bg-cover" // Add a class if you want rounded corners
+                      quality={100} // Set the quality of the image
+                    />
+                  </div>
+                )}
+
+                {isEditing && !renderInModal && (
+                  <div className={cn("ml-16 space-x-4", !file && "ml-0")}>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsFileUploadModalOpen(true);
+                      }}
+                      size={"sm"}
+                      variant={"primary-blue-outline"}
+                    >
+                      Upload
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        isFileRemoved.current = true;
+                        setFile(null);
+                      }}
+                      size={"sm"}
+                      variant={"normal"}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          {isEditing && (
-            <div className="ml-16 space-x-4">
-              <Button
-                onClick={() => {
-                  setIsFileUploadModalOpen(true);
-                }}
-                size={"sm"}
-                variant={"primary-blue-outline"}
-              >
-                Upload
-              </Button>
-              <Button onClick={() => {}} size={"sm"} variant={"normal"}>
-                Remove
-              </Button>
-            </div>
-          )}
-        </div>
-        <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
-          {ClientPageField.map(
-            (fieldItem: ClientPageFieldType, index: number) => {
-              return (
-                <FormField
-                  key={fieldItem?.key}
-                  control={form.control}
-                  name={fieldItem?.key}
-                  render={({ field }) => (
-                    <FormItem isEditing={isEditing}>
-                      <FormLabel className={isEditing ? " text-black-txt" : ""}>
-                        {fieldItem?.label}
-                      </FormLabel>
-                      <FormControl>
-                        {fieldItem.type === "input" ? (
-                          <Input
-                            copyProps={{
-                              allowCopy: true,
-                              onClickCopy: () => {
-                                handleCopy(fieldItem?.key);
-                                closeDrawer();
-                              },
-                            }}
-                            placeholder={fieldItem.placeholder}
-                            {...field}
-                            value={
-                              typeof field.value === "string" ? field.value : ""
-                            }
-                            isEditing={isEditing}
-                          />
-                        ) : (
-                          fieldItem.type === "select" && (
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={
-                                typeof field.value === "string"
-                                  ? field.value
-                                  : ""
-                              }
-                            >
-                              <SelectTrigger
-                                copyProps={{
-                                  allowCopy: true,
-                                  onClickCopy: () => {
-                                    handleCopy(fieldItem?.key);
-                                    closeDrawer();
-                                  },
+          <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
+            {ClientPageField.map(
+              (fieldItem: ClientPageFieldType, index: number) => {
+                return (
+                  <FormField
+                    key={fieldItem?.key}
+                    control={form.control}
+                    name={fieldItem?.key}
+                    render={({ field }: { field: any }) => (
+                      <FormItem isEditing={isEditing}>
+                        <FormLabel
+                          className={isEditing ? " text-black-txt" : ""}
+                        >
+                          {fieldItem?.label}
+                        </FormLabel>
+
+                        {!isEditing ? (
+                          <p
+                            className={cn(
+                              "group flex min-h-7 w-[90%] items-center justify-start break-words rounded-md border border-transparent bg-transparent text-xs  leading-normal ",
+                            )}
+                          >
+                            {String(field?.value) || "NA"}
+                            {allowCopy && (
+                              <CopyButton
+                                className="ml-3 hidden group-hover:inline-block"
+                                onClick={() => {
+                                  handleCopy(fieldItem?.key);
+                                  closeDrawer();
                                 }}
-                                isEditing={isEditing}
+                              />
+                            )}
+                          </p>
+                        ) : fieldItem?.type === "input" ? (
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder={fieldItem.placeholder}
+                            />
+                          </FormControl>
+                        ) : (
+                          fieldItem?.type === "select" && (
+                            <FormControl>
+                              <Select
+                                {...(() => {
+                                  delete field?.ref;
+                                  return field;
+                                })()}
+                                onValueChange={(value) => {
+                                  form.setValue(fieldItem?.key, value);
+                                }}
                               >
-                                <SelectValue
-                                  placeholder={fieldItem.placeholder}
-                                />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {fieldItem.options.map((option, index) => {
-                                  return (
-                                    <SelectItem
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            </Select>
+                                <SelectTrigger>
+                                  <SelectValue
+                                    placeholder={fieldItem?.placeholder}
+                                  />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                  {fieldItem.options.map((option, index) => {
+                                    return (
+                                      <SelectItem
+                                        key={option?.value}
+                                        value={option?.value}
+                                        className="cursor-pointer"
+                                      >
+                                        {option?.label}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
                           )
                         )}
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              );
-            },
-          )}
-        </div>
-      </form>
-    </Form>
-  );
-
-  function handleCopy(key: keyof FormData) {
-    appDispatch(
-      documentAction.setCopiedContent({
-        title: form.getValues(key),
-        type: copiedContentType.Company,
-      }),
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              },
+            )}
+          </div>
+        </form>
+      </Form>
     );
-  }
-}
+
+    function handleCopy(key: keyof ClientFormData) {
+      appDispatch(
+        documentAction.setCopiedContent({
+          title: form.getValues(key),
+          type: copiedContentType.Company,
+        }),
+      );
+    }
+  },
+);
+export default CompanyInformationForm;

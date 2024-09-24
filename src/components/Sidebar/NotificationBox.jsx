@@ -29,7 +29,7 @@ const NotificationBox = ({
   return ReactDOM.createPortal(
     <div
       ref={boxRef}
-      className="shadow-out-md fixed z-50 w-80 overflow-hidden rounded-lg border-[1.5px] border-secondary-blue bg-white transition-all duration-300 ease-in-out"
+      className="fixed z-50 w-80 overflow-hidden rounded-lg border-[1.5px] border-secondary-blue bg-white shadow-out-md transition-all duration-300 ease-in-out"
       style={{ left: `calc(${sidebarWidth}px + 16px)`, bottom: "16px" }}
     >
       {/* Header */}

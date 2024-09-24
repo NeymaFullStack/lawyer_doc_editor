@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 function DocCreationTypeModal({
   onClose,
   open,
-  formValues: { createClient },
+  formValues: { clientCreation },
   saveDocFolderFieldValues,
 }) {
   const appDispatch = useDispatch();
@@ -35,7 +35,7 @@ function DocCreationTypeModal({
                 onClose(false, { newAppendix: true });
                 return;
               }
-              if (createClient) {
+              if (clientCreation) {
                 appDispatch(
                   folderNavigationAction.setOpenModalType(modalType.New_CLIENT),
                 );

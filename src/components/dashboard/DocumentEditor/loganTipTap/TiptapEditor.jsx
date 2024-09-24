@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import ToolBar from "./ToolBar";
 import Tag from "@/components/generic/Tag";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   copiedContentType,
   documentActions,
@@ -59,23 +59,19 @@ import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import CopiedTag from "@/components/generic/CopiedTag";
 import { commentsAction } from "@/redux/editor/commentsSlice";
-import AddCommentModal from "../commentTool/addCommnetModal";
 
 const doc = new Y.Doc();
-
-const docHtml =
-  '<h1>Rental Agreement</h1><hr size="1"/><p>This Rental Agreement ("Agreement") is made and entered into this day by and between <span id="landlord" class="doc-variable">Anuj</span> ("Landlord") and <span id="tenant" class="doc-variable">Ankit</span> ("Tenant"). The premises subject to this Agreement is located at the address specified herein under the laws of the <span id="state" class="doc-variable">United States</span>.</p><div class="doc-article"><h2 id="a1f97861-4814-4e7f-a187-f09305c429ea">Premises</h2><p id="afbae19a-5b70-455f-91f0-0e5cff40d61a">The Landlord hereby leases to the Tenant the residential premises described as <span id="property_address" class="doc-variable">[Insert Address Here]</span> ("the Premises"). The Premises are to be occupied strictly as a private dwelling by the Tenant and their immediate family and for no other purpose without prior written consent of the Landlord.</p></div>';
 const initialArticleInsertionState = {
   isOpen: false,
   menuItems: [],
   pos: null,
-  initiate: false,
+  tooltipActive: false,
 };
 const initialTagInsertionState = {
   isOpen: false,
   pos: null,
   onClickTag: null,
-  initiate: false,
+  tooltipActive: false,
 };
 const TiptapEditor = () => {
   const { docId } = useParams();
@@ -91,9 +87,10 @@ const TiptapEditor = () => {
     currentDocumentVersion,
     activeDocumentVersion,
     selectedDocumentVersion,
-  } = useSelector((state) => state.documentVersioningReducer);
+  } = useSelector((state) => state.documentVersioningReducer, shallowEqual);
   const { currentEditVariable } = useSelector(
     (state) => state.documentVariableReducer,
+    shallowEqual,
   );
   const {
     articleList,
@@ -101,22 +98,22 @@ const TiptapEditor = () => {
     reorderAppendixState,
     collapsibleListOpenState,
     deleteAppendixState,
-  } = useSelector((state) => state.documentIndexingReducer);
-  const [tagInsertionState, setTagInsertionState] = useState(
-    initialTagInsertionState,
-  );
+  } = useSelector((state) => state.documentIndexingReducer, shallowEqual);
   const {
     copiedContent,
     activeDocumentAction,
     currentDocument,
     isEditorToolHidden,
     toolbar,
-  } = useSelector((state) => state.documentReducer);
+  } = useSelector((state) => state.documentReducer, shallowEqual);
   const { isAddCommentModalOpen, selectedTextPosition, isTextSelected } =
     useSelector((state) => state.commentsReducer);
 
   const [articleInsertionState, setArticleInsertionState] = useState(
     initialArticleInsertionState,
+  );
+  const [tagInsertionState, setTagInsertionState] = useState(
+    initialTagInsertionState,
   );
 
   const debouncedUpdateContent =
@@ -177,7 +174,7 @@ const TiptapEditor = () => {
               isOpen: true,
               menuItems: menuItems,
               pos: pos,
-              initiate: false,
+              tooltipActive: false,
             });
           },
         }),
@@ -186,7 +183,7 @@ const TiptapEditor = () => {
             setTagInsertionState({
               isOpen: true,
               onClickTag: onClickItem,
-              initiate: false,
+              tooltipActive: false,
               pos: pos,
             });
           },
@@ -510,8 +507,9 @@ const TiptapEditor = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEditVariable]);
+
   return (
-    <div className="logan-tiptap h-full w-full">
+    <div className="logan-tiptap  h-full w-full">
       {<CopiedTag />}
       <ToolBar editor={editor} />
       {openArticleDeleteConfirmModal && (
@@ -523,45 +521,9 @@ const TiptapEditor = () => {
       )}
       <div
         className={cn(
-          "flex h-[calc(100%-3rem)] w-full flex-col items-center justify-center overflow-y-hidden overflow-x-scroll p-1 pr-3",
+          " flex h-[calc(100%-3rem)] w-full flex-col items-center justify-center overflow-y-hidden overflow-x-scroll p-1 pr-3",
         )}
       >
-        {articleInsertionState?.isOpen && (
-          <ArticleMenu
-            editorRef={editorRef.current}
-            items={articleInsertionState?.menuItems}
-            isOpen={articleInsertionState?.isOpen}
-            onClose={() => {
-              setArticleInsertionState(initialArticleInsertionState);
-            }}
-            position={articleInsertionState?.pos}
-            view={editor.view}
-          />
-        )}
-        {tagInsertionState?.isOpen && (
-          <LoganTagsMenu
-            editorRef={editorRef.current}
-            onClickTag={tagInsertionState?.onClickTag}
-            isOpen={tagInsertionState?.isOpen}
-            onClose={() => {
-              setTagInsertionState(initialTagInsertionState);
-            }}
-            position={tagInsertionState?.pos}
-            view={editor.view}
-          />
-        )}
-        {isAddCommentModalOpen && (
-          <AddCommentModal
-            isOpen={isAddCommentModalOpen}
-            onClose={() => {
-              appDispatch(commentsAction.setIsAddCommentModalOpen(false));
-            }}
-            position={selectedTextPosition || {}}
-            editorRef={editorRef.current}
-            editor={editor}
-          />
-        )}
-
         <div
           className={`mt-1   flex w-[40.5rem] items-center  gap-2`}
           style={{ zoom: `${toolbar.zoom || 100}%` }}
@@ -580,9 +542,37 @@ const TiptapEditor = () => {
 
         <div
           ref={editorRef}
-          className={`relative z-0 my-2 h-full w-[40.5rem]  overflow-y-scroll bg-white  transition-all `}
+          className={cn(
+            `relative z-0 my-2 h-full w-[40.5rem]  overflow-y-scroll bg-white  transition-all`,
+            (tagInsertionState?.isOpen || articleInsertionState?.isOpen) &&
+              "overflow-y-hidden",
+          )}
           style={{ zoom: `${toolbar.zoom || 100}%` }}
         >
+          {articleInsertionState?.isOpen && (
+            <ArticleMenu
+              editorRef={editorRef.current}
+              items={articleInsertionState?.menuItems}
+              isOpen={articleInsertionState?.isOpen}
+              onClose={() => {
+                setArticleInsertionState(initialArticleInsertionState);
+              }}
+              position={articleInsertionState?.pos}
+              view={editor.view}
+            />
+          )}
+          {tagInsertionState?.isOpen && (
+            <LoganTagsMenu
+              editorRef={editorRef.current}
+              onClickTag={tagInsertionState?.onClickTag}
+              isOpen={tagInsertionState?.isOpen}
+              onClose={() => {
+                setTagInsertionState(initialTagInsertionState);
+              }}
+              position={tagInsertionState?.pos}
+              view={editor.view}
+            />
+          )}
           {activeDocumentVersion && (
             <EditorContent
               editor={editor}
@@ -647,6 +637,7 @@ const TiptapEditor = () => {
         copiedContent.type === copiedContentType.Variable ||
         copiedContent.type === copiedContentType.Company
       ) {
+        debugger;
         const textContent = copiedContent?.title;
         editor.commands.insertContentAt(
           Number(pos),
@@ -671,12 +662,22 @@ const TiptapEditor = () => {
     //   '<h1 style="text-align: center">Non-Disclosure Agreement (NDA)</h1><hr><div class="doc-article" id="e4ef1a6b-e020-4a44-8acb-4a22dd6c3b99"><h2 class="article-heading" id="4f91925f-61c2-45d1-a570-fcb445017034"><span class="doc-article-title" contenteditable="false">Article 1 - </span>Parties</h2><p>This Non-Disclosure Agreement (the "Agreement") is entered into as of [Insert Date] by and between [Party A Name], with its principal office located at [Party A Address] (the "Disclosing Party"), and [Party B Name], with its principal office located at [Party B Address] (the "Receiving Party"). Both parties may be referred to individually as a "Party" or collectively as the "Parties."</p><ul><li id="9fcc0d1f-0595-4784-9cce-8e59f2b217fd" data-index="1.1"><p><strong>one.one: </strong></p><ul><li id="67d689c4-fe01-4892-bca3-91c15e846a93" data-index="1.1.1"><p><strong>one.one.oen: </strong></p><ul><li id="6bc6cb8b-4c5d-486b-83ab-043413ca68d1" data-index="1.1.1.1"><p><strong>one.one......: </strong></p></li></ul></li></ul></li></ul></div><div class="doc-article" id="35fb68e6-a1ac-4c35-832d-acd8d48a03df"><h2 class="article-heading" id="102447dd-efcc-4539-85c0-fea22634117f"><span class="doc-article-title" contenteditable="false">Article 2 - </span>Definition of Confidential Information</h2><p>For purposes of this Agreement, "Confidential Information" includes but is not limited to all information, whether verbal, electronic, written, or in any other form, which is disclosed by the Disclosing Party to the Receiving Party, including but not limited to business strategies, technical processes, software, and designs.</p></div><div class="doc-article" id="acaedbd3-8706-4144-9bad-92c444472e34"><h2 class="article-heading" id="0d74e99d-b892-4511-b3de-f4ac2acff5e1"><span class="doc-article-title" contenteditable="false">Article 3 - </span>Obligations of Receiving Party</h2><p>The Receiving Party agrees to: (i) maintain the confidentiality of the Confidential Information; (ii) refrain from disclosing such Confidential Information to any third party without prior written consent from the Disclosing Party; (iii) use such Confidential Information solely to evaluate or pursue a business relationship with the Disclosing Party; (iv) safeguard the Confidential Information from unauthorized use, disclosure, or theft.</p></div><div class="doc-article" id="106522d5-0033-418c-8042-3b7709fd0493"><h2 class="article-heading" id="e6adc5dc-4e1e-4c7b-90a4-bbb272c4ef14"><span class="doc-article-title" contenteditable="false">Article 4 - </span>Exclusions from Confidential Information</h2><p>Confidential Information does not include information that: (a) was publicly known prior to the time of disclosure by the Disclosing Party; (b) becomes publicly known after disclosure, other than as a result of a breach of this Agreement by the Receiving Party; (c) is independently developed by the Receiving Party without use of or reference to the Disclosing Party\'s Confidential Information.</p></div><div class="doc-article" id="6b2b977d-155b-4056-a732-6dfcfcf7fa72"><h2 class="article-heading" id="eb0e1552-64f3-40d9-b436-51ecfa37ec32"><span class="doc-article-title" contenteditable="false">Article 5 - </span>Term</h2><p>The obligations of this Agreement shall commence on the date of this Agreement and shall continue indefinitely until the Confidential Information no longer qualifies as confidential.</p></div><div class="doc-article" id="9da5e093-5384-4a1c-82d2-f1f80624dcf8"><h2 class="article-heading" id="a25a9669-a6c9-4b61-af8c-3c3886881b37"><span class="doc-article-title" contenteditable="false">Article 6 - </span>Return of Materials</h2><p>Upon termination of this Agreement, the Receiving Party agrees to return all materials containing Confidential Information to the Disclosing Party or to destroy all such materials and certify the destruction to the Disclosing Party, at the Disclosing Party\'s option.</p></div><div class="doc-article" id="45343877-79f1-4d10-be0c-d92954cf06b5"><h2 class="article-heading" id="855b9adf-6b82-45b0-a588-67b6f1869d04"><span class="doc-article-title" contenteditable="false">Article 7 - </span>No License</h2><p>Nothing in this Agreement grants the Receiving Party any rights in or to the Confidential Information except as expressly set forth herein.</p></div><div class="doc-article" id="508e2502-e7bb-43df-beed-347430d11487"><h2 class="article-heading" id="9e125df7-7cbe-4d07-a7df-808c6890dfb7"><span class="doc-article-title" contenteditable="false">Article 8 - </span>Miscellaneous</h2><p>This Agreement represents the entire agreement between the Parties with respect to its subject matter and supersedes all prior discussions, agreements, or understandings of any kind. This Agreement may be amended only by written agreement signed by both Parties. This Agreement is governed by and construed in accordance with the laws of the United States, without giving effect to any principles of conflicts of law.</p><p>IN WITNESS WHEREOF, the Parties hereto have executed this Non-Disclosure Agreement as of the Effective Date.</p><p>[Name of Party A]</p><p>By: ___________________________</p><p>Title: _________________________</p><p>Date: __________________________</p><p>[Name of Party B]</p><p>By: ___________________________</p><p>Title: _________________________</p><p>Date: __________________________</p></div>',
     // );
   }
-
   function handleChange({ editor, transaction }) {
-    if (articleInsertionState.initiate) {
-      setArticleInsertionState(initialArticleInsertionState);
-    } else if (articleInsertionState.isOpen) {
-      setArticleInsertionState({ ...articleInsertionState, initiate: true });
+    if (editor.getHTML() !== currentDocumentVersion?.docContent) {
+      if (articleInsertionState.tooltipActive) {
+        setArticleInsertionState(initialArticleInsertionState);
+      } else if (articleInsertionState.isOpen) {
+        setArticleInsertionState({
+          ...articleInsertionState,
+          tooltipActive: true,
+        });
+      }
+
+      if (tagInsertionState.tooltipActive) {
+        setTagInsertionState(initialTagInsertionState);
+      } else if (tagInsertionState.isOpen) {
+        setTagInsertionState({ ...tagInsertionState, tooltipActive: true });
+      }
     }
 
     // handleArticlesUpdate(transaction);
@@ -720,15 +721,6 @@ const TiptapEditor = () => {
         editor.commands.setNodeSelection(grandparentNodePos);
       grandparentNodePos !== null &&
         editor.commands.deleteSelection(grandparentNodeSelection);
-      // extractArticles(editor.getJSON());
-      // if (grandparentNodePos !== null) {
-      //   editor.commands.deletenode;
-      //   // const transaction = tr.delete(
-      //   //   grandparentNodePos,
-      //   //   grandparentNodePos + grandParentNode.nodeSize,
-      //   // );
-      //   // editor.view.dispatch(transaction);
-      // }
     }
     setOpenArticleDeleteConfirmModal(false);
     setNodeToDelete(null);

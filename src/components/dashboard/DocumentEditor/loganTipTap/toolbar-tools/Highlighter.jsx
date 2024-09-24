@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { documentAction } from "@/redux/documentSlice";
@@ -14,7 +15,7 @@ function Highlighter() {
       size={"icon"}
       variant={"link"}
       onClick={() => {
-        appDispatch(documentAction.toggleEditorToolbarState("highlighter"));
+        appDispatch(documentAction.toogleEditorToolbarState("highlighter"));
       }}
     >
       <RemSizeImage
