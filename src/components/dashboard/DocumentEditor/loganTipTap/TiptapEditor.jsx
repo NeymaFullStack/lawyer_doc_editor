@@ -59,6 +59,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import CopiedTag from "@/components/generic/CopiedTag";
 import { commentsAction } from "@/redux/editor/commentsSlice";
+import AddCommentModal from "../commentTool/addCommentModal";
 
 const doc = new Y.Doc();
 const initialArticleInsertionState = {
@@ -571,6 +572,17 @@ const TiptapEditor = () => {
               }}
               position={tagInsertionState?.pos}
               view={editor.view}
+            />
+          )}
+          {isAddCommentModalOpen && (
+            <AddCommentModal
+              isOpen={isAddCommentModalOpen}
+              onClose={() => {
+                appDispatch(commentsAction.setIsAddCommentModalOpen(false));
+              }}
+              position={selectedTextPosition || {}}
+              editorRef={editorRef.current}
+              editor={editor}
             />
           )}
           {activeDocumentVersion && (
