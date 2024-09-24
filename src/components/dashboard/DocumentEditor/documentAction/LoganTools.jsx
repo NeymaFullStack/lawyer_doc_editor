@@ -1,6 +1,5 @@
 "use client";
 import { documentActions } from "@/constants/enums";
-import React from "react";
 import { useSelector } from "react-redux";
 import LoganPageEditTool from "./LoganPageEditTool";
 import LoganDocPreviewTool from "./LoganDocPreviewTool";
@@ -8,6 +7,7 @@ import LoganDocVersionHistoryTool from "./versionTool/LoganDocVersionHistoryTool
 import LoganDraftTool from "./draftTool/LoganDraftTool";
 import LoganVariableTool from "./variableTool/LoganVariableTool";
 import LoganReferenceTool from "./referenceTool/LoganReferenceTool";
+import Comments from "../commentTool/commnets";
 import { cn } from "@/utils/shadcn-utils";
 
 function LoganTools() {
@@ -36,6 +36,8 @@ function LoganTools() {
         return <LoganDocVersionHistoryTool />;
       case documentActions.Preview:
         return <LoganDocPreviewTool />;
+      case documentActions.Comments:
+        return <Comments />;
     }
   }
 }

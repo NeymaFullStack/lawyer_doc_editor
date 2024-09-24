@@ -1,15 +1,11 @@
 "use client";
-import React, { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Button } from "antd";
 import SaveCurrentDocumentModal from "../DocumentEditor/documentAction/SaveCurrentDocumentModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { useDispatch, useSelector } from "react-redux";
 import NavigationBreadCrumbs from "@/components/generic/NavigationBreadCrumbs";
-import {
-  useParams,
-  usePathname,
-  useSelectedLayoutSegments,
-} from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   createNewDocumentVersion,
   exportDocumentPdf,

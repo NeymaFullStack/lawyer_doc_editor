@@ -45,3 +45,8 @@ export const restoreVersionUrl = "/document/version/restore";
 export const exportDocumentPdfUrl = (documentId, documentVersionId) =>
   `/exports/document/${documentId}/${documentVersionId}/pdf`;
 export const importDocUrl = "/imports/document";
+
+// comments
+export const postCommentUrl = "/comment/create";
+export const getCommentListUrl = (documentId) =>
+  `/comment/document/${documentId}/all`;
