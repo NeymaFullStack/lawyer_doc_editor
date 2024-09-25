@@ -53,11 +53,11 @@ const AddCommentModal = ({ isOpen, onClose, position, editorRef, editor }) => {
               // e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scrollHeight
             }}
             onKeyDown={(e) => {
-              //   if (e.key === "Enter" && !e.shiftKey) {
-              //     e.preventDefault();
-              //     handleSubmit();
-              //     setCommentText("");
-              //   }
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit();
+                setCommentText("");
+              }
             }}
           />
 

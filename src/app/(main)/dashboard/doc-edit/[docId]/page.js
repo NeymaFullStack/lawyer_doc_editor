@@ -1,7 +1,5 @@
 import DocumentActionBar from "@/components/dashboard/DocumentEditor/documentAction/DocumentActionBar";
 import LoganTools from "@/components/dashboard/DocumentEditor/documentAction/LoganTools";
-import React from "react";
-import dynamic from "next/dynamic";
 import TipTapEditor from "@/components/dashboard/DocumentEditor/loganTipTap/TiptapEditor";
 
 async function Page() {
