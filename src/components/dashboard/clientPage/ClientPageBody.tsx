@@ -41,7 +41,7 @@ import CopyButton from "@/components/generic/buttons/CopyButton";
 // Define the schema using zod
 const formSchema = z.object({
   legal_name: z.string().optional(),
-  company_type: z.enum(["Corporation", "LLC", "Partnership", ""]).optional(),
+  company_type: z.string().optional(),
   registered_address: z.string().optional(),
   company_country: z.enum(["USA", "Canada", "UK", ""]).optional(),
   company_registration_number: z.string().optional(),
@@ -68,7 +68,10 @@ const CompanyInformationForm = forwardRef<
     isEditing?: boolean;
     allowCopy?: boolean;
     onSaveChanges: (data: ClientFormData) => void;
-    onContinueDocCreation?: (data: ClientFormData) => void;
+    onContinueDocCreation?: (
+      data: ClientFormData,
+      file: File | null | "",
+    ) => void;
     formDetails: ClientFormData;
     closeDrawer?: () => void;
     renderInModal?: boolean;
@@ -160,7 +163,7 @@ const CompanyInformationForm = forwardRef<
             form.handleSubmit(onSubmit)();
           },
           onClickDocCreation: () => {
-            onContinueDocCreation(formSchema.parse(form.getValues()));
+            onContinueDocCreation(formSchema.parse(form.getValues()), file);
           },
           onUpdateChanges: () => {
             form.handleSubmit(onSubmit)();
@@ -168,7 +171,7 @@ const CompanyInformationForm = forwardRef<
         }) as CompanyInformationFormRef,
       [form, onSubmit, onContinueDocCreation],
     );
-
+    console.log("file", file);
     return (
       <Form {...form}>
         {isFileUploadModalOpen && !renderInModal && (

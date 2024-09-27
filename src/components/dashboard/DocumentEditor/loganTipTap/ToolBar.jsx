@@ -196,7 +196,8 @@ function ToolBar({ editor }) {
                     alt="Bullets"
                   />
                 </button>
-                <button
+
+                {/* <button
                   onClick={() =>
                     editor.chain().focus().toggleOrderedList().run()
                   }
@@ -207,7 +208,7 @@ function ToolBar({ editor }) {
                     remHeight={1.1}
                     alt="Numbering"
                   />
-                </button>
+                </button> */}
               </div>
             )}
             <Zoom />

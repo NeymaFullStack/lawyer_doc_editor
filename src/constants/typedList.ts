@@ -10,13 +10,8 @@ export const ClientPageField: ClientPageFieldType[] = [
   {
     label: "Company Type",
     key: "company_type",
-    type: "select",
-    placeholder: "Select Company Type",
-    options: [
-      { label: "Corporation", value: "Corporation" },
-      { label: "LLC", value: "LLC" },
-      { label: "Partnership", value: "Partnership" },
-    ],
+    type: "input",
+    placeholder: "Enter Company Type",
   },
   {
     label: "Registered Address",

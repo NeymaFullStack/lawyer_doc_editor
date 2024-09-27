@@ -158,7 +158,7 @@ export const updateClientOptionalDetails = async (
         },
       },
     );
-    return res?.data;
+    return res;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);

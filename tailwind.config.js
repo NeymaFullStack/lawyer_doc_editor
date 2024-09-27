@@ -130,6 +130,7 @@ module.exports = {
         save: "#10C900",
         var: "#FF26C2",
         "disable-blu": "#095AD333",
+
         // border: 1px solid var(--fond-bleu-10-avec-transparence-pour-icons, #095AD31A)
       },
       boxShadow: {

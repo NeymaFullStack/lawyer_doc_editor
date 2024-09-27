@@ -10,14 +10,13 @@ import {
   updateClientOptionalDetails,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import Loader from "@/components/generic/Loader";
-import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 
 export interface clientPagerProps extends LoganDrawerProps {
   clientRoute: string;
   clientFolderId: string;
 }
 
-function ClientPageDrawer({
+export default function ClientPageDrawer({
   isOpen,
   onClose,
   showFooter,
@@ -52,7 +51,7 @@ function ClientPageDrawer({
               />
             </span>
             <DrawerTitle className="text-xl font-semibold  text-black-txt">
-              WK Tech Industries
+              {clientDetails?.title || ""}
             </DrawerTitle>
           </div>
           <div className="flex items-center gap-4">
@@ -117,7 +116,12 @@ function ClientPageDrawer({
           onSaveChanges={onSaveChanges}
           closeDrawer={onClose}
           allowCopy={true}
-          formDetails={clientDetails}
+          formDetails={{
+            ...(() => {
+              let { title = "", ...restDetails } = clientDetails || {};
+              return restDetails;
+            })(),
+          }}
           ref={formRef}
         />
       }
@@ -131,8 +135,8 @@ function ClientPageDrawer({
     if (!formData) {
       return;
     }
-    delete formData.project_id;
-    delete formData.project_path;
+    delete formData?.project_id;
+    delete formData?.project_path;
     setClientDetails(formData);
   }
 
@@ -142,13 +146,12 @@ function ClientPageDrawer({
     for (const key in formParams) {
       formData.append(key, formParams[key]);
     }
-    console.log("logo", formData.get("logo"));
     const res = await updateClientOptionalDetails(clientFolderId, formData);
     if (res?.status === 200) {
+      await getClientData();
       setIsEditing(false);
     }
     setIsLoading(false);
     //call api to save client data and also save the new data pass it to form
   }
 }
-export default ClientPageDrawer;

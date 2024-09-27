@@ -1,26 +1,32 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import React from "react";
+import React, { useEffect } from "react";
 import { dtYYMMDDat12hrFormat } from "@/utils/dateUtils";
 
 import Image from "next/image";
 import { cn } from "@/utils/shadcn-utils";
 
 function DocFile({
-  onClickDoc,
+  onDoubleClick,
   doc,
   nonClient = false,
   contextMenuActiveId,
-  ...props
+  selectedDocs,
+  onSingleClickOnDoc,
 }) {
   return (
     <div
+      aria-description="document"
+      onDoubleClick={() => onDoubleClick(doc)}
       onClick={() => {
-        onClickDoc(doc);
+        onSingleClickOnDoc(doc);
       }}
       className={cn(
         "flex w-[13rem] cursor-pointer flex-col gap-2 rounded-lg border-[1px] border-white px-4 py-3 hover:bg-secondary-blue",
         nonClient ? "bg-blanc" : "bg-six",
-        contextMenuActiveId === doc?.id &&
+        (contextMenuActiveId === doc?.id ||
+          selectedDocs?.find((item, index) => {
+            return item.id === doc.id;
+          })) &&
           " border-primary-blue bg-secondary-blue text-primary-blue",
       )}
     >

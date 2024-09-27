@@ -5,14 +5,17 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 function DocFolder({
-  onClickFolder,
+  onDoubleClick,
   folder,
   nonClient = false,
   contextMenuActiveId,
+  selectedFolders,
+  onSingleClickOnFolder,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <div
+      aria-description="folder"
       onMouseEnter={() => {
         setIsHovered(true);
       }}
@@ -20,11 +23,15 @@ function DocFolder({
         setIsHovered(false);
       }}
       onDoubleClick={() => {
-        onClickFolder(folder);
+        onDoubleClick(folder);
+      }}
+      onClick={() => {
+        onSingleClickOnFolder(folder);
       }}
       className={cn(
         "group flex cursor-pointer items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-xs font-semibold text-black-txt shadow-out hover:bg-secondary-blue ",
-        contextMenuActiveId === folder?.id &&
+        (contextMenuActiveId === folder?.id ||
+          selectedFolders?.find((item) => item?.id === folder?.id)) &&
           " border-primary-blue bg-secondary-blue text-primary-blue",
       )}
     >

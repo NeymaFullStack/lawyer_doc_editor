@@ -47,7 +47,6 @@ function RecentDocuments() {
                           : setContextMenuActiveId(0)
                       }
                       contextMenuItems={directoryContextMenuList(
-                        router,
                         doc,
                         () => {
                           setOpenRenameModal(true);
@@ -56,6 +55,9 @@ function RecentDocuments() {
                             itemType: navigationItemTypes.DOCUMENT,
                             currentName: doc?.document_name,
                           });
+                        },
+                        () => {
+                          router.push(`/dashboard/doc-edit/${doc?.id}`);
                         },
                       )}
                     >

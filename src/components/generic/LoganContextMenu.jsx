@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import {
   ContextMenu,
@@ -6,12 +6,16 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/shadcn-components/ui/context-menu";
+import { cn } from "@/utils/shadcn-utils";
 
 function LoganContextMenu({ children, onOpenChange, contextMenuItems }) {
   return (
     <ContextMenu onOpenChange={onOpenChange}>
-      <ContextMenuTrigger>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-[6.313rem] min-w-[6.313rem] shadow-sm">
+      <ContextMenuTrigger className="w-full">{children}</ContextMenuTrigger>
+      <ContextMenuContent
+        onClick={(e) => e.stopPropagation()}
+        className="w-[6.313rem] min-w-[6.313rem] shadow-sm"
+      >
         {contextMenuItems?.map((item) => {
           return (
             <ContextMenuItem
@@ -25,7 +29,7 @@ function LoganContextMenu({ children, onOpenChange, contextMenuItems }) {
                 remHeight={1}
                 alt={item.icon}
               />
-              <span>{item.label}</span>
+              <span className={cn("", item?.class)}>{item.label}</span>
             </ContextMenuItem>
           );
         })}

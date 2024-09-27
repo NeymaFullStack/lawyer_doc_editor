@@ -201,7 +201,7 @@ export const clientFoldersListTableColumns = (setListData, listData) => {
         let folderTags = folders?.map((folder, index) => {
           return (
             <Tag
-              className={"font-medium"}
+              className={"max-w-[6rem] truncate font-medium"}
               textColor={"text-primary-blue"}
               bgColor={"bg-secondary-blue"}
               key={folder?.id}

@@ -15,6 +15,9 @@ function ChooseEmplacementModal({
   onClose,
   saveDocFolderFieldValues,
   formValues,
+  type,
+  moveMetaData,
+  onConfirm,
 }) {
   const appDispatch = useDispatch();
   const scrollContainerRef = useRef(null);
@@ -77,15 +80,19 @@ function ChooseEmplacementModal({
               />
             }
             onClick={() => {
-              appDispatch(
-                folderNavigationAction.setOpenModalType(
-                  modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
-                ),
-              );
+              type === "MOVETO"
+                ? onConfirm()
+                : appDispatch(
+                    folderNavigationAction.setOpenModalType(
+                      modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
+                    ),
+                  );
             }}
             className={`btn btn--primary flex-row-reverse`}
           >
-            Create Document
+            {type === "MOVETO"
+              ? `Move ${moveMetaData.noOfFiles} Files`
+              : "Create Document"}
           </Button>
         </div>
       }
@@ -93,10 +100,10 @@ function ChooseEmplacementModal({
       <h2 className="text-2xl font-bold text-black">
         Choose An <span className="text-primary-blue">Emplacement</span>
       </h2>
-      <div className="mt-4 flex h-[30rem] w-full gap-4 rounded-lg bg-six p-5">
-        <div className="flex h-full w-[10rem] flex-col gap-2">
+      <div className="mt-4 flex h-[30rem] w-full gap-2  rounded-lg bg-six p-5">
+        <div className="flex h-full max-h-full w-[10rem] flex-col gap-2">
           <h4 className=" ml-2 font-semibold text-black-txt">clients</h4>
-          <div className="h-full rounded-lg bg-white py-3 pl-2 pr-3">
+          <div className="flex max-h-full overflow-hidden rounded-lg bg-white py-3 pl-2 pr-3">
             <EmplacementFoldersList
               client
               onClickFolder={onClickFolder}
@@ -108,7 +115,7 @@ function ChooseEmplacementModal({
           <h4 className=" ml-2 font-semibold text-black-txt">Folders</h4>
           <div
             ref={scrollContainerRef}
-            className="mx-2 flex w-full flex-1 overflow-x-scroll rounded-lg bg-white py-3 pl-2 pr-3"
+            className="mx-2 flex  w-full flex-1 overflow-x-scroll rounded-lg bg-white py-3 pl-2 pr-3"
           >
             <ul ref={contentRef} className="flex">
               {[...formValues.emplacement.path.keys()].map((item, index) => {

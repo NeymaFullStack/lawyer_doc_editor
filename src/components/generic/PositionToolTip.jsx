@@ -1,3 +1,4 @@
+import { cn } from "@/utils/shadcn-utils";
 import React, { useEffect, useRef, useState } from "react";
 let prevContainerRefLeft = 0;
 function PositionToolTip({
@@ -6,6 +7,7 @@ function PositionToolTip({
   isOpen,
   position,
   containerRef,
+  className,
 }) {
   const toolTipRef = useRef(null);
   const [toolTipRect, setToolTipRect] = useState(null);
@@ -119,7 +121,10 @@ function PositionToolTip({
     <>
       {toolTipPos?.top && toolTipPos?.left && (
         <div
-          className={`fixed z-10 w-fit rounded-xl border border-none bg-white p-2 text-primary-gray shadow-3d outline-none`}
+          className={cn(
+            `fixed z-10 w-fit rounded-xl border border-none bg-white p-2 text-primary-gray shadow-3d outline-none`,
+            className,
+          )}
           ref={toolTipRef}
           style={{
             top: toolTipPos?.top,

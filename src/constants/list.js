@@ -136,34 +136,40 @@ export const vesionFilterMenuList = (filters) => {
   ];
 };
 
-export const directoryContextMenuList = (router, item, setOpenRenameModal) => [
+export const directoryContextMenuList = ({
+  isMultipleSelected,
+  onClickRename,
+  onClickOpen,
+  onCLickDelete,
+  onClickMoveTo,
+}) => [
   {
     label: "Open",
     icon: "open-icon.svg",
-    iconUrl: "/assets/icons/open.svg",
+    iconUrl: isMultipleSelected
+      ? "/assets/icons/open-disabled.svg"
+      : "/assets/icons/open.svg",
     action: "open",
-    onClick: () => {
-      router.push(`/dashboard/${item.id}`);
-    },
+    class: isMultipleSelected ? "text-primary-gray" : "",
+    onClick: isMultipleSelected ? () => {} : onClickOpen,
   },
   {
     label: "Rename",
     icon: "rename-icon.svg",
-    iconUrl: "/assets/icons/rename.svg",
+    iconUrl: isMultipleSelected
+      ? "/assets/icons/rename-disabled.svg"
+      : "/assets/icons/rename.svg",
     action: "rename",
-    onClick: () => {
-      setOpenRenameModal();
-    },
+    class: isMultipleSelected ? "text-primary-gray" : "",
+    onClick: isMultipleSelected ? () => {} : onClickRename,
   },
-  // {
-  //   label: "Move To",
-  //   icon: "move-icon.svg",
-  //   iconUrl: "/assets/icons/move-to.svg",
-  //   action: "moveTo",
-  //   onClick: () => {
-  //     router.push(`/dashboard/${item.id}`);
-  //   },
-  // },
+  {
+    label: "Move To",
+    icon: "move-icon.svg",
+    iconUrl: "/assets/icons/move-to.svg",
+    action: "moveTo",
+    onClick: onClickMoveTo,
+  },
   // {
   //   label: "Duplicate",
   //   icon: "duplicate-icon.svg",
@@ -182,13 +188,11 @@ export const directoryContextMenuList = (router, item, setOpenRenameModal) => [
   //     router.push(`/dashboard/${item.id}`);
   //   },
   // },
-  // {
-  //   label: "Delete",
-  //   icon: "delete-icon.svg",
-  //   iconUrl: "/assets/icons/delete-outline.svg",
-  //   action: "delete",
-  //   onClick: () => {
-  //     router.push(`/dashboard/${item.id}`);
-  //   },
-  // },
+  {
+    label: "Delete",
+    icon: "delete-icon.svg",
+    iconUrl: "/assets/icons/delete-outline.svg",
+    action: "delete",
+    onClick: onCLickDelete,
+  },
 ];

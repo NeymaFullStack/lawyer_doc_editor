@@ -1,24 +1,29 @@
 import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { Button, Form, Input } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createClient } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { useDispatch } from "react-redux";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { modalType } from "./FolderDocCreation";
 import CompanyInformationForm from "../clientPage/ClientPageBody";
-import { optional } from "zod";
 
 function CreateClientModal({
   open,
   onClose,
   saveDocFolderFieldValues,
-  formValues: { clientName = "" },
+  formValues: { clientName = "", optionalClientDetails = null },
 }) {
   const appDispatch = useDispatch();
   const [showClientDetails, setShowClientDetails] = useState(false);
   const formRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (optionalClientDetails) {
+      setShowClientDetails(true);
+    }
+  }, []);
 
   return (
     <>
@@ -105,12 +110,13 @@ function CreateClientModal({
             <div className="mx-3 my-8">
               <CompanyInformationForm
                 renderInModal={true}
+                formDetails={optionalClientDetails}
                 ref={formRef}
                 onSaveChanges={(data) => {
                   onClickSaveClose(data);
                 }}
-                onContinueDocCreation={(data) => {
-                  onClickCreateDoc(data);
+                onContinueDocCreation={(data, file) => {
+                  onClickCreateDoc(data, file);
                 }}
               />
             </div>
@@ -157,7 +163,7 @@ function CreateClientModal({
     }
     setIsLoading(false);
   }
-  function onClickCreateDoc(formParams) {
+  function onClickCreateDoc(formParams, file = "") {
     appDispatch(
       folderNavigationAction.setOpenModalType(
         modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
@@ -166,7 +172,7 @@ function CreateClientModal({
     onClose(true, {
       clientCreation: true,
       clientName: clientName,
-      optionalClientDetails: formParams,
+      optionalClientDetails: { ...formParams, logo: file },
     });
   }
 }

@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        normal: "border border-secondary-blue text-black-txt",
+        normal: "border border-secondary-blue text-black-txt text-primary-gray",
         default:
           "bg-slate-900 text-slate-50 shadow hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90",
         destructive:
@@ -17,7 +17,7 @@ const buttonVariants = cva(
         outline:
           "border border-slate-200 bg-white shadow-sm hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50",
         secondary:
-          "bg-six text-slate-900 disabled:opacity-60 shadow-sm hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80",
+          "bg-six text-primary-gray disabled:opacity-60 shadow-sm hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80",
         ghost:
           "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50",
         link: "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
@@ -27,6 +27,7 @@ const buttonVariants = cva(
         "primary-blue-1": "bg-secondary-blue text-primary-blue",
         "primary-blue-1-dotted":
           "flex items-center bg-secondary-blue text-primary-blue border border-dotted border-primary-blue",
+        warn: "bg-warn text-white",
       },
       size: {
         default: "h-9 px-3 py-2",

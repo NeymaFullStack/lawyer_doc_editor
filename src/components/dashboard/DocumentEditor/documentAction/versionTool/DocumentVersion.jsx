@@ -74,7 +74,7 @@ function DocumentVersion({ docVersion }) {
       </div>
       {/* {docVersion?.participants?.length > 0 && <span>{}</span>} */}
       <div className="flex w-[30%] items-center justify-end">
-        <Tag {...tagStyleClasses()} className="">
+        <Tag {...tagStyleClasses()} className="flex items-center">
           {docVersion?.is_auto_saved !== null && (
             <RemSizeImage
               imagePath={`${docVersion?.is_auto_saved === true ? "/assets/icons/docaction/autosave.svg" : "/assets/icons/docaction/save-green.svg"}`}
