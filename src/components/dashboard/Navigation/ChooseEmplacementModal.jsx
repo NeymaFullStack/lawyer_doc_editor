@@ -103,7 +103,7 @@ function ChooseEmplacementModal({
       <div className="mt-4 flex h-[30rem] w-full gap-2  rounded-lg bg-six p-5">
         <div className="flex h-full max-h-full w-[10rem] flex-col gap-2">
           <h4 className=" ml-2 font-semibold text-black-txt">clients</h4>
-          <div className="flex max-h-full overflow-hidden rounded-lg bg-white py-3 pl-2 pr-3">
+          <div className="flex max-h-full flex-1 overflow-hidden rounded-lg bg-white py-3 pl-2 pr-3">
             <EmplacementFoldersList
               client
               onClickFolder={onClickFolder}

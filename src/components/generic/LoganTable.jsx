@@ -43,6 +43,7 @@ function LoganTable({
           listData.map((row, rIndex) =>
             enableContextMenu ? (
               <LoganContextMenu
+                key={row[rowKey]}
                 onOpenChange={(open) => onOpenChange(open, row)}
                 contextMenuItems={contextMenuItems}
               >
