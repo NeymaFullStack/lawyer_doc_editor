@@ -26,10 +26,14 @@ export const commentsSlice = createSlice({
     selectedTextPosition: null,
     isTextSelected: false,
     comments: [],
+    editor: null,
   },
   reducers: {
     setIsAddCommentModalOpen: (state, action) => {
       state.isAddCommentModalOpen = action.payload;
+    },
+    setEditor: (state, action) => {
+      state.editor = action.payload;
     },
     setSelectedTextPosition: (state, action) => {
       state.selectedTextPosition = {
