@@ -51,3 +51,5 @@ export const postCommentUrl = "/comment/create";
 export const replyCommentUrl = "/comment/reply";
 export const getCommentListUrl = (documentId) =>
   `/comment/document/${documentId}/all`;
+export const getArchiveCommentUrl = (commentId) =>
+  `/comment/archive/${commentId}`;
