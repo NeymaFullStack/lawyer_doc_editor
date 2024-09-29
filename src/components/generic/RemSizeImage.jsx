@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 function RemSizeImage(props) {
   const [imageProps, setImageProps] = useState();
@@ -39,6 +39,7 @@ function RemSizeImage(props) {
           height={imageProps?.remHeight}
           width={imageProps?.remWidth}
           alt={imageProps?.alt}
+          onClick={imageProps?.onClick}
         />
       )}
     </>

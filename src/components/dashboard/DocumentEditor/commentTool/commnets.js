@@ -1,4 +1,4 @@
-import { postComment, postReply } from "@/api/comments";
+import { archiveComment, postComment, postReply } from "@/api/comments";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { fetchAllComments } from "@/redux/editor/commentsSlice";
 import { useParams } from "next/navigation";
@@ -127,6 +127,7 @@ export default Comments;
 
 const CommentCard = ({ comment }) => {
   const dispatch = useDispatch();
+  const { editor } = useSelector((state) => state.commentsReducer);
   const [reply, setReply] = useState("");
   const replies = comment.replies || [];
   const replyCount = comment.replies.length;
@@ -137,6 +138,18 @@ const CommentCard = ({ comment }) => {
       await postReply(comment.comment_id, reply);
       dispatch(fetchAllComments(comment.document_id));
       setReply("");
+    }
+  };
+  const handleArchiveComment = async () => {
+    try {
+      await archiveComment(comment.comment_id);
+      dispatch(fetchAllComments(comment.document_id));
+      editor?.commands.changeCommentColor(
+        comment?.comment_id,
+        "var(--logan-comment-archive)",
+      );
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -155,10 +168,27 @@ const CommentCard = ({ comment }) => {
             {comment.name || "User"}
           </p>
         </div>
-        <div>
+        <div className=" flex items-center gap-x-2">
           <p className="font-inter  text-left text-[9.6px] font-medium leading-[11.62px] text-[#095AD34D]">
             {comment.date || "Today"} . {comment.time || "12:00 AM"}
           </p>
+          {comment.status === "ARCHIVED" ? (
+            <RemSizeImage
+              imagePath={"/assets/icons/archiveIcon.svg"}
+              remWidth={5.0625}
+              remHeight={1.1875}
+              alt={"All Doc"}
+            />
+          ) : (
+            <RemSizeImage
+              imagePath={"/assets/icons/rightIcon.svg"}
+              remWidth={0.75}
+              remHeight={0.5}
+              alt={"All Doc"}
+              className="cursor-pointer"
+              onClick={handleArchiveComment}
+            />
+          )}
         </div>
       </div>
       <div className="flex-1">

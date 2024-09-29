@@ -1,6 +1,7 @@
 import { cache } from "react";
 import Api from "../apiMethod";
 import {
+  getArchiveCommentUrl,
   getCommentListUrl,
   postCommentUrl,
   replyCommentUrl,
@@ -33,6 +34,14 @@ export const postReply = cache(async (comment_id, comment) => {
       comment_id: comment_id,
       content: comment,
     });
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+  }
+});
+export const archiveComment = cache(async (comment_id) => {
+  try {
+    const res = await Api.put(getArchiveCommentUrl(comment_id));
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

@@ -1,8 +1,6 @@
 "use client";
 
 import { documentAction } from "@/redux/documentSlice";
-import { nanoid } from "nanoid";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { documentActionsList } from "@/constants/list";
 import RemSizeImage from "@/components/generic/RemSizeImage";
@@ -54,6 +52,13 @@ function DocumentActionBar() {
   );
 
   function onClickActionTool(tool) {
+    if (tool === "comments") {
+      document.body.style.setProperty("--logan-comment-active", "#FFEB3B");
+      document.body.style.setProperty("--logan-comment-archive", "#87E596");
+    } else {
+      document.body.style.removeProperty("--logan-comment-active");
+      document.body.style.removeProperty("--logan-comment-archive");
+    }
     appDispatch(documentAction.setActiveDocumentAction(tool));
   }
 }
