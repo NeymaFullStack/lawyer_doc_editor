@@ -86,6 +86,31 @@ const CommentHighlight = Mark.create({
           }
           return false;
         },
+      changeCommentColor:
+        (commentId, newColor) =>
+        ({ state, dispatch }) => {
+          console.log("In changeCommentColor");
+          const { tr } = state;
+          state.doc.descendants((node, pos) => {
+            node.marks.forEach((mark) => {
+              if (
+                mark.type.name === this.name &&
+                mark.attrs.commentId === commentId
+              ) {
+                tr.addMark(
+                  pos,
+                  pos + node.nodeSize,
+                  this.type.create({ ...mark.attrs, color: newColor }),
+                );
+              }
+            });
+          });
+          if (tr.docChanged) {
+            dispatch(tr);
+            return true;
+          }
+          return false;
+        },
     };
   },
 
