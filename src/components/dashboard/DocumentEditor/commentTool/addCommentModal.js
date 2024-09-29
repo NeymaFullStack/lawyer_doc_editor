@@ -14,7 +14,10 @@ const AddCommentModal = ({ isOpen, onClose, position, editorRef, editor }) => {
   const handleSubmit = async () => {
     if (commentText.trim()) {
       const comment = await postComment(docId, commentText);
-      editor?.commands.setCommentHighlight(comment?.comment_id, "#FFEB3B");
+      editor?.commands.setCommentHighlight(
+        comment?.comment_id,
+        "var(--logan-comment-active)",
+      );
       dispatch(fetchAllComments(docId));
       setCommentText("");
       onClose();
