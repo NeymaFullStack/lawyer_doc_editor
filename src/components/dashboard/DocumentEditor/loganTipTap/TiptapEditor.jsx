@@ -143,7 +143,7 @@ const TiptapEditor = () => {
     {
       extensions: [
         StoreCursorPositionExtension,
-        // FontSize,
+
         StarterKit.configure({
           heading: false, // Disable the default heading extension
           paragraph: false,

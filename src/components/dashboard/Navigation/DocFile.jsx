@@ -11,7 +11,7 @@ function DocFile({
   nonClient = false,
   contextMenuActiveId,
   selectedDocs,
-  onSingleClickOnDoc,
+  onSingleClickOnDoc = () => {},
 }) {
   return (
     <div
