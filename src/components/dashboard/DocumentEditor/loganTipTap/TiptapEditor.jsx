@@ -49,7 +49,7 @@ import Collaboration from "@tiptap/extension-collaboration";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-// import { FontSize } from "./marks/fontStyle";
+import { FontSize } from "./marks/fontSize";
 import CommentExtension from "./extensions/comments";
 
 import { useUserDetails } from "@/hooks";
@@ -60,6 +60,7 @@ import FontFamily from "@tiptap/extension-font-family";
 import CopiedTag from "@/components/generic/CopiedTag";
 import { commentsAction } from "@/redux/editor/commentsSlice";
 import AddCommentModal from "../commentTool/addCommentModal";
+import TextStyle from "@tiptap/extension-text-style";
 
 const doc = new Y.Doc();
 const initialArticleInsertionState = {
@@ -141,12 +142,16 @@ const TiptapEditor = () => {
 
   const editor = useEditor(
     {
+      shouldRerenderOnTransaction: false,
+
       extensions: [
         StoreCursorPositionExtension,
-
+        // TextStyle,
+        // FontSize,
         StarterKit.configure({
           heading: false, // Disable the default heading extension
           paragraph: false,
+          listItem: false,
         }),
         FontFamily,
         Collaboration.configure({
@@ -155,6 +160,7 @@ const TiptapEditor = () => {
         TextAlign.configure({
           types: ["heading", "paragraph"],
           alignments: ["left", "center", "right", "justify"],
+          defaultAlignment: "left",
         }),
         CollaborationCursor.configure({
           provider,
@@ -195,6 +201,7 @@ const TiptapEditor = () => {
         }),
         ArticleExtention.configure({
           updateArticles: (articles) => {
+            console.log("In TiptapEditor ArticleExtention updateArticles");
             appDispatch(documentIndexingAction.setArticlesList(articles));
           },
         }),
@@ -208,7 +215,6 @@ const TiptapEditor = () => {
             setOpenArticleDeleteConfirmModal(true);
           },
         }),
-        CommentExtension,
       ],
       injectCSS: true,
       autofocus: true,
@@ -651,7 +657,6 @@ const TiptapEditor = () => {
         copiedContent.type === copiedContentType.Variable ||
         copiedContent.type === copiedContentType.Company
       ) {
-        debugger;
         const textContent = copiedContent?.title;
         editor.commands.insertContentAt(
           Number(pos),

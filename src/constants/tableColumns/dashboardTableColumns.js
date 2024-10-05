@@ -250,17 +250,17 @@ export const foldersListTableColumns = (setListData, listData) => {
           </span>
         );
       },
-      class: () => "w-[20%]",
+      class: () => "w-[20%] ",
       customView: (row) => {
         return (
-          <div className="flex items-center gap-3  pl-2">
+          <div className="flex w-full items-center gap-3  truncate pl-2">
             <RemSizeImage
               imagePath={`/assets/icons/${Object.keys(row).includes("version") ? "doc-icon" : "non-client-folder"}.svg`}
               remWidth={1.313}
               remHeight={1.313}
               alt={"Client Folder"}
             />
-            <span className="truncate font-semibold text-black hover:text-primary-blue">
+            <span className="w-full truncate font-semibold  text-black hover:text-primary-blue">
               {row.title}
             </span>
           </div>
@@ -297,46 +297,45 @@ export const foldersListTableColumns = (setListData, listData) => {
       class: () => "hover:text-primary-blue w-[20%]",
       id: "updated_at",
     },
-    {
-      label: "Folders",
-      id: "folders",
-      class: () => "w-[40%]",
+    // {
+    //   label: "Folders",
+    //   id: "folders",
+    //   class: () => "w-[40%]",
+    //   customView: (row) => {
+    //     let folders = row?.sub_projects;
+    //     if (folders?.length <= 0) {
+    //       return "NA";
+    //     }
+    //     let folderLimitExceed = folders?.length > foldersToShow;
+    //     if (folderLimitExceed) {
+    //       folders = folders?.slice(0, 4);
+    //     }
+    //     let folderTags = folders?.map((folder, index) => {
+    //       return (
+    //         <Tag
+    //           className={"font-medium"}
+    //           textColor={"text-primary-blue"}
+    //           bgColor={"bg-secondary-blue"}
+    //           key={folder?.id}
+    //         >
+    //           {folder?.title}
+    //         </Tag>
+    //       );
+    //     });
 
-      customView: (row) => {
-        let folders = row?.sub_projects;
-        if (folders?.length <= 0) {
-          return "NA";
-        }
-        let folderLimitExceed = folders?.length > foldersToShow;
-        if (folderLimitExceed) {
-          folders = folders?.slice(0, 4);
-        }
-        let folderTags = folders?.map((folder, index) => {
-          return (
-            <Tag
-              className={"font-medium"}
-              textColor={"text-primary-blue"}
-              bgColor={"bg-secondary-blue"}
-              key={folder?.id}
-            >
-              {folder?.title}
-            </Tag>
-          );
-        });
-
-        if (folderLimitExceed) {
-          folderTags?.push(
-            <Tag
-              className={"font-medium"}
-              textColor={"text-primary-blue"}
-              bgColor={"bg-secondary-blue"}
-            >
-              {`+1`}
-            </Tag>,
-          );
-        }
-        return <div className="flex items-center gap-1">{folderTags}</div>;
-      },
-    },
+    //     if (folderLimitExceed) {
+    //       folderTags?.push(
+    //         <Tag
+    //           className={"font-medium"}
+    //           textColor={"text-primary-blue"}
+    //           bgColor={"bg-secondary-blue"}
+    //         >
+    //           {`+1`}
+    //         </Tag>,
+    //       );
+    //     }
+    //     return <div className="flex items-center gap-1">{folderTags}</div>;
+    //   },
+    // },
   ];
 };

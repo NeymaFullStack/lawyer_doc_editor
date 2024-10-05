@@ -80,7 +80,7 @@ const Alignment = ({ editor }) => {
       </PopoverTrigger>
       <PopoverContent className="ml-1  max-h-60 w-fit min-w-fit overflow-y-scroll p-2">
         {/* List of alignment options as buttons */}
-        <div className="flex flex-col space-y-1">
+        <div className="flex flex-col gap-1">
           {ALIGNMENT_TYPE.map((alignment) => (
             <Button
               key={alignment?.value}

@@ -2,9 +2,22 @@ import LoganModal from "@/components/generic/LoganModal";
 import React, { useState } from "react";
 import { Input } from "@/components/shadcn-components/ui/input";
 import { Button } from "@/components/shadcn-components/ui/button";
+import { folderNavigationAction } from "@/redux/folderNavigationSlice";
+import { toast } from "sonner";
+import { deleteFolderDoc } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import { useDispatch } from "react-redux";
+import { set } from "react-hook-form";
+import Loader from "@/components/generic/Loader";
 
-function DeleteConfirmationModal({ open, onConfirm, onClose }) {
+function DeleteConfirmationModal({
+  open,
+  setMultipleSelectedItems,
+  onClose,
+  multipleSelectedItems,
+}) {
   const [input, setInput] = useState("");
+  const appDispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <LoganModal
@@ -15,11 +28,19 @@ function DeleteConfirmationModal({ open, onConfirm, onClose }) {
       customFooter={
         <div className="mt-3 flex items-center gap-3">
           <Button
+            disabled={isLoading}
             variant={input === "DELETE" ? "warn" : "secondary"}
             onClick={() => {
-              input === "DELETE" && onConfirm();
+              input === "DELETE" && deleteSelection();
             }}
           >
+            {isLoading && (
+              <Loader
+                width={"h-[1rem]"}
+                height={"w-[1rem]"}
+                className={"mr-2"}
+              />
+            )}
             Delete
           </Button>
           <Button variant={"normal"} onClick={onClose}>
@@ -51,6 +72,53 @@ function DeleteConfirmationModal({ open, onConfirm, onClose }) {
       </div>
     </LoganModal>
   );
+
+  async function deleteSelection() {
+    setIsLoading(true);
+    const deleteRes = await deleteFolderDoc({
+      project_ids: [
+        ...multipleSelectedItems?.selectedFolders.map((item) => item?.id),
+      ],
+      document_ids: [
+        ...multipleSelectedItems?.selectedDocs.map((item) => item?.id),
+      ],
+    });
+    if (deleteRes.status === "success") {
+      appDispatch(folderNavigationAction.toggleRefreshDirectory());
+      toast.custom(
+        (t) => (
+          <div className="rounded-md bg-overlay px-3 py-4 text-xs  text-white">
+            <span>
+              {multipleSelectedItems.selectedDocs.length +
+                multipleSelectedItems.selectedFolders.length >
+              1
+                ? "Multiple Items have been deleted. "
+                : (multipleSelectedItems.selectedDocs[0]?.title ||
+                    multipleSelectedItems.selectedDocs[0]?.document_name ||
+                    multipleSelectedItems.selectedFolders[0]?.title) +
+                  " has been deleted. "}
+            </span>
+            <span
+              onClick={() => {
+                toast.dismiss(t.id);
+              }}
+              className="cursor-pointer font-bold underline"
+            >
+              {"Undo"}
+            </span>
+          </div>
+        ),
+        { duration: 5000 },
+      );
+      setInput("");
+      onClose();
+      setMultipleSelectedItems({
+        selectedFolders: [],
+        selectedDocs: [],
+      });
+      setIsLoading(false);
+    }
+  }
 }
 
 export default DeleteConfirmationModal;

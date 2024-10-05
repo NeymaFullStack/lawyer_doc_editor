@@ -20,6 +20,9 @@ export const createClientUrl = "/clients/create";
 export const renameFolderUrl = (folderId) => `/folder/${folderId}/rename`;
 export const renameDocumentUrl = (documentId) =>
   `/document/${documentId}/rename`;
+export const deleteFolderDocUrl = "/project-document/delete";
+export const moverFolderDocUrl = "/project-document/move";
+export const duplicateDocUrl = "/project-document/duplicate";
 export const getClientOptionalDetailsUrl = "/clients/project";
 export const updateClientOptionalDetailsUrl = (clientId) =>
   `/clients/project/${clientId}/update`;

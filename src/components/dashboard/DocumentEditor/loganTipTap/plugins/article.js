@@ -12,6 +12,8 @@ const ArticleExtention = Extension.create({
 
   addProseMirrorPlugins() {
     let updateArticles = this.options.updateArticles;
+    let prevArticlesList = []; // Store the previous article list outside the plugin instance
+
     const editor = this.editor;
     return [
       new Plugin({
@@ -314,8 +316,14 @@ const ArticleExtention = Extension.create({
                 }
               });
               tr.docChanged && dispatch(tr);
-
-              updateArticles(articlesList);
+              if (
+                JSON.stringify(articlesList) !==
+                JSON.stringify(prevArticlesList)
+              ) {
+                updateArticles(articlesList); // Update Redux state
+                prevArticlesList = articlesList; // Store the new list for future comparison
+              }
+              // updateArticles(articlesList);
 
               // recursive function for handinliong articles and subarticles
               function setIndexForListItems(listNode, parentIndex = []) {

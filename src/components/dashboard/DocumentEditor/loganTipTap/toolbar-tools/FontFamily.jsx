@@ -59,7 +59,7 @@ const FontFamily = ({ editor }) => {
       </PopoverTrigger>
       <PopoverContent className="no-scrollbar ml-[3.8rem] max-h-60 w-fit min-w-fit overflow-y-scroll p-2">
         {/* List of alignment options as buttons */}
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-1">
           {FONT_FAMILY_OPTIONS.map((fontFamily) => (
             <Button
               key={fontFamily?.value}

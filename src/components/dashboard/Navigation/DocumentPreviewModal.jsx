@@ -134,8 +134,8 @@ function DocumentPreviewModal({
       res?.project_id && (await createNewDocument(res?.project_id));
       setLoading(false);
     } else {
-      (formValues.emplacement.selectedFolder || params?.folderId) &&
-        createNewDocument(formValues.emplacement.selectedFolder);
+      (formValues.emplacement.selectedFolder.id || params?.folderId) &&
+        createNewDocument(formValues.emplacement.selectedFolder.id);
     }
   }
 

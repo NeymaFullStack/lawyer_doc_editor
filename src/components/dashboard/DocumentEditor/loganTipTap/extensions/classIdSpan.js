@@ -1,32 +1,28 @@
-// extensions/CustomSpan.js
-import { Node, mergeAttributes } from "@tiptap/core";
+import { Node } from "@tiptap/core";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import { Plugin } from "@tiptap/pm/state";
 import { NodeSelection } from "prosemirror-state";
-
+const nodeViewClasses = [
+  "doc-variable",
+  "doc-article-title",
+  "doc-article-tag",
+  "doc-appendix-tag",
+];
 export const classIdSpan = Node.create({
   name: "classIdSpan",
   content: "inline*",
   group: "inline",
   inline: true,
-  selectable: true, // Allow selection
+  selectable: true,
   draggable: false,
+  marks: "_",
 
   addAttributes() {
     return {
-      ...this.parent?.(),
-      class: {
-        default: null,
-      },
-      id: {
-        default: null,
-      },
-      style: {
-        default: null,
-      },
-      "data-key": {
-        default: null,
-      },
+      class: { default: null },
+      id: { default: null },
+      style: { default: null },
+      "data-key": { default: null },
     };
   },
 
@@ -34,114 +30,88 @@ export const classIdSpan = Node.create({
     return [
       {
         tag: "span",
-        getAttrs: (dom) => ({
-          class: dom.getAttribute("class"),
-          id: dom.getAttribute("id"),
-          style: dom.getAttribute("style"),
-          "data-key": dom.getAttribute("data-key"),
-        }),
+        getAttrs: (dom) => {
+          const attrs = {};
+          Array.from(dom.attributes).forEach((attr) => {
+            attrs[attr.name] = attr.value;
+          });
+          return attrs;
+        },
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    if (HTMLAttributes?.class !== null) {
-      HTMLAttributes.contenteditable = "false";
-    } else {
-      HTMLAttributes.contenteditable = "true";
-    }
-
-    return ["span", mergeAttributes(HTMLAttributes), 0];
+    return ["span", HTMLAttributes, 0];
   },
 
   addNodeView() {
     return ({ node, getPos, editor }) => {
-      const dom = document.createElement("span");
-      if (
-        node.attrs.class === null ||
-        node.attrs.class === "doc-article-title"
-      ) {
+      const { class: className } = node.attrs;
+      if (!nodeViewClasses.includes(className)) {
         return;
       }
-      // Apply all attributes to the DOM element
+      const dom = document.createElement("span");
+
       Object.entries(node.attrs).forEach(([key, value]) => {
-        if (value !== null) {
-          dom.setAttribute(key, value);
-        }
+        if (value) dom.setAttribute(key, value);
       });
 
-      // Set the contenteditable attribute based on class presence
-      dom.setAttribute(
-        "contenteditable",
-        node.attrs.class !== null ? "false" : "true",
-      );
-
-      // Set the text content of the span
+      // Set contenteditable if 'class' attribute is present to make the node a single unit
+      dom.setAttribute("contenteditable", className ? "false" : "true");
       dom.textContent = node.textContent;
 
-      // Handle click event to add/remove 'is-selected' class
+      // Add event listeners and class handling logic
       dom.addEventListener("click", () => {
         if (
-          node.attrs.class?.includes("doc-variable") ||
-          node.attrs.class?.includes("doc-article-tag")
+          className?.includes("doc-variable") ||
+          className?.includes("doc-article-tag")
         ) {
-          dom.classList.add("is-selected");
-
+          // dom.classList.add("is-selected");
           const { state, dispatch } = editor.view;
-          const transaction = state.tr.setSelection(
-            NodeSelection.create(state.doc, getPos()),
+          dispatch(
+            state.tr.setSelection(NodeSelection.create(state.doc, getPos())),
           );
-          dispatch(transaction);
         } else {
-          dom.classList.remove("is-selected");
+          // dom.classList.remove("is-selected");
         }
       });
 
       return {
         dom,
-        selectNode: () => {
-          dom.classList.add("is-selected");
-        },
-        deselectNode: () => {
-          dom.classList.remove("is-selected");
-        },
+        selectNode: () => dom.classList.add("is-selected"),
+        deselectNode: () => dom.classList.remove("is-selected"),
       };
     };
   },
+
   addCommands() {
     return {
-      ...this.parent?.(),
       replaceTextInNodeWithClassAndValue:
         (prevText, newText) =>
-        ({ state, dispatch, commands }) => {
-          if (prevText === newText) {
-            return false;
-          }
+        ({ state, dispatch }) => {
+          if (prevText === newText) return false;
+
           const { schema, tr, doc } = state;
           const customNodeType = schema.nodes.classIdSpan;
-          let trMapping = tr.mapping;
           doc.descendants((node, pos) => {
             if (
               node.type.name === "classIdSpan" &&
               node.attrs.class === "doc-variable" &&
-              node?.textContent === prevText
+              node.textContent === prevText
             ) {
-              const mappedPos = trMapping.map(pos);
+              const mappedPos = tr.mapping.map(pos);
+              const newTextNode = newText ? schema.text(newText) : null;
+              const newNode = customNodeType.create(
+                node.attrs,
+                newTextNode ? newTextNode : null,
+              );
 
-              if (newText === "") {
-                tr.delete(mappedPos, mappedPos + node.nodeSize);
-              } else {
-                const newTextNode = schema.text(newText);
-                const newCustomNode = customNodeType.create(
-                  node.attrs,
-                  newTextNode,
-                );
-                const slice = new Slice(Fragment.from(newCustomNode), 0, 0);
-
-                tr.replace(mappedPos, mappedPos + node.nodeSize, slice);
-              }
+              const slice = new Slice(Fragment.from(newNode), 0, 0);
+              tr.replace(mappedPos, mappedPos + node.nodeSize, slice);
             }
           });
+
           if (tr.docChanged) {
             dispatch(tr);
             return true;
@@ -161,15 +131,13 @@ export const classIdSpan = Node.create({
               const { selection } = state;
               const { $from, node: selectedNode } = selection;
               const prevNode = $from.nodeBefore;
-              const nextNode = $from.nodeAfter;
+
               if (selectedNode?.attrs?.class === "doc-article-title") {
                 event.preventDefault();
-                // Assume `this.options.openModal` is defined elsewhere in your code
                 this.options.openModal(selectedNode);
                 return true;
               } else if (prevNode?.attrs?.class === "doc-article-title") {
                 event.preventDefault();
-                // Assume `this.options.openModal` is defined elsewhere in your code
                 this.options.openModal(prevNode);
                 return true;
               }

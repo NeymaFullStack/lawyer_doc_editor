@@ -3,6 +3,7 @@ import {
   getFolderDetails,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import RemSizeImage from "@/components/generic/RemSizeImage";
+import { cn } from "@/utils/shadcn-utils";
 import React, { useEffect, useState } from "react";
 
 function EmplacementFoldersList({
@@ -10,11 +11,13 @@ function EmplacementFoldersList({
   parentFolderId,
   onClickFolder,
   selectedFolder,
+  selectedMovableFolderIds = [],
 }) {
   const [folderList, setFolderList] = useState(null);
   useEffect(() => {
     client ? fetchClientList() : fetchFolderList();
   }, [parentFolderId]);
+  console.log("selectedMovableFolderIds", selectedMovableFolderIds);
   return (
     <ul className={`h-full flex-1 overflow-x-hidden overflow-y-scroll `}>
       {folderList ? (
@@ -22,8 +25,17 @@ function EmplacementFoldersList({
           return (
             <li
               key={index}
-              className={`flex cursor-pointer items-center gap-3 rounded-md px-1 py-2 pl-2 hover:bg-six ${folder?.id === selectedFolder ? "bg-six" : ""}`}
-              onClick={() => onClickFolder(folder, parentFolderId, client)}
+              className={cn(
+                "flex cursor-pointer items-center gap-3 rounded-md px-1 py-2 pl-2 hover:bg-six",
+                folder?.id === selectedFolder?.id && "bg-six ",
+                selectedMovableFolderIds.includes(folder.id) &&
+                  "cursor-default opacity-50 hover:bg-white",
+              )}
+              onClick={() => {
+                selectedMovableFolderIds.includes(folder.id)
+                  ? () => {}
+                  : onClickFolder(folder, parentFolderId, client);
+              }}
             >
               <RemSizeImage
                 imagePath={
@@ -35,7 +47,11 @@ function EmplacementFoldersList({
                 remHeight={1.1}
                 alt={"Client Folder"}
               />
-              <span className="truncate text-nowrap text-xs font-medium text-black-txt">
+              <span
+                className={cn(
+                  "truncate text-nowrap text-xs font-medium text-black-txt",
+                )}
+              >
                 {folder?.title}
               </span>
             </li>

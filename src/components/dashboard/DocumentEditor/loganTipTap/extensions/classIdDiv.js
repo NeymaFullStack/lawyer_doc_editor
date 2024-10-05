@@ -1,10 +1,5 @@
 // extensions/CustomSpan.js
-import { findNodePosFromNode } from "@/utils/dashboard/editor-utils";
-import { Node, mergeAttributes } from "@tiptap/core";
-import { Fragment, Slice } from "@tiptap/pm/model";
-import { Plugin } from "@tiptap/pm/state";
-
-import { NodeSelection } from "prosemirror-state";
+import { Node } from "@tiptap/core";
 
 export const classIdDiv = Node.create({
   name: "classIdDiv",
@@ -38,7 +33,6 @@ export const classIdDiv = Node.create({
       },
     ];
   },
-
   renderHTML({ HTMLAttributes, node }) {
     return ["div", HTMLAttributes, 0];
   },

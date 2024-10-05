@@ -22,6 +22,7 @@ function ChooseEmplacementModal({
   const appDispatch = useDispatch();
   const scrollContainerRef = useRef(null);
   const contentRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const handleScrollToEnd = () => {
@@ -71,6 +72,7 @@ function ChooseEmplacementModal({
           </Button>
           <Button
             disabled={!formValues.emplacement.selectedFolder}
+            loading={loading}
             icon={
               <RemSizeImage
                 imagePath={"/assets/icons/arrow-right-white.svg"}
@@ -80,13 +82,16 @@ function ChooseEmplacementModal({
               />
             }
             onClick={() => {
-              type === "MOVETO"
-                ? onConfirm()
-                : appDispatch(
-                    folderNavigationAction.setOpenModalType(
-                      modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
-                    ),
-                  );
+              if (type === "MOVETO") {
+                setLoading(true);
+                onConfirm().finally(() => setLoading(false));
+              } else {
+                appDispatch(
+                  folderNavigationAction.setOpenModalType(
+                    modalType.DOCUMENT_TEMPLATE_TYPE_SELECTION,
+                  ),
+                );
+              }
             }}
             className={`btn btn--primary flex-row-reverse`}
           >
@@ -126,6 +131,15 @@ function ChooseEmplacementModal({
                   >
                     <EmplacementFoldersList
                       selectedFolder={formValues.emplacement.selectedFolder}
+                      selectedMovableFolderIds={
+                        moveMetaData?.multipleSelectedItems.selectedFolders
+                          ? [
+                              ...moveMetaData?.multipleSelectedItems.selectedFolders.map(
+                                (item) => item.id,
+                              ),
+                            ]
+                          : []
+                      }
                       onClickFolder={onClickFolder}
                       parentFolderId={item}
                     />
@@ -142,14 +156,14 @@ function ChooseEmplacementModal({
   function onClickFolder(folder, parentFolderId, isClient) {
     if (isClient) {
       let emplacement = { ...formValues?.emplacement };
-      emplacement.selectedFolder = folder.id;
+      emplacement.selectedFolder = folder;
       emplacement.path = new Map([[folder.id, null]]);
 
       saveDocFolderFieldValues({ emplacement });
     } else {
       let { emplacement } = formValues;
 
-      emplacement.selectedFolder = folder.id;
+      emplacement.selectedFolder = folder;
 
       let pathMap = emplacement.path;
       pathMap = sliceMapUpToaKey(pathMap, parentFolderId);

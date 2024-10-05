@@ -140,8 +140,11 @@ export const directoryContextMenuList = ({
   isMultipleSelected,
   onClickRename,
   onClickOpen,
-  onCLickDelete,
+  onClickDelete,
   onClickMoveTo,
+  onClickDuplicate,
+  disableMoveTo = false,
+  disableDuplicate = false,
 }) => [
   {
     label: "Open",
@@ -168,17 +171,17 @@ export const directoryContextMenuList = ({
     icon: "move-icon.svg",
     iconUrl: "/assets/icons/move-to.svg",
     action: "moveTo",
-    onClick: onClickMoveTo,
+    class: disableMoveTo ? "text-primary-gray" : "",
+    onClick: disableMoveTo ? () => {} : onClickMoveTo,
   },
-  // {
-  //   label: "Duplicate",
-  //   icon: "duplicate-icon.svg",
-  //   iconUrl: "/assets/icons/duplicate.svg",
-  //   action: "duplicate",
-  //   onClick: () => {
-  //     router.push(`/dashboard/${item.id}`);
-  //   },
-  // },
+  {
+    label: "Duplicate",
+    icon: "duplicate-icon.svg",
+    iconUrl: "/assets/icons/duplicate.svg",
+    action: "duplicate",
+    class: disableDuplicate ? "text-primary-gray" : "",
+    onClick: disableDuplicate ? () => {} : onClickDuplicate,
+  },
   // {
   //   label: "Download",
   //   icon: "download-icon.svg",
@@ -193,6 +196,6 @@ export const directoryContextMenuList = ({
     icon: "delete-icon.svg",
     iconUrl: "/assets/icons/delete-outline.svg",
     action: "delete",
-    onClick: onCLickDelete,
+    onClick: onClickDelete,
   },
 ];

@@ -8,11 +8,11 @@ function DocFolder({
   onDoubleClick,
   folder,
   nonClient = false,
-  contextMenuActiveId,
   selectedFolders,
   onSingleClickOnFolder,
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const isSelected = selectedFolders?.find((item) => item?.id === folder?.id);
   return (
     <div
       aria-description="folder"
@@ -29,9 +29,8 @@ function DocFolder({
         onSingleClickOnFolder(folder);
       }}
       className={cn(
-        "group flex cursor-pointer items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-xs font-semibold text-black-txt shadow-out hover:bg-secondary-blue ",
-        (contextMenuActiveId === folder?.id ||
-          selectedFolders?.find((item) => item?.id === folder?.id)) &&
+        "group flex cursor-pointer select-none items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-sm font-medium text-black-txt shadow-out hover:bg-secondary-blue ",
+        isSelected &&
           " border-primary-blue bg-secondary-blue text-primary-blue",
       )}
     >
@@ -41,7 +40,7 @@ function DocFolder({
             imagePath={
               nonClient
                 ? "/assets/icons/non-client-folder.svg"
-                : isHovered
+                : isHovered || isSelected
                   ? "/assets/icons/client-folder-blue-bg.svg"
                   : "/assets/icons/client-folder.svg"
             }

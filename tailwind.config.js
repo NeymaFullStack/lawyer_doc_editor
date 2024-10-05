@@ -122,6 +122,7 @@ module.exports = {
         "appendix-1": "#FF7A00",
         "doc-border": "#E8F0F2",
         "black-txt": "#383D44",
+        six: "#F0F5FC",
         "secondary-blue": "#095AD31A",
         "hr-line": "#F0F5FD",
         "primary-blue": "#095AD3",

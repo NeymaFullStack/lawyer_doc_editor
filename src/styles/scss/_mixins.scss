@@ -23,12 +23,6 @@
     font-family: "Inter";
   }
 
-  span[style*="font-size"] {
-    line-height: 1; /* or a relative value that works best */
-    display: inline-block; /* Ensures the span respects its font-size and line-height */
-    vertical-align: middle; /* Aligns text vertically in the middle */
-  }
-
   h1,
   h2,
   h3,

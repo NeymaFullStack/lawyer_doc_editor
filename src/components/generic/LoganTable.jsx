@@ -45,7 +45,7 @@ function LoganTable({
               <LoganContextMenu
                 key={row[rowKey]}
                 onOpenChange={(open) => onOpenChange(open, row)}
-                contextMenuItems={contextMenuItems}
+                contextMenuItems={contextMenuItems(row)}
               >
                 <TableRow
                   key={row[rowKey]}

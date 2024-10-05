@@ -6,6 +6,8 @@ import {
   createFolderUrl,
   createImportedDocumentUrl,
   createNewDocumentVersionUrl,
+  deleteFolderDocUrl,
+  duplicateDocUrl,
   exportDocumentPdfUrl,
   getAllNotificationsUrl,
   getAppendixContnetUrl,
@@ -22,6 +24,7 @@ import {
   gptChatUrl,
   importDocUrl,
   markAllNotificationSeenUrl,
+  moverFolderDocUrl,
   renameDocumentUrl,
   renameFolderUrl,
   restoreVersionUrl,
@@ -189,6 +192,7 @@ export const createFolder = async (queryParams) => {
   }
 };
 
+//Navigation context menu actions
 export const renameFolder = async (folderId, queryParams) => {
   try {
     const res = await Api.put(renameFolderUrl(folderId), queryParams);
@@ -203,6 +207,36 @@ export const renameDocument = async (documentid, queryParams) => {
   try {
     const res = await Api.put(renameDocumentUrl(documentid), queryParams);
     return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const deleteFolderDoc = async (queryParams) => {
+  try {
+    const res = await Api.put(deleteFolderDocUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const moveFolderDoc = async (queryParams) => {
+  try {
+    const res = await Api.put(moverFolderDocUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const duplicateDocument = async (queryParams) => {
+  try {
+    const res = await Api.post(duplicateDocUrl, queryParams);
+    return res.data;
   } catch (error) {
     //dispatch action for global error dialog box
     console.log(error);

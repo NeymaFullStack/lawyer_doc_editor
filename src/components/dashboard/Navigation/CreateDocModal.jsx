@@ -124,11 +124,10 @@ function CreateDocModal({
     >
       <div className="flex items-center justify-between ">
         <h2 className="text-2xl font-bold text-black">
-          {newAppendixState?.id ? "Create Your " : "Choose"}
+          {"Create Your "}
           <span className="text-primary-blue">
-            {newAppendixState?.id ? "Appendix" : "How To Begin"}
+            {newAppendixState?.id ? "Appendix" : "Document"}
           </span>{" "}
-          {newAppendixState?.id && "From Scratch"}
         </h2>
         <RemSizeImage
           imagePath={"/assets/icons/poweredby-ai.svg"}

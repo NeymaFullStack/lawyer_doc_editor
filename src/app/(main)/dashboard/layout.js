@@ -10,7 +10,13 @@ export default function Layout({ children }) {
   return (
     <div className="flex h-full flex-col">
       <DashboardHeader />
-      <Toaster className="left-[16rem]  max-w-full" position="bottom-left" />
+      <Toaster
+        toastOptions={{
+          style: { width: "max-content" },
+          className: "left-[14rem]",
+        }}
+        position="bottom-left"
+      />
 
       {children}
     </div>

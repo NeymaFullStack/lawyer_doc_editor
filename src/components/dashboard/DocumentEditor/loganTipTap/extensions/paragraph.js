@@ -2,7 +2,6 @@ import Paragraph from "@tiptap/extension-paragraph";
 import { Plugin } from "@tiptap/pm/state";
 
 export const customParagraph = Paragraph.extend({
-  content: "inline*",
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -137,23 +136,23 @@ export const customParagraph = Paragraph.extend({
         view: (view) => {
           return {
             update: (view, prevState) => {
-              view.state.doc.descendants((node, pos) => {
-                // Only apply to paragraph nodes
-                if (node.type.name === "paragraph") {
-                  const domNode = view.domAtPos(pos).node;
-                  // debugger;
-                  if (domNode.nodeName === "P") {
-                    const spans = domNode.querySelectorAll("span");
-                    if (spans.length === 1 && spans[0].style.fontSize) {
-                      // Apply line-height if conditions are met
-                      domNode.style.lineHeight = "1.2";
-                    } else {
-                      // Reset line-height
-                      domNode.style.lineHeight = "";
-                    }
-                  }
-                }
-              });
+              // view.state.doc.descendants((node, pos) => {
+              //   // Only apply to paragraph nodes
+              //   if (node.type.name === "paragraph") {
+              //     const domNode = view.domAtPos(pos).node;
+              //     // debugger;
+              //     if (domNode.nodeName === "P") {
+              //       const spans = domNode.querySelectorAll("span");
+              //       if (spans.length === 1 && spans[0].style.fontSize) {
+              //         // Apply line-height if conditions are met
+              //         domNode.style.lineHeight = "1.2";
+              //       } else {
+              //         // Reset line-height
+              //         domNode.style.lineHeight = "";
+              //       }
+              //     }
+              //   }
+              // });
             },
           };
         },

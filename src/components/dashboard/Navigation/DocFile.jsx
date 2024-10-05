@@ -9,7 +9,6 @@ function DocFile({
   onDoubleClick,
   doc,
   nonClient = false,
-  contextMenuActiveId,
   selectedDocs,
   onSingleClickOnDoc = () => {},
 }) {
@@ -21,13 +20,12 @@ function DocFile({
         onSingleClickOnDoc(doc);
       }}
       className={cn(
-        "flex w-[13rem] cursor-pointer flex-col gap-2 rounded-lg border-[1px] border-white px-4 py-3 hover:bg-secondary-blue",
+        "flex w-[13rem] cursor-pointer flex-col gap-2 rounded-lg border-[1px] border-white px-4 py-3 hover:border-secondary-blue hover:bg-secondary-blue",
         nonClient ? "bg-blanc" : "bg-six",
-        (contextMenuActiveId === doc?.id ||
-          selectedDocs?.find((item, index) => {
-            return item.id === doc.id;
-          })) &&
-          " border-primary-blue bg-secondary-blue text-primary-blue",
+        selectedDocs?.find((item, index) => {
+          return item.id === doc.id;
+        }) &&
+          " border-primary-blue bg-secondary-blue text-primary-blue hover:border-primary-blue",
       )}
     >
       <div className=" flex items-center gap-1 !text-[0.428rem] text-xs !leading-[0.518rem] text-primary-blue">
