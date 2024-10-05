@@ -224,6 +224,8 @@ const TiptapEditor = () => {
   useEffect(() => {
     if (!editor) return;
 
+    appDispatch(commentsAction.setEditor(editor));
+
     const updateSelectionState = () => {
       const { from, to } = editor.state.selection;
       const { view } = editor;
