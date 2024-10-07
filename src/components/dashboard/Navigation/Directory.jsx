@@ -89,6 +89,10 @@ function Directory({ isDashboard = false }) {
   };
 
   useEffect(() => {
+    isDashboard && appDispatch(folderNavigationAction.setCurrentClient(null));
+  }, []);
+
+  useEffect(() => {
     if (isDashboard) {
       fetchRecentDocuments();
       fetchClientList();

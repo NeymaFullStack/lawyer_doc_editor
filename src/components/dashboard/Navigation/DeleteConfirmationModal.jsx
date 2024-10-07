@@ -114,7 +114,7 @@ function DeleteConfirmationModal({
             </span>
             <span
               onClick={async () => {
-                undoFolderDocDeletion();
+                await undoFolderDocDeletion();
                 appDispatch(folderNavigationAction.toggleRefreshDirectory());
                 toast.dismiss(t.id);
               }}

@@ -21,7 +21,6 @@ function Sidebar() {
     (state) => state?.appReducer?.activeMenuItem,
   );
   const router = useRouter();
-  console.log("render");
   return (
     <aside
       id="logo-sidebar"

@@ -59,7 +59,6 @@ function Notification() {
   useEffect(() => {
     getAllNotification();
   }, []);
-  console.log("notification render");
   return (
     <div
       className=" ml-auto cursor-pointer"
