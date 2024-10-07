@@ -6,6 +6,7 @@ export const appSlice = createSlice({
   initialState: { activeMenuItem: "dashboard", notificationsList: [] },
   reducers: {
     setCurrentActiveMenu: (state, action) => {
+      debugger;
       return { ...state, activeMenuItem: action.payload };
     },
     setNotificationsList: (state, action) => {

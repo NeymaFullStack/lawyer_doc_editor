@@ -65,3 +65,10 @@ export const navigationItemTypes = {
   FOLDER: "FOLDER",
   DOCUMENT: "DOCUMENT",
 };
+
+export const navigationSelectionItemsArea = {
+  RECENT_DOCUMENTS: "RECENT_DOCUMENTS",
+  FOLDERS: "FOLDERS",
+  DOCUMENTS: "DOCUMENTS",
+  TABLE: "TABLE",
+};

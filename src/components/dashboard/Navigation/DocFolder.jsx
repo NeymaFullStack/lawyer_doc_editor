@@ -1,4 +1,5 @@
 import RemSizeImage from "@/components/generic/RemSizeImage";
+import { navigationSelectionItemsArea } from "@/constants/enums";
 
 import { cn } from "@/utils/shadcn-utils";
 import { useRouter } from "next/navigation";
@@ -10,6 +11,7 @@ function DocFolder({
   nonClient = false,
   selectedFolders,
   onSingleClickOnFolder,
+  index,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const isSelected = selectedFolders?.find((item) => item?.id === folder?.id);
@@ -26,7 +28,11 @@ function DocFolder({
         onDoubleClick(folder);
       }}
       onClick={() => {
-        onSingleClickOnFolder(folder);
+        onSingleClickOnFolder(
+          folder,
+          index,
+          navigationSelectionItemsArea.FOLDERS,
+        );
       }}
       className={cn(
         "group flex cursor-pointer select-none items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-sm font-medium text-black-txt shadow-out hover:bg-secondary-blue ",

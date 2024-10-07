@@ -14,11 +14,10 @@ import EventSource from "@/utils/polyfills/eventSource";
 import { getNewNotificationsUrl } from "@/api/serviceUrl";
 import { getCookie } from "cookies-next";
 import { API_URL } from "@/api/apiMethod";
-
+const sidebarWidth = 240;
 function Notification() {
   const appDispatch = useDispatch();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [sidebarWidth, setSidebarWidth] = useState(240);
   const [unreadCount, setUnreadCount] = useState(0);
   const [eventSourceRetry, setEventSourceRetry] = useState(true);
   const { notificationsList } = useSelector((state) => state.appReducer);
@@ -60,7 +59,7 @@ function Notification() {
   useEffect(() => {
     getAllNotification();
   }, []);
-
+  console.log("notification render");
   return (
     <div
       className=" ml-auto cursor-pointer"

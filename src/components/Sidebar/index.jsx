@@ -11,7 +11,6 @@ import LoganDropDown from "../generic/LoganDropDown";
 import FolderDocCreation from "../dashboard/Navigation/FolderDocCreation";
 import WorkSpaceSelector from "./WorkSpaceSelector";
 import Notification from "./Notification";
-import CopiedTag from "@/components/generic/CopiedTag";
 import { useRouter } from "next/navigation";
 import { deleteCookie } from "cookies-next";
 import { dashboardRoute } from "@/constants/routes";
@@ -22,14 +21,14 @@ function Sidebar() {
     (state) => state?.appReducer?.activeMenuItem,
   );
   const router = useRouter();
-
+  console.log("render");
   return (
     <aside
       id="logo-sidebar"
       className="absolute left-0 top-0 z-20 h-screen w-60 -translate-x-full text-xs transition-transform sm:translate-x-0"
       aria-label="Sidebar"
     >
-      {<FolderDocCreation />}
+      <FolderDocCreation />
 
       <div className="h-full overflow-y-auto py-4">
         <div className="my-[1.875rem] mb-16 ml-5">
@@ -71,38 +70,7 @@ function Sidebar() {
             <NewButtonActionsDropDown onClose={closeMenu} />
           )}
         />
-        {/* <div ref={dropdownRef}>
-          <Dropdown
-            getPopupContainer={() => dropdownRef.current}
-            onOpenChange={(value) => setOpenMenu(value)}
-            open={openMenu}
-            overlayStyle={{
-              left: "3.125rem",
-            }}
-            dropdownRender={() => (
-              <NewButtonActionsDropDown
-                onClose={() => {
-                  setOpenMenu(false);
-                }}
-              />
-            )}
-            placement="bottomRight"
-          >
-            <Button
-              className="btn btn--primary ml-5 mb-8 text-xs"
-              icon={
-                <RemSizeImage
-                  imagePath={"/assets/icons/add-white.svg"}
-                  remWidth={1.343}
-                  remHeight={1.343}
-                  alt={"New"}
-                />
-              }
-            >
-              New
-            </Button>
-          </Dropdown>
-        </div> */}
+
         <ul className="w-full border-t-[0.063rem] border-hr-line font-medium ">
           <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
             <div className="w-[55%]">
@@ -131,7 +99,7 @@ function Sidebar() {
               </Link>
             </div>
           </li>
-          {/* <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
+          <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
             <div className="w-[55%]">
               <Link href={"/tempelates"}>
                 <div
@@ -158,7 +126,7 @@ function Sidebar() {
                 </div>
               </Link>
             </div>
-          </li> */}
+          </li>
         </ul>
         <ul className="absolute bottom-0 mb-5 flex w-full flex-col gap-2 ">
           <li className="pl-5 !text-primary-gray">MORE</li>

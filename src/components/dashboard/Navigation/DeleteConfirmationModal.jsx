@@ -4,7 +4,10 @@ import { Input } from "@/components/shadcn-components/ui/input";
 import { Button } from "@/components/shadcn-components/ui/button";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { toast } from "sonner";
-import { deleteFolderDoc } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import {
+  deleteFolderDoc,
+  undoFolderDocDeletion,
+} from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { useDispatch } from "react-redux";
 import { set } from "react-hook-form";
 import Loader from "@/components/generic/Loader";
@@ -23,7 +26,11 @@ function DeleteConfirmationModal({
     <LoganModal
       modalOpen={open}
       width={"36rem"}
-      onClickCancel={onClose}
+      onClickCancel={() => {
+        onClose();
+        setIsLoading(false);
+        setInput("");
+      }}
       footer
       customFooter={
         <div className="mt-3 flex items-center gap-3">
@@ -43,7 +50,14 @@ function DeleteConfirmationModal({
             )}
             Delete
           </Button>
-          <Button variant={"normal"} onClick={onClose}>
+          <Button
+            variant={"normal"}
+            onClick={() => {
+              onClose();
+              setIsLoading(false);
+              setInput("");
+            }}
+          >
             Cancel
           </Button>
         </div>
@@ -83,7 +97,7 @@ function DeleteConfirmationModal({
         ...multipleSelectedItems?.selectedDocs.map((item) => item?.id),
       ],
     });
-    if (deleteRes.status === "success") {
+    if (deleteRes?.status === "success") {
       appDispatch(folderNavigationAction.toggleRefreshDirectory());
       toast.custom(
         (t) => (
@@ -99,7 +113,9 @@ function DeleteConfirmationModal({
                   " has been deleted. "}
             </span>
             <span
-              onClick={() => {
+              onClick={async () => {
+                undoFolderDocDeletion();
+                appDispatch(folderNavigationAction.toggleRefreshDirectory());
                 toast.dismiss(t.id);
               }}
               className="cursor-pointer font-bold underline"

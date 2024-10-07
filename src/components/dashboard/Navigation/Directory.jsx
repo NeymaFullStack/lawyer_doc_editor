@@ -1,7 +1,7 @@
 "use client";
 import Sort from "@/components/generic/Sort";
 import { sortStringTableList } from "@/utils/generic";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DocFolder from "./DocFolder";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,7 @@ import {
   duplicateDocument,
   getClientFolderList,
   getFolderDetails,
+  getRecentDocumentList,
   moveFolderDoc,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { dashboardRoute } from "@/constants/routes";
@@ -28,7 +29,10 @@ import { directoryContextMenuList } from "@/constants/list";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import RenameModal from "./RenameModal";
 
-import { navigationItemTypes } from "@/constants/enums";
+import {
+  navigationItemTypes,
+  navigationSelectionItemsArea,
+} from "@/constants/enums";
 import ChooseEmplacementModal from "./ChooseEmplacementModal";
 import { toast } from "sonner";
 import Loader from "@/components/generic/Loader";
@@ -38,10 +42,8 @@ import Link from "next/link";
 function Directory({ isDashboard = false }) {
   const appDispatch = useDispatch();
   const router = useRouter();
-  const { folderListView, openModalType, refreshDirectory } = useSelector(
-    (state) => state.folderNavigationReducer,
-  );
-  const [isFolderClient, setIsFolderClient] = useState(false);
+  const { folderListView, openModalType, refreshDirectory, currentClient } =
+    useSelector((state) => state.folderNavigationReducer);
   const [loading, setLoading] = useState(true);
   const { folderId } = useParams();
   const [directoryData, setDirectoryData] = useState({
@@ -49,9 +51,16 @@ function Directory({ isDashboard = false }) {
     foldersList: [],
     documentsList: [],
   });
+
+  const [recentDocuments, setRecentDocuments] = useState([]);
   const [openRenameModal, setOpenRenameModal] = useState(false);
   const [openMoveItemsModal, setOpenMoveItemsModal] = useState(false);
-
+  const [selectionTrackingData, setSelectionTrackingData] = useState({
+    previousSelectionArea: "",
+    // currentSelectionArea: "",
+    previousSelectionIndex: -1,
+    // currentSelectionIndex: -1,
+  });
   const [openDeleteConfirmationModal, setOpenDeleteConfirmationModal] =
     useState(false);
   const [selectedItemsRenameDetails, setItemsRenameDetails] = useState(null);
@@ -62,21 +71,30 @@ function Directory({ isDashboard = false }) {
   const [moveItemsMetadata, setMoveItemsMetadata] = useState({
     emplacement: { selectedFolder: null, path: new Map() },
   });
-  const selectMultiple = useRef(false);
+  const selectionKeys = useRef({ shift: false, ctrl: false });
   const handleKeyDown = (e) => {
     if (e.metaKey || e.ctrlKey) {
-      selectMultiple.current = true;
+      selectionKeys.current = { shift: false, ctrl: true };
+    } else if (e.key === "Shift") {
+      selectionKeys.current = { shift: true, ctrl: false };
     }
   };
 
   const handleKeyUp = (e) => {
     if (!e.metaKey && !e.ctrlKey) {
-      selectMultiple.current = false;
+      selectionKeys.current = { shift: false, ctrl: false };
+    } else if (!(e.key === "Shift")) {
+      selectionKeys.current = { shift: false, ctrl: false };
     }
   };
 
   useEffect(() => {
-    isDashboard ? fetchClientList() : fetchFolderList();
+    if (isDashboard) {
+      fetchRecentDocuments();
+      fetchClientList();
+    } else {
+      fetchFolderList();
+    }
   }, [refreshDirectory]);
 
   useEffect(() => {
@@ -103,6 +121,10 @@ function Directory({ isDashboard = false }) {
         selectedFolders: [],
         selectedDocs: [],
       });
+    setSelectionTrackingData({
+      previousSelectionArea: "",
+      previousSelectionIndex: -1,
+    });
   };
 
   useEffect(() => {
@@ -123,18 +145,25 @@ function Directory({ isDashboard = false }) {
     };
   }, [clearSelection]);
 
-  console.log("movedata", moveItemsMetadata);
-
   if (loading) {
     return <Loader />;
   }
+
+  console.log("currentClient", currentClient);
 
   return (
     <div className="my-4 flex h-full flex-col gap-8 overflow-y-auto px-6 py-1 ">
       {isDashboard && (
         <RecentDocuments
+          recentDocuments={recentDocuments}
           multipleSelectedItems={multipleSelectedItems}
-          onSingleClickOnDoc={onSingleClickOnDoc}
+          onSingleClickOnDoc={(doc, index) =>
+            onSingleClickOnDoc(
+              doc,
+              index,
+              navigationSelectionItemsArea.RECENT_DOCUMENTS,
+            )
+          }
           setMultipleSelectedItems={setMultipleSelectedItems}
           setOpenDeleteConfirmationModal={setOpenDeleteConfirmationModal}
           setOpenMoveItemsModal={setOpenMoveItemsModal}
@@ -257,10 +286,15 @@ function Directory({ isDashboard = false }) {
                         })}
                       >
                         <DocFolder
+                          index={index}
                           nonClient={!isDashboard}
-                          onDoubleClick={(folder) =>
-                            router.push(`/dashboard/${folder.id}`)
-                          }
+                          onDoubleClick={(folder) => {
+                            isDashboard &&
+                              appDispatch(
+                                folderNavigationAction.setCurrentClient(folder),
+                              );
+                            router.push(`/dashboard/${folder.id}`);
+                          }}
                           folder={folder}
                           selectedFolders={
                             multipleSelectedItems?.selectedFolders
@@ -338,13 +372,20 @@ function Directory({ isDashboard = false }) {
                         })}
                       >
                         <DocFile
+                          index={index}
                           onDoubleClick={() =>
                             router.push(`/dashboard/doc-edit/${doc.id}`)
                           }
                           doc={doc}
                           nonClient
                           selectedDocs={multipleSelectedItems?.selectedDocs}
-                          onSingleClickOnDoc={onSingleClickOnDoc}
+                          onSingleClickOnDoc={(doc, index) =>
+                            onSingleClickOnDoc(
+                              doc,
+                              index,
+                              navigationSelectionItemsArea.DOCUMENTS,
+                            )
+                          }
                         />
                       </LoganContextMenu>
                     </li>
@@ -416,12 +457,26 @@ function Directory({ isDashboard = false }) {
             }
             enableContextMenu
             onDoubleClickRow={(row) => {
-              row?.version ? onDoubleClickDoc(row) : onDoubleClickFolder(row);
+              if (row?.version) {
+                onDoubleClickDoc(row);
+              } else {
+                isDashboard &&
+                  appDispatch(folderNavigationAction.setCurrentClient(row));
+                onDoubleClickFolder(row);
+              }
             }}
-            onClickRow={(row) => {
+            onClickRow={(row, index) => {
               row?.version
-                ? onSingleClickOnDoc(row)
-                : onSingleClickOnFolder(row);
+                ? onSingleClickOnDoc(
+                    row,
+                    index,
+                    navigationSelectionItemsArea.TABLE,
+                  )
+                : onSingleClickOnFolder(
+                    row,
+                    index,
+                    navigationSelectionItemsArea.TABLE,
+                  );
             }}
             tableColumns={
               isDashboard
@@ -435,13 +490,22 @@ function Directory({ isDashboard = false }) {
                   )
             }
             rowKey="id"
-            className="w-full table-fixed"
+            className="w-full table-fixed select-none"
             listData={directoryData?.listData}
           />
         )}
       </div>
     </div>
   );
+
+  async function fetchRecentDocuments() {
+    const res = await getRecentDocumentList();
+    let documents = [];
+    if (res?.length > 0) {
+      documents = res;
+    }
+    setRecentDocuments(documents);
+  }
 
   async function fetchClientList() {
     const clientFolderList = await getClientFolderList();
@@ -469,7 +533,7 @@ function Directory({ isDashboard = false }) {
           }),
         ],
       });
-      res?.parent_id === null && setIsFolderClient(true);
+      // res?.parent_id === null && setIsFolderClient(true);
     } else {
       setDirectoryData({
         setDirectoryData: [],
@@ -488,45 +552,161 @@ function Directory({ isDashboard = false }) {
     router.push(`/dashboard/doc-edit/${doc.id}`);
   }
 
-  function onSingleClickOnFolder(folder) {
-    let foundIndex = multipleSelectedItems.selectedFolders.findIndex(
-      (id) => id === folder,
-    );
+  function onSingleClickOnFolder(folder, index, area) {
     let selectionData = { ...multipleSelectedItems };
+    let previousSelectionArea = selectionTrackingData.previousSelectionArea;
+    let previousSelectionIndex = selectionTrackingData.previousSelectionIndex;
+    let selectedFolderIds = multipleSelectedItems.selectedFolders.map(
+      (item) => item.id,
+    );
+    let selectedDocIds = multipleSelectedItems.selectedDocs.map(
+      (item) => item.id,
+    );
+
+    if (
+      selectionKeys.current.shift &&
+      previousSelectionArea &&
+      previousSelectionIndex !== -1
+    ) {
+      let folderListSelectionSlice = [];
+
+      if (previousSelectionArea === area && previousSelectionIndex !== index) {
+        let folderDocSlicingList = folderListView
+          ? directoryData.listData
+          : directoryData.foldersList;
+        if (previousSelectionIndex > index) {
+          folderListSelectionSlice = folderDocSlicingList.slice(
+            index,
+            previousSelectionIndex,
+          );
+        } else {
+          folderListSelectionSlice = folderDocSlicingList.slice(
+            previousSelectionIndex + 1,
+            index + 1,
+          );
+        }
+        for (let item of folderListSelectionSlice) {
+          if (item?.version) {
+            if (!selectedDocIds.includes(item.id)) {
+              selectionData.selectedDocs.push(item);
+            }
+          } else {
+            if (!selectedFolderIds.includes(item.id)) {
+              selectionData.selectedFolders.push(item);
+            }
+          }
+        }
+      }
+      setMultipleSelectedItems(selectionData);
+      setSelectionTrackingData({
+        previousSelectionArea: area,
+        previousSelectionIndex: index,
+      });
+      return;
+    }
+    let foundIndex = multipleSelectedItems.selectedFolders.findIndex(
+      (item) => item.id === folder.id,
+    );
     if (foundIndex !== -1) {
-      if (selectMultiple.current) {
+      if (selectionKeys.current.ctrl) {
         selectionData.selectedFolders.splice(foundIndex, 1);
       } else {
         selectionData.selectedFolders = [];
       }
     } else {
-      if (selectMultiple.current) {
+      if (selectionKeys.current.ctrl) {
         selectionData.selectedFolders.push(folder);
       } else {
         selectionData.selectedFolders = [folder];
+        selectionData.selectedDocs = [];
       }
     }
+    setSelectionTrackingData({
+      previousSelectionArea: area,
+      previousSelectionIndex: index,
+    });
     setMultipleSelectedItems(selectionData);
   }
 
-  function onSingleClickOnDoc(doc) {
-    let foundIndex = multipleSelectedItems.selectedDocs.findIndex(
-      (id) => id === doc,
-    );
+  function onSingleClickOnDoc(doc, index, area) {
     let selectionData = { ...multipleSelectedItems };
+    let previousSelectionArea = selectionTrackingData.previousSelectionArea;
+    let previousSelectionIndex = selectionTrackingData.previousSelectionIndex;
+    let selectedDocIds = multipleSelectedItems.selectedDocs.map(
+      (item) => item.id,
+    );
+    let selectedFolderIds = multipleSelectedItems.selectedFolders.map(
+      (item) => item.id,
+    );
+    if (
+      selectionKeys.current.shift &&
+      previousSelectionArea &&
+      previousSelectionIndex !== -1
+    ) {
+      let docListSelectionSlice = [];
+      if (previousSelectionIndex !== index && previousSelectionArea === area) {
+        console.log("folderlistView", folderListView);
+        console.log("area", area);
+        console.log("previousArea", previousSelectionArea);
+
+        let documentAreaList =
+          area === navigationSelectionItemsArea.RECENT_DOCUMENTS
+            ? recentDocuments
+            : folderListView
+              ? directoryData.listData
+              : directoryData.documentsList;
+        console.log("documentAreaList", documentAreaList);
+        if (previousSelectionIndex > index) {
+          docListSelectionSlice = documentAreaList.slice(
+            index,
+            previousSelectionIndex,
+          );
+        } else {
+          docListSelectionSlice = documentAreaList.slice(
+            previousSelectionIndex + 1,
+            index + 1,
+          );
+        }
+        for (let item of docListSelectionSlice) {
+          if (item?.version || item?.document_name) {
+            if (!selectedDocIds.includes(item.id)) {
+              selectionData.selectedDocs.push(item);
+            }
+          } else {
+            if (!selectedFolderIds.includes(item.id)) {
+              selectionData.selectedFolders.push(item);
+            }
+          }
+        }
+      }
+      setMultipleSelectedItems(selectionData);
+      setSelectionTrackingData({
+        previousSelectionArea: area,
+        previousSelectionIndex: index,
+      });
+      return;
+    }
+    let foundIndex = multipleSelectedItems.selectedDocs.findIndex(
+      (item) => item.id === doc.id,
+    );
     if (foundIndex !== -1) {
-      if (selectMultiple.current) {
+      if (selectionKeys.current.ctrl) {
         selectionData.selectedDocs.splice(foundIndex, 1);
       } else {
         selectionData.selectedDocs = [];
       }
     } else {
-      if (selectMultiple.current) {
+      if (selectionKeys.current.ctrl) {
         selectionData.selectedDocs.push(doc);
       } else {
         selectionData.selectedDocs = [doc];
+        selectionData.selectedFolders = [];
       }
     }
+    setSelectionTrackingData({
+      previousSelectionArea: area,
+      previousSelectionIndex: index,
+    });
     setMultipleSelectedItems(selectionData);
   }
 

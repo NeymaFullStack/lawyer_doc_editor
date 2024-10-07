@@ -28,6 +28,7 @@ import {
   renameDocumentUrl,
   renameFolderUrl,
   restoreVersionUrl,
+  undoFolderDocDeletionUrl,
   updateClientOptionalDetailsUrl,
   updateDocumentVersionContentUrl,
   userLoginUrl,
@@ -226,6 +227,16 @@ export const deleteFolderDoc = async (queryParams) => {
 export const moveFolderDoc = async (queryParams) => {
   try {
     const res = await Api.put(moverFolderDocUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const undoFolderDocDeletion = async () => {
+  try {
+    const res = await Api.put(undoFolderDocDeletionUrl);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

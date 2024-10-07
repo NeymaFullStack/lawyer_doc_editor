@@ -11,16 +11,17 @@ function DocFile({
   nonClient = false,
   selectedDocs,
   onSingleClickOnDoc = () => {},
+  index,
 }) {
   return (
     <div
       aria-description="document"
       onDoubleClick={() => onDoubleClick(doc)}
       onClick={() => {
-        onSingleClickOnDoc(doc);
+        onSingleClickOnDoc(doc, index);
       }}
       className={cn(
-        "flex w-[13rem] cursor-pointer flex-col gap-2 rounded-lg border-[1px] border-white px-4 py-3 hover:border-secondary-blue hover:bg-secondary-blue",
+        " flex w-[13rem] cursor-pointer select-none flex-col gap-2 rounded-lg border-[1px] border-white px-4 py-3 hover:border-secondary-blue hover:bg-secondary-blue",
         nonClient ? "bg-blanc" : "bg-six",
         selectedDocs?.find((item, index) => {
           return item.id === doc.id;

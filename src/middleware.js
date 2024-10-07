@@ -7,13 +7,11 @@ export default function middleware(req, res) {
   // console.log("meko", token, !!!token);
   // !!!token && NextResponse.redirect(new URL(`/login`, req.url));
   const hasTokenExpired = isTokenExpired(token?.value);
-
   if (hasTokenExpired && req.nextUrl.pathname !== "/login") {
     return NextResponse.redirect(new URL(`/login`, req.url));
   } else if (!hasTokenExpired && req.nextUrl.pathname == "/login") {
     return NextResponse.redirect(new URL(`/dashboard`, req.url));
   }
-
   // Otherwise, continue to the next middleware or route
 }
 

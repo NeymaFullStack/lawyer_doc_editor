@@ -1,12 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DocFile from "./DocFile";
-import { getRecentDocumentList } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { useRouter } from "next/navigation";
 import { navigationItemTypes } from "@/constants/enums";
 import LoganContextMenu from "@/components/generic/LoganContextMenu";
 import { directoryContextMenuList } from "@/constants/list";
-import { useSelector } from "react-redux";
 
 function RecentDocuments({
   multipleSelectedItems,
@@ -16,16 +14,12 @@ function RecentDocuments({
   setOpenMoveItemsModal,
   onClickRenameItem,
   onClickDuplicate,
+  recentDocuments,
 }) {
-  const [recentDocuments, setRecentDocuments] = useState(null);
-  const refreshDirectory = useSelector(
-    (state) => state.folderNavigationReducer.refreshDirectory,
-  );
+  // const refreshDirectory = useSelector(
+  //   (state) => state.folderNavigationReducer.refreshDirectory,
+  // );
   const router = useRouter();
-
-  useEffect(() => {
-    fetchRecentDocuments();
-  }, [refreshDirectory]);
 
   if (!recentDocuments?.length > 0) return null;
 
@@ -35,7 +29,7 @@ function RecentDocuments({
       <div className=" w-full rounded-lg bg-white  p-5 pb-4">
         <div className="overflow-x-scroll pb-6">
           <ul className="flex items-center gap-x-6">
-            {recentDocuments?.map((doc) => {
+            {recentDocuments?.map((doc, index) => {
               return (
                 <li key={doc?.id}>
                   <LoganContextMenu
@@ -80,6 +74,7 @@ function RecentDocuments({
                       onDoubleClick={onDoubleClickDoc}
                       doc={doc}
                       selectedDocs={multipleSelectedItems?.selectedDocs}
+                      index={index}
                     />
                   </LoganContextMenu>
                 </li>
@@ -94,15 +89,6 @@ function RecentDocuments({
   function onDoubleClickDoc(doc) {
     // appDispatch(folderNavigationAction.setBreadCrumbs(slug));
     router.push(`/dashboard/doc-edit/${doc.id}`);
-  }
-
-  async function fetchRecentDocuments() {
-    const res = await getRecentDocumentList();
-    let documents = [];
-    if (res?.length > 0) {
-      documents = res;
-    }
-    setRecentDocuments(documents);
   }
 }
 

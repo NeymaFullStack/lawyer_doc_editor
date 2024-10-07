@@ -55,7 +55,7 @@ function LoganTable({
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onClickRow(row);
+                    onClickRow(row, rIndex);
                   }}
                 >
                   {tableColumns &&

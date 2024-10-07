@@ -131,7 +131,7 @@ function ChooseEmplacementModal({
                   >
                     <EmplacementFoldersList
                       selectedFolder={formValues.emplacement.selectedFolder}
-                      selectedMovableFolderIds={
+                      selectedMovableFolderDocIds={
                         moveMetaData?.multipleSelectedItems.selectedFolders
                           ? [
                               ...moveMetaData?.multipleSelectedItems.selectedFolders.map(

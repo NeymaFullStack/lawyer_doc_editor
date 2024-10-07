@@ -2,25 +2,39 @@ import {
   getClientFolderList,
   getFolderDetails,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
+import Loader from "@/components/generic/Loader";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import { cn } from "@/utils/shadcn-utils";
+import { current } from "@reduxjs/toolkit";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 function EmplacementFoldersList({
   client,
   parentFolderId,
   onClickFolder,
   selectedFolder,
-  selectedMovableFolderIds = [],
+  selectedMovableFolderDocIds = [],
 }) {
   const [folderList, setFolderList] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const currentClient = useSelector(
+    (state) => state.folderNavigationReducer.currentClient,
+  );
+  console.log("currentClient", currentClient);
   useEffect(() => {
     client ? fetchClientList() : fetchFolderList();
   }, [parentFolderId]);
-  console.log("selectedMovableFolderIds", selectedMovableFolderIds);
+  console.log("selectedMovableFolderDocIds", selectedMovableFolderDocIds);
   return (
-    <ul className={`h-full flex-1 overflow-x-hidden overflow-y-scroll `}>
-      {folderList ? (
+    <ul
+      className={cn(
+        "h-full flex-1 overflow-x-hidden overflow-y-scroll",
+        loading && "flex items-center justify-center",
+      )}
+    >
+      {loading && <Loader />}
+      {folderList || loading ? (
         folderList?.map((folder, index) => {
           return (
             <li
@@ -28,11 +42,13 @@ function EmplacementFoldersList({
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-md px-1 py-2 pl-2 hover:bg-six",
                 folder?.id === selectedFolder?.id && "bg-six ",
-                selectedMovableFolderIds.includes(folder.id) &&
+                (selectedMovableFolderDocIds.includes(folder.id) ||
+                  currentClient?.id !== folder.id) &&
                   "cursor-default opacity-50 hover:bg-white",
               )}
               onClick={() => {
-                selectedMovableFolderIds.includes(folder.id)
+                selectedMovableFolderDocIds.includes(folder.id) ||
+                currentClient?.id !== folder.id
                   ? () => {}
                   : onClickFolder(folder, parentFolderId, client);
               }}
@@ -68,6 +84,7 @@ function EmplacementFoldersList({
     if (clientFolderList?.length > 0) {
       setFolderList(clientFolderList);
     }
+    setLoading(false);
   }
   async function fetchFolderList() {
     const res = await getFolderDetails({ id: parentFolderId });
@@ -77,6 +94,7 @@ function EmplacementFoldersList({
     if (res.sub_projects?.length === 0) {
       setFolderList(null);
     }
+    setLoading(false);
   }
 }
 
