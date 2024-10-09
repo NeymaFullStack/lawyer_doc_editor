@@ -7,6 +7,7 @@ import {
   createImportedDocumentUrl,
   createNewDocumentVersionUrl,
   deleteFolderDocUrl,
+  downloadDocFolderUrl,
   duplicateDocUrl,
   exportDocumentPdfUrl,
   getAllNotificationsUrl,
@@ -247,6 +248,16 @@ export const undoFolderDocDeletion = async () => {
 export const duplicateDocument = async (queryParams) => {
   try {
     const res = await Api.post(duplicateDocUrl, queryParams);
+    return res.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const downloadDocFolder = async (queryParams) => {
+  try {
+    const res = await Api.post(downloadDocFolderUrl, queryParams);
     return res.data;
   } catch (error) {
     //dispatch action for global error dialog box

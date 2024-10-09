@@ -192,7 +192,9 @@ function ChooseEmplacementModal({
     } else {
       return;
     }
-    const res = await getBreadCrumbs(selectedItem?.project_id);
+    const res = await getBreadCrumbs(
+      selectedItem?.project_id || selectedItem?.parent_id,
+    );
     if (res?.data?.length > 0) {
       let newPath = new Map();
       for (let i = 0; i < res?.data?.length; i++) {

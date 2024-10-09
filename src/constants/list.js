@@ -145,6 +145,7 @@ export const directoryContextMenuList = ({
   onClickDuplicate,
   disableMoveTo = false,
   disableDuplicate = false,
+  OnClickDownload,
 }) => [
   {
     label: "Open",
@@ -182,15 +183,13 @@ export const directoryContextMenuList = ({
     class: disableDuplicate ? "text-primary-gray" : "",
     onClick: disableDuplicate ? () => {} : onClickDuplicate,
   },
-  // {
-  //   label: "Download",
-  //   icon: "download-icon.svg",
-  //   iconUrl: "/assets/icons/download.svg",
-  //   action: "download",
-  //   onClick: () => {
-  //     router.push(`/dashboard/${item.id}`);
-  //   },
-  // },
+  {
+    label: "Download",
+    icon: "download-icon.svg",
+    iconUrl: "/assets/icons/download.svg",
+    action: "download",
+    onClick: OnClickDownload,
+  },
   {
     label: "Delete",
     icon: "delete-icon.svg",

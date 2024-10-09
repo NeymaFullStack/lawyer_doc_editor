@@ -17,6 +17,7 @@ import { documentAction } from "@/redux/documentSlice";
 import CreateFolderModal from "./CreateFolderModal";
 import { modalType } from "./FolderDocCreation";
 import {
+  downloadDocFolder,
   duplicateDocument,
   getClientFolderList,
   getFolderDetails,
@@ -38,6 +39,9 @@ import { toast } from "sonner";
 import Loader from "@/components/generic/Loader";
 import RecentDocuments from "./RecentDocuments";
 import Link from "next/link";
+import { set } from "react-hook-form";
+import RemSizeImage from "@/components/generic/RemSizeImage";
+import { cn } from "@/utils/shadcn-utils";
 
 function Directory({ isDashboard = false }) {
   const appDispatch = useDispatch();
@@ -167,6 +171,7 @@ function Directory({ isDashboard = false }) {
           setOpenMoveItemsModal={setOpenMoveItemsModal}
           onClickRenameItem={onCLickRenameItem}
           onClickDuplicate={onDuplicateDoc}
+          OnClickDownload={OnClickDownload}
         />
       )}
       <div className="flex h-full w-full flex-col items-start gap-6">
@@ -281,6 +286,8 @@ function Directory({ isDashboard = false }) {
 
                             setOpenMoveItemsModal(true);
                           },
+                          OnClickDownload: OnClickDownload,
+
                           onClickDelete: () => {
                             setOpenDeleteConfirmationModal(true);
                           },
@@ -366,6 +373,7 @@ function Directory({ isDashboard = false }) {
                             setOpenDeleteConfirmationModal(true);
                           },
                           onClickDuplicate: onDuplicateDoc,
+                          OnClickDownload: OnClickDownload,
                         })}
                       >
                         <DocFile
@@ -450,6 +458,7 @@ function Directory({ isDashboard = false }) {
                   setOpenDeleteConfirmationModal(true);
                 },
                 onClickDuplicate: onDuplicateDoc,
+                OnClickDownload: OnClickDownload,
               })
             }
             enableContextMenu
@@ -762,6 +771,48 @@ function Directory({ isDashboard = false }) {
     }
   }
 
+  async function OnClickDownload() {
+    const toastId = toast.custom(
+      (t) => {
+        let noOfFiles =
+          multipleSelectedItems?.selectedDocs.length +
+          multipleSelectedItems?.selectedFolders.length;
+        return (
+          <div className="flex items-center gap-2 rounded-md bg-overlay px-3 py-4 text-xs  text-white">
+            <RemSizeImage
+              imagePath={"/assets/icons/blue-gray-loader.svg"}
+              remWidth={1.3}
+              remHeight={1.3}
+              className="animate-spin"
+              alt={"loader"}
+            />
+
+            <span>
+              {noOfFiles > 1
+                ? `${noOfFiles} files are being prepared for download.`
+                : `${noOfFiles} file is being prepared for download.`}
+            </span>
+          </div>
+        );
+      },
+      { duration: Infinity },
+    );
+    const downloadRes = await downloadDocFolder({
+      project_ids: [
+        ...multipleSelectedItems?.selectedFolders.map((item) => item?.id),
+      ],
+      document_ids: [
+        ...multipleSelectedItems?.selectedDocs.map((item) => item?.id),
+      ],
+    });
+    window.location.href = downloadRes?.data?.link;
+    toast.dismiss(toastId);
+    setMultipleSelectedItems({
+      selectedDocs: [],
+      selectedFolders: [],
+    });
+  }
+
   async function onDuplicateDoc() {
     let res = await duplicateDocument({
       document_ids: [
@@ -770,7 +821,6 @@ function Directory({ isDashboard = false }) {
     });
     if (res.status === "success") {
       appDispatch(folderNavigationAction.toggleRefreshDirectory());
-
       toast.custom(
         (t) => (
           <div className="rounded-md bg-overlay px-3 py-4 text-xs  text-white">

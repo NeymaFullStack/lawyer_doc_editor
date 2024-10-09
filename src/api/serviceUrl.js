@@ -23,6 +23,7 @@ export const renameDocumentUrl = (documentId) =>
 export const deleteFolderDocUrl = "/project-document/delete";
 export const moverFolderDocUrl = "/project-document/move";
 export const duplicateDocUrl = "/project-document/duplicate";
+export const downloadDocFolderUrl = "/project-document/download";
 export const undoFolderDocDeletionUrl = "/project-document/delete/undo";
 export const getClientOptionalDetailsUrl = "/clients/project";
 export const updateClientOptionalDetailsUrl = (clientId) =>

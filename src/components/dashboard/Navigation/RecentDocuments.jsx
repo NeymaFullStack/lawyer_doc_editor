@@ -15,6 +15,7 @@ function RecentDocuments({
   onClickRenameItem,
   onClickDuplicate,
   recentDocuments,
+  OnClickDownload,
 }) {
   // const refreshDirectory = useSelector(
   //   (state) => state.folderNavigationReducer.refreshDirectory,
@@ -67,6 +68,7 @@ function RecentDocuments({
                         setOpenDeleteConfirmationModal(true);
                       },
                       onClickDuplicate: onClickDuplicate,
+                      OnClickDownload: OnClickDownload,
                     })}
                   >
                     <DocFile
