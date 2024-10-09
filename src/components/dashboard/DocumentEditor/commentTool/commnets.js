@@ -115,7 +115,7 @@ const Comments = () => {
             </div>
           </div>
         )}
-        {comments.map((comment) => (
+        {comments?.map((comment) => (
           <CommentCard key={comment.comment_id} comment={comment} />
         ))}
       </div>

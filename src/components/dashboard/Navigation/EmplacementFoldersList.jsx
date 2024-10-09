@@ -13,7 +13,7 @@ function EmplacementFoldersList({
   client,
   parentFolderId,
   onClickFolder,
-  selectedFolder,
+  selectedFolderId,
   selectedMovableFolderDocIds = [],
 }) {
   const [folderList, setFolderList] = useState(null);
@@ -21,11 +21,9 @@ function EmplacementFoldersList({
   const currentClient = useSelector(
     (state) => state.folderNavigationReducer.currentClient,
   );
-  console.log("currentClient", currentClient);
   useEffect(() => {
     client ? fetchClientList() : fetchFolderList();
   }, [parentFolderId]);
-  console.log("selectedMovableFolderDocIds", selectedMovableFolderDocIds);
   return (
     <ul
       className={cn(
@@ -41,16 +39,17 @@ function EmplacementFoldersList({
               key={index}
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-md px-1 py-2 pl-2 hover:bg-six",
-                folder?.id === selectedFolder?.id && "bg-six ",
+                selectedFolderId === folder?.id && "bg-six ",
                 (selectedMovableFolderDocIds.includes(folder.id) ||
                   (client &&
-                    currentClient !== null &&
-                    currentClient?.id !== folder.id)) &&
+                    selectedMovableFolderDocIds.length > 0 &&
+                    selectedFolderId !== folder.id)) &&
                   "cursor-default opacity-50 hover:bg-white",
               )}
               onClick={() => {
                 selectedMovableFolderDocIds.includes(folder.id) ||
                 (client &&
+                  selectedMovableFolderDocIds.length > 0 &&
                   currentClient !== null &&
                   currentClient?.id !== folder.id)
                   ? () => {}

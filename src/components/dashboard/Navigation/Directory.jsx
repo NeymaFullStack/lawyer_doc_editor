@@ -89,10 +89,6 @@ function Directory({ isDashboard = false }) {
   };
 
   useEffect(() => {
-    isDashboard && appDispatch(folderNavigationAction.setCurrentClient(null));
-  }, []);
-
-  useEffect(() => {
     if (isDashboard) {
       fetchRecentDocuments();
       fetchClientList();
@@ -153,8 +149,6 @@ function Directory({ isDashboard = false }) {
     return <Loader />;
   }
 
-  console.log("currentClient", currentClient);
-
   return (
     <div className="my-4 flex h-full flex-col gap-8 overflow-y-auto px-6 py-1 ">
       {isDashboard && (
@@ -209,6 +203,9 @@ function Directory({ isDashboard = false }) {
           open={openMoveItemsModal}
           onClose={() => {
             setOpenMoveItemsModal(false);
+            setMoveItemsMetadata({
+              emplacement: { selectedFolder: null, path: new Map() },
+            });
           }}
           saveDocFolderFieldValues={saveDocFolderFieldValues}
           formValues={moveItemsMetadata}
@@ -293,10 +290,6 @@ function Directory({ isDashboard = false }) {
                           index={index}
                           nonClient={!isDashboard}
                           onDoubleClick={(folder) => {
-                            isDashboard &&
-                              appDispatch(
-                                folderNavigationAction.setCurrentClient(folder),
-                              );
                             router.push(`/dashboard/${folder.id}`);
                           }}
                           folder={folder}
@@ -464,8 +457,6 @@ function Directory({ isDashboard = false }) {
               if (row?.version) {
                 onDoubleClickDoc(row);
               } else {
-                isDashboard &&
-                  appDispatch(folderNavigationAction.setCurrentClient(row));
                 onDoubleClickFolder(row);
               }
             }}

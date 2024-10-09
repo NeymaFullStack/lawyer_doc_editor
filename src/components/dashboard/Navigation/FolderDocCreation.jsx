@@ -123,6 +123,10 @@ function FolderDocCreation() {
     if (additionalValues?.newAppendix) {
       appDispatch(documentIndexingAction.setNewAppendixState(null));
       appDispatch(folderNavigationAction.setOpenModalType(""));
+      setDocFolderFieldValues({
+        emplacement: { selectedFolder: null, path: new Map() },
+        ...additionalValues,
+      });
       return;
     }
     !preserveValues && appDispatch(folderNavigationAction.setOpenModalType(""));

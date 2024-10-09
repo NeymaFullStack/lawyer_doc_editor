@@ -42,11 +42,18 @@ export const documentSlice = createSlice({
   initialState: { ...documentInitalState },
   reducers: {
     setActiveDocumentAction: (state, action) => {
+      console.log("action.payload", action.payload);
+      console.log("activeDocumentAction", state.activeDocumentAction);
+
       return {
         ...state,
         activeDocumentAction: action.payload,
+        isEditorToolHidden:
+          state.activeDocumentAction === action.payload &&
+          !state.isEditorToolHidden
+            ? true
+            : false,
         copiedContent: null,
-        isEditorToolHidden: false,
       };
     },
     setCurrentDocument: (state, action) => {

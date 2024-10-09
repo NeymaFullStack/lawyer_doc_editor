@@ -8,7 +8,7 @@ import { sliceMapUpToaKey } from "@/utils/dashboard/navigation-utils";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { modalType } from "./FolderDocCreation";
 import { useDispatch } from "react-redux";
-import { Snowburst_One } from "next/font/google";
+import { getBreadCrumbs } from "@/api/clientSideServiceActions/dashboardServiceActions";
 
 function ChooseEmplacementModal({
   open,
@@ -25,6 +25,10 @@ function ChooseEmplacementModal({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!open) {
+      return;
+    }
+    findSelectedElementsClient();
     const handleScrollToEnd = () => {
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTo({
@@ -46,7 +50,7 @@ function ChooseEmplacementModal({
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [open]);
 
   return (
     <LoganModal
@@ -112,7 +116,24 @@ function ChooseEmplacementModal({
             <EmplacementFoldersList
               client
               onClickFolder={onClickFolder}
-              selectedFolder={formValues.emplacement.selectedFolder}
+              selectedMovableFolderDocIds={
+                moveMetaData?.multipleSelectedItems?.selectedFolders ||
+                moveMetaData?.multipleSelectedItems?.selectedDocs
+                  ? [
+                      ...moveMetaData?.multipleSelectedItems.selectedFolders.map(
+                        (folder) => folder.id,
+                      ),
+                      ...moveMetaData?.multipleSelectedItems.selectedDocs.map(
+                        (folder) => folder.id,
+                      ),
+                    ]
+                  : []
+              }
+              selectedFolderId={
+                formValues.emplacement.path.size > 0
+                  ? Array.from(formValues.emplacement.path.keys()).shift()
+                  : 0
+              }
             />
           </div>
         </div>
@@ -130,12 +151,18 @@ function ChooseEmplacementModal({
                     className="min-w-[10rem] max-w-[10rem] border-r-2 border-[#F0F5FC] px-2"
                   >
                     <EmplacementFoldersList
-                      selectedFolder={formValues.emplacement.selectedFolder}
+                      selectedFolderId={
+                        formValues.emplacement.path?.get(item)?.id || 0
+                      }
                       selectedMovableFolderDocIds={
-                        moveMetaData?.multipleSelectedItems.selectedFolders
+                        moveMetaData?.multipleSelectedItems?.selectedFolders ||
+                        moveMetaData?.multipleSelectedItems?.selectedDocs
                           ? [
                               ...moveMetaData?.multipleSelectedItems.selectedFolders.map(
-                                (item) => item.id,
+                                (folder) => folder.id,
+                              ),
+                              ...moveMetaData?.multipleSelectedItems.selectedDocs.map(
+                                (folder) => folder.id,
                               ),
                             ]
                           : []
@@ -152,6 +179,40 @@ function ChooseEmplacementModal({
       </div>
     </LoganModal>
   );
+
+  async function findSelectedElementsClient() {
+    const selectedDocs = moveMetaData?.multipleSelectedItems?.selectedDocs;
+    const selectedFolders =
+      moveMetaData?.multipleSelectedItems?.selectedFolders;
+    let selectedItem = null;
+    if (selectedDocs?.length > 0) {
+      selectedItem = selectedDocs[0];
+    } else if (selectedFolders?.length > 0) {
+      selectedItem = selectedFolders[0];
+    } else {
+      return;
+    }
+    const res = await getBreadCrumbs(selectedItem?.project_id);
+    if (res?.data?.length > 0) {
+      let newPath = new Map();
+      for (let i = 0; i < res?.data?.length; i++) {
+        if (i === res?.data?.length - 1) {
+          newPath.set(res.data[i].id, null);
+        } else {
+          newPath.set(res?.data[i].id, {
+            id: res.data[i + 1].id,
+            label: res.data[i + 1].title,
+          });
+        }
+      }
+      saveDocFolderFieldValues({
+        emplacement: {
+          ...formValues.emplacement,
+          path: newPath,
+        },
+      });
+    }
+  }
 
   function onClickFolder(folder, parentFolderId, isClient) {
     if (isClient) {

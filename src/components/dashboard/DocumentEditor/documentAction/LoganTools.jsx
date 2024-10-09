@@ -14,12 +14,20 @@ function LoganTools() {
   const { activeDocumentAction, isEditorToolHidden } = useSelector(
     (state) => state.documentReducer,
   );
+
   return (
-    !isEditorToolHidden && (
-      <div className={cn("h-full w-[26.5rem] overflow-hidden bg-white")}>
-        {switchTool()}
-      </div>
-    )
+    <div
+      className={cn(
+        "h-full overflow-hidden transition-all  ease-in-out",
+        isEditorToolHidden
+          ? "w-0 translate-x-full opacity-0 duration-300"
+          : "w-[26.5rem] translate-x-0 opacity-100 duration-300",
+      )}
+    >
+      {!isEditorToolHidden && (
+        <div className="h-full w-full">{switchTool()}</div>
+      )}
+    </div>
   );
 
   function switchTool() {
@@ -38,6 +46,8 @@ function LoganTools() {
         return <LoganDocPreviewTool />;
       case documentActions.Comments:
         return <Comments />;
+      default:
+        return null;
     }
   }
 }

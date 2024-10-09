@@ -35,9 +35,9 @@ function DocFolder({
         );
       }}
       className={cn(
-        "group flex cursor-pointer select-none items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-sm font-medium text-black-txt shadow-out hover:bg-secondary-blue ",
+        "group flex cursor-pointer select-none items-center rounded-xl border-[1px]  border-white  bg-white p-5  py-4 text-sm font-medium text-black-txt shadow-out hover:border-secondary-blue hover:bg-secondary-blue",
         isSelected &&
-          " border-primary-blue bg-secondary-blue text-primary-blue",
+          " border-primary-blue bg-secondary-blue text-primary-blue hover:border-primary-blue",
       )}
     >
       <div className="flex  max-w-[90%] items-center gap-3">

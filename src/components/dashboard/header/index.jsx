@@ -13,6 +13,7 @@ import {
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
 import { documentVersioningAction } from "@/redux/editor/documentVersioningSlice";
 import FolderNavigationHeader from "./FolderNavigationHeader";
+import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 
 function DashboardHeader() {
   const appDispatch = useDispatch();

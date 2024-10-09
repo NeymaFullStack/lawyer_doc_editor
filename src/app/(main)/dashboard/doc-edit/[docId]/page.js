@@ -9,7 +9,7 @@ async function Page() {
         <section className="h-full flex-1">
           <TipTapEditor />
         </section>
-        <section className="border-l-[0.063rem] border-secondary-blue">
+        <section className="overflow-hidden border-l-[0.063rem] border-secondary-blue bg-white">
           <LoganTools />
         </section>
       </main>

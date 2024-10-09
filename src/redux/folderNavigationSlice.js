@@ -7,7 +7,7 @@ export const folderNavigationSlice = createSlice({
     breadCrumbs: [],
     openModalType: "",
     refreshDirectory: false,
-    currentClient: null,
+    // currentClient: null,
   },
   reducers: {
     toggleFolderView: (state, action) => {
@@ -25,9 +25,9 @@ export const folderNavigationSlice = createSlice({
     toggleRefreshDirectory: (state, action) => {
       return { ...state, refreshDirectory: !state.refreshDirectory };
     },
-    setCurrentClient: (state, action) => {
-      state.currentClient = action.payload;
-    },
+    // setCurrentClient: (state, action) => {
+    //   state.currentClient = action.payload;
+    // },
   },
 });
 
