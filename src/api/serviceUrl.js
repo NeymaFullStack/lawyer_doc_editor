@@ -9,6 +9,12 @@ export const getAllNotificationsUrl = "/notification/all";
 export const markAllNotificationSeenUrl = "/notification/all/read";
 export const getNewNotificationsUrl = "/notification/listen";
 
+//user
+export const getCreateUpdateUserDetailsUrl = "/user";
+export const resetPasswordUrl = "/user/password";
+export const UpdateNotificationPreferencesUrl = "/notification/preferences";
+export const getUserNotificationPreferencesUrl = "/notification/preferences";
+
 // Navigation Dashboard
 export const getRecentDocumentsUrl = "/document/recent/list";
 export const getClientFoldersListUrl = "/folder/client/all";

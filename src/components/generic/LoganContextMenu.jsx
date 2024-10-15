@@ -14,7 +14,7 @@ function LoganContextMenu({ children, onOpenChange, contextMenuItems }) {
       <ContextMenuTrigger className="w-full">{children}</ContextMenuTrigger>
       <ContextMenuContent
         onClick={(e) => e.stopPropagation()}
-        className="w-[6.313rem] min-w-[6.313rem] shadow-sm"
+        className="w-[7rem] min-w-[6.313rem] shadow-sm"
       >
         {contextMenuItems?.map((item) => {
           return (

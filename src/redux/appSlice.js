@@ -1,16 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { notification } from "antd";
 
 export const appSlice = createSlice({
   name: "app",
-  initialState: { activeMenuItem: "dashboard", notificationsList: [] },
+  initialState: {
+    activeMenuItem: "dashboard",
+    notificationsList: [],
+    userDetails: null,
+  },
   reducers: {
     setCurrentActiveMenu: (state, action) => {
-      debugger;
       return { ...state, activeMenuItem: action.payload };
     },
     setNotificationsList: (state, action) => {
       return { ...state, notificationsList: action.payload };
+    },
+    setUserDetails: (state, action) => {
+      state.userDetails = action.payload;
     },
   },
 });

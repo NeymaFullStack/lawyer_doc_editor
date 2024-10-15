@@ -16,5 +16,5 @@ export default function middleware(req, res) {
 }
 
 export const config = {
-  matcher: [`/dashboard/:path*`, "/login"],
+  matcher: [`/dashboard/:path*`, "/settings", "/login"],
 };

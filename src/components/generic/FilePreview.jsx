@@ -31,9 +31,8 @@ function FilePreview({ file, deleteFile, className }) {
           <Image
             src={imageUrl}
             alt={"Company Logo"}
-            layout="fill"
-            objectFit="cover"
-            className="rounded" // Add a class if you want rounded corners
+            fill
+            className="rounded object-cover" // Add a class if you want rounded corners
             quality={100} // Set the quality of the image
           />
         )}

@@ -11,15 +11,19 @@ import LoganDropDown from "../generic/LoganDropDown";
 import FolderDocCreation from "../dashboard/Navigation/FolderDocCreation";
 import WorkSpaceSelector from "./WorkSpaceSelector";
 import Notification from "./Notification";
-import { useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { deleteCookie } from "cookies-next";
-import { dashboardRoute } from "@/constants/routes";
+import {
+  dashboardRoute,
+  settingsRoute,
+  tempelatedRoute,
+} from "@/constants/routes";
+import { cn } from "@/utils/shadcn-utils";
 
 function Sidebar() {
-  const appDispatch = useDispatch();
-  const activeMenuItem = useSelector(
-    (state) => state?.appReducer?.activeMenuItem,
-  );
+  const pathName = usePathname();
+  const params = useParams();
+  console.log("okhdd", pathName, params);
   const router = useRouter();
   return (
     <aside
@@ -73,19 +77,18 @@ function Sidebar() {
         <ul className="w-full border-t-[0.063rem] border-hr-line font-medium ">
           <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
             <div className="w-[55%]">
-              <Link href={"/dashboard"}>
+              <Link href={dashboardRoute}>
                 <div
                   className={
                     "flex cursor-pointer items-center gap-5 rounded-lg p-2 hover:bg-five hover:text-primary-blue" +
-                    (activeMenuItem === "dashboard" ? " text-primary-blue" : "")
+                    (pathName.startsWith(dashboardRoute)
+                      ? " text-primary-blue"
+                      : "")
                   }
-                  onClick={() => {
-                    onClickMenuItem("dashboard");
-                  }}
                 >
                   <RemSizeImage
                     imagePath={
-                      activeMenuItem == "dashboard"
+                      pathName.startsWith(dashboardRoute)
                         ? `/assets/icons/dashboard-active.svg`
                         : `/assets/icons/dashboard.svg`
                     }
@@ -100,19 +103,18 @@ function Sidebar() {
           </li>
           <li className="border-b-[0.063rem] border-hr-line py-2 pl-3">
             <div className="w-[55%]">
-              <Link href={"/tempelates"}>
+              <Link href={tempelatedRoute}>
                 <div
                   className={
                     "flex cursor-pointer items-center gap-5 rounded-lg p-2 hover:bg-five hover:text-primary-blue" +
-                    (activeMenuItem === "tempelates"
+                    (pathName.startsWith(tempelatedRoute)
                       ? " text-primary-blue"
                       : "")
                   }
-                  onClick={() => onClickMenuItem("tempelates")}
                 >
                   <RemSizeImage
                     imagePath={
-                      activeMenuItem == "tempelates"
+                      pathName.startsWith(tempelatedRoute)
                         ? "/assets/icons/template-active.svg"
                         : "/assets/icons/template.svg"
                     }
@@ -130,9 +132,9 @@ function Sidebar() {
         <ul className="absolute bottom-0 mb-5 flex w-full flex-col gap-2 ">
           <li className="pl-5 !text-primary-gray">MORE</li>
           <li className="pl-5">
-            <div
-              className={"flex cursor-pointer items-center gap-4"}
-              onClick={() => onClickMenuItem("dashboard")}
+            <Link
+              href={settingsRoute}
+              className={cn("flex items-center gap-4 ")}
             >
               <RemSizeImage
                 imagePath={"/assets/icons/settings-icon.svg"}
@@ -140,15 +142,18 @@ function Sidebar() {
                 remHeight={1.25}
                 alt="Settings"
               />
-
-              <span className={"!text-primary-gray"}>Settings</span>
-            </div>
+              <span
+                className={cn(
+                  "text-primary-gray",
+                  pathName.startsWith(settingsRoute) && " text-primary-blue",
+                )}
+              >
+                Settings
+              </span>
+            </Link>
           </li>
           <li className="pl-5">
-            <div
-              className={"flex cursor-pointer items-center gap-4"}
-              onClick={() => onClickMenuItem("dashboard")}
-            >
+            <div className={"flex cursor-pointer items-center gap-4"}>
               <RemSizeImage
                 imagePath={"/assets/icons/help-icon.svg"}
                 remWidth={1.25}
@@ -195,9 +200,9 @@ function Sidebar() {
     </aside>
   );
 
-  function onClickMenuItem(item) {
-    appDispatch(appAction.setCurrentActiveMenu(item));
-  }
+  //   function onClickMenuItem(item) {
+  //     appDispatch(appAction.setCurrentActiveMenu(item));
+  //   }
 }
 
 export default Sidebar;

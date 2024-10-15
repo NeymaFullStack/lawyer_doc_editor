@@ -72,3 +72,10 @@ export const navigationSelectionItemsArea = {
   DOCUMENTS: "DOCUMENTS",
   TABLE: "TABLE",
 };
+
+export const notificationPreference = {
+  REPLIES_TO_COMMENTS_NOTIFICATIONS: "repliesToCommentsNotifications",
+  TAGS_NOTIFICATIONS: "tagsNotifications",
+  TEAM_ACTIVITY_NOTIFICATIONS: "teamActivityNotifications",
+  OFFERS_AND_PROMOTIONS_NOTIFICATIONS: "offersAndPromotionsNotifications",
+};

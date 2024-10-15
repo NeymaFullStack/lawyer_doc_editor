@@ -15,6 +15,7 @@ import {
   getBreadCrumbsUrl,
   getClientFoldersListUrl,
   getClientOptionalDetailsUrl,
+  getCreateUpdateUserDetailsUrl,
   getDocumentTemplateUrl,
   getDocumentVariablesUrl,
   getDocumentVersionListsUrl,
@@ -22,16 +23,19 @@ import {
   getNavigationSuggestionsUrl,
   getRecentDocumentsUrl,
   getUSerChatUrl,
+  getUserNotificationPreferencesUrl,
   gptChatUrl,
   importDocUrl,
   markAllNotificationSeenUrl,
   moverFolderDocUrl,
   renameDocumentUrl,
   renameFolderUrl,
+  resetPasswordUrl,
   restoreVersionUrl,
   undoFolderDocDeletionUrl,
   updateClientOptionalDetailsUrl,
   updateDocumentVersionContentUrl,
+  UpdateNotificationPreferencesUrl,
   userLoginUrl,
 } from "../serviceUrl";
 
@@ -380,6 +384,57 @@ export const createNewDocumentVersion = async (queryParams = {}) => {
 export const updateDocumentVersionContent = async (queryParams = {}) => {
   try {
     const res = await Api.put(updateDocumentVersionContentUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+//user
+
+export const getUserDetails = async (queryParams = {}) => {
+  try {
+    const res = await Api.get(getCreateUpdateUserDetailsUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const updateUserDetails = async (queryParams = {}) => {
+  try {
+    const res = await Api.put(getCreateUpdateUserDetailsUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+export const getUserNotificationPreferences = async (queryParams = {}) => {
+  try {
+    const res = await Api.get(getUserNotificationPreferencesUrl);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const UpdateNotificationPreferences = async (queryParams = {}) => {
+  try {
+    const res = await Api.post(UpdateNotificationPreferencesUrl, queryParams);
+    return res?.data;
+  } catch (error) {
+    //dispatch action for global error dialog box
+    console.log(error);
+  }
+};
+
+export const resetPassword = async (queryParams = {}) => {
+  try {
+    const res = await Api.put(resetPasswordUrl, queryParams);
     return res?.data;
   } catch (error) {
     //dispatch action for global error dialog box

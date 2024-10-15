@@ -2,6 +2,7 @@
 import "../styles/scss/global.scss";
 
 import StoreProvider from "@/components/ssr/reduxStore/StoreProvider";
+import UserDetailsProvider from "@/components/auth/UserDetailsProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
 

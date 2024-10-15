@@ -1,3 +1,4 @@
+import RemSizeImage from "@/components/generic/RemSizeImage";
 import { documentActions } from "./enums";
 import { modalType } from "@/components/dashboard/Navigation/FolderDocCreation";
 
@@ -196,5 +197,67 @@ export const directoryContextMenuList = ({
     iconUrl: "/assets/icons/delete-outline.svg",
     action: "delete",
     onClick: onClickDelete,
+  },
+];
+
+export const countryCodeOptions = [
+  {
+    label: (
+      <div className="flex items-center gap-[0.35rem]">
+        <RemSizeImage
+          imagePath={"/assets/icons/uk.svg"}
+          remWidth={1}
+          remHeight={1}
+          alt={"dropdown"}
+        />
+        <span>+33</span>
+      </div>
+    ),
+    value: "+33",
+  },
+  {
+    label: (
+      <div className="flex items-center gap-[0.35rem]">
+        <RemSizeImage
+          imagePath={"/assets/icons/uk.svg"}
+          remWidth={1}
+          remHeight={1}
+          alt={"dropdown"}
+        />
+        <span>+44</span>
+      </div>
+    ),
+    value: "+44",
+  },
+];
+
+export const countryOptions = [
+  {
+    label: (
+      <div className="flex items-center gap-[0.35rem]">
+        <RemSizeImage
+          imagePath={"/assets/icons/uk.svg"}
+          remWidth={1}
+          remHeight={1}
+          alt={"dropdown"}
+        />
+        <span>France</span>
+      </div>
+    ),
+    value: "france",
+  },
+  {
+    label: (
+      <div className="flex items-center gap-[0.35rem]">
+        <RemSizeImage
+          imagePath={"/assets/icons/uk.svg"}
+          remWidth={1}
+          remHeight={1}
+          alt={"dropdown"}
+        />
+        <span>UK</span>
+      </div>
+    ),
+    value: "uk",
   },
 ];

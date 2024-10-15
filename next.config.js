@@ -10,6 +10,7 @@ const nextConfig = {
       },
     ],
   },
+
   output: "standalone",
   reactStrictMode: false,
   sassOptions: {
@@ -35,4 +36,4 @@ module.exports = nextConfig;
 //   console.log("options", options);
 
 //   return config;
-// },
+// }
