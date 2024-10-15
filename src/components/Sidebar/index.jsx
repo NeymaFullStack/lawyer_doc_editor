@@ -181,18 +181,7 @@ function Sidebar() {
             </div>
           </li>
           <li className="mx-3 mt-3 flex items-center gap-2 rounded-xl border-[1px] border-secondary-blue px-2 py-2">
-            <RemSizeImage
-              imagePath={"/assets/icons/user-img.svg"}
-              remWidth={1.65}
-              remHeight={1.65}
-              alt="User"
-            />
-            <div className="flex flex-col justify-center ">
-              <span className="text-sm font-semibold leading-3 text-black-txt">
-                Paul Smith
-              </span>
-              <span className="text-xs">paul.s@lexington.com</span>
-            </div>
+            <UserProfile />
             <Notification />
           </li>
         </ul>
@@ -206,3 +195,49 @@ function Sidebar() {
 }
 
 export default Sidebar;
+
+function UserProfile() {
+  const userDetails = useSelector((state) => state.appReducer.userDetails);
+  return (
+    <>
+      {
+        <div
+          className="relative border-secondary-blue"
+          style={{ width: "1.8rem", height: "1.8rem" }}
+        >
+          {userDetails?.profile_logo && (
+            <Image
+              src={
+                userDetails?.profile_logo
+                  ? userDetails?.profile_logo
+                  : "/assets/icons/user-img.svg"
+              }
+              alt={"User Avatar"}
+              fill
+              // objectFit="cover "
+              className="rounded-full bg-cover" // Add a class if you want rounded corners
+              quality={100} // Set the quality of the image
+            />
+          )}
+        </div>
+      }
+      {/* <RemSizeImage
+        imagePath={
+          userDetails?.profile_logo
+            ? userDetails?.profile_logo
+            : "/assets/icons/user-img.svg"
+        }
+        remWidth={1.65}
+        remHeight={1.65}
+        alt="User"
+        className="rounded-full"
+      /> */}
+      <div className="flex flex-col justify-center ">
+        <span className="text-sm font-semibold leading-3 text-black-txt">
+          {userDetails?.first_name} {userDetails?.last_name}
+        </span>
+        <span className="text-xs">{userDetails?.email}</span>
+      </div>
+    </>
+  );
+}

@@ -13,8 +13,7 @@ import {
   getUserNotificationPreferences,
   UpdateNotificationPreferences,
 } from "@/api/clientSideServiceActions/dashboardServiceActions";
-import Loader from "@/components/generic/Loader";
-import { set } from "react-hook-form";
+
 import { notificationPreference } from "@/constants/enums";
 
 function NotificationPreference() {
@@ -26,6 +25,8 @@ function NotificationPreference() {
   // if (isLoading || !preferenceData) {
   //   return <Loader />;
   // }
+
+  console.log("preferenceData", preferenceData);
   return (
     <Card className="h-full space-y-2 border-none px-1 py-2 shadow-none">
       <CardHeader>
@@ -48,13 +49,14 @@ function NotificationPreference() {
               <Switch
                 onCheckedChange={(checked) =>
                   updateUserNotificationPreferences(
-                    "repliesToCommentsNotifications",
+                    notificationPreference.REPLIES_TO_COMMENTS_NOTIFICATIONS,
                     "push_enabled",
                     checked,
                   )
                 }
                 checked={
-                  preferenceData?.repliesToCommentsNotifications?.push_enabled
+                  preferenceData?.replies_to_comments_notifications
+                    ?.push_enabled
                 }
                 className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
               />
@@ -64,13 +66,14 @@ function NotificationPreference() {
               <Switch
                 onCheckedChange={(checked) =>
                   updateUserNotificationPreferences(
-                    "repliesToCommentsNotifications",
+                    notificationPreference.REPLIES_TO_COMMENTS_NOTIFICATIONS,
                     "email_enabled",
                     checked,
                   )
                 }
                 checked={
-                  preferenceData?.repliesToCommentsNotifications?.email_enabled
+                  preferenceData?.replies_to_comments_notifications
+                    ?.email_enabled
                 }
                 className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
               />
@@ -91,12 +94,12 @@ function NotificationPreference() {
               <Switch
                 onCheckedChange={(checked) =>
                   updateUserNotificationPreferences(
-                    "tagsNotifications",
+                    notificationPreference.TAGS_NOTIFICATIONS,
                     "push_enabled",
                     checked,
                   )
                 }
-                checked={preferenceData?.tagsNotifications?.push_enabled}
+                checked={preferenceData?.tags_notifications?.push_enabled}
                 className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
               />
               <span className="text-xs font-medium">Push</span>
@@ -105,12 +108,12 @@ function NotificationPreference() {
               <Switch
                 onCheckedChange={(checked) =>
                   updateUserNotificationPreferences(
-                    "tagsNotifications",
+                    notificationPreference.TAGS_NOTIFICATIONS,
                     "email_enabled",
                     checked,
                   )
                 }
-                checked={preferenceData?.tagsNotifications?.email_enabled}
+                checked={preferenceData?.tags_notifications?.email_enabled}
                 className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
               />
               <span className="text-xs font-medium">Email</span>
@@ -131,13 +134,13 @@ function NotificationPreference() {
               <Switch
                 onCheckedChange={(checked) =>
                   updateUserNotificationPreferences(
-                    "teamActivityNotifications",
+                    notificationPreference.TEAM_ACTIVITY_NOTIFICATIONS,
                     "push_enabled",
                     checked,
                   )
                 }
                 checked={
-                  preferenceData?.teamActivityNotifications?.push_enabled
+                  preferenceData?.team_activity_notifications?.push_enabled
                 }
                 className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
               />
@@ -147,13 +150,13 @@ function NotificationPreference() {
               <Switch
                 onCheckedChange={(checked) =>
                   updateUserNotificationPreferences(
-                    "teamActivityNotifications",
+                    notificationPreference.TEAM_ACTIVITY_NOTIFICATIONS,
                     "email_enabled",
                     checked,
                   )
                 }
                 checked={
-                  preferenceData?.teamActivityNotifications?.email_enabled
+                  preferenceData?.team_activity_notifications?.email_enabled
                 }
                 className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
               />
@@ -174,13 +177,14 @@ function NotificationPreference() {
             <Switch
               onCheckedChange={(checked) =>
                 updateUserNotificationPreferences(
-                  "offersAndPromotionsNotifications",
+                  notificationPreference.OFFERS_AND_PROMOTIONS_NOTIFICATIONS,
                   "push_enabled",
                   checked,
                 )
               }
               checked={
-                preferenceData?.offersAndPromotionsNotifications?.email_enabled
+                preferenceData?.offers_and_promotions_notifications
+                  ?.push_enabled
               }
               className="data-[state=checked]:bg-primary-blue data-[state=unchecked]:bg-secondary-blue"
             />
@@ -211,15 +215,18 @@ function NotificationPreference() {
           fieldKey === notificationPreference[field] &&
           typeKey === "push_enabled"
             ? value
-            : preferenceData[notificationPreference[field]]?.push_enabled,
+            : preferenceData[notificationPreference[field]]?.push_enabled ||
+              false,
         email_enabled:
           fieldKey === notificationPreference[field] &&
           typeKey === "email_enabled"
             ? value
-            : preferenceData[notificationPreference[field]]?.email_enabled,
+            : preferenceData[notificationPreference[field]]?.email_enabled ||
+              false,
       };
 
       updatedData.push(fieldData);
+      console.log("updatedData", updatedData);
     });
     let response = await UpdateNotificationPreferences({
       preferences: updatedData,

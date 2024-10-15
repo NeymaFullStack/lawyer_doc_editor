@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 
-import { z } from "zod";
 import {
   Card,
   CardContent,
@@ -9,9 +8,9 @@ import {
   CardTitle,
 } from "@/components/shadcn-components/ui/card";
 import { Button } from "@/components/shadcn-components/ui/button";
-import UserSettings from "@/components/settings/UserSettings/UserSettings";
 
 import RemSizeImage from "@/components/generic/RemSizeImage";
+import UserSettings from "../../../components/settings/userSettings/UserSettings";
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState("myAccount");

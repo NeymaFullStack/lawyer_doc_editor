@@ -74,8 +74,8 @@ export const navigationSelectionItemsArea = {
 };
 
 export const notificationPreference = {
-  REPLIES_TO_COMMENTS_NOTIFICATIONS: "repliesToCommentsNotifications",
-  TAGS_NOTIFICATIONS: "tagsNotifications",
-  TEAM_ACTIVITY_NOTIFICATIONS: "teamActivityNotifications",
-  OFFERS_AND_PROMOTIONS_NOTIFICATIONS: "offersAndPromotionsNotifications",
+  REPLIES_TO_COMMENTS_NOTIFICATIONS: "replies_to_comments_notifications",
+  TAGS_NOTIFICATIONS: "tags_notifications",
+  TEAM_ACTIVITY_NOTIFICATIONS: "team_activity_notifications",
+  OFFERS_AND_PROMOTIONS_NOTIFICATIONS: "offers_and_promotions_notifications",
 };
