@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/shadcn-components/ui/popover";
+} from "@/components/ui/popover";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 
 const FONT_SIZES = [

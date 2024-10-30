@@ -1,7 +1,7 @@
 import LoganModal from "@/components/generic/LoganModal";
 import React, { useState } from "react";
-import { Input } from "@/components/shadcn-components/ui/input";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { folderNavigationAction } from "@/redux/folderNavigationSlice";
 import { toast } from "sonner";
 import {

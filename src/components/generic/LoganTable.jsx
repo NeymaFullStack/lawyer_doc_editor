@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/shadcn-components/ui/table";
+} from "@/components/ui/table";
 import { cn } from "@/utils/shadcn-utils";
 import LoganContextMenu from "./LoganContextMenu";
 

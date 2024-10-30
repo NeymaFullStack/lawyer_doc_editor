@@ -18,7 +18,7 @@ import LoganDropDown from "./LoganDropDown";
 import { nanoid } from "nanoid";
 import CopyButton from "./buttons/CopyButton";
 import ArticleList from "../dashboard/DocumentEditor/documentAction/referenceTool/ArticleList";
-import { Button } from "../shadcn-components/ui/button";
+import { Button } from "../ui/button";
 import ButtonGroup from "antd/es/button/button-group";
 
 const CollapsibleList = ({

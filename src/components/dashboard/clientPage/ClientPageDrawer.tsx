@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import LoganDrawer, { LoganDrawerProps } from "../../generic/LoganDrawer";
 import RemSizeImage from "../../generic/RemSizeImage";
-import { Button } from "../../shadcn-components/ui/button";
-import { DrawerTitle } from "../../shadcn-components/ui/drawer";
+import { Button } from "../../ui/button";
+import { DrawerTitle } from "../../ui/drawer";
 import CompanyInformationForm, { ClientFormData } from "./ClientPageBody";
 import { useRouter } from "next/navigation";
 import {

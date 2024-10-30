@@ -5,7 +5,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/shadcn-components/ui/context-menu";
+} from "@/components/ui/context-menu";
 import { cn } from "@/utils/shadcn-utils";
 
 function LoganContextMenu({ children, onOpenChange, contextMenuItems }) {

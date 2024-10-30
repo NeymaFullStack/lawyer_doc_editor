@@ -1,5 +1,5 @@
 import DashboardHeader from "@/components/dashboard/header/index";
-import { Toaster } from "@/components/shadcn-components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "Logan - Dashboard",

@@ -4,7 +4,7 @@ import { documentAction } from "@/redux/documentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { documentActionsList } from "@/constants/list";
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Button } from "@/components/ui/button";
 
 function DocumentActionBar() {
   const appDispatch = useDispatch();

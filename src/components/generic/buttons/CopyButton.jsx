@@ -1,4 +1,4 @@
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Button } from "@/components/ui/button";
 import RemSizeImage from "../RemSizeImage";
 import { cn } from "@/utils/shadcn-utils";
 import React, { useEffect, useState } from "react";

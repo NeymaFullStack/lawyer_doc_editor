@@ -71,21 +71,6 @@ function ToolBar({ editor }) {
                 />
               </button>
             )}
-            {/*
-        <button>
-          <RemSizeImage
-            imagePath={"/assets/icons/search-blue.svg"}
-            remWidth={1.8}
-            remHeight={1.8}
-            alt="Search"
-          />
-        </button>
-        <RemSizeImage
-          imagePath={"/assets/icons/quillicons/seprator-icon.svg"}
-          remWidth={0.15}
-          remHeight={0.1}
-          alt="Separator"
-        /> */}
             <button onClick={() => editor.commands.undo()}>
               <RemSizeImage
                 imagePath={"/assets/icons/quillicons/undo-icon.svg"}
