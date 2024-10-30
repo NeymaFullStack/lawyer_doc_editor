@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LoganModal from "@/components/generic/LoganModal";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import DropFile from "./DropFile";
-import { Button } from "../shadcn-components/ui/button";
+import { Button } from "../ui/button";
 import FilePreview from "@/components/generic/FilePreview";
 
 function FileUploadModal({ isOpen, onClose, onClickSave }) {

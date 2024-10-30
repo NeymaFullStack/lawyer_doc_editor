@@ -5,10 +5,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/shadcn-components/ui/card";
-import { Label } from "@/components/shadcn-components/ui/label";
-import { Switch } from "@/components/shadcn-components/ui/switch";
-import { Separator } from "@/components/shadcn-components/ui/separator";
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import {
   getUserNotificationPreferences,
   UpdateNotificationPreferences,

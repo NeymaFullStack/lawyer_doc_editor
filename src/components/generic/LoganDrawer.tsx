@@ -6,8 +6,8 @@ import {
   DrawerHeader,
   DrawerFooter,
   DrawerClose,
-} from "../shadcn-components/ui/drawer";
-import { Button } from "../shadcn-components/ui/button";
+} from "../ui/drawer";
+import { Button } from "../ui/button";
 
 export interface LoganDrawerProps {
   isOpen: boolean;

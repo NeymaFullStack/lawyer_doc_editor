@@ -10,22 +10,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/shadcn-components/ui/form";
-import { Input } from "@/components/shadcn-components/ui/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/shadcn-components/ui/select";
+} from "@/components/ui/select";
 import { documentAction } from "@/redux/documentSlice";
 import { useDispatch } from "react-redux";
 import { copiedContentType } from "@/constants/enums";
 import { ClientPageFieldType } from "@/types/form";
 import { ClientPageField } from "@/constants/typedList";
 import Image from "next/image";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Button } from "@/components/ui/button";
 import FileUploadModal from "@/components/generic/FileUploadModal";
 import {
   forwardRef,

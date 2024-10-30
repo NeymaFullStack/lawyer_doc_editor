@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { documentAction } from "@/redux/documentSlice";
 import { useSelector } from "react-redux";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Button } from "@/components/ui/button";
 import RemSizeImage from "@/components/generic/RemSizeImage";
 
 function Highlighter() {

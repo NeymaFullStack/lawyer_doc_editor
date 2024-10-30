@@ -10,8 +10,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/shadcn-components/ui/card";
-import { Button } from "@/components/shadcn-components/ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,8 +19,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/shadcn-components/ui/form";
-import { Input } from "@/components/shadcn-components/ui/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/shadcn-utils";
 import { resetPassword } from "@/api/clientSideServiceActions/dashboardServiceActions";
 

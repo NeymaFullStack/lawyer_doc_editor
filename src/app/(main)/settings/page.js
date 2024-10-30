@@ -1,13 +1,8 @@
 "use client";
 import { useState } from "react";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcn-components/ui/card";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import RemSizeImage from "@/components/generic/RemSizeImage";
 import UserSettings from "../../../components/settings/userSettings/UserSettings";

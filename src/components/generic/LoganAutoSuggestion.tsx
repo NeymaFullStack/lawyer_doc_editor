@@ -6,14 +6,14 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@/components/shadcn-components/ui/command";
-import { Input } from "@/components/shadcn-components/ui/input";
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverAnchor,
   PopoverContent,
-} from "@/components/shadcn-components/ui/popover";
-import { Skeleton } from "@/components/shadcn-components/ui/skeleton";
+} from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import RemSizeImage from "./RemSizeImage";
 import { useDebounce } from "@/hooks/useDebounce";
 import { navigationItemTypes } from "@/constants/enums";

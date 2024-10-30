@@ -1,6 +1,6 @@
 import PositionToolTip from "@/components/generic/PositionToolTip";
 import RemSizeImage from "@/components/generic/RemSizeImage";
-import { Input } from "@/components/shadcn-components/ui/input";
+import { Input } from "@/components/ui/input";
 import { documentActions, tagInsertionType } from "@/constants/enums";
 import { documentAction } from "@/redux/documentSlice";
 import { debounce } from "@/utils/generic";

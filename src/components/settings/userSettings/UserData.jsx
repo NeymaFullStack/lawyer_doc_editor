@@ -4,13 +4,8 @@ import { set, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcn-components/ui/card";
-import { Button } from "@/components/shadcn-components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,9 +13,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/shadcn-components/ui/form";
-import { Input } from "@/components/shadcn-components/ui/input";
-import { Separator } from "@/components/shadcn-components/ui/separator";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 import {
   Select,
@@ -28,8 +23,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/shadcn-components/ui/select";
-import { Label } from "@/components/shadcn-components/ui/label";
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import FileUploadModal from "@/components/generic/FileUploadModal";
 import { cn } from "@/utils/shadcn-utils";
 import Image from "next/image";
