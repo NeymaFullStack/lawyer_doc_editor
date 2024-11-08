@@ -1,5 +1,5 @@
 import "../styles/scss/global.scss";
-import StoreProvider from "@/components/ssr/reduxStore/StoreProvider";
+import StoreProvider from "@redux/store-provider";
 import { Inter } from "next/font/google";
 
 export const metadata = {

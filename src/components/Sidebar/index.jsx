@@ -19,6 +19,7 @@ import {
   tempelatedRoute,
 } from "@/constants/routes";
 import { cn } from "@/utils/shadcn-utils";
+import { paths } from "@/routes/path";
 
 function Sidebar() {
   const pathName = usePathname();
@@ -133,7 +134,7 @@ function Sidebar() {
           <li className="pl-5 !text-primary-gray">MORE</li>
           <li className="pl-5">
             <Link
-              href={settingsRoute}
+              href={paths.settings.root}
               className={cn("flex items-center gap-4 ")}
             >
               <RemSizeImage
@@ -145,7 +146,8 @@ function Sidebar() {
               <span
                 className={cn(
                   "text-primary-gray",
-                  pathName.startsWith(settingsRoute) && " text-primary-blue",
+                  pathName.startsWith(paths.settings.root) &&
+                    " text-primary-blue",
                 )}
               >
                 Settings
