@@ -2,7 +2,7 @@ import Axios from "axios";
 import { deleteCookie, getCookie } from "cookies-next";
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 export const API_URL =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === "development"
     ? "http://ec2-35-83-210-143.us-west-2.compute.amazonaws.com:7003"
     : "http://localhost:7003";
 // export const API_URL =

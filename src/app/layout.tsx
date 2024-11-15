@@ -1,6 +1,10 @@
 import "../styles/scss/global.scss";
+
+import "src/locales/i18n";
+
 import StoreProvider from "@redux/store-provider";
 import { Inter } from "next/font/google";
+import { AuthProvider } from "@/auth/context";
 
 export const metadata = {
   title: "Logan - The Ultimate Document Collaboration Tool for Lawyers",
@@ -50,7 +54,9 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" className={primaryFont.variable}>
       <body>
-        <StoreProvider>{children}</StoreProvider>
+        <AuthProvider>
+          <StoreProvider>{children}</StoreProvider>
+        </AuthProvider>
       </body>
     </html>
   );
