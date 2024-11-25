@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { ActionMapType, AuthStateType, AuthUserType } from "../types";
 import { isValidToken, setSession } from "./utils";
-import axios, { endpoints } from "@/utils/axios";
+import axios, { endpoints } from "@/lib/axios";
 import { AuthContext } from "./auth-context";
 
 enum Types {
@@ -58,8 +58,13 @@ export function AuthProvider({ children }: Props) {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
 
       if (accessToken && isValidToken(accessToken)) {
-        setSession(null);
-        //   TO DO: Set session as accessToken and  Fetch user data from the server by sending a request to the /me endpoint
+        setSession(accessToken);
+        const res = await axios.get(endpoints.me);
+
+        dispatch({
+          type: Types.INITIAL,
+          payload: { user: { ...res.data } },
+        });
       } else {
         dispatch({ type: Types.INITIAL, payload: { user: null } });
       }
@@ -78,13 +83,14 @@ export function AuthProvider({ children }: Props) {
       username: email,
       password,
     });
-    const { accessToken, first_name, last_name } = res.data;
 
-    setSession(accessToken);
+    const { access_token } = res.data;
+    setSession(access_token);
+    const { data } = await axios.get(endpoints.me);
 
     dispatch({
       type: Types.LOGIN,
-      payload: { user: { email, first_name, last_name } },
+      payload: { user: { ...data } },
     });
   }, []);
 
@@ -107,7 +113,7 @@ export function AuthProvider({ children }: Props) {
       login,
       logout,
     }),
-    [login, logout, state.user, status],
+    [login, logout, state.user, status]
   );
 
   return (

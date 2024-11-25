@@ -7,11 +7,14 @@ const ROOTS = {
 export const paths = {
   login: "/login",
   register: "/register",
+  logout: "/logout",
+  support: "/support",
   dashboard: {
     root: ROOTS.DASHBOARD,
+    document: `${ROOTS.DASHBOARD}/document`,
   },
   settings: {
-    root: ROOTS.TEMPLATES,
+    root: ROOTS.SETTINGS,
   },
   templates: {
     root: ROOTS.TEMPLATES,

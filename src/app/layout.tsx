@@ -1,12 +1,16 @@
-import "../styles/scss/global.scss";
-
-import "src/locales/i18n";
-
-import StoreProvider from "@redux/store-provider";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import "./globals.css";
 import { AuthProvider } from "@/auth/context";
 
-export const metadata = {
+export const primaryFont = Inter({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+  fallback: ["Helvetica", "Arial", "sans-serif"],
+});
+
+export const metadata: Metadata = {
   title: "Logan - The Ultimate Document Collaboration Tool for Lawyers",
   description:
     "Logain is a secure, efficient, and collaborative document management solution designed exclusively for legal professionals",
@@ -40,24 +44,16 @@ export const metadata = {
     },
   ],
 };
-
-const primaryFont = Inter({
-  subsets: ["latin"],
-  variable: "--inter-font",
-});
-
-type Props = {
+export default function RootLayout({
+  children,
+}: {
   children: React.ReactNode;
-};
-
-export default function RootLayout({ children }: Props) {
+}) {
   return (
-    <html lang="en" className={primaryFont.variable}>
-      <body>
-        <AuthProvider>
-          <StoreProvider>{children}</StoreProvider>
-        </AuthProvider>
-      </body>
+    <html lang="en" className={primaryFont.className}>
+      <AuthProvider>
+        <body className={primaryFont.className}>{children}</body>
+      </AuthProvider>
     </html>
   );
 }

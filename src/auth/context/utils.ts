@@ -1,5 +1,5 @@
 import { paths } from "@/routes/path";
-import axios from "@/utils/axios";
+import axios from "@/lib/axios";
 
 function jwtDecode(token: string) {
   const base64Url = token.split(".")[1];
@@ -9,7 +9,7 @@ function jwtDecode(token: string) {
       .atob(base64)
       .split("")
       .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
-      .join(""),
+      .join("")
   );
 
   return JSON.parse(jsonPayload);

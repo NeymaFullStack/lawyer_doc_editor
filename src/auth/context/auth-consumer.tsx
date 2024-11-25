@@ -1,7 +1,5 @@
 "use client";
 
-import { LoadingSpinner } from "@/components/generic/loading-spinner";
-
 import { AuthContext } from "./auth-context";
 
 type Props = {
@@ -13,7 +11,7 @@ export function AuthConsumer({ children }: Props) {
     <AuthContext.Consumer>
       {(value) => {
         if (value.loading) {
-          return <LoadingSpinner size={48} />;
+          return null;
         }
 
         return children;
