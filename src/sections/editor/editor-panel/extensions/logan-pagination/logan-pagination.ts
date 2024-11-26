@@ -1,52 +1,63 @@
 import { Node, RawCommands, mergeAttributes } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Decoration, DecorationSet } from "@tiptap/pm/view";
+import { Node as ProsemirrorNode } from "@tiptap/pm/model";
 import { Transaction } from "@tiptap/pm/state";
 
-export interface PageExtensionOptions {
-  bodyWidth: number; // Width of the page in pixels
-  bodyHeight: number; // Height of the page in pixels
-  bodyPadding: number; // Padding within the page
+export interface PaginationOptions {
+  pageHeight: number;
+  pageWidth: number;
+  pageMargin: number;
 }
 
-export const PageExtension = Node.create<PageExtensionOptions>({
-  name: "page",
+export const PageExtension = Node.create<PaginationOptions>({
+  name: "pagination",
 
-  group: "page", // This makes it a block-level node
+  group: "block",
 
   content: "block+",
 
   addOptions() {
     return {
-      bodyWidth: 800, // Default width
-      bodyHeight: 1120, // Default height
-      bodyPadding: 20, // Default padding
+      pageHeight: 1123, // Default page height (in pixels)
+      pageWidth: 794, // Default page width (in pixels)
+      pageMargin: 96, // Default margin around the page (in pixels)
     };
   },
 
   parseHTML() {
-    return [{ tag: "div[data-page]" }];
+    return [{ tag: "div[data-pagination]" }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["div", mergeAttributes(HTMLAttributes, { "data-page": "" }), 0];
+    return [
+      "div",
+      mergeAttributes(HTMLAttributes, { "data-pagination": "" }),
+      0,
+    ];
   },
 
   addNodeView() {
     return ({ node, view, getPos }) => {
       const dom = document.createElement("div");
-      dom.style.width = `${this.options.bodyWidth}px`;
-      dom.style.minHeight = `${this.options.bodyHeight}px`;
-      dom.style.maxHeight = `${this.options.bodyHeight}px`;
-      dom.style.overflow = "hidden";
-      dom.style.padding = `${this.options.bodyPadding}px`;
-      dom.style.border = "1px solid #ddd";
-      dom.style.boxSizing = "border-box";
-      dom.dataset.page = "";
+      const { pageHeight, pageWidth, pageMargin } = this.options;
+
+      // Applying styles to the pagination container
+      dom.classList.add(
+        "w-[794px]",
+        "h-[1123px]",
+        "p-[96px]",
+        "border",
+        "border-gray-300",
+        "box-border",
+        "bg-white"
+      );
+      dom.dataset.pagination = "";
 
       return {
         dom,
         contentDOM: dom,
         update: (updatedNode) => {
-          // Handle node updates here if necessary
           return true;
         },
       };
@@ -55,6 +66,22 @@ export const PageExtension = Node.create<PageExtensionOptions>({
 
   addCommands() {
     return {
+      setPaginationOptions:
+        (options: Partial<PaginationOptions>) =>
+        ({
+          tr,
+          dispatch,
+        }: {
+          tr: Transaction;
+          dispatch?: (tr: Transaction) => void;
+        }) => {
+          if (dispatch) {
+            tr.setMeta("paginationOptions", options);
+            dispatch(tr);
+          }
+          return true;
+        },
+
       addPage:
         () =>
         ({
@@ -66,16 +93,13 @@ export const PageExtension = Node.create<PageExtensionOptions>({
         }) => {
           const { schema } = this.editor;
 
-          // Create a new page node
-          const pageNode = schema.nodes.page.createAndFill();
-
+          const pageNode = schema.nodes.pagination.createAndFill();
           if (!pageNode) {
-            console.error("Failed to create a new page node.");
+            console.error("Failed to create a new pagination node.");
             return false;
           }
 
           if (dispatch) {
-            // Insert the page node at the end of the document
             tr.insert(tr.doc.content.size, pageNode);
             dispatch(tr);
           }
@@ -83,5 +107,71 @@ export const PageExtension = Node.create<PageExtensionOptions>({
           return true;
         },
     } as Partial<RawCommands>;
+  },
+
+  addProseMirrorPlugins() {
+    const pluginKey = new PluginKey("pagination");
+
+    return [
+      new Plugin({
+        key: pluginKey,
+        state: {
+          init: () => ({ ...this.options }),
+          apply: (tr, value) => {
+            const newOptions = tr.getMeta("paginationOptions");
+            if (newOptions) {
+              return { ...value, ...newOptions };
+            }
+            return value;
+          },
+        },
+        props: {
+          decorations: (state) => {
+            const { doc } = state;
+            const decorations: Decoration[] = [];
+            let currentHeight = 0;
+            let pageNumber = 1;
+
+            const options = pluginKey.getState(state);
+
+            doc.descendants((node: ProsemirrorNode, pos: number) => {
+              const { pageHeight, pageMargin } = options!;
+              const nodeDOM = this.editor.view.nodeDOM(pos) as HTMLElement;
+
+              const nodeHeight =
+                node.isBlock && nodeDOM ? nodeDOM.offsetHeight : 0;
+
+              // If the current node height exceeds the remaining space, insert a page break
+              if (currentHeight + nodeHeight > pageHeight - 2 * pageMargin) {
+                // Add page number decoration
+                decorations.push(
+                  Decoration.widget(pos, () => {
+                    const pageIndex = document.createElement("div");
+                    pageIndex.className = "text-center font-bold mt-2";
+                    pageIndex.innerText = `${pageNumber}`;
+                    pageNumber += 1;
+                    return pageIndex;
+                  })
+                );
+
+                // Add page break decoration
+                decorations.push(
+                  Decoration.widget(pos, () => {
+                    const pageBreak = document.createElement("div");
+                    pageBreak.className = "border-t-2 border-gray-300 my-5";
+                    return pageBreak;
+                  })
+                );
+
+                currentHeight = 0;
+              }
+              currentHeight += nodeHeight;
+            });
+
+            return DecorationSet.create(doc, decorations);
+          },
+        },
+      }),
+    ];
   },
 });

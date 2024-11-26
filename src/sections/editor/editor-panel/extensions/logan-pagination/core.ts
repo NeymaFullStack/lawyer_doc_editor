@@ -1,4 +1,1 @@
-export const buildComputedHTML = (option: any): void => {
-
-};
-
+export const buildComputedHTML = (option: any): void => {};

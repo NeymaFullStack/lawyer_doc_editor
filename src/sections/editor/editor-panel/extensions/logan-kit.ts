@@ -24,6 +24,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
   name: "LoganKIT",
   addExtensions() {
     const extensions: any[] = [
+      PageExtension,
       LoganDocument,
       LoganHeading,
       LoganText,
