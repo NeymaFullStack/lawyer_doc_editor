@@ -121,3 +121,11 @@
 .ProseMirror ol {
   list-style-type: decimal;
 }
+
+.dropDownContent:has(.simpleSearchSquare) {
+  transition: all 0.3s;
+}
+.dropDownContent:has(.simpleSearchSquare):hover {
+  border: 1px solid #095ad3;
+  transition: all 0.3s;
+}

@@ -15,7 +15,7 @@ export const EditorColorPicker: React.FC<ColorPickerProps> = ({ onChange }) => {
       {colors.map((color, index) => (
         <div
           key={index}
-          className="w-6 h-6 rounded-full cursor-pointer border-solid border border-logan-black-foreground shadow-lg transition-transform transform hover:scale-110"
+          className="w-5 h-5 rounded-full cursor-pointer border-solid border border-logan-black-foreground shadow-lg transition-transform transform hover:scale-110"
           style={{ backgroundColor: color }}
           onClick={() => handleColorClick(color)}
         />

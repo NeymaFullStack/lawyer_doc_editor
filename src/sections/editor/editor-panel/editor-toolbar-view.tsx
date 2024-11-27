@@ -136,7 +136,9 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   );
 };
 
-const Divider = () => <span className="border-r border-[#CEDEF6] h-6"></span>;
+export const Divider = () => (
+  <span className="border-r border-logan-primary-400 h-6"></span>
+);
 
 type ToolBarItemProps = {
   iconName: keyof typeof icons;
@@ -208,7 +210,7 @@ const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
         <span className="p-0 h-7 bg-transparent">{button}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="p-3 grid gap-2 text-logan-black-foreground font-semibold rounded-2xl"
+        className="p-2 grid gap-2 text-logan-black-foreground font-semibold rounded-xl dropDownContent"
         align="start"
       >
         {content}

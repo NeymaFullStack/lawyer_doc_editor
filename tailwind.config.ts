@@ -34,6 +34,7 @@ const config: Config = {
           "linear-gradient(92.19deg, #A045FB 3.29%, #4822E4 82.62%)",
       },
       borderRadius: {
+        large: "10px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
