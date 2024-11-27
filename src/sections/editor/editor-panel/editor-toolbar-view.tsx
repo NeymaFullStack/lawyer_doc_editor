@@ -93,7 +93,9 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                     isSelected={
                       activeStates[item.label as keyof typeof activeStates]
                     }
-                    customColor={selectedColor}
+                    customColor={
+                      item.label === "color" ? selectedColor : selectedHighlight
+                    }
                     isBlack={index > 4 && true}
                     disabled={false}
                   />

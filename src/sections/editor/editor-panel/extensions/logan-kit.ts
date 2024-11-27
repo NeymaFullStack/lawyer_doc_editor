@@ -3,7 +3,7 @@ import { Extension } from "@tiptap/react";
 import { LoganHeading } from "./logan-heading";
 import { LoganText } from "./logan-text";
 import { LoganParagraph } from "./logan-paragraph";
-import { PageExtension } from "./logan-pagination/logan-pagination";
+// import { PageExtension } from "./logan-pagination/logan-pagination";
 import { LoganDocument } from "./logan-document";
 import { LoganBold } from "./logan-bold";
 import { LoganItalic } from "./logan-italic";
@@ -27,7 +27,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
   name: "LoganKIT",
   addExtensions() {
     const extensions: any[] = [
-      PageExtension,
+      // PageExtension,
       LoganDocument,
       LoganHeading,
       LoganText,
