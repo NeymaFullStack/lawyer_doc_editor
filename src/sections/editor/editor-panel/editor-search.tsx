@@ -83,13 +83,13 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
     setFlag(false);
   };
 
-  const clear = () => {
-    setSearchTerm("");
-    setReplaceTerm("");
-    setCurrentResult(0);
-    setTotalResults(0);
-    editor?.commands.resetIndex();
-  };
+  // const clear = () => {
+  //   setSearchTerm("");
+  //   setReplaceTerm("");
+  //   setCurrentResult(0);
+  //   setTotalResults(0);
+  //   editor?.commands.resetIndex();
+  // };
 
   useEffect(() => {
     if (editor) setTimeout(() => updateSearchReplace());
@@ -118,7 +118,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   return (
     <>
       {flag ? (
-        <div className="flex items-center gap-3 font-extralight text-logan-primary-400 simpleSearchSquare">
+        <div className="flex items-center justify-between gap-3 font-extralight text-logan-primary-400 simpleSearchSquare w-80">
           <Input
             className="!border-none caret-logan-black p-1 h-6"
             type="text"
@@ -126,7 +126,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <span>
-            {currentResult + 1}/{totalResults}
+            {currentResult}/{totalResults}
           </span>
           <Divider />
           <Icon
@@ -154,26 +154,38 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
           />
         </div>
       ) : (
-        <div className="w-96 grid gap-5 p-4">
-          <Label className="text-lg">Search and Replace</Label>
-          <div className="grid gap-3">
+        <div className="w-125 grid gap-5 px-8 pb-6 pt-3">
+          <div className="flex items-center justify-between">
+            <Label className="text-lg text-logan-primary-500 font-bold">
+              Search and Replace
+            </Label>
+            <Button variant="ghost" size="sm">
+              <Icon
+                iconName="dialogclose"
+                onClick={handleClose}
+                fill={iconColors["light-blue"]}
+                className="size-4"
+              />
+            </Button>
+          </div>
+          <div className="grid gap-3 text-smaller font-thin">
             <div className="flex items-center">
-              <label htmlFor="search" className="mr-2 w-24">
+              <label htmlFor="search" className="mr-2 w-32 text-smaller">
                 Search:
               </label>
               <Input
-                className=""
+                className="!rounded-large"
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="flex items-center">
-              <label htmlFor="replace" className="mr-2 w-24">
-                Replace:
+              <label htmlFor="replace" className="mr-2 w-32 text-smaller">
+                Replace with:
               </label>
               <Input
-                className=""
+                className="!rounded-large"
                 type="text"
                 value={replaceTerm}
                 onChange={(e) => setReplaceTerm(e.target.value)}
@@ -187,23 +199,26 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
                   setCaseSensitive(checked)
                 }
               />
-              <label className="ml-2">Case Sensitive</label>
+              <label className="ml-2">
+                Ignore diacritical characters (e.g., à = a, É = E, ń = n)
+              </label>
             </div>
           </div>
-          <div className="flex justify-start">
+          <div className="flex justify-start gap-4">
             <Button
               size="sm"
-              onClick={() => clear()}
-              className="text-white rounded-xl bg-red-500"
+              variant={"outline"}
+              onClick={() => setFlag(true)}
+              className="text-logan-primary rounded-lg"
             >
-              Clear
+              Previous
             </Button>
             <Button
               size="sm"
               onClick={handleReplaceAll}
-              className="bg-green-500 text-white rounded-xl"
+              className="bg-logan-primary-200 text-logan-blue rounded-lg hover:bg-logan-primary-300"
             >
-              Replace
+              Replace All
             </Button>
           </div>
         </div>
