@@ -207,7 +207,10 @@ const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
       <DropdownMenuTrigger asChild>
         <span className="p-0 h-7 bg-transparent">{button}</span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="p-3 grid gap-2 text-logan-black-foreground font-semibold rounded-2xl">
+      <DropdownMenuContent
+        className="p-3 grid gap-2 text-logan-black-foreground font-semibold rounded-2xl"
+        align="start"
+      >
         {content}
       </DropdownMenuContent>
     </DropdownMenu>
