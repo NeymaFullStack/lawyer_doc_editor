@@ -3,12 +3,12 @@ import { icons } from "@/components/icons";
 type ToolBarType = {
   label: string;
   icon: keyof typeof icons;
-  dropdownIcon?: boolean;
+  dropdown?: boolean;
   divider?: boolean;
 };
 
 export const ToolBar_ITEMS: ToolBarType[] = [
-  { label: "search", icon: "search" },
+  { label: "search", icon: "search", dropdown: true },
   { label: "chatai", icon: "chatai" },
   { label: "commentplus", icon: "commentplus", divider: true },
   { label: "previous", icon: "previous" },
@@ -16,8 +16,8 @@ export const ToolBar_ITEMS: ToolBarType[] = [
   { label: "bold", icon: "bold" },
   { label: "italic", icon: "italic" },
   { label: "underline", icon: "underline" },
-  { label: "highlight", icon: "highlight" },
-  { label: "color", icon: "color", divider: true },
+  { label: "highlight", icon: "highlight", dropdown: true },
+  { label: "color", icon: "color", dropdown: true, divider: true },
   { label: "bullets", icon: "bullets" },
   { label: "ordered", icon: "ordered", divider: true },
   { label: "footnotes", icon: "footnotes" },

@@ -7,23 +7,39 @@ import { useHover } from "@/hooks/use-hover";
 import { iconColors } from "../../../../tailwind.config";
 import { cn } from "@/lib/utils";
 import { Editor } from "@tiptap/core";
+import { EditorSearchAndReplace } from "./editor-search";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type EditorToolbarProps = {
   editor: Editor | null;
 };
 
 interface ActiveStates {
-  bold: boolean;
-  italic: boolean;
-  underline: boolean;
-  strike: boolean;
-  color: boolean;
-  highlight: boolean;
-  bullets: boolean;
-  ordered: boolean;
+  [key: string]: boolean;
 }
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
+  const [open, setOpen] = useState(false);
+  const canUndo = editor?.can().undo();
+  const canRedo = editor?.can().redo();
+  const [selectedColor, setSelectedColor] = useState(iconColors.gray);
+  const [selectedHighlight, setSelectedHighlight] = useState(iconColors.white);
+
+  const [activeStates, setActiveStates] = useState<ActiveStates>({
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    color: false,
+    highlight: false,
+    bullets: false,
+    ordered: false,
+  });
+
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
@@ -45,23 +61,6 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
     image: () => setOpen(true),
-  });
-
-  const [open, setOpen] = useState(false);
-  const canUndo = editor?.can().undo();
-  const canRedo = editor?.can().redo();
-  const [selectedColor, setSelectedColor] = useState(iconColors.gray);
-  const [selectedHighlight, setSelectedHighlight] = useState(iconColors.white);
-
-  const [activeStates, setActiveStates] = useState<ActiveStates>({
-    bold: false,
-    italic: false,
-    underline: false,
-    strike: false,
-    color: false,
-    highlight: false,
-    bullets: false,
-    ordered: false,
   });
 
   useEffect(() => {
@@ -86,9 +85,8 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
       <div className="flex items-center gap-[10px]">
         {ToolBar_ITEMS.map((item: any, index: number) => (
           <React.Fragment key={index}>
-            {item.label === "color" || item.label === "highlight" ? (
-              <EditorColorPicker
-                onChange={actions[item.label as keyof typeof actions]}
+            {item.dropdown ? (
+              <ToolBarDropDown
                 button={
                   <ToolBarItem
                     iconName={item.icon}
@@ -96,9 +94,18 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                       activeStates[item.label as keyof typeof activeStates]
                     }
                     customColor={selectedColor}
-                    isBlack={index > 2 && true}
+                    isBlack={index > 4 && true}
                     disabled={false}
                   />
+                }
+                content={
+                  item.label === "search" ? (
+                    <EditorSearchAndReplace editor={editor} />
+                  ) : (
+                    <EditorColorPicker
+                      onChange={actions[item.label as keyof typeof actions]}
+                    />
+                  )
                 }
               />
             ) : (
@@ -186,3 +193,23 @@ const ToolBarItem = React.forwardRef<HTMLSpanElement, ToolBarItemProps>(
 );
 
 ToolBarItem.displayName = "ToolBarItem";
+
+type ToolBarDropDownProps = {
+  button: React.ReactNode;
+  content: React.ReactNode;
+};
+
+const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <span className="p-0 h-7 bg-transparent">{button}</span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-3 grid gap-2 text-logan-black-foreground font-semibold rounded-2xl">
+        {content}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+ToolBarDropDown.displayName = "ToolBarDropDown";

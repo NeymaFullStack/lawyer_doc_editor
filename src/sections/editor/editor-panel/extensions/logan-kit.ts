@@ -16,6 +16,8 @@ import { LoganBulletList } from "./logan-bullets";
 import { LoganOrderedList } from "./logan-ordered-list";
 import { LoganListItem } from "./logan-listitem";
 import { LoganTextStyle } from "./logan-text-style";
+import { LoganLink } from "./logan-link";
+import { LoganSearch } from "./logan-search";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -30,6 +32,11 @@ export const LoganKit = Extension.create<LoganKitOptions>({
       LoganHeading,
       LoganText,
       LoganParagraph,
+      LoganSearch.configure({
+        searchResultClass: "font-semibold bg-logan-primary-50 text-logan-blue",
+        disableRegex: false,
+      }),
+      LoganLink,
       LoganHistory,
       LoganBold,
       LoganItalic,
