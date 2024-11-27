@@ -6,26 +6,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { colors } from "./config-toobar";
-import { Editor } from "@tiptap/core";
 
 type ColorPickerProps = {
   button: React.ReactNode;
-  editor: Editor | null;
-  selectedColor: string;
-  setSelect: React.Dispatch<React.SetStateAction<string>>;
+  onChange: (color: string) => void;
 };
 
 export const EditorColorPicker: React.FC<ColorPickerProps> = ({
   button,
-  editor,
-  setSelect,
+  onChange,
 }) => {
   const handleColorClick = (color: string) => {
-    editor?.chain().focus().setColor(color).run();
-    editor?.isActive(color);
-    setSelect(color);
+    onChange(color);
   };
-  0;
 
   return (
     <DropdownMenu>

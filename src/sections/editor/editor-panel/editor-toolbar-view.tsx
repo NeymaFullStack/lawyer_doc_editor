@@ -18,6 +18,7 @@ interface ActiveStates {
   underline: boolean;
   strike: boolean;
   color: boolean;
+  highlight: boolean;
   bullets: boolean;
   ordered: boolean;
 }
@@ -32,7 +33,14 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     bold: () => editor?.commands?.toggleBold(),
     italic: () => editor?.commands?.toggleItalic(),
     underline: () => editor?.commands?.toggleUnderline(),
-    color: () => {},
+    color: (color: string) => {
+      editor?.chain().focus().setColor(color).run();
+      setSelectedColor(color);
+    },
+    highlight: (hightlight: string) => {
+      editor?.commands?.toggleHighlight({ color: hightlight });
+      setSelectedHighlight(hightlight);
+    },
     bullets: () => editor?.commands?.toggleBulletList(),
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
@@ -42,6 +50,8 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const [open, setOpen] = useState(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
+  const [selectedColor, setSelectedColor] = useState(iconColors.gray);
+  const [selectedHighlight, setSelectedHighlight] = useState(iconColors.white);
 
   const [activeStates, setActiveStates] = useState<ActiveStates>({
     bold: false,
@@ -49,10 +59,10 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     underline: false,
     strike: false,
     color: false,
+    highlight: false,
     bullets: false,
     ordered: false,
   });
-  const [selectedColor, setSelectedColor] = useState(iconColors.gray);
 
   useEffect(() => {
     if (editor) {
@@ -61,7 +71,8 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
         italic: editor.isActive("italic"),
         underline: editor.isActive("underline"),
         strike: editor.isActive("strike"),
-        color: editor.isActive("color"),
+        color: editor.isActive("textStyle", { color: selectedColor }),
+        highlight: editor.isActive("highlight", { color: selectedHighlight }),
         bullets: editor.isActive("bulletList"),
         ordered: editor.isActive("orderedList"),
       });
@@ -75,10 +86,9 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
       <div className="flex items-center gap-[10px]">
         {ToolBar_ITEMS.map((item: any, index: number) => (
           <React.Fragment key={index}>
-            {item.label === "color" ? (
+            {item.label === "color" || item.label === "highlight" ? (
               <EditorColorPicker
-                selectedColor={selectedColor}
-                setSelect={setSelectedColor}
+                onChange={actions[item.label as keyof typeof actions]}
                 button={
                   <ToolBarItem
                     iconName={item.icon}
@@ -90,7 +100,6 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                     disabled={false}
                   />
                 }
-                editor={editor}
               />
             ) : (
               <ToolBarItem

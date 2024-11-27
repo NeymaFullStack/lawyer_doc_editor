@@ -1169,6 +1169,24 @@ export const icons = {
       </svg>
     );
   },
+  highlight: ({ className, fill }) => {
+    const color = typeof fill === "string" ? fill : fill.from;
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="5 2 16 16"
+        fill="none"
+        className={className}
+      >
+        <path
+          d="M6.56641 13.0588L8.47083 11.1544L8.45005 11.1405C8.04839 10.732 8.04839 10.0741 8.45005 9.67241L11.7326 6.38988L14.6689 9.32615L11.3863 12.6087C10.9916 13.0103 10.3476 13.0103 9.93897 12.6225L9.50268 13.0588H6.56641ZM14.8143 3.30125C15.2229 2.89958 15.8808 2.89958 16.2824 3.30125L17.7575 4.76938C18.1592 5.17797 18.1592 5.83586 17.7575 6.24445L15.4722 8.52283L12.5359 5.58655L14.8143 3.30125Z"
+          fill={color ?? "#383D44"}
+        />
+      </svg>
+    );
+  },
   bullets: ({ className, fill }) => {
     const color = typeof fill === "string" ? fill : fill.from;
     return (

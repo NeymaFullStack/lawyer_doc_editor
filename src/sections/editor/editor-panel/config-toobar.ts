@@ -16,6 +16,7 @@ export const ToolBar_ITEMS: ToolBarType[] = [
   { label: "bold", icon: "bold" },
   { label: "italic", icon: "italic" },
   { label: "underline", icon: "underline" },
+  { label: "highlight", icon: "highlight" },
   { label: "color", icon: "color", divider: true },
   { label: "bullets", icon: "bullets" },
   { label: "ordered", icon: "ordered", divider: true },

@@ -10,6 +10,7 @@ import { LoganItalic } from "./logan-italic";
 import { LoganUnderline } from "./logan-underline";
 import { LoganHistory } from "./logan-history";
 import { LoganColor } from "./logan-color";
+import { LoganHighlight } from "./logan-highlight";
 import { LoganImage } from "./logan-image";
 import { LoganBulletList } from "./logan-bullets";
 import { LoganOrderedList } from "./logan-ordered-list";
@@ -34,6 +35,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
       LoganItalic,
       LoganUnderline,
       LoganColor,
+      LoganHighlight,
       LoganTextStyle,
       LoganBulletList,
       LoganOrderedList,
