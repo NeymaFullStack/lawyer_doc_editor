@@ -3,7 +3,6 @@ import { Extension } from "@tiptap/react";
 import { LoganHeading } from "./logan-heading";
 import { LoganText } from "./logan-text";
 import { LoganParagraph } from "./logan-paragraph";
-// import { PageExtension } from "./logan-pagination/logan-pagination";
 import { LoganDocument } from "./logan-document";
 import { LoganBold } from "./logan-bold";
 import { LoganItalic } from "./logan-italic";
@@ -18,6 +17,10 @@ import { LoganListItem } from "./logan-listitem";
 import { LoganTextStyle } from "./logan-text-style";
 import { LoganLink } from "./logan-link";
 import { LoganSearch } from "./logan-search";
+import {
+  PageNode,
+  PaginationExtension,
+} from "./logan-pagination/logan-page-extention";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -28,6 +31,8 @@ export const LoganKit = Extension.create<LoganKitOptions>({
   addExtensions() {
     const extensions: any[] = [
       // PageExtension,
+      PaginationExtension,
+      PageNode,
       LoganDocument,
       LoganHeading,
       LoganText,
