@@ -8,7 +8,6 @@ import { Icon } from "@/components/icons";
 import { iconColors } from "../../../../tailwind.config";
 import { Divider } from "./editor-toolbar-view";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
-import { set } from "date-fns";
 import { IconConfig } from "./config-toobar";
 
 type EditorSearchAndReplaceProps = {
@@ -18,32 +17,27 @@ type EditorSearchAndReplaceProps = {
 export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   editor,
 }) => {
-  const { open, setOpen } = useDropdown();
+  const { open } = useDropdown();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [replaceTerm, setReplaceTerm] = useState<string>("");
   const [caseSensitive, setCaseSensitive] = useState<boolean>(false);
   const [flag, setFlag] = useState<boolean>(true);
 
-  // Track the search result number and total count
   const [currentResult, setCurrentResult] = useState<number>(0);
   const [totalResults, setTotalResults] = useState<number>(0);
 
   const goToSelection = () => {
     if (!editor) return;
 
-    const { results, resultIndex } = editor.storage.searchAndReplace || {};
-    const position = results?.[resultIndex];
+    const { results, resultIndex } = editor.storage.searchAndReplace;
+    const position = results[resultIndex];
 
     if (!position) return;
 
     editor.commands.setTextSelection(position);
-
-    const resolvedNode = editor.view.domAtPos(editor.state.selection.anchor);
-    const node = resolvedNode?.node;
-
-    if (node instanceof HTMLElement) {
+    const { node } = editor.view.domAtPos(editor.state.selection.anchor);
+    node instanceof HTMLElement &&
       node.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
   };
 
   const updateSearchReplace = (clearIndex: boolean = false) => {
@@ -57,19 +51,13 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   };
 
   const handlePreviousResult = () => {
-    if (editor?.storage.searchAndReplace?.results) {
-      const newIndex = Math.max(currentResult - 1, 0);
-      setCurrentResult(newIndex);
-      goToSelection();
-    }
+    editor?.commands.previousSearchResult();
+    goToSelection();
   };
 
   const handleNextResult = () => {
-    if (editor?.storage.searchAndReplace?.results) {
-      const newIndex = Math.min(currentResult + 1, totalResults - 1);
-      setCurrentResult(newIndex);
-      goToSelection();
-    }
+    editor?.commands.nextSearchResult();
+    goToSelection();
   };
 
   const handleClose = () => {
@@ -117,13 +105,14 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
     if (editor?.storage.searchAndReplace?.results) {
       const results = editor.storage.searchAndReplace.results;
       setTotalResults(results.length);
-      setCurrentResult(editor.storage.searchAndReplace.resultIndex || 0);
+      searchTerm &&
+        setCurrentResult(editor.storage.searchAndReplace.resultIndex + 1 || 0);
     }
   }, [editor?.storage.searchAndReplace?.results]);
 
   useEffect(() => {
-    setSearchTerm("");
-    setReplaceTerm("");
+    // setSearchTerm("");
+    // setReplaceTerm("");
   }, [open]);
 
   const icons: IconConfig[] = [

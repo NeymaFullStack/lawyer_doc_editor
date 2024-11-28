@@ -129,3 +129,7 @@ input:focus {
   border: 1px solid #095ad3;
   transition: all 0.3s;
 }
+
+.search-result-current {
+  background-color: #4822e4 !important;
+}

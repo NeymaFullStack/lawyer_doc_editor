@@ -129,7 +129,7 @@ function processSearches(
     const r = results[i];
     const className =
       i === resultIndex
-        ? `${searchResultClass} ${searchResultClass}-current`
+        ? `${searchResultClass} search-result-current`
         : searchResultClass;
     const decoration: Decoration = Decoration.inline(r.from, r.to, {
       class: className,
