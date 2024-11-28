@@ -130,6 +130,12 @@ input:focus {
   transition: all 0.3s;
 }
 
+.search-result {
+  border-radius: 2px;
+  background: rgba(255, 199, 0, 0.3);
+}
+
 .search-result-current {
-  background-color: #4822e4 !important;
+  background: rgba(255, 199, 0, 0.3);
+  font-weight: 800;
 }

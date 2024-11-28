@@ -105,14 +105,13 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
     if (editor?.storage.searchAndReplace?.results) {
       const results = editor.storage.searchAndReplace.results;
       setTotalResults(results.length);
-      searchTerm &&
-        setCurrentResult(editor.storage.searchAndReplace.resultIndex + 1 || 0);
+      setCurrentResult(editor.storage.searchAndReplace.resultIndex || 0);
     }
   }, [editor?.storage.searchAndReplace?.results]);
 
   useEffect(() => {
-    // setSearchTerm("");
-    // setReplaceTerm("");
+    setSearchTerm("");
+    setReplaceTerm("");
   }, [open]);
 
   const icons: IconConfig[] = [
@@ -154,13 +153,19 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
           </Label>
           <Divider />
           {icons.map((item, index) => (
-            <Icon
+            <Button
               key={index}
-              iconName={item.iconName}
               onClick={item.onClick}
-              fill={iconColors["light-blue"]}
-              className={item.className}
-            />
+              variant="ghost"
+              size="xm"
+              className="h-5 w-5"
+            >
+              <Icon
+                iconName={item.iconName}
+                fill={iconColors["light-blue"]}
+                className={item.className}
+              />
+            </Button>
           ))}
         </div>
       ) : (
