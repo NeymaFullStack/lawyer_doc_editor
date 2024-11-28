@@ -119,9 +119,7 @@ function processSearches(
   for (let i = 0; i < results.length; i += 1) {
     const r = results[i];
     const className =
-      i === resultIndex
-        ? `${searchResultClass} search-result-current`
-        : searchResultClass;
+      i === resultIndex ? `search-result-current` : "search-result";
     const decoration: Decoration = Decoration.inline(r.from, r.to, {
       class: className,
     });
