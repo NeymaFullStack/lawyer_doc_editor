@@ -1,9 +1,10 @@
-import { Node } from "@tiptap/pm/model";
+import { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { SplitContext } from "./split-context";
+import { NodeView, EditorView } from "@tiptap/pm/view";
 
 export type ComputedFn = (
   splitContext: SplitContext,
-  node: Node,
+  node: ProseMirrorNode,
   pos: number,
   parent: Node | null,
   dom: HTMLElement
@@ -24,3 +25,9 @@ export type PageOptions = {
   NodesComputed?: NodesComputed;
   SystemAttributes?: Record<string, any>;
 };
+
+export type NodeViewCreator = (
+  node: ProseMirrorNode,
+  view: EditorView,
+  getPos: () => number
+) => NodeView;

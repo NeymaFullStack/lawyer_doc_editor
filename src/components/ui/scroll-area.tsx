@@ -18,8 +18,8 @@ const ScrollArea = React.forwardRef<
       const element = scrollAreaRef.current;
 
       // Reduce velocity gradually
-      velocity.current.x *= 0.9;
-      velocity.current.y *= 0.9;
+      velocity.current.x *= 0.5;
+      velocity.current.y *= 0.5;
 
       if (Math.abs(velocity.current.x) < 0.1) velocity.current.x = 0;
       if (Math.abs(velocity.current.y) < 0.1) velocity.current.y = 0;

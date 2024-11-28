@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icons";
 import { iconColors } from "../../../../tailwind.config";
 import { Divider } from "./editor-toolbar-view";
+import { useDropdown } from "@/components/hook-form/dropdown-provider";
+import { set } from "date-fns";
+import { IconConfig } from "./config-toobar";
 
 type EditorSearchAndReplaceProps = {
   editor: Editor | null;
@@ -15,6 +18,7 @@ type EditorSearchAndReplaceProps = {
 export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   editor,
 }) => {
+  const { open, setOpen } = useDropdown();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [replaceTerm, setReplaceTerm] = useState<string>("");
   const [caseSensitive, setCaseSensitive] = useState<boolean>(false);
@@ -73,6 +77,8 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
       "dropDownContent"
     )[0] as HTMLElement;
     dropdown.style.display = "none";
+    setSearchTerm("");
+    setReplaceTerm("");
   };
 
   const handleReplaceAll = () => {
@@ -115,46 +121,61 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
     }
   }, [editor?.storage.searchAndReplace?.results]);
 
+  useEffect(() => {
+    setSearchTerm("");
+    setReplaceTerm("");
+  }, [open]);
+
+  const icons: IconConfig[] = [
+    {
+      iconName: "arrowdown",
+      onClick: handlePreviousResult,
+      className: "",
+    },
+    {
+      iconName: "arrowdown",
+      onClick: handleNextResult,
+      className: "rotate-180",
+    },
+    {
+      iconName: "dialogclose",
+      onClick: handleClose,
+      className: "size-4",
+    },
+    {
+      iconName: "addmore",
+      onClick: handleMore,
+      className: "size-1",
+    },
+  ];
+
   return (
     <>
       {flag ? (
         <div className="flex items-center justify-between gap-3 font-extralight text-logan-primary-400 simpleSearchSquare w-80">
           <Input
-            className="!border-none caret-logan-black p-1 h-6 text-logan-black"
+            className="!border-none caret-logan-black p-1 h-6 text-logan-black !transition-none"
             type="text"
             value={searchTerm}
+            autoFocus
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Label>
             {currentResult}/{totalResults}
           </Label>
           <Divider />
-          <Icon
-            iconName="arrowdown"
-            onClick={handlePreviousResult}
-            fill={iconColors["light-blue"]}
-          />
-          <Icon
-            iconName="arrowdown"
-            onClick={handleNextResult}
-            fill={iconColors["light-blue"]}
-            className="rotate-180"
-          />
-          <Icon
-            iconName="dialogclose"
-            onClick={handleClose}
-            fill={iconColors["light-blue"]}
-            className="size-4"
-          />
-          <Icon
-            iconName="addmore"
-            onClick={handleMore}
-            fill={iconColors["light-blue"]}
-            className="size-1"
-          />
+          {icons.map((item, index) => (
+            <Icon
+              key={index}
+              iconName={item.iconName}
+              onClick={item.onClick}
+              fill={iconColors["light-blue"]}
+              className={item.className}
+            />
+          ))}
         </div>
       ) : (
-        <div className="w-105 grid gap-5 px-5 pb-3 pt-1">
+        <div className="w-96 grid gap-5 px-3 pb-3 pt-1">
           <div className="flex items-center justify-between">
             <Label className="text-lg text-logan-primary-500 font-bold">
               Search and Replace
@@ -168,8 +189,8 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
           </div>
           <div className="grid gap-3 text-smaller font-thin">
             <div className="flex items-center relative">
-              <label htmlFor="search" className="mr-2 w-32 text-smaller">
-                Search:
+              <label htmlFor="search" className="mr-2 w-24 text-smaller">
+                Search
               </label>
               <Input
                 className="!rounded-large text-logan-black"
@@ -182,8 +203,8 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
               </label>
             </div>
             <div className="flex items-center">
-              <label htmlFor="replace" className="mr-2 w-32 text-smaller">
-                Replace with:
+              <label htmlFor="replace" className="mr-2 w-24 text-smaller">
+                Replace with
               </label>
               <Input
                 className="!rounded-large text-logan-black"

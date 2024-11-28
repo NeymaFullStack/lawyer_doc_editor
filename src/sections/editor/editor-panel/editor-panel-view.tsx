@@ -38,6 +38,9 @@ export const EditorPanelView = () => {
         const docContent = res.data.content_details.content;
         if (editor) {
           editor.commands.setContent(docContent);
+          setTimeout(() => {
+            editor.commands.insertContentAt(editor.state.doc.content.size, " ");
+          }, 100);
         }
       } catch (error) {
         console.error("Failed to fetch current version:", error);

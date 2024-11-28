@@ -13,6 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDropdown } from "@/components/hook-form/dropdown-provider";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -23,7 +24,7 @@ interface ActiveStates {
 }
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
   const [selectedColor, setSelectedColor] = useState(iconColors.gray);
@@ -204,13 +205,15 @@ type ToolBarDropDownProps = {
 };
 
 const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
+  const { setOpen } = useDropdown();
+
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={(open) => setOpen(open)}>
       <DropdownMenuTrigger asChild>
         <span className="p-0 h-7 bg-transparent">{button}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="p-2 grid gap-2 text-logan-black-foreground font-semibold rounded-xl dropDownContent"
+        className="p-2 mt-1 grid gap-2 text-logan-black-foreground font-semibold rounded-xl dropDownContent"
         align="start"
       >
         {content}

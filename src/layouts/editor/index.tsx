@@ -5,6 +5,7 @@ import { Header } from "./header";
 import { FolderHierarchyType } from "@/components/folder-navigator/type";
 import axios, { endpoints } from "@/lib/axios";
 import { FolderNavigator } from "@/components/folder-navigator/folder-navigator";
+import { DropdownProvider } from "@/components/hook-form/dropdown-provider";
 
 type DocumentLayoutProps = {
   children: React.ReactNode;
@@ -48,12 +49,14 @@ export const EditorLayout = ({ children, id }: DocumentLayoutProps) => {
   }, [document?.project_id, fetchPath]);
 
   return (
-    <div className="w-full h-screen min-h-screen max-h-screen pr-6">
-      <div className="flex flex-col items-stretch gap-5 h-full self-stretch pt-8">
-        <Header />
-        <FolderNavigator paths={path ?? []} loading={loading} />
-        <div className="grow">{children}</div>
+    <DropdownProvider>
+      <div className="w-full h-screen min-h-screen max-h-screen pr-6">
+        <div className="flex flex-col items-stretch gap-5 h-full self-stretch pt-8">
+          <Header />
+          <FolderNavigator paths={path ?? []} loading={loading} />
+          <div className="grow">{children}</div>
+        </div>
       </div>
-    </div>
+    </DropdownProvider>
   );
 };

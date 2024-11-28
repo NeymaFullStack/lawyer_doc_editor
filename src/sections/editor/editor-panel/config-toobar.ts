@@ -108,3 +108,10 @@ export const colors = [
   "#20114d",
   "#4d1030",
 ];
+
+export interface IconConfig {
+  iconName: keyof typeof icons;
+  onClick: () => void;
+  className: string;
+  rotate?: boolean;
+}
