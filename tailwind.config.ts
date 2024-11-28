@@ -169,7 +169,7 @@ const config: Config = {
         smaller: "13px",
       },
       width: {
-        "125": "500px",
+        "105": "420px",
       },
     },
   },
