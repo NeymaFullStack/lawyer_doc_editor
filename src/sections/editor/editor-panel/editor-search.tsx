@@ -20,7 +20,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   const { open } = useDropdown();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [replaceTerm, setReplaceTerm] = useState<string>("");
-  const [caseSensitive, setCaseSensitive] = useState<boolean>(false);
+  const [ignoreDiacritics, setIgnoreDiacritics] = useState<boolean>(false);
   const [flag, setFlag] = useState<boolean>(true);
 
   const [currentResult, setCurrentResult] = useState<number>(0);
@@ -47,7 +47,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
 
     editor.commands.setSearchTerm(searchTerm);
     editor.commands.setReplaceTerm(replaceTerm);
-    editor.commands.setCaseSensitive(caseSensitive);
+    editor.commands.setIgnoreDiacritics(ignoreDiacritics);
   };
 
   const handlePreviousResult = () => {
@@ -99,7 +99,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
 
   useEffect(() => {
     updateSearchReplace(true);
-  }, [caseSensitive]);
+  }, [ignoreDiacritics]);
 
   useEffect(() => {
     if (editor?.storage.searchAndReplace?.results) {
@@ -149,7 +149,8 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Label>
-            {currentResult}/{totalResults}
+            {searchTerm && totalResults ? currentResult + 1 : currentResult}/
+            {totalResults}
           </Label>
           <Divider />
           {icons.map((item, index) => (
@@ -209,10 +210,10 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
             </div>
             <div className="flex items-center">
               <Checkbox
-                checked={caseSensitive}
+                checked={ignoreDiacritics}
                 className="border-gray-300 data-[state=checked]:bg-blue-500"
                 onCheckedChange={(checked: boolean) =>
-                  setCaseSensitive(checked)
+                  setIgnoreDiacritics(checked)
                 }
               />
               <label className="ml-2">

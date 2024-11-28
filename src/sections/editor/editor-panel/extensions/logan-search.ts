@@ -11,37 +11,14 @@ import { Node as PMNode } from "@tiptap/pm/model";
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     search: {
-      /**
-       * @description Set search term in extension.
-       */
       setSearchTerm: (searchTerm: string) => ReturnType;
-      /**
-       * @description Set replace term in extension.
-       */
       setReplaceTerm: (replaceTerm: string) => ReturnType;
-      /**
-       * @description Set case sensitivity in extension.
-       */
       setCaseSensitive: (caseSensitive: boolean) => ReturnType;
-      /**
-       * @description Reset current search result to first instance.
-       */
+      setIgnoreDiacritics: (ignoreDiacritics: boolean) => ReturnType;
       resetIndex: () => ReturnType;
-      /**
-       * @description Find next instance of search result.
-       */
       nextSearchResult: () => ReturnType;
-      /**
-       * @description Find previous instance of search result.
-       */
       previousSearchResult: () => ReturnType;
-      /**
-       * @description Replace first instance of search result with given replace term.
-       */
       replace: () => ReturnType;
-      /**
-       * @description Replace all instances of search result with given replace term.
-       */
       replaceAll: () => ReturnType;
     };
   }
@@ -55,8 +32,13 @@ interface TextNodesWithPosition {
 const getRegex = (
   s: string,
   disableRegex: boolean,
-  caseSensitive: boolean
+  caseSensitive: boolean,
+  ignoreDiacritics: boolean
 ): RegExp => {
+  if (ignoreDiacritics) {
+    s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
   return RegExp(
     disableRegex ? s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : s,
     caseSensitive ? "gu" : "gui"
@@ -72,7 +54,8 @@ function processSearches(
   doc: PMNode,
   searchTerm: RegExp,
   searchResultClass: string,
-  resultIndex: number
+  resultIndex: number,
+  ignoreDiacritics: boolean
 ): ProcessedSearches {
   const decorations: Decoration[] = [];
   const results: Range[] = [];
@@ -89,14 +72,22 @@ function processSearches(
 
   doc?.descendants((node, pos) => {
     if (node.isText) {
+      let textContent: any = node.text;
+
+      if (ignoreDiacritics) {
+        textContent = textContent
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      }
+
       if (textNodesWithPosition[index]) {
         textNodesWithPosition[index] = {
-          text: textNodesWithPosition[index].text + node.text,
+          text: textNodesWithPosition[index].text + textContent,
           pos: textNodesWithPosition[index].pos,
         };
       } else {
         textNodesWithPosition[index] = {
-          text: `${node.text}`,
+          text: textContent,
           pos,
         };
       }
@@ -244,6 +235,7 @@ export const LoganSearch = Extension.create<
     return {
       searchResultClass: "search-result",
       disableRegex: true,
+      ignoreDiacritics: false,
     };
   },
 
@@ -253,6 +245,7 @@ export const LoganSearch = Extension.create<
       replaceTerm: "",
       results: [],
       lastSearchTerm: "",
+      ignoreDiacritics: false,
       caseSensitive: false,
       lastCaseSensitive: false,
       resultIndex: 0,
@@ -281,6 +274,12 @@ export const LoganSearch = Extension.create<
         ({ editor }) => {
           editor.storage.searchAndReplace.caseSensitive = caseSensitive;
 
+          return false;
+        },
+      setIgnoreDiacritics:
+        (ignoreDiacritics: boolean) =>
+        ({ editor }) => {
+          editor.storage.searchAndReplace.ignoreDiacritics = ignoreDiacritics;
           return false;
         },
       resetIndex:
@@ -355,8 +354,10 @@ export const LoganSearch = Extension.create<
     return [
       new Plugin({
         key: searchAndReplacePluginKey,
+
         state: {
           init: () => DecorationSet.empty,
+
           apply({ doc, docChanged }, oldState) {
             const {
               searchTerm,
@@ -372,8 +373,9 @@ export const LoganSearch = Extension.create<
               lastSearchTerm === searchTerm &&
               lastCaseSensitive === caseSensitive &&
               lastResultIndex === resultIndex
-            )
+            ) {
               return oldState;
+            }
 
             setLastSearchTerm(searchTerm);
             setLastCaseSensitive(caseSensitive);
@@ -386,9 +388,15 @@ export const LoganSearch = Extension.create<
 
             const { decorationsToReturn, results } = processSearches(
               doc,
-              getRegex(searchTerm, disableRegex, caseSensitive),
+              getRegex(
+                searchTerm,
+                disableRegex,
+                caseSensitive,
+                editor.storage.searchAndReplace.ignoreDiacritics
+              ),
               searchResultClass,
-              resultIndex
+              resultIndex,
+              editor.storage.searchAndReplace.ignoreDiacritics
             );
 
             editor.storage.searchAndReplace.results = results;
@@ -396,6 +404,7 @@ export const LoganSearch = Extension.create<
             return decorationsToReturn;
           },
         },
+
         props: {
           decorations(state) {
             return this.getState(state);
