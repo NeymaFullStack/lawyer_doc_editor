@@ -89,30 +89,16 @@ export const PaginationExtension = Extension.create({
         Enter: (state, dispatch) => {
           const { from, to } = state.selection;
 
-          // Proceed only if dispatch is provided and we're working with a valid range
           if (dispatch && from === to) {
             const tr = state.tr;
-
-            // Get the resolved position in the document
             const $pos = state.doc.resolve(from);
 
-            // Ensure that the position is within a valid block (paragraph)
             if ($pos.parent.type.name === "paragraph") {
-              // Create a new empty paragraph node
               const paragraph = state.schema.nodes.paragraph.create();
-
-              // Insert the empty paragraph at the cursor's current position
               tr.insert(from, paragraph);
-
-              // Find the nearest valid cursor position inside the new paragraph
               const newSelection = Selection.near(tr.doc.resolve(from + 1), 1);
-
-              // Set the selection to be inside the new paragraph
               tr.setSelection(newSelection);
-
-              // Dispatch the transaction properly
               dispatch(tr);
-
               return true;
             }
           }
@@ -159,7 +145,6 @@ export const PaginationPlugin = new Plugin({
 
         isPaginating = true;
 
-        // Collect content nodes and their old positions
         const contentNodes: { node: PMNode; pos: number }[] = [];
         state.doc.forEach((node, offset) => {
           if (node.type === pageType) {
@@ -171,28 +156,24 @@ export const PaginationPlugin = new Plugin({
           }
         });
 
-        // Measure node heights
-        const MIN_PARAGRAPH_HEIGHT = 20; // Adjust as needed for your styling
+        const MIN_PARAGRAPH_HEIGHT = 20;
         const nodeHeights = contentNodes.map(({ pos, node }) => {
           const dom = view.nodeDOM(pos);
           if (dom instanceof HTMLElement) {
             let height = dom.getBoundingClientRect().height;
             if (height === 0) {
               if (node.type.name === "paragraph" || node.isTextblock) {
-                // Assign a minimum height to empty paragraphs or textblocks
                 height = MIN_PARAGRAPH_HEIGHT;
               }
             }
             return height;
           }
-          return MIN_PARAGRAPH_HEIGHT; // Default to minimum height if DOM element is not found
+          return MIN_PARAGRAPH_HEIGHT;
         });
 
-        // Record the cursor's old position
         const { selection } = view.state;
         const oldCursorPos = selection.from;
 
-        // Build the new document and keep track of new positions
         const pages = [];
         let currentPageContent: PMNode[] = [];
         let currentHeight = 0;
@@ -217,10 +198,9 @@ export const PaginationPlugin = new Plugin({
           }
 
           if (currentPageContent.length === 0) {
-            cumulativeNewDocPos += 1; // Start of the page node
+            cumulativeNewDocPos += 1;
           }
 
-          // Record the mapping from old position to new position
           const nodeStartPosInNewDoc =
             cumulativeNewDocPos +
             currentPageContent.reduce((sum, n) => sum + n.nodeSize, 0);
@@ -237,7 +217,6 @@ export const PaginationPlugin = new Plugin({
 
         const newDoc = schema.topNodeType.create(null, pages);
 
-        // Compare the content of the documents
         if (newDoc.content.eq(state.doc.content)) {
           isPaginating = false;
           return;
@@ -250,7 +229,6 @@ export const PaginationPlugin = new Plugin({
         );
         tr.setMeta("pagination", true);
 
-        // Map the cursor position
         let newCursorPos = null;
         for (let i = 0; i < contentNodes.length; i++) {
           const { node, pos: oldNodePos } = contentNodes[i];
@@ -272,16 +250,12 @@ export const PaginationPlugin = new Plugin({
           let selection;
 
           if ($pos.parent.isTextblock) {
-            // The position is valid for a TextSelection
             selection = Selection.near($pos);
           } else if ($pos.nodeAfter && $pos.nodeAfter.isTextblock) {
-            // Move into the next textblock
             selection = Selection.near(tr.doc.resolve($pos.pos + 1));
           } else if ($pos.nodeBefore && $pos.nodeBefore.isTextblock) {
-            // Move into the previous textblock
             selection = Selection.near(tr.doc.resolve($pos.pos - 1), -1);
           } else {
-            // Find the nearest valid cursor position
             selection =
               Selection.findFrom($pos, 1, true) ||
               Selection.findFrom($pos, -1, true);
@@ -290,7 +264,6 @@ export const PaginationPlugin = new Plugin({
           if (selection) {
             tr.setSelection(selection);
           } else {
-            // Fallback to a safe selection at the end of the document
             tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
           }
         } else {
