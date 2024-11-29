@@ -1,8 +1,12 @@
 import { Node as ProseMirrorNode } from "@tiptap/pm/model";
-import { NodeView, EditorView } from "@tiptap/pm/view";
 
-export type NodeViewCreator = (
-  node: ProseMirrorNode,
-  view: EditorView,
-  getPos: () => number
-) => NodeView;
+export type NewAddNodeViewParams = {
+  node: ProseMirrorNode;
+  getPos: () => number;
+};
+
+export type NewAddNodeViewReturn = {
+  dom: HTMLElement;
+  contentDOM: HTMLElement;
+  update(updatedNode: ProseMirrorNode): boolean;
+};

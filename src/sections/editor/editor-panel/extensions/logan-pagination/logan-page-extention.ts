@@ -3,52 +3,36 @@ import { keymap } from "@tiptap/pm/keymap";
 import { Node as PMNode, Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { Plugin, PluginKey, Selection, TextSelection } from "@tiptap/pm/state";
 import { EditorView } from "@tiptap/pm/view";
-import { NodeViewCreator } from "./type";
+import { NewAddNodeViewParams, NewAddNodeViewReturn } from "./type";
 
-const newAddNodeView: NodeViewCreator = (node, view, getPos) => {
+const MIN_PARAGRAPH_HEIGHT = 20;
+const pageHeight = ((297 - 25.4 * 2) / 25.4) * 96;
+const pageNodeClassName =
+  "page h-[297mm] w-[210mm] bg-white p-[25.4mm] border border-logan-primary-200 overflow-hidden relative mb-10 hover:border-logan-blue transition-all";
+const pageNumberClassName =
+  "page-number absolute bottom-3 right-3 text-sm text-logan-black";
+
+const newAddNodeView: (
+  params: NewAddNodeViewParams
+) => NewAddNodeViewReturn = ({ node, getPos }) => {
   const dom = document.createElement("div");
   dom.setAttribute("data-page", "true");
-  dom.classList.add(
-    "page",
-    "h-[297mm]",
-    "w-[210mm]",
-    "bg-white",
-    "p-[25.4mm]",
-    "border",
-    "border-logan-primary-200",
-    "overflow-hidden",
-    "relative",
-    "mb-10",
-    "hover:border-logan-blue",
-    "transition-all"
-  );
-
+  dom.className = pageNodeClassName;
   const contentDOM = document.createElement("div");
   dom.appendChild(contentDOM);
 
   const pageNumber = document.createElement("div");
-  pageNumber.classList.add(
-    "page-number",
-    "absolute",
-    "bottom-3",
-    "right-3",
-    "text-sm",
-    "text-logan-black"
-  );
-
-  const pageIndex = getPos ? Math.floor(getPos() / 2) + 1 : 1;
-  pageNumber.textContent = "Page " + pageIndex;
+  pageNumber.className = pageNumberClassName;
+  const pageIndex = getPos() ? Math.floor(getPos() / pageHeight) : 1;
+  pageNumber.textContent = `Page ${pageIndex}`;
+  console.log(pageIndex);
   dom.appendChild(pageNumber);
 
   return {
     dom,
     contentDOM,
     update(updatedNode: ProseMirrorNode) {
-      if (updatedNode.type !== node.type) {
-        return false;
-      }
-      pageNumber.textContent = "Page " + (Math.floor(getPos() / 2) + 1);
-      return true;
+      return updatedNode.type === node.type;
     },
   };
 };
@@ -58,27 +42,14 @@ export const PageNode = Node.create({
   group: "block",
   content: "block*",
   defining: true,
-  isolating: false,
 
-  parseHTML() {
-    return [
-      {
-        tag: "div[data-page]",
-      },
-    ];
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      "div",
-      mergeAttributes(HTMLAttributes, { "data-page": true, class: "page" }),
-      0,
-    ];
-  },
-
-  addNodeView() {
-    return newAddNodeView;
-  },
+  parseHTML: () => [{ tag: "div[data-page]" }],
+  renderHTML: ({ HTMLAttributes }) => [
+    "div",
+    mergeAttributes(HTMLAttributes, { "data-page": true }),
+    0,
+  ],
+  addNodeView: () => newAddNodeView,
 });
 
 export const PaginationExtension = Extension.create({
@@ -88,7 +59,6 @@ export const PaginationExtension = Extension.create({
       keymap({
         Enter: (state, dispatch) => {
           const { from, to } = state.selection;
-
           if (dispatch && from === to) {
             const tr = state.tr;
             const $pos = state.doc.resolve(from);
@@ -96,13 +66,11 @@ export const PaginationExtension = Extension.create({
             if ($pos.parent.type.name === "paragraph") {
               const paragraph = state.schema.nodes.paragraph.create();
               tr.insert(from, paragraph);
-              const newSelection = Selection.near(tr.doc.resolve(from + 1), 1);
-              tr.setSelection(newSelection);
+              tr.setSelection(Selection.near(tr.doc.resolve(from + 1), 1));
               dispatch(tr);
               return true;
             }
           }
-
           return false;
         },
       }),
@@ -118,14 +86,10 @@ export const PaginationPlugin = new Plugin({
 
     return {
       update(view: EditorView, prevState) {
-        if (isPaginating) {
-          return;
-        }
+        if (isPaginating) return;
 
         const { state } = view;
-        const { schema } = state;
-        const pageType = schema.nodes.page;
-
+        const pageType = state.schema.nodes.page;
         if (!pageType) return;
 
         const docChanged = !view.state.doc.eq(prevState.doc);
@@ -134,14 +98,10 @@ export const PaginationPlugin = new Plugin({
 
         let hasPageNodes = false;
         state.doc.forEach((node) => {
-          if (node.type === pageType) {
-            hasPageNodes = true;
-          }
+          if (node.type === pageType) hasPageNodes = true;
         });
 
-        if (!docChanged && hasPageNodes && !initialLoad) {
-          return;
-        }
+        if (!docChanged && hasPageNodes && !initialLoad) return;
 
         isPaginating = true;
 
@@ -156,50 +116,42 @@ export const PaginationPlugin = new Plugin({
           }
         });
 
-        const MIN_PARAGRAPH_HEIGHT = 20;
         const nodeHeights = contentNodes.map(({ pos, node }) => {
           const dom = view.nodeDOM(pos);
           if (dom instanceof HTMLElement) {
             let height = dom.getBoundingClientRect().height;
-            if (height === 0) {
-              if (node.type.name === "paragraph" || node.isTextblock) {
-                height = MIN_PARAGRAPH_HEIGHT;
-              }
+            if (
+              height === 0 &&
+              (node.type.name === "paragraph" || node.isTextblock)
+            ) {
+              height = MIN_PARAGRAPH_HEIGHT;
             }
             return height;
           }
           return MIN_PARAGRAPH_HEIGHT;
         });
 
-        const { selection } = view.state;
-        const oldCursorPos = selection.from;
-
-        const pages = [];
+        const pages: PMNode[] = [];
         let currentPageContent: PMNode[] = [];
         let currentHeight = 0;
-        const pageHeight = ((297 - 25.4 * 2) / 25.4) * 96;
 
         const oldToNewPosMap: { [key: number]: number } = {};
         let cumulativeNewDocPos = 0;
 
-        for (let i = 0; i < contentNodes.length; i++) {
-          const { node, pos: oldPos } = contentNodes[i];
+        contentNodes.forEach(({ node, pos: oldPos }, i) => {
           const nodeHeight = nodeHeights[i];
 
           if (
             currentHeight + nodeHeight > pageHeight &&
             currentPageContent.length > 0
           ) {
-            const pageNode = pageType.create({}, currentPageContent);
-            pages.push(pageNode);
-            cumulativeNewDocPos += pageNode.nodeSize;
+            pages.push(pageType.create({}, currentPageContent));
+            cumulativeNewDocPos += pages[pages.length - 1].nodeSize;
             currentPageContent = [];
             currentHeight = 0;
           }
 
-          if (currentPageContent.length === 0) {
-            cumulativeNewDocPos += 1;
-          }
+          if (currentPageContent.length === 0) cumulativeNewDocPos += 1;
 
           const nodeStartPosInNewDoc =
             cumulativeNewDocPos +
@@ -208,15 +160,13 @@ export const PaginationPlugin = new Plugin({
 
           currentPageContent.push(node);
           currentHeight += Math.max(nodeHeight, MIN_PARAGRAPH_HEIGHT);
-        }
+        });
 
         if (currentPageContent.length > 0) {
-          const pageNode = pageType.create({}, currentPageContent);
-          pages.push(pageNode);
+          pages.push(pageType.create({}, currentPageContent));
         }
 
-        const newDoc = schema.topNodeType.create(null, pages);
-
+        const newDoc = state.schema.topNodeType.create(null, pages);
         if (newDoc.content.eq(state.doc.content)) {
           isPaginating = false;
           return;
@@ -235,10 +185,10 @@ export const PaginationPlugin = new Plugin({
           const nodeSize = node.nodeSize;
 
           if (
-            oldNodePos <= oldCursorPos &&
-            oldCursorPos <= oldNodePos + nodeSize
+            oldNodePos <= state.selection.from &&
+            state.selection.from <= oldNodePos + nodeSize
           ) {
-            const offsetInNode = oldCursorPos - oldNodePos;
+            const offsetInNode = state.selection.from - oldNodePos;
             const newNodePos = oldToNewPosMap[oldNodePos];
             newCursorPos = newNodePos + offsetInNode;
             break;
@@ -247,31 +197,18 @@ export const PaginationPlugin = new Plugin({
 
         if (newCursorPos !== null) {
           const $pos = tr.doc.resolve(newCursorPos);
-          let selection;
-
-          if ($pos.parent.isTextblock) {
-            selection = Selection.near($pos);
-          } else if ($pos.nodeAfter && $pos.nodeAfter.isTextblock) {
-            selection = Selection.near(tr.doc.resolve($pos.pos + 1));
-          } else if ($pos.nodeBefore && $pos.nodeBefore.isTextblock) {
-            selection = Selection.near(tr.doc.resolve($pos.pos - 1), -1);
-          } else {
-            selection =
-              Selection.findFrom($pos, 1, true) ||
-              Selection.findFrom($pos, -1, true);
-          }
-
-          if (selection) {
-            tr.setSelection(selection);
-          } else {
-            tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
-          }
+          let selection =
+            Selection.near($pos) ||
+            Selection.findFrom($pos, 1, true) ||
+            Selection.findFrom($pos, -1, true);
+          tr.setSelection(
+            selection || TextSelection.create(tr.doc, tr.doc.content.size)
+          );
         } else {
           tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
         }
 
         view.dispatch(tr);
-
         isPaginating = false;
       },
     };
