@@ -36,3 +36,50 @@ export const enum SettingEnum {
   USER_NOTIFICATION_PREFERENCES = "userNotificationsPreferences",
   WORKSPACE = "workspace",
 }
+
+export type UserProfile = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number?: string;
+  role?: string;
+  legal_specialty?: string;
+  country: string;
+  language: string;
+  country_code?: string;
+};
+
+export type UserPassword = {
+  old_password: string;
+  new_password: string;
+  confirm_new_password: string;
+};
+
+export enum UserNotificationPreferencesEnum {
+  COMMENTS = "REPLIES_TO_COMMENTS_NOTIFICATIONS",
+  TAGS = "TAGS_NOTIFICATIONS",
+  TEAM_ACTIVITY = "TEAM_ACTIVITY_NOTIFICATIONS",
+  OFFERS = "OFFERS_AND_PROMOTIONS_NOTIFICATIONS",
+}
+
+export type Toggle = {
+  push_enabled?: boolean;
+  email_enabled?: boolean;
+};
+
+export type UserNotificationPreferencesType = {
+  [K in UserNotificationPreferencesEnum]: Toggle;
+};
+
+// workplace types
+
+export type workplaceDetailsType = {
+  workplace_name: string;
+  user_name: string;
+  email: string;
+  website?: string;
+  legal_specialty?: string;
+  company_address?: string;
+  country: string;
+  tax_identification_number: string;
+};

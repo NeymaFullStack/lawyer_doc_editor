@@ -32,4 +32,11 @@ export const endpoints = {
     folder: "/folder/",
     folderHierarchy: "/folder/root/hierarchy/",
   },
+  settings: {
+    user: {
+      save: "/user",
+      resetPassword: "/user/password",
+      notificationPreferences: "/notification/preferences",
+    },
+  },
 };

@@ -9,15 +9,59 @@ export type IconProps = {
   width?: number;
   height?: number;
   customColor?: string;
-  fill: string | { from: string; to: string };
+  fill?: string | { from: string; to: string };
 } & Pick<HTMLAttributes<HTMLDivElement>, "className" | "onClick" | "style">;
 
 export type SvgIconProps = Omit<SVGAttributes<SVGElement>, "fill"> & {
-  fill: string | { from: string; to: string };
+  fill?: string | { from: string; to: string };
   customColor?: string;
 };
 
 export const icons = {
+  "logan-selct-dropdown-arrow": ({ className, fill }) => {
+    const { from, to } =
+      typeof fill === "string" ? { from: fill, to: fill } : fill || {};
+    return (
+      <svg
+        width="21"
+        height="21"
+        viewBox="0 0 21 21"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+      >
+        <rect
+          x="0.875"
+          y="0.4375"
+          width="20.125"
+          height="20.125"
+          rx="5"
+          fill="#095AD3"
+          fillOpacity="0.1"
+        />
+        <path
+          d="M15.1328 8.61492L11.0798 12.668L7.02671 8.61492"
+          stroke="url(#paint0_linear_3449_67144)"
+          strokeWidth="1.35102"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_3449_67144"
+            x1="15.0885"
+            y1="12.668"
+            x2="6.77548"
+            y2="9.87298"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor={from ?? "#095AD3"} />
+            <stop offset="1" stopColor={to ?? "#166FF4"} />
+          </linearGradient>
+        </defs>
+      </svg>
+    );
+  },
   "gradient-workspace": ({ className, fill }) => {
     const { from, to } =
       typeof fill === "string" ? { from: fill, to: fill } : fill || {};
@@ -51,7 +95,7 @@ export const icons = {
     );
   },
   workspace: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="18"
@@ -202,7 +246,7 @@ export const icons = {
     );
   },
   plus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="13"
@@ -254,7 +298,7 @@ export const icons = {
     );
   },
   document: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="14"
@@ -275,7 +319,7 @@ export const icons = {
   },
 
   client: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="15"
@@ -549,7 +593,7 @@ export const icons = {
     );
   },
   logout: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="12"
@@ -570,7 +614,7 @@ export const icons = {
     );
   },
   setting: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="18"
@@ -598,7 +642,7 @@ export const icons = {
     );
   },
   help: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="16"
@@ -628,7 +672,7 @@ export const icons = {
     );
   },
   list: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -653,7 +697,7 @@ export const icons = {
     );
   },
   tile: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -707,7 +751,7 @@ export const icons = {
     );
   },
   folder: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -727,7 +771,7 @@ export const icons = {
     );
   },
   arrow: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="15"
@@ -745,7 +789,7 @@ export const icons = {
     );
   },
   save: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -763,7 +807,7 @@ export const icons = {
     );
   },
   export: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -798,7 +842,7 @@ export const icons = {
     );
   },
   brain: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -826,7 +870,7 @@ export const icons = {
     );
   },
   variable: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -859,7 +903,7 @@ export const icons = {
     );
   },
   indexing: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -887,7 +931,7 @@ export const icons = {
     );
   },
   comment: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="40"
@@ -924,7 +968,7 @@ export const icons = {
     );
   },
   version: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -952,7 +996,7 @@ export const icons = {
     );
   },
   preview: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -976,7 +1020,7 @@ export const icons = {
     );
   },
   search: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="28"
@@ -994,7 +1038,7 @@ export const icons = {
     );
   },
   chatai: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="18"
@@ -1016,7 +1060,7 @@ export const icons = {
     );
   },
   commentplus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1035,7 +1079,7 @@ export const icons = {
     );
   },
   previous: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1063,7 +1107,7 @@ export const icons = {
     );
   },
   next: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1091,7 +1135,7 @@ export const icons = {
     );
   },
   bold: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1109,7 +1153,7 @@ export const icons = {
     );
   },
   italic: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1127,7 +1171,7 @@ export const icons = {
     );
   },
   underline: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1148,7 +1192,7 @@ export const icons = {
     );
   },
   color: ({ className, fill, customColor }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1170,7 +1214,7 @@ export const icons = {
     );
   },
   bullets: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1223,7 +1267,7 @@ export const icons = {
     );
   },
   ordered: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1267,7 +1311,7 @@ export const icons = {
     );
   },
   footnotes: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1286,7 +1330,7 @@ export const icons = {
   },
 
   image: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1321,7 +1365,7 @@ export const icons = {
     );
   },
   uploadplus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1339,7 +1383,7 @@ export const icons = {
     );
   },
   dialogclose: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1359,7 +1403,7 @@ export const icons = {
     );
   },
   trash: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1377,7 +1421,7 @@ export const icons = {
     );
   },
   dropdownicon: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1395,7 +1439,7 @@ export const icons = {
     );
   },
   draghandle: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <>
         <svg

@@ -9,6 +9,7 @@ enum Types {
   INITIAL = "INITIAL",
   LOGIN = "LOGIN",
   LOGOUT = "LOGOUT",
+  SET_USER = "SET_USER",
 }
 
 type Payload = {
@@ -16,6 +17,9 @@ type Payload = {
     user: AuthUserType;
   };
   [Types.LOGIN]: {
+    user: AuthUserType;
+  };
+  [Types.SET_USER]: {
     user: AuthUserType;
   };
   [Types.LOGOUT]: undefined;
@@ -34,6 +38,9 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
       return { loading: false, user: action.payload.user };
 
     case Types.LOGIN:
+      return { ...state, user: action.payload.user };
+
+    case Types.SET_USER:
       return { ...state, user: action.payload.user };
 
     case Types.LOGOUT:
@@ -99,22 +106,29 @@ export function AuthProvider({ children }: Props) {
     dispatch({ type: Types.LOGOUT });
   }, []);
 
+  const setUser = useCallback(async (user: AuthUserType) => {
+    dispatch({
+      type: Types.SET_USER,
+      payload: { user: { ...user } },
+    });
+  }, []);
+
   const checkAuthenticated = state.user ? "authenticated" : "unauthenticated";
 
   const status = state.loading ? "loading" : checkAuthenticated;
 
-  const memoizedValue = useMemo(
-    () => ({
+  const memoizedValue = useMemo(() => {
+    return {
       user: state.user,
       method: "jwt",
       loading: status === "loading",
       authenticated: status === "authenticated",
       unauthenticated: status === "unauthenticated",
+      setUser,
       login,
       logout,
-    }),
-    [login, logout, state.user, status]
-  );
+    };
+  }, [login, logout, state.user, status, setUser]);
 
   return (
     <AuthContext.Provider value={memoizedValue}>

@@ -25,4 +25,5 @@ export type JWTContextType = {
   unauthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  setUser: (user: AuthUserType) => void;
 };
