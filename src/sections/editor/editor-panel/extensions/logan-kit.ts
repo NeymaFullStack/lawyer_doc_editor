@@ -17,10 +17,8 @@ import { LoganListItem } from "./logan-listitem";
 import { LoganTextStyle } from "./logan-text-style";
 import { LoganLink } from "./logan-link";
 import { LoganSearch } from "./logan-search";
-import {
-  PageNode,
-  PaginationExtension,
-} from "./logan-pagination/logan-page-extention";
+import { PageNode } from "./logan-pagination/logan-page";
+import { PaginationExtension } from "./logan-pagination/logan-page-extention";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -32,6 +30,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
     const extensions: any[] = [
       PaginationExtension,
       PageNode,
+      // PaginationPlugin,
       LoganDocument,
       LoganHeading,
       LoganText,
