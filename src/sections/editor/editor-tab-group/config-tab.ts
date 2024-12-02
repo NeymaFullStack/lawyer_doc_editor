@@ -11,4 +11,5 @@ export const TAB_ITEMS: TabType[] = [
   { label: "indexing", icon: "indexing" },
   { label: "versioning", icon: "version" },
   { label: "comment", icon: "comment" },
+  { label: "preview", icon: "preview" },
 ];

@@ -65,6 +65,7 @@ const TabItem = ({ iconName, isSelected, onClick }: TabItemProps) => {
     >
       <Icon
         iconName={iconName}
+        className="size-10"
         fill={hover || isSelected ? iconColors.white : iconColors.from}
       />
     </span>
