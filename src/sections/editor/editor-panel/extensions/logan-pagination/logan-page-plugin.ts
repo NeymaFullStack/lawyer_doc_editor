@@ -3,7 +3,7 @@ import { Plugin, PluginKey, Selection, TextSelection } from "@tiptap/pm/state";
 import { EditorView } from "@tiptap/pm/view";
 import { MIN_PARAGRAPH_HEIGHT, Max_Page_Height } from "./type";
 
-let pageIndex = 0;
+let pageIndex = 1;
 
 export const PaginationPlugin = new Plugin({
   key: new PluginKey("pagination"),
@@ -85,7 +85,7 @@ export const PaginationPlugin = new Plugin({
         });
 
         if (currentPageContent.length > 0) {
-          pages.push(pageType.create({ pageIndex }, currentPageContent)); // Last page with its index
+          pages.push(pageType.create({ pageIndex }, currentPageContent));
         }
 
         const newDoc = state.schema.topNodeType.create(null, pages);
@@ -101,7 +101,35 @@ export const PaginationPlugin = new Plugin({
         );
         tr.setMeta("pagination", true);
 
-        // Rest of your cursor and selection handling code remains unchanged.
+        let newCursorPos = null;
+        for (let i = 0; i < contentNodes.length; i++) {
+          const { node, pos: oldNodePos } = contentNodes[i];
+          const nodeSize = node.nodeSize;
+
+          if (
+            oldNodePos <= state.selection.from &&
+            state.selection.from <= oldNodePos + nodeSize
+          ) {
+            const offsetInNode = state.selection.from - oldNodePos;
+            const newNodePos = oldToNewPosMap[oldNodePos];
+            newCursorPos = newNodePos + offsetInNode;
+            break;
+          }
+        }
+
+        if (newCursorPos !== null) {
+          const $pos = tr.doc.resolve(newCursorPos);
+          let selection =
+            Selection.near($pos) ||
+            Selection.findFrom($pos, 1, true) ||
+            Selection.findFrom($pos, -1, true);
+          tr.setSelection(
+            selection || TextSelection.create(tr.doc, tr.doc.content.size)
+          );
+        } else {
+          tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
+        }
+
         view.dispatch(tr);
         isPaginating = false;
       },

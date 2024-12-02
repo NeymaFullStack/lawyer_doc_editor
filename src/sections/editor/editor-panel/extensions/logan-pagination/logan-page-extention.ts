@@ -18,27 +18,12 @@ export const PaginationExtension = Extension.create({
               const paragraph = state.schema.nodes.paragraph.create();
               tr.insert(from, paragraph);
               tr.setSelection(Selection.near(tr.doc.resolve(from + 1), 1));
-              dispatch(tr);
+              dispatch(tr.scrollIntoView());
               return true;
             }
           }
           return false;
         },
-        // Backspace: (state, dispatch) => {
-        //   const { from, to } = state.selection;
-        //   if (from === to && (from === 2 || from === 1)) {
-        //     return false;
-        //   }
-        //   return false;
-        // },
-        // Delete: (state, dispatch) => {
-        //   const { from, to } = state.selection;
-        //   const lastIndex = state.doc.content.size - 2;
-        //   if (from === to && from === lastIndex) {
-        //     return false;
-        //   }
-        //   return false;
-        // },
       }),
       PaginationPlugin,
     ];
