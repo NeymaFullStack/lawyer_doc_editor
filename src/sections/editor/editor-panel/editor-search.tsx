@@ -211,7 +211,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
             <div className="flex items-center">
               <Checkbox
                 checked={ignoreDiacritics}
-                className="border-gray-300 data-[state=checked]:bg-blue-500"
+                className="border-gray-300 data-[state=checked]:bg-logan-blue"
                 onCheckedChange={(checked: boolean) =>
                   setIgnoreDiacritics(checked)
                 }

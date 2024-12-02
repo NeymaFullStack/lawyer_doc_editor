@@ -104,6 +104,7 @@ const config: Config = {
             300: "#095AD31A",
             400: "#CEDEF6",
             500: "#293038",
+            600: "#f7ae20",
           },
           black: {
             DEFAULT: "#383D44",
@@ -166,7 +167,9 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontSize: {
+        xm: "11px",
         smaller: "13px",
+        sm: "15px",
       },
       width: {
         "105": "420px",

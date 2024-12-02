@@ -31,9 +31,11 @@ export const EditorTabGroupView = () => {
 
       {/* Tab Items */}
       <div className="flex flex-col gap-4">
-        {TAB_ITEMS.map((item) => (
+        {TAB_ITEMS.map((item, index) => (
           <TabItem
-            key={item.label}
+            key={index}
+            id={index}
+            order={index}
             iconName={item.icon}
             isSelected={selected === item.label}
             onClick={() => handleTabClick(item.label)}
@@ -45,6 +47,8 @@ export const EditorTabGroupView = () => {
 };
 
 type TabItemProps = {
+  id: number;
+  order: number;
   iconName: keyof typeof icons;
   isSelected: boolean;
   onClick: () => void;

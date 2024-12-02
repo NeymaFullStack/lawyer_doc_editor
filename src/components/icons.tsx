@@ -1400,15 +1400,18 @@ export const icons = {
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="5"
-        viewBox="0 0 10 5"
+        width="18"
+        height="19"
+        viewBox="0 0 18 19"
         fill="none"
         className={className}
       >
         <path
-          d="M5 4.77441L0.669874 0.274414L9.33013 0.274413L5 4.77441Z"
-          fill={color ?? "#383D44"}
+          d="M13.5 7.25L9 11.75L4.5 7.25"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          stroke={color ?? "#383D44"}
         />
       </svg>
     );
