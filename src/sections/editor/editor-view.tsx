@@ -45,7 +45,7 @@ export const EditorPanelGroup = () => {
           order={2}
           defaultSize={40}
           maxSize={40}
-          className="bg-gradient bg-gradient-to-tr from-logan-primary-200 to-white"
+          className="bg-logan-primary-100 "
         >
           <div>
             <div className="px-5 py-2 h-11 leading-7 font-semibold text-logan-black-foreground text-sm">
