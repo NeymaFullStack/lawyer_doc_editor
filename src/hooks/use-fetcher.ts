@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/auth/hooks";
 import { useState, useEffect, useCallback } from "react";
 
 type UseFetcherResult<T> = {
@@ -9,8 +10,9 @@ type UseFetcherResult<T> = {
 
 export const useFetcher = <T>(
   fetcherFn: () => Promise<T>, // Function to fetch data
-  dependencies: any[] = [] // Dependencies to refetch on change
+  dependencies: any[] = [], // Dependencies to refetch on change
 ): UseFetcherResult<T> => {
+  const { workspace } = useAuthContext();
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // Initialize with false
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export const useFetcher = <T>(
   // Trigger fetchData on dependencies change
   useEffect(() => {
     fetchData();
-  }, [...dependencies]); // Avoid directly including fetchData
+  }, [...dependencies, workspace]); // Avoid directly including fetchData
 
   return { data, loading, error, refetch: fetchData };
 };
