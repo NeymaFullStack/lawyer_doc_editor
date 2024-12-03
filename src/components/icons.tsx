@@ -1416,6 +1416,27 @@ export const icons = {
       </svg>
     );
   },
+  extenallink: ({ className, fill }) => {
+    const color = typeof fill === "string" ? fill : fill.from;
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="17"
+        height="18"
+        viewBox="0 0 17 18"
+        fill="none"
+        className={className}
+      >
+        <path
+          d="M8.50016 4.75016H4.25016C3.87444 4.75016 3.5141 4.89942 3.24843 5.16509C2.98275 5.43077 2.8335 5.79111 2.8335 6.16683V13.2502C2.8335 13.6259 2.98275 13.9862 3.24843 14.2519C3.5141 14.5176 3.87444 14.6668 4.25016 14.6668H11.3335C11.7092 14.6668 12.0696 14.5176 12.3352 14.2519C12.6009 13.9862 12.7502 13.6259 12.7502 13.2502V9.00016M7.79183 9.7085L14.1668 3.3335M14.1668 3.3335H10.6252M14.1668 3.3335V6.87516"
+          stroke={color ?? "#CEDEF6"}
+          strokeWidth="1.41667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  },
   arrowdown: ({ className, fill }) => {
     const color = typeof fill === "string" ? fill : fill.from;
     return (
