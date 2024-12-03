@@ -18,6 +18,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useHover } from "@/hooks/use-hover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export const EditorTabPreview = () => {
   const [customized, setCustomized] = useState<boolean>(false);
@@ -27,12 +36,9 @@ export const EditorTabPreview = () => {
   ] as boolean[][]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const [visitedIndex, setVisitedIndex] = useState<boolean[]>([
-    false,
-    false,
-    false,
-    false,
-  ]);
+  const [visitedIndex, setVisitedIndex] = useState<boolean[]>(
+    new Array(PREVIEW_MAIN_TAP_ITEMS.length).fill(false)
+  );
 
   const handleCheckboxChange = useCallback((value: boolean) => {
     setCustomized(!value);
@@ -120,8 +126,7 @@ export const EditorTabPreview = () => {
                        activeIndex !== index &&
                        visitedIndex[index] &&
                        "data-[state=checked]:bg-logan-blue  data-[state=checked]:text-white"
-                     }
-                    `}
+                     }`}
                 />
                 <Label
                   className={`flex-1 pl-2 text-logan-black font-semibold !text-smaller flex items-center gap-2 cursor-pointer 
@@ -167,10 +172,8 @@ export const EditorTabPreview = () => {
                       {name}
                     </Label>
                     {checked && (
-                      <Icon
-                        iconName="extenallink"
-                        fill={iconColors["light-blue"]}
-                        className="h-4 w-4"
+                      <CollapsibleIcon
+                        isEdit={index === 2 && name === "Custom Text" && true}
                       />
                     )}
                   </Flex>
@@ -195,3 +198,57 @@ const Flex: React.FC<FlexProps> = ({ children, className, onClick }) => (
     {children}
   </div>
 );
+
+type CollapsibleIconProps = {
+  isEdit?: boolean;
+};
+
+const CollapsibleIcon: React.FC<CollapsibleIconProps> = ({ isEdit }) => {
+  const { hover, handleMouseOver, handleMouseOut } = useHover();
+  const [open, setOpen] = useState<boolean>(false);
+  const [customText, setCustomText] = useState<string>("");
+
+  return (
+    <>
+      {isEdit && (
+        <>
+          <Label className="!text-logan-yellow text-smaller cursor-pointer">
+            Incomplete
+          </Label>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="!rounded-xl p-5 w-96">
+              <DialogHeader>
+                <DialogTitle className="text-lg text-logan-black">
+                  Add Custom Text
+                </DialogTitle>
+                <DialogDescription className="hidden">
+                  Upload images from your device or paste a URL.
+                </DialogDescription>
+              </DialogHeader>
+              <Input
+                className="h-9 bg-logan-primary-200 text-logan-black !text-smaller !rounded-lg"
+                type="text"
+                placeholder="Type your custom Text..."
+                value={customText}
+                onChange={(e) => {
+                  setCustomText(e.target.value);
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
+      <span
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onClick={() => setOpen(true)}
+      >
+        <Icon
+          iconName={isEdit ? "whilehovering" : "extenallink"}
+          fill={hover ? iconColors.from : iconColors["light-blue"]}
+          className="h-4 w-4"
+        />
+      </span>
+    </>
+  );
+};

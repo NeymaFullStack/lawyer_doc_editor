@@ -55,7 +55,13 @@ export const PREVIEW_MAIN_TAP_ITEMS: SelectContentType[] = [
   },
   {
     label: "Add Header",
-    names: ["Logo", "Document Title", "Page Numbering", "Client Name"],
+    names: [
+      "Logo",
+      "Page Numbering",
+      "Custom Text",
+      "Last Revision Date",
+      "Client Name",
+    ],
     checked: [false, false, false, false, false],
   },
   {

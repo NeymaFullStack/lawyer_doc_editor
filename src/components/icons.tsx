@@ -1437,6 +1437,41 @@ export const icons = {
       </svg>
     );
   },
+  whilehovering: ({ className, fill }) => {
+    const color = typeof fill === "string" ? fill : fill.from;
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="17"
+        height="18"
+        viewBox="0 0 17 18"
+        fill="none"
+        className={className}
+      >
+        <path
+          d="M14.167 5.45862H7.79199M9.91699 12.542H3.54199"
+          stroke={color ?? "#CEDEF6"}
+          strokeWidth="1.41667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M12.042 14.667C13.2156 14.667 14.167 13.7156 14.167 12.542C14.167 11.3684 13.2156 10.417 12.042 10.417C10.8684 10.417 9.91699 11.3684 9.91699 12.542C9.91699 13.7156 10.8684 14.667 12.042 14.667Z"
+          stroke={color ?? "#CEDEF6"}
+          strokeWidth="1.41667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M4.9585 7.58362C6.1321 7.58362 7.0835 6.63222 7.0835 5.45862C7.0835 4.28501 6.1321 3.33362 4.9585 3.33362C3.78489 3.33362 2.8335 4.28501 2.8335 5.45862C2.8335 6.63222 3.78489 7.58362 4.9585 7.58362Z"
+          stroke={color ?? "#CEDEF6"}
+          strokeWidth="1.41667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  },
   arrowdown: ({ className, fill }) => {
     const color = typeof fill === "string" ? fill : fill.from;
     return (
