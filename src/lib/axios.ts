@@ -20,6 +20,10 @@ export default axiosInstance;
 export const endpoints = {
   login: "/auth/login",
   me: "/user",
+  workspace: {
+    workspace: (id: string) => `/workspace/${id}`,
+    workspaceList: "/workspace/list",
+  },
   document: {
     recent: "/document/recent/list",
     document: (id: string) => "/document/" + id,

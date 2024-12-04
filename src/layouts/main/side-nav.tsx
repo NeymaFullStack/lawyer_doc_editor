@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useCallback, useState } from "react";
+import React, {
+  ChangeEvent,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { usePathname, useRouter } from "next/navigation";
 import collapsedLogo from "public/logo/collapsed-logo.svg";
 import expandedLogo from "public/logo/expanded-logo.svg";
@@ -37,6 +44,10 @@ import {
   SettingsMenuItems,
 } from "./config-navigation";
 import { cn } from "@/lib/utils";
+import { workspaceItemType } from "./type";
+import axiosInstance, { endpoints } from "@/lib/axios";
+import axios from "axios";
+import { useFetcher } from "@/hooks/use-fetcher";
 
 type SideNavMenuProps = {
   isExpanded: boolean;
@@ -68,20 +79,20 @@ const SideNav = () => {
         <RenderLogo />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup className="p-0 flex flex-col gap-8 mt-24 mb-5">
-          <WorkspaceSwitcher workspaces={workspaces} />
+        <SidebarGroup className="mb-5 mt-24 flex flex-col gap-8 p-0">
+          <WorkspaceSwitcher />
           <NewMenu isExpanded={isExpanded} />
         </SidebarGroup>
 
         <SidebarGroup
           className={cn("p-0", {
-            "border-t border-b border-logan-primary-300": isExpanded,
+            "border-b border-t border-logan-primary-300": isExpanded,
           })}
         >
           <SideNavMenu isExpanded={isExpanded} />
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-0 py-8 flex flex-col gap-8">
+      <SidebarFooter className="flex flex-col gap-8 p-0 py-8">
         <FooterMenu isExpanded={isExpanded} />
         <UserInfo isExpanded={isExpanded} />
       </SidebarFooter>
@@ -96,12 +107,12 @@ const NewMenu = ({ isExpanded }: { isExpanded: boolean }) => (
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
           className={cn(
-            "h-11 p-4 flex items-center gap-4 justify-center w-auto rounded-xl bg-primary-gradient !text-white",
-            { "aspect-square": !isExpanded }
+            "flex h-11 w-auto items-center justify-center gap-4 rounded-xl bg-primary-gradient p-4 !text-white",
+            { "aspect-square": !isExpanded },
           )}
         >
           <div
-            className={cn("aspect-square size-6 p-1 rounded-md", {
+            className={cn("aspect-square size-6 rounded-md p-1", {
               "bg-white": isExpanded,
             })}
           >
@@ -116,7 +127,7 @@ const NewMenu = ({ isExpanded }: { isExpanded: boolean }) => (
             />
           </div>
           {isExpanded && (
-            <span className="truncate font-bold text-sm">New</span>
+            <span className="truncate text-sm font-bold">New</span>
           )}
         </SidebarMenuButton>
       </DropdownMenuTrigger>
@@ -124,7 +135,7 @@ const NewMenu = ({ isExpanded }: { isExpanded: boolean }) => (
         align="start"
         side={isExpanded ? "bottom" : "right"}
         sideOffset={4}
-        className="rounded-xl p-2 flex flex-col gap-0.5"
+        className="flex flex-col gap-0.5 rounded-xl p-2"
       >
         {CreateMenuItems.map((item, key) => (
           <React.Fragment key={key}>
@@ -143,15 +154,15 @@ const RenderCreateItem = ({ iconName, fill, label }: NavMenuItem) => {
 
   return (
     <DropdownMenuItem
-      className="p-2 rounded-lg hover:bg-logan-primary-200"
+      className="rounded-lg p-2 hover:bg-logan-primary-200"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
     >
       <Icon iconName={iconName} fill={fill} />
       <span
         className={cn(
-          "truncate font-semibold text-sm",
-          hover ? "text-logan-blue" : "text-logan-black"
+          "truncate text-sm font-semibold",
+          hover ? "text-logan-blue" : "text-logan-black",
         )}
       >
         {label}
@@ -160,19 +171,39 @@ const RenderCreateItem = ({ iconName, fill, label }: NavMenuItem) => {
   );
 };
 
-const WorkspaceSwitcher = ({
-  workspaces,
-}: {
-  workspaces: { name: string }[];
-}) => {
+const fetchWorkspaceList = async (): Promise<{
+  data: workspaceItemType[];
+  status: string;
+}> => {
+  const res = await axiosInstance.get(endpoints.workspace.workspaceList);
+  return res.data;
+};
+
+const WorkspaceSwitcher = () => {
+  const { data, loading } = useFetcher(fetchWorkspaceList, []);
+  const workspaces = data?.data || [];
+  const { workspace, setWorkspace } = useAuthContext();
   const [query, setQuery] = useState<string>("");
-  const [activeTeam, setActiveTeam] = useState(workspaces[0]);
+  const [activeTeam, setActiveTeam] = useState<workspaceItemType | null>(null);
   const { state } = useSidebar();
   const isExpanded = state === "expanded";
 
+  useEffect(() => {
+    if (workspaces && workspaces.length > 0) {
+      const activeWorkspace = workspaces.find((ws) => ws.id === workspace);
+      setActiveTeam(activeWorkspace || workspaces[0]);
+    }
+  }, [workspaces]);
+
   const queryFn = (workspace: { name: string }) =>
     workspace.name.toLowerCase().includes(query.toLowerCase());
-  const filteredWorkspaces = workspaces.filter(queryFn);
+
+  const filteredWorkspaces = useMemo(() => {
+    if (!query) return workspaces;
+    return workspaces && workspaces.length > 0
+      ? workspaces.filter(queryFn)
+      : [];
+  }, [query, workspaces]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) =>
     setQuery(e.target.value);
@@ -182,13 +213,13 @@ const WorkspaceSwitcher = ({
       className={cn(
         "flex flex-col justify-center",
         { "mx-6": isExpanded },
-        { "ml-6 mr-4": !isExpanded }
+        { "ml-6 mr-4": !isExpanded },
       )}
     >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <SidebarMenuButton className="border w-full rounded-xl border-logan-primary-300 h-9 hover:bg-logan-primary-200 data-[state=open]:bg-logan-primary-200">
-            <div className="flex items-center gap-2 grow">
+          <SidebarMenuButton className="h-9 w-full rounded-xl border border-logan-primary-300 hover:bg-logan-primary-200 data-[state=open]:bg-logan-primary-200">
+            <div className="flex grow items-center gap-2">
               <div className="flex aspect-square size-5 items-center justify-center">
                 <Icon
                   iconName="gradient-workspace"
@@ -196,8 +227,8 @@ const WorkspaceSwitcher = ({
                 />
               </div>
               {isExpanded && (
-                <span className="truncate font-bold text-xs">
-                  {activeTeam.name}
+                <span className="truncate text-xs font-bold">
+                  {activeTeam?.name}
                 </span>
               )}
             </div>
@@ -211,7 +242,7 @@ const WorkspaceSwitcher = ({
           align="start"
           side={isExpanded ? "bottom" : "right"}
           sideOffset={4}
-          className="bg-logan-primary-200 border border-logan-primary-300 w-52 rounded-xl"
+          className="w-52 rounded-xl border border-logan-primary-300 bg-logan-primary-200"
         >
           <div className="relative p-2">
             <div className="absolute left-4 top-3.5 aspect-square size-4">
@@ -221,15 +252,18 @@ const WorkspaceSwitcher = ({
               value={query}
               onChange={handleInputChange}
               placeholder="search"
-              className="rounded-lg px-2 py-1.5 pl-7 h-7 placeholder:text-logan-black-foreground placeholder:text-opacity-40 text-sm focus:border focus:border-logan-primary-300"
+              className="h-7 rounded-lg px-2 py-1.5 pl-7 text-sm placeholder:text-logan-black-foreground placeholder:text-opacity-40 focus:border focus:border-logan-primary-300"
             />
           </div>
           <DropdownMenuSeparator className="bg-logan-primary-300" />
-          {filteredWorkspaces.map((workspace, key) => (
+          {filteredWorkspaces?.map((workspace, key) => (
             <WorkspaceItem
               key={key}
               workspace={workspace}
-              callback={setActiveTeam}
+              callback={(updatedWorkspace) => {
+                setActiveTeam(updatedWorkspace);
+                setWorkspace(updatedWorkspace?.id);
+              }}
             />
           ))}
           <WorkspaceAdd />
@@ -244,11 +278,10 @@ const WorkspaceItem = React.memo(
     workspace,
     callback,
   }: {
-    workspace: { name: string };
-    callback: React.Dispatch<React.SetStateAction<{ name: string }>>;
+    workspace: workspaceItemType;
+    callback: (workspace: workspaceItemType) => void;
   }) => {
     const { hover, handleMouseOver, handleMouseOut } = useHover();
-
     return (
       <DropdownMenuItem
         onClick={() => {
@@ -257,9 +290,9 @@ const WorkspaceItem = React.memo(
         }}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
-        className="mx-2 px-2 py-1.5 my-2 focus:bg-logan-primary-300 rounded-lg focus:text-logan-blue flex justify-between"
+        className="mx-2 my-2 flex justify-between rounded-lg px-2 py-1.5 focus:bg-logan-primary-300 focus:text-logan-blue"
       >
-        <span className="truncate font-semibold text-xs">{workspace.name}</span>
+        <span className="truncate text-xs font-semibold">{workspace.name}</span>
         {hover && (
           <Icon
             iconName="gradient-switch"
@@ -268,7 +301,7 @@ const WorkspaceItem = React.memo(
         )}
       </DropdownMenuItem>
     );
-  }
+  },
 );
 WorkspaceItem.displayName = "WorkspaceItem";
 
@@ -278,8 +311,8 @@ const WorkspaceAdd = React.memo(() => {
   return (
     <DropdownMenuItem
       className={cn(
-        "mx-2 px-2 py-1.5 my-2 rounded-lg flex items-center gap-x-2",
-        { "bg-primary-gradient": hover }
+        "mx-2 my-2 flex items-center gap-x-2 rounded-lg px-2 py-1.5",
+        { "bg-primary-gradient": hover },
       )}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
@@ -290,8 +323,8 @@ const WorkspaceAdd = React.memo(() => {
       />
       <span
         className={cn(
-          "truncate font-semibold text-xs bg-clip-text bg-primary-gradient text-transparent",
-          { "text-white": hover }
+          "truncate bg-primary-gradient bg-clip-text text-xs font-semibold text-transparent",
+          { "text-white": hover },
         )}
       >
         Add a Workspace
@@ -317,27 +350,27 @@ const SideNavMenu = React.memo(({ isExpanded }: SideNavMenuProps) => {
           <React.Fragment key={key}>
             {isExpanded && key > 0 && <Separator />}
             <SidebarMenuItem
-              className={isExpanded ? "px-4 py-2" : "pl-6 "}
+              className={isExpanded ? "px-4 py-2" : "pl-6"}
               onClick={() => router.push(href ?? "")}
             >
               <SidebarMenuButton
                 className={cn(
-                  "flex items-center gap-4 p-2 hover:bg-logan-primary-200 rounded-lg",
+                  "flex items-center gap-4 rounded-lg p-2 hover:bg-logan-primary-200",
                   {
                     "aspect-square h-11 w-auto justify-center bg-logan-primary-200":
                       !isExpanded,
-                  }
+                  },
                 )}
               >
                 <Icon iconName={icon} fill={fill} />
                 {isExpanded && (
                   <span
                     className={cn(
-                      "truncate font-semibold text-sm text-logan-black-foreground",
+                      "truncate text-sm font-semibold text-logan-black-foreground",
                       {
-                        "bg-clip-text text-transparent bg-primary-gradient":
+                        "bg-primary-gradient bg-clip-text text-transparent":
                           path.startsWith(href ?? ""),
-                      }
+                      },
                     )}
                   >
                     {label}
@@ -357,7 +390,7 @@ const FooterMenu = React.memo(({ isExpanded }: SideNavMenuProps) => {
   const router = useRouter();
   return (
     <SidebarMenu className="flex flex-col gap-1">
-      <SidebarGroupLabel className="text-logan-black-foreground pl-6">
+      <SidebarGroupLabel className="pl-6 text-logan-black-foreground">
         MORE
       </SidebarGroupLabel>
       {SettingsMenuItems.map(({ iconName, fill, href, label }, key) => {
@@ -367,10 +400,10 @@ const FooterMenu = React.memo(({ isExpanded }: SideNavMenuProps) => {
             onClick={() => router.push(href ?? "")}
             className="!bg-none"
           >
-            <SidebarMenuButton className="flex items-center gap-4 p-2 rounded-lg !px-6 text-logan-black-foreground hover:!text-logan-black hover:bg-transparent group-data-[collapsible=icon]:!px-6  cursor-pointer">
+            <SidebarMenuButton className="flex cursor-pointer items-center gap-4 rounded-lg p-2 !px-6 text-logan-black-foreground hover:bg-transparent hover:!text-logan-black group-data-[collapsible=icon]:!px-6">
               <Icon iconName={iconName} fill={fill} />
               {isExpanded && (
-                <span className="truncate font-semibold text-sm">{label}</span>
+                <span className="truncate text-sm font-semibold">{label}</span>
               )}
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -386,12 +419,12 @@ const UserInfo = React.memo(({ isExpanded }: { isExpanded?: boolean }) => {
 
   return (
     <div
-      className={cn("ml-6 rounded-xl flex items-center gap-2", {
-        "p-2.5 border border-logan-primary-300 mr-6 justify-between":
+      className={cn("ml-6 flex items-center gap-2 rounded-xl", {
+        "mr-6 justify-between border border-logan-primary-300 p-2.5":
           isExpanded,
       })}
     >
-      <div className="flex justify-center gap-2 items-center shrink">
+      <div className="flex shrink items-center justify-center gap-2">
         <Avatar className={isExpanded ? "size-8" : "size-7"}>
           <AvatarImage
             src={user?.profile_logo}
@@ -401,8 +434,8 @@ const UserInfo = React.memo(({ isExpanded }: { isExpanded?: boolean }) => {
         </Avatar>
         {isExpanded && (
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-semibold truncate">{`${user?.first_name} ${user?.last_name}`}</span>
-            <span className="text-[10px] font-medium truncate">
+            <span className="truncate text-xs font-semibold">{`${user?.first_name} ${user?.last_name}`}</span>
+            <span className="truncate text-[10px] font-medium">
               {user?.email}
             </span>
           </div>
