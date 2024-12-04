@@ -7,7 +7,7 @@ import { Icon, icons } from "@/components/icons";
 import { useHover } from "@/hooks/use-hover";
 
 export const EditorTabGroupView = () => {
-  const { isOpen, setOpen, selected, setSelected, setShowPreview } = useTabContext();
+  const { isOpen, setOpen, selected, setSelected, showPreview, setShowPreview } = useTabContext();
 
   const handleTabClick = (label: string) => {
     setSelected(label);
@@ -22,6 +22,7 @@ export const EditorTabGroupView = () => {
         className="size-10 inline-flex justify-center items-center cursor-pointer"
         onClick={() => {
           setOpen(!isOpen);
+          setShowPreview && setShowPreview(!showPreview);
         }}
       >
         <ChevronsLeft
