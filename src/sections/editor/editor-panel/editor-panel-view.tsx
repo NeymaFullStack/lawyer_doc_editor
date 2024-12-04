@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios, { endpoints } from "@/lib/axios";
 import { useEditor } from "@tiptap/react";
-import DOMPurify from "dompurify";
 import { Separator } from "@/components/ui/separator";
 import { EditorContentView } from "./editor-content-view";
 import { EditorToolbarView } from "./editor-toolbar-view";
@@ -12,9 +11,7 @@ import { useTabContext } from "../editor-tab-group/use-tab-context";
 
 export const EditorPanelView = () => {
   const { document: documents } = useDocumentContext();
-  const {showPreview} = useTabContext();
   const [isClient, setIsClient] = useState(false);
-  const [content, setContent] = useState<string>("");
 
   useEffect(() => {
     setIsClient(true);
@@ -29,9 +26,6 @@ export const EditorPanelView = () => {
       },
     },
     immediatelyRender: false,
-    onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
-    },
   });
 
 
@@ -73,16 +67,7 @@ export const EditorPanelView = () => {
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="flex justify-center p-10">
           <div className="max-w-[794px] w-full h-380 bg-white">
-            {!showPreview ? (
               <EditorContentView editor={editor} />
-            ) : (
-              <div
-                className="tiptap-editor-preview"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(content),
-                }}
-              />
-            )}
           </div>
         </div>
       </ScrollArea>

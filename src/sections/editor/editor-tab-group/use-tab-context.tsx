@@ -7,8 +7,8 @@ type TabContextType = {
   setOpen: (isOpen: boolean) => void;
   selected: string | null;
   setSelected: (selected: string | null) => void;
-  showPreview?: boolean;
-  setShowPreview?: (showPreview: boolean) => void;
+  showPreview: boolean;
+  setShowPreview: (showPreview: boolean) => void;
 };
 
 export const TabContext = createContext({} as TabContextType);
