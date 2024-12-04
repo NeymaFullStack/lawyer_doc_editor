@@ -52,7 +52,9 @@ export const EditorPanelGroup = () => {
               {selected}
             </div>
             <Separator className="bg-logan-primary-300" />
-            <EditorTabPreview />
+            {
+              selected === 'Preview' && <EditorTabPreview />
+            }
           </div>
         </ResizablePanel>
       )}
