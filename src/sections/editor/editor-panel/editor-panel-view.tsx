@@ -8,9 +8,11 @@ import { EditorToolbarView } from "./editor-toolbar-view";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDocumentContext } from "@/layouts/document";
 import { LoganKit } from "./extensions/logan-kit";
+import { useTabContext } from "../editor-tab-group/use-tab-context";
 
 export const EditorPanelView = () => {
   const { document: documents } = useDocumentContext();
+  const {showPreview} = useTabContext();
   const [isClient, setIsClient] = useState(false);
   const [content, setContent] = useState<string>("");
 
@@ -32,7 +34,6 @@ export const EditorPanelView = () => {
     },
   });
 
-  const [showPreview, setShowPreview] = useState(false);
 
   const fetchCurrentVersion = useCallback(
     async (documentId: string, versionId: string) => {
@@ -70,12 +71,9 @@ export const EditorPanelView = () => {
       <EditorToolbarView editor={editor} />
       <Separator className="bg-logan-primary-300" />
       <ScrollArea className="h-[calc(100vh-200px)]">
-        <button className="pl-10" onClick={() => setShowPreview(!showPreview)}>
-          {showPreview ? "Edit" : "Preview"}
-        </button>
         <div className="flex justify-center p-10">
           <div className="max-w-[794px] w-full h-380 bg-white">
-            {showPreview ? (
+            {!showPreview ? (
               <EditorContentView editor={editor} />
             ) : (
               <div

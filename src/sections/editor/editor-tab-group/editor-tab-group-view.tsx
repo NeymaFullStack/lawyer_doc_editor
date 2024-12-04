@@ -7,10 +7,11 @@ import { Icon, icons } from "@/components/icons";
 import { useHover } from "@/hooks/use-hover";
 
 export const EditorTabGroupView = () => {
-  const { isOpen, setOpen, selected, setSelected } = useTabContext();
+  const { isOpen, setOpen, selected, setSelected, setShowPreview } = useTabContext();
 
   const handleTabClick = (label: string) => {
     setSelected(label);
+    label==='Preview' && setShowPreview && setShowPreview(true);
     setOpen(true);
   };
 
