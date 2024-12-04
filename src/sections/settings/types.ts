@@ -83,3 +83,10 @@ export type workplaceDetailsType = {
   country: string;
   tax_identification_number: string;
 };
+
+export type fetchUserNotificationsPreferencesType = {
+  offers_and_promotions_notifications: Toggle;
+  replies_to_comments_notifications: Toggle;
+  tags_notifications: Toggle;
+  team_activity_notifications: Toggle;
+};

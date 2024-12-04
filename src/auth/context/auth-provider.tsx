@@ -63,6 +63,7 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
 };
 
 const STORAGE_KEY = "accessToken";
+const WORKPLACE_STORAGE_KEY = "workplace";
 
 type Props = {
   children: React.ReactNode;

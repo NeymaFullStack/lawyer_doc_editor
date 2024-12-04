@@ -34,6 +34,9 @@ import { cn } from "@/lib/utils";
 import { LogoUploadModal } from "../logo-upload-modal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { userRoles } from "@/config-global";
+import { SelectDropDownItemType } from "@/types";
+import { sanitizeParams } from "@/components/hook-form/utils";
 
 const profileSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
@@ -59,9 +62,13 @@ function DetailsView() {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       ...(user as UserProfile),
-      country_code: user?.country_code || "+44",
-      country: user?.country || "uk",
-      language: user?.language || "french",
+      country_code: user?.country_code ?? "+44",
+      country: user?.country ?? "uk",
+      language: user?.language ?? "french",
+      role: user?.role ?? undefined,
+      legal_specialty: user?.legal_specialty ?? undefined,
+      phone_number: user?.phone_number ?? "",
+      email: user?.email ?? "",
     },
   });
 
@@ -98,7 +105,9 @@ function DetailsView() {
 
   const onFormSubmit = useCallback(
     (data: UserProfile) => {
-      let params: Record<string, any> = { ...data };
+      console.log(" params", data);
+      let params: Record<string, any> = sanitizeParams({ ...data });
+      console.log("sanitized params", params);
       // sanitize params
       if (uploadedImageStateRef.current.isLogoRemoved) {
         params.is_profile_logo_deleted = true;
@@ -123,6 +132,10 @@ function DetailsView() {
           onClick={() => {
             handleSubmit(onFormSubmit)();
           }}
+          disabled={
+            !form.formState.isDirty &&
+            !(uploadedImageStateRef.current.image instanceof File)
+          }
           variant={"primary-blue"}
           className="flex items-center transition-all duration-300 ease-in-out"
         >
@@ -203,14 +216,11 @@ function DetailsView() {
                         <Icon iconName="logan-selct-dropdown-arrow" />
                       }
                     >
-                      <SelectValue placeholder={"Your Role"} />
+                      <SelectValue placeholder={"Select Your Role"} />
                     </SelectTrigger>
 
                     <SelectContent>
-                      {[
-                        { label: "One", value: "one" },
-                        { label: "Two", value: "two" },
-                      ].map((option, index) => {
+                      {userRoles.map((option: SelectDropDownItemType) => {
                         return (
                           <SelectItem
                             key={option?.value}

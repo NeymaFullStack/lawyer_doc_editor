@@ -152,11 +152,11 @@ function General() {
             name={"user_name"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Name*</FormLabel>
+                <FormLabel>User Name*</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="Last Name"
+                    placeholder="User Name"
                     className={errors.user_name ? "border-red-500" : ""}
                   />
                 </FormControl>
@@ -334,7 +334,7 @@ function General() {
             name={"tax_identification_number"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tax Indentification Number</FormLabel>
+                <FormLabel>Tax Identification Number</FormLabel>
                 <FormControl>
                   <Input
                     {...field}

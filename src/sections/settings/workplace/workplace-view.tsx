@@ -49,7 +49,7 @@ function WorkplaceView() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <Tabs defaultValue="account" className="!h-full">
+    <Tabs defaultValue={"general"} className="!h-full">
       <div className="flex items-center justify-between">
         <TabsList className="space-x-3 bg-white">
           {tabs.map((tab, key) => (

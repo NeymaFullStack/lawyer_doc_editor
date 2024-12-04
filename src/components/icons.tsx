@@ -1521,13 +1521,13 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
       onClick,
       ...props
     },
-    ref
+    ref,
   ) => (
     <span
       className={cn(
         `flex flex-row items-center justify-center`,
         onClick && "cursor-pointer",
-        className
+        className,
       )}
       onClick={onClick}
       {...props}
@@ -1536,7 +1536,7 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
       {!!icons[iconName] &&
         icons[iconName]({ className: iconClassName, fill, customColor })}
     </span>
-  )
+  ),
 );
 
 Icon.displayName = "Icon";

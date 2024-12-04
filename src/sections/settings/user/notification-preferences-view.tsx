@@ -4,12 +4,18 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import axiosInstance, { endpoints } from "@/lib/axios";
-import React, { Fragment, useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   UserNotificationPreferencesType,
   UserNotificationPreferencesEnum,
   Toggle,
+  fetchUserNotificationsPreferencesType,
 } from "../types";
+import { useFetcher } from "@/hooks/use-fetcher";
+import {
+  autoFillSwitchData,
+  generateNotificationPreferencesParams,
+} from "../utils";
 
 const deafaultNotificationPreferences = {
   [UserNotificationPreferencesEnum.COMMENTS]: {
@@ -29,18 +35,36 @@ const deafaultNotificationPreferences = {
   },
 };
 
+const fetchNotificationPreferenceData = async (): Promise<{
+  data: fetchUserNotificationsPreferencesType;
+  status: string;
+}> => {
+  const res = await axiosInstance.get(
+    endpoints.settings.user.notificationPreferences,
+  );
+  return res.data;
+};
+
 function NotificationPreferences() {
+  const { data } = useFetcher(fetchNotificationPreferenceData, []);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [notificationPreferences, setNotificationPreferences] =
     useState<UserNotificationPreferencesType>(deafaultNotificationPreferences);
 
+  useEffect(() => {
+    if (data?.data) {
+      autoFillSwitchData(data.data, setNotificationPreferences);
+    }
+  }, [data]);
+
   const saveNotificationPreferences = useCallback(
-    async (passwordParams: any) => {
+    async (preferenceParams: any) => {
       setIsLoading(true);
       try {
-        const res = await axiosInstance.put(
-          endpoints.settings.user.resetPassword,
-          passwordParams,
+        const res = await axiosInstance.post(
+          endpoints.settings.user.notificationPreferences,
+          preferenceParams,
           {
             headers: {
               "Content-Type": "application/json",
@@ -56,16 +80,12 @@ function NotificationPreferences() {
     [axiosInstance],
   );
 
-  const handleSaveNotificationPreferences = useCallback(
-    (data: any) => {
-      if (data.new_password !== data.confirm_new_password) {
-        // TODO show Error
-        return;
-      }
-      saveNotificationPreferences({ ...data });
-    },
-    [saveNotificationPreferences],
-  );
+  const handleSaveNotificationPreferences = useCallback(() => {
+    const params = generateNotificationPreferencesParams(
+      notificationPreferences,
+    );
+    saveNotificationPreferences(params);
+  }, [notificationPreferences, saveNotificationPreferences]);
 
   const handleSwitchToggle = useCallback(
     (
@@ -272,5 +292,4 @@ function NotificationPreferences() {
     </div>
   );
 }
-
 export default NotificationPreferences;

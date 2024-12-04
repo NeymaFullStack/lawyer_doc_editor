@@ -53,7 +53,7 @@ function PasswordView() {
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
       } catch (error) {
         console.error(error);
@@ -61,7 +61,7 @@ function PasswordView() {
         setIsLoading(false);
       }
     },
-    [axiosInstance]
+    [axiosInstance],
   );
 
   const onFormSubmit = useCallback(
@@ -72,13 +72,13 @@ function PasswordView() {
       }
       resetPassword({ ...data });
     },
-    [resetPassword]
+    [resetPassword],
   );
 
   return (
     <div className="flex flex-col space-y-8">
       <div>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <h1 className="inline-block text-xl font-bold">
             Reset Your Password
           </h1>
@@ -86,19 +86,20 @@ function PasswordView() {
             onClick={() => {
               handleSubmit(onFormSubmit)();
             }}
+            disabled={!form.formState.isDirty}
             variant={"primary-blue"}
-            className="transition-all duration-300 ease-in-out flex items-center"
+            className="flex items-center transition-all duration-300 ease-in-out"
           >
             Save Changes
-            {isLoading && <LoadingSpinner className="ml-1 " />}
+            {isLoading && <LoadingSpinner className="ml-1" />}
           </Button>
         </div>
-        <p className=" text-sm text-logan-black-foreground">
+        <p className="text-sm text-logan-black-foreground">
           Please enter your current password to change your password.
         </p>
       </div>
       <Form {...form}>
-        <div className="w-[75%]  grid-rows-3 space-y-4">
+        <div className="w-[75%] grid-rows-3 space-y-4">
           <FormField
             key={"old_password"}
             control={form.control}
@@ -112,7 +113,7 @@ function PasswordView() {
                     {...field}
                     placeholder="Current Password"
                     className={cn(
-                      "text-sm tracking-widest placeholder:tracking-normal  placeholder:text-sm "
+                      "text-sm tracking-widest placeholder:text-sm placeholder:tracking-normal",
                     )}
                   />
                 </FormControl>
@@ -132,7 +133,7 @@ function PasswordView() {
                     type="password"
                     placeholder="Your new password must be at least 8 characters."
                     className={cn(
-                      "text-sm tracking-widest placeholder:tracking-normal  placeholder:text-sm "
+                      "text-sm tracking-widest placeholder:text-sm placeholder:tracking-normal",
                     )}
                   />
                 </FormControl>

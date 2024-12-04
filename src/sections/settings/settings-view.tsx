@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SettingEnum } from "./types";
 import DetailsView from "./user/details-view";
 import PasswordView from "./user/password-view";
-import NotificationPreferences from "./user/notification-preferences";
+import NotificationPreferences from "./user/notification-preferences-view";
 import WorkplaceView from "./workplace/workplace-view";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
