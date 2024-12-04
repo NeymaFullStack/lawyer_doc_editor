@@ -15,6 +15,7 @@ export type AuthStateType = {
   status?: string;
   loading: boolean;
   user: AuthUserType;
+  workspace: string | null;
 };
 
 export type JWTContextType = {
@@ -26,4 +27,6 @@ export type JWTContextType = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: AuthUserType) => void;
+  setWorkspace: (workspace: string | null) => void;
+  workspace: string | null;
 };
