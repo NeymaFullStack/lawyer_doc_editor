@@ -11,6 +11,7 @@ export const EditorTabGroupView = () => {
 
   const handleTabClick = (label: string) => {
     setSelected(label);
+    label === "Preview" && setShowPreview(true);
     setOpen(true);
   };
 
