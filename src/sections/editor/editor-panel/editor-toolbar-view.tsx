@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
 

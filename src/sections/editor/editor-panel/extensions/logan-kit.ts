@@ -19,6 +19,7 @@ import { LoganLink } from "./logan-link";
 import { LoganSearch } from "./logan-search";
 import { PageNode } from "./logan-pagination/logan-page";
 import { LoganZoom } from "./logan-zoom";
+import { LoganHotKey } from "./logan-hotkey";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -50,6 +51,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
       LoganListItem,
       LoganImage,
       LoganZoom,
+      LoganHotKey,
     ];
     return extensions;
   },
