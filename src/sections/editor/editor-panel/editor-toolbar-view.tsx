@@ -2,20 +2,13 @@ import React, { useState, useEffect } from "react";
 import { EditorUploadModal } from "./editor-upload-modal";
 import { ToolBar_ITEMS } from "./config-toobar";
 import { EditorColorPicker } from "./editor-color-picker";
-import { Icon, icons } from "@/components/icons";
-import { useHover } from "@/hooks/use-hover";
 import { iconColors } from "../../../../tailwind.config";
-import { cn } from "@/lib/utils";
 import { Editor } from "@tiptap/core";
 import { EditorSearchAndReplace } from "./editor-search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useDropdown } from "@/components/hook-form/dropdown-provider";
 import { Label } from "@/components/ui/label";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
+import { ToolBarDropDown } from "./editor-toolbar-dropdown";
+import { ToolBarItem } from "./editor-toolbar-item";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -120,6 +113,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                     />
                   )
                 }
+                dropdownId={item.label}
               />
             ) : (
               <ToolBarItem
@@ -170,86 +164,3 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
 export const Divider = () => (
   <span className="border-r border-logan-primary-400 h-6"></span>
 );
-
-type ToolBarItemProps = {
-  iconName: keyof typeof icons;
-  dropdownIcon?: boolean;
-  isSelected?: boolean;
-  isBlack?: boolean;
-  customColor?: string;
-  onClick?: () => void;
-  disabled: boolean;
-};
-
-const ToolBarItem = React.forwardRef<HTMLSpanElement, ToolBarItemProps>(
-  (
-    {
-      iconName,
-      dropdownIcon,
-      isSelected,
-      isBlack,
-      onClick,
-      disabled,
-      customColor,
-    },
-    ref
-  ) => {
-    const { hover, handleMouseOut, handleMouseOver } = useHover();
-
-    const iconFill = isBlack
-      ? hover || isSelected
-        ? iconColors.white
-        : iconColors.gray
-      : hover || isSelected
-      ? iconColors.white
-      : iconColors.from;
-
-    const spanClasses = cn(
-      `h-7 bg-logan-primary-200 rounded-md cursor-pointer transition-colors flex items-center justify-center gap-2`,
-      isBlack ? "hover:bg-logan-black" : "hover:bg-primary-gradient",
-      isSelected && (isBlack ? "bg-logan-black" : "bg-primary-gradient"),
-      disabled && "cursor-not-allowed opacity-50",
-      dropdownIcon ? "w-11" : "w-7"
-    );
-
-    return (
-      <span
-        ref={ref}
-        className={spanClasses}
-        onMouseOver={!disabled ? handleMouseOver : undefined}
-        onMouseOut={handleMouseOut}
-        onClick={!disabled ? onClick : undefined}
-      >
-        <Icon iconName={iconName} fill={iconFill} customColor={customColor} />
-        {dropdownIcon && <Icon iconName="dropdownicon" fill={iconFill} />}
-      </span>
-    );
-  }
-);
-
-ToolBarItem.displayName = "ToolBarItem";
-
-type ToolBarDropDownProps = {
-  button: React.ReactNode;
-  content: React.ReactNode;
-};
-
-const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
-  const { setOpen } = useDropdown();
-
-  return (
-    <DropdownMenu onOpenChange={(open) => setOpen(open)}>
-      <DropdownMenuTrigger asChild>
-        <span className="p-0 h-7 bg-transparent">{button}</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="p-2 mt-1 grid gap-2 text-logan-black-foreground font-semibold rounded-xl dropDownContent"
-        align="start"
-      >
-        {content}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
-ToolBarDropDown.displayName = "ToolBarDropDown";
