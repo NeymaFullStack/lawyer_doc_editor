@@ -18,6 +18,7 @@ import { LoganTextStyle } from "./logan-text-style";
 import { LoganLink } from "./logan-link";
 import { LoganSearch } from "./logan-search";
 import { PageNode } from "./logan-pagination/logan-page";
+import { LoganZoom } from "./logan-zoom";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -48,6 +49,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
       LoganOrderedList,
       LoganListItem,
       LoganImage,
+      LoganZoom,
     ];
     return extensions;
   },

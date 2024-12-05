@@ -3,7 +3,7 @@ import { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { NewAddNodeViewParams, NewAddNodeViewReturn } from "./type";
 
 const pageNodeClassName =
-  "page h-[297mm] w-[210mm] bg-white p-[25.4mm] border border-logan-primary-200 overflow-hidden relative mb-10 hover:border-logan-blue transition-all hover:shadow-badge-md";
+  "page h-[297mm] w-[210mm] bg-white p-20 border border-logan-primary-200 overflow-hidden relative mb-10 hover:border-logan-blue transition-all hover:shadow-badge-md";
 const pageNumberClassName =
   "page-number absolute bottom-3 right-3 text-sm text-logan-black";
 

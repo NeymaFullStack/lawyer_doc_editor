@@ -27,7 +27,7 @@ export const EditorPanelView = () => {
     editorProps: {
       attributes: {
         class:
-          "tiptap-editor !bg-white p-[25.4mm] border border-logan-primary-200 hover:border-logan-blue transition-all hover:shadow-badge-md",
+          "tiptap-editor !bg-white p-20 border border-logan-primary-200 hover:border-logan-blue transition-all hover:shadow-badge-md",
       },
     },
     immediatelyRender: false,

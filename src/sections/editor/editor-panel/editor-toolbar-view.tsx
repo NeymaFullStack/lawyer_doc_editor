@@ -14,6 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useTabContext } from "../editor-tab-group/use-tab-context";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -24,6 +27,7 @@ interface ActiveStates {
 }
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
+  const { showPreview } = useTabContext();
   const [open, setOpen] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
@@ -81,6 +85,13 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
 
   const actions = editor ? editorActions(editor) : {};
 
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+
+  const handleZoom = (level: number) => {
+    editor?.commands.setZoom(level);
+    setZoomLevel(level);
+  };
+
   return (
     <div className="h-11 px-5 py-2">
       <div className="flex items-center gap-[10px]">
@@ -98,7 +109,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                       item.label === "color" ? selectedColor : selectedHighlight
                     }
                     isBlack={index > 4 && true}
-                    disabled={false}
+                    disabled={showPreview}
                   />
                 }
                 content={
@@ -120,7 +131,9 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                 onClick={actions[item.label as keyof typeof actions]}
                 isBlack={index > 4 && true}
                 disabled={
-                  item.label === "previous"
+                  showPreview
+                    ? true
+                    : item.label === "previous"
                     ? !canUndo
                     : item.label === "next"
                     ? !canRedo
@@ -131,6 +144,24 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
             {item.divider && <Divider key={`divider-${index}`} />}
           </React.Fragment>
         ))}
+        <div className="flex flex-1 items-center justify-end">
+          <ToolBarItem
+            iconName="minus"
+            isBlack={true}
+            onClick={() => handleZoom(zoomLevel - 0.1)}
+            disabled={false}
+          />
+          <Label className="bg-white text-smaller p-2 rounded-md">
+            {Math.floor(zoomLevel * 100)}%
+          </Label>
+
+          <ToolBarItem
+            iconName="plus"
+            isBlack={true}
+            onClick={() => handleZoom(zoomLevel + 0.1)}
+            disabled={false}
+          />
+        </div>
       </div>
       <EditorUploadModal open={open} setOpen={setOpen} editor={editor} />
     </div>
@@ -144,7 +175,7 @@ export const Divider = () => (
 type ToolBarItemProps = {
   iconName: keyof typeof icons;
   dropdownIcon?: boolean;
-  isSelected: boolean;
+  isSelected?: boolean;
   isBlack?: boolean;
   customColor?: string;
   onClick?: () => void;

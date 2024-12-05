@@ -219,6 +219,24 @@ export const icons = {
       </svg>
     );
   },
+  minus: ({ className, fill }) => {
+    const color = typeof fill === "string" ? fill : fill.from;
+    return (
+      <svg
+        width="10"
+        height="5"
+        viewBox="0 0 5 2"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+      >
+        <path
+          d="M4.88836 0.737216V1.90909H0.115634V0.737216H4.88836Z"
+          fill={color ?? "#383D44"}
+        />
+      </svg>
+    );
+  },
   "gradient-document": ({ className, fill }) => {
     const { from, to } =
       typeof fill === "string" ? { from: fill, to: fill } : fill || {};
