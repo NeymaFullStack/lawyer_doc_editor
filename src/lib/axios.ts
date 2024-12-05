@@ -2,8 +2,8 @@ import axios, { AxiosRequestConfig } from "axios";
 
 import { HOST_API } from "@/config-global";
 
-// const axiosInstance = axios.create({ baseURL: HOST_API });
-const axiosInstance = axios.create({ baseURL: "http://localhost:7003" });
+const axiosInstance = axios.create({ baseURL: HOST_API });
+// const axiosInstance = axios.create({ baseURL: "http://localhost:7003" });
 
 axiosInstance.defaults.headers.common["Content-Type"] =
   "application/x-www-form-urlencoded";
