@@ -4,10 +4,28 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { iconColors } from "../../../../tailwind.config";
 import { AddWorkspaceUserModal } from "./add-workspace-user-modal";
+import axiosInstance, { endpoints } from "@/lib/axios";
+import { useFetcher } from "@/hooks/use-fetcher";
+import { workSpaceUserDetailType } from "@/components/setting-manager/types";
+import { ShimmerTable } from "@/components/loading-screen/shimmer-table";
+
+const fetchWorkSpaceUserList = async (): Promise<{
+  data: workSpaceUserDetailType[];
+  status: string;
+}> => {
+  const res = await axiosInstance.get(endpoints.workspace.workspaceUsers);
+  return res.data;
+};
 
 function UserManagement() {
+  const { data, refetch } = useFetcher(fetchWorkSpaceUserList, []);
   const [openAddWorkspaceUserModal, setOpenAddWorkspaceUserModal] =
     useState<boolean>(false);
+
+  const closeModalActions = () => {
+    refetch();
+  };
+
   return (
     <div className="h-full space-y-3">
       <div className="flex items-center gap-3">
@@ -15,14 +33,18 @@ function UserManagement() {
           All Users
         </h2>
         <span className="text-lg font-semibold text-logan-black-foreground">
-          6
+          {data?.data?.length ?? 0}
         </span>
       </div>
       <p className="text-xs text-logan-black-foreground">
-        Manage your Workspace’s Team Members and their role permission here.{" "}
+        Manage your Workspace's Team Members and their role permission here.{" "}
       </p>
       <div className="!mt-8">
-        <UserManagementTable />
+        {data?.data ? (
+          <UserManagementTable data={data?.data} />
+        ) : (
+          <ShimmerTable cols={5} rows={1} />
+        )}
       </div>
       <Button
         onClick={() => setOpenAddWorkspaceUserModal(true)}
@@ -38,9 +60,9 @@ function UserManagement() {
       <AddWorkspaceUserModal
         open={openAddWorkspaceUserModal}
         setOpen={setOpenAddWorkspaceUserModal}
+        closeModalActions={closeModalActions}
       />
     </div>
   );
 }
-
 export default UserManagement;

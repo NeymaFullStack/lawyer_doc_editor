@@ -42,8 +42,6 @@ function PasswordView() {
 
   const resetPassword = useCallback(
     async (passwordParams: UserPassword) => {
-      console.log(passwordParams);
-
       setIsLoading(true);
       try {
         const res = await axiosInstance.put(

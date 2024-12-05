@@ -25,6 +25,7 @@ import {
   countryCodeOptions,
   countryLanguage,
   countryOptions,
+  userRoleOptions,
 } from "../config-settings-view";
 import { Icon } from "@/components/icons";
 import { useAuthContext } from "@/auth/hooks";
@@ -34,7 +35,6 @@ import { cn } from "@/lib/utils";
 import { LogoUploadModal } from "../logo-upload-modal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import { userRoles } from "@/config-global";
 import { SelectDropDownItemType } from "@/types";
 import { sanitizeParams } from "@/components/hook-form/utils";
 
@@ -53,7 +53,7 @@ const profileSchema = z.object({
 function DetailsView() {
   const { user, setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const uploadedImageStateRef = React.useRef<{
+  const [uploadedImageState, setUploadedImageState] = React.useState<{
     image: File | null;
     isLogoRemoved: boolean;
   }>({ image: null, isLogoRemoved: false });
@@ -72,6 +72,13 @@ function DetailsView() {
     },
   });
 
+  const disableSaveButton =
+    !form.formState.isDirty &&
+    !(
+      uploadedImageState.image instanceof File ||
+      uploadedImageState.isLogoRemoved
+    );
+
   const {
     handleSubmit,
     formState: { errors },
@@ -79,12 +86,12 @@ function DetailsView() {
 
   const handleSaveLogo = useCallback(
     async (logo: File | null, isLogoRemoved: boolean) => {
-      uploadedImageStateRef.current = {
+      setUploadedImageState({
         image: logo,
         isLogoRemoved: isLogoRemoved,
-      };
+      });
     },
-    [uploadedImageStateRef],
+    [uploadedImageState],
   );
 
   const saveUserData = useCallback(async (formData: FormData) => {
@@ -105,15 +112,13 @@ function DetailsView() {
 
   const onFormSubmit = useCallback(
     (data: UserProfile) => {
-      console.log(" params", data);
       let params: Record<string, any> = sanitizeParams({ ...data });
-      console.log("sanitized params", params);
       // sanitize params
-      if (uploadedImageStateRef.current.isLogoRemoved) {
+      if (uploadedImageState.isLogoRemoved) {
         params.is_profile_logo_deleted = true;
       }
-      if (uploadedImageStateRef.current.image instanceof File) {
-        params.profile_logo = uploadedImageStateRef.current.image;
+      if (uploadedImageState.image instanceof File) {
+        params.profile_logo = uploadedImageState.image;
       }
       const formData = new FormData();
       for (const key in params) {
@@ -121,9 +126,8 @@ function DetailsView() {
       }
       saveUserData(formData);
     },
-    [uploadedImageStateRef, saveUserData],
+    [uploadedImageState, saveUserData],
   );
-
   return (
     <div className="flex flex-col space-y-5">
       <div className="flex items-center justify-between">
@@ -132,10 +136,7 @@ function DetailsView() {
           onClick={() => {
             handleSubmit(onFormSubmit)();
           }}
-          disabled={
-            !form.formState.isDirty &&
-            !(uploadedImageStateRef.current.image instanceof File)
-          }
+          disabled={disableSaveButton}
           variant={"primary-blue"}
           className="flex items-center transition-all duration-300 ease-in-out"
         >
@@ -220,7 +221,7 @@ function DetailsView() {
                     </SelectTrigger>
 
                     <SelectContent>
-                      {userRoles.map((option: SelectDropDownItemType) => {
+                      {userRoleOptions.map((option: SelectDropDownItemType) => {
                         return (
                           <SelectItem
                             key={option?.value}
@@ -470,14 +471,13 @@ function DetailsView() {
 }
 export default DetailsView;
 
+type UserProfileLogoType = {
+  handleSaveLogo: (logo: File | null, isLogoRemoved: boolean) => void;
+  logo: string | null;
+};
+
 export const UserProfileLogo = memo(
-  ({
-    handleSaveLogo,
-    logo,
-  }: {
-    handleSaveLogo: (logo: File | null, isLogoRemoved: boolean) => void;
-    logo: string | null;
-  }) => {
+  ({ handleSaveLogo, logo }: UserProfileLogoType) => {
     const [image, setImage] = useState<File | string | null>(logo);
     const [openUploadLogoModal, setOpenUploadLogoModal] =
       useState<boolean>(false);
@@ -489,7 +489,8 @@ export const UserProfileLogo = memo(
 
     const handleRemoveLogo = useCallback(() => {
       setImage(null);
-      handleSaveLogo(null, true);
+      let logoStatus = typeof logo === "string" ? true : false;
+      handleSaveLogo(null, logoStatus);
     }, []);
 
     return (

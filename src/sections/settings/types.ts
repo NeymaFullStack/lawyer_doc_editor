@@ -1,3 +1,5 @@
+import { userWorkspaceStatus } from "@/components/setting-manager/types";
+
 export type ActionMapType<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
     ? {
@@ -73,15 +75,20 @@ export type UserNotificationPreferencesType = {
 
 // workplace types
 
+export enum UserRole {
+  ADMIN = "ADMINISTRATOR",
+  TEAM_MEMBER = "TEAM_MEMBER",
+}
+
 export type workplaceDetailsType = {
-  workplace_name: string;
-  user_name: string;
-  email: string;
-  website?: string;
-  legal_specialty?: string;
+  name: string;
+  code: string;
+  company_email: string;
+  company_website?: string;
+  company_legal_specialty?: string;
   company_address?: string;
-  country: string;
-  tax_identification_number: string;
+  company_country_code: string;
+  company_tax_identification_number: string;
 };
 
 export type fetchUserNotificationsPreferencesType = {
@@ -89,4 +96,9 @@ export type fetchUserNotificationsPreferencesType = {
   replies_to_comments_notifications: Toggle;
   tags_notifications: Toggle;
   team_activity_notifications: Toggle;
+};
+
+export type childFormRefProperties = {
+  updateWorkplaceGeneralDetails: () => Promise<void>;
+  isFormDirty: boolean;
 };

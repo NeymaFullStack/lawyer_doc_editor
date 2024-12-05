@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,11 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import {
-  countryCodeOptions,
-  countryLanguage,
-  countryOptions,
-} from "../config-settings-view";
+import { countryOptions } from "../config-settings-view";
 import { Icon } from "@/components/icons";
 import { useAuthContext } from "@/auth/hooks";
 import { workplaceDetailsType } from "../types";
@@ -34,22 +30,35 @@ import { cn } from "@/lib/utils";
 import { LogoUploadModal } from "../logo-upload-modal";
 
 import Image from "next/image";
+import { useFetcher } from "@/hooks/use-fetcher";
+import { sanitizeParams } from "@/components/hook-form/utils";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 const workplaceDetailsSchema = z.object({
-  workplace_name: z.string().min(1, "First name is required"),
-  user_name: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email"),
-  website: z.string().optional(),
-  legal_specialty: z.string().optional(),
-  country: z.string().min(1, "Country is required"),
-  company_address: z.string().min(1, "Language is required"),
-  tax_identification_number: z.string().optional(),
+  name: z.string().min(1, "Workspace name is required"),
+  code: z.string().min(1, "User name is required"),
+  company_email: z.string().optional(),
+  company_website: z.string().optional(),
+  company_legal_speciality: z.string().optional(),
+  company_country_code: z.string().optional(),
+  company_address: z.string().optional(),
+  company_tax_identification_number: z.string().optional(),
 });
 
-function General() {
-  const { user, setUser } = useAuthContext();
+const fetchWorkSpaceDetails = async (): Promise<{
+  data: Record<string, any>;
+  status: string;
+}> => {
+  const res = await axiosInstance.get(endpoints.workspace.workspaceDetails);
+  return res.data;
+};
+
+export const General = () => {
+  const { data } = useFetcher(fetchWorkSpaceDetails, []);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const uploadedImageStateRef = React.useRef<{
+  const workerDetails = data?.data;
+  const { user, setUser } = useAuthContext();
+  const [uploadedImageState, setUploadedImageState] = React.useState<{
     image: File | null;
     isLogoRemoved: boolean;
   }>({ image: null, isLogoRemoved: false });
@@ -57,11 +66,40 @@ function General() {
   const form = useForm({
     resolver: zodResolver(workplaceDetailsSchema),
     defaultValues: {
-      ...(user as workplaceDetailsType),
-      country: user?.country || "uk",
-      legal_specialty: user?.legal_specialty || "busniess",
+      company_country_code: workerDetails?.company_details.country || "uk",
+      company_legal_speciality:
+        workerDetails?.company_details.legal_speciality || undefined,
+      name: workerDetails?.name || "",
+      code: workerDetails?.code || "",
+      company_email: workerDetails?.company_details?.email || "",
+      company_address: workerDetails?.company_details?.address || "",
+      company_website: workerDetails?.company_details?.website || "",
+      company_tax_identification_number:
+        workerDetails?.company_details?.tax_identification_number || "",
     },
   });
+
+  const disableSaveButton =
+    !form.formState.isDirty &&
+    !uploadedImageState.isLogoRemoved &&
+    !(uploadedImageState.image instanceof File);
+
+  useEffect(() => {
+    if (workerDetails) {
+      form.reset({
+        company_country_code: workerDetails?.company_details.country || "uk",
+        company_legal_speciality:
+          workerDetails?.company_details.legal_speciality || undefined,
+        name: workerDetails?.name || "",
+        code: workerDetails?.code || "",
+        company_email: workerDetails?.company_details?.mail || "",
+        company_address: workerDetails?.company_details?.address || "",
+        company_website: workerDetails?.company_details?.website || "",
+        company_tax_identification_number:
+          workerDetails?.company_details?.tax_identification_number || "",
+      });
+    }
+  }, [workerDetails]);
 
   const {
     handleSubmit,
@@ -70,19 +108,19 @@ function General() {
 
   const handleSaveLogo = useCallback(
     async (logo: File | null, isLogoRemoved: boolean) => {
-      uploadedImageStateRef.current = {
+      setUploadedImageState({
         image: logo,
         isLogoRemoved: isLogoRemoved,
-      };
+      });
     },
-    [uploadedImageStateRef],
+    [uploadedImageState],
   );
 
   const saveUserData = useCallback(async (formData: FormData) => {
     setIsLoading(true);
     try {
       const res = await axiosInstance.put(
-        endpoints.settings.user.save,
+        endpoints.workspace.workspaceDetails,
         formData,
         { headers: { "content-type": "multipart/form-data" } },
       );
@@ -96,13 +134,13 @@ function General() {
 
   const onFormSubmit = useCallback(
     (data: workplaceDetailsType) => {
-      let params: Record<string, any> = { ...data };
+      let params: Record<string, any> = sanitizeParams({ ...data });
       // sanitize params
-      if (uploadedImageStateRef.current.isLogoRemoved) {
-        params.is_profile_logo_deleted = true;
+      if (uploadedImageState.isLogoRemoved) {
+        params.is_logo_deleted = true;
       }
-      if (uploadedImageStateRef.current.image instanceof File) {
-        params.profile_logo = uploadedImageStateRef.current.image;
+      if (uploadedImageState.image instanceof File) {
+        params.profile_logo = uploadedImageState.image;
       }
       const formData = new FormData();
       for (const key in params) {
@@ -110,11 +148,23 @@ function General() {
       }
       saveUserData(formData);
     },
-    [uploadedImageStateRef, saveUserData],
+    [uploadedImageState, saveUserData],
   );
 
   return (
-    <div className="flex h-full flex-col space-y-5">
+    <div className="relative flex h-full flex-col space-y-5">
+      <Button
+        onClick={() => {
+          handleSubmit(onFormSubmit)();
+        }}
+        disabled={disableSaveButton}
+        variant={"primary-blue"}
+        className="absolute -top-[4.55rem] right-0 flex w-min items-center transition-all duration-300 ease-in-out"
+      >
+        Save Changes
+        {isLoading && <LoadingSpinner className="ml-1" />}
+      </Button>
+
       <WorlplaceLogo
         handleSaveLogo={handleSaveLogo}
         logo={user?.profile_logo}
@@ -125,9 +175,9 @@ function General() {
         <h3 className="font-semibold leading-none tracking-tight">Profile</h3>
         <div className="!mt-4 grid grid-cols-1 gap-x-10 gap-y-5 md:row-auto md:grid-cols-2">
           <FormField
-            key={"workplace_name"}
+            key={"name"}
             control={form.control}
-            name={"workplace_name"}
+            name={"name"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Workplace Name*</FormLabel>
@@ -135,21 +185,19 @@ function General() {
                   <Input
                     {...field}
                     placeholder="Workplace Name"
-                    className={errors.workplace_name ? "border-red-500" : ""}
+                    className={errors.name ? "border-red-500" : ""}
                   />
                 </FormControl>
-                {errors?.workplace_name && (
-                  <FormMessage>
-                    {errors?.workplace_name?.message?.toString()}
-                  </FormMessage>
+                {errors?.name && (
+                  <FormMessage>{errors?.name?.message?.toString()}</FormMessage>
                 )}
               </FormItem>
             )}
           />
           <FormField
-            key={"user_name"}
+            key={"code"}
             control={form.control}
-            name={"user_name"}
+            name={"code"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>User Name*</FormLabel>
@@ -157,13 +205,11 @@ function General() {
                   <Input
                     {...field}
                     placeholder="User Name"
-                    className={errors.user_name ? "border-red-500" : ""}
+                    className={errors.code ? "border-red-500" : ""}
                   />
                 </FormControl>
-                {errors.user_name && (
-                  <FormMessage>
-                    {errors.user_name?.message?.toString()}
-                  </FormMessage>
+                {errors.code && (
+                  <FormMessage>{errors.code?.message?.toString()}</FormMessage>
                 )}
               </FormItem>
             )}
@@ -175,9 +221,9 @@ function General() {
         </h3>
         <div className="!mt-4 grid grid-cols-1 gap-x-10 gap-y-6 md:row-auto md:grid-cols-2">
           <FormField
-            key={"email"}
+            key={"company_email"}
             control={form.control}
-            name={"email"}
+            name={"company_email"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Contact Email*</FormLabel>
@@ -185,19 +231,21 @@ function General() {
                   <Input
                     {...field}
                     placeholder="Contact Email"
-                    className={errors.email ? "border-red-500" : ""}
+                    className={errors.company_email ? "border-red-500" : ""}
                   />
                 </FormControl>
-                {errors.email && (
-                  <FormMessage>{errors.email?.message?.toString()}</FormMessage>
+                {errors.company_email && (
+                  <FormMessage>
+                    {errors.company_email?.message?.toString()}
+                  </FormMessage>
                 )}
               </FormItem>
             )}
           />
           <FormField
-            key={"website"}
+            key={"company_website"}
             control={form.control}
-            name={"website"}
+            name={"company_website"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Company website*</FormLabel>
@@ -205,21 +253,21 @@ function General() {
                   <Input
                     {...field}
                     placeholder="Company website"
-                    className={errors.website ? "border-red-500" : ""}
+                    className={errors.company_website ? "border-red-500" : ""}
                   />
                 </FormControl>
-                {errors.website && (
+                {errors.company_website && (
                   <FormMessage>
-                    {errors.website?.message?.toString()}
+                    {errors.company_website?.message?.toString()}
                   </FormMessage>
                 )}
               </FormItem>
             )}
           />
           <FormField
-            key={"country"}
+            key={"company_country_code"}
             control={form.control}
-            name={"country"}
+            name={"company_country_code"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Company Country*</FormLabel>
@@ -254,9 +302,9 @@ function General() {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                {errors.country && (
+                {errors.company_country_code && (
                   <FormMessage>
-                    {errors.country?.message?.toString()}
+                    {errors.company_country_code?.message?.toString()}
                   </FormMessage>
                 )}
               </FormItem>
@@ -285,9 +333,9 @@ function General() {
             )}
           />
           <FormField
-            key={"legal_specialty"}
+            key={"company_legal_speciality"}
             control={form.control}
-            name={"legal_specialty"}
+            name={"company_legal_speciality"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Legal Speciality</FormLabel>
@@ -329,9 +377,9 @@ function General() {
             )}
           />
           <FormField
-            key={"tax_identification_number"}
+            key={"company_tax_identification_number"}
             control={form.control}
-            name={"tax_identification_number"}
+            name={"company_tax_identification_number"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tax Identification Number</FormLabel>
@@ -340,13 +388,15 @@ function General() {
                     {...field}
                     placeholder="Company Address"
                     className={
-                      errors.tax_identification_number ? "border-red-500" : ""
+                      errors.company_tax_identification_number
+                        ? "border-red-500"
+                        : ""
                     }
                   />
                 </FormControl>
-                {errors.tax_identification_number && (
+                {errors.company_tax_identification_number && (
                   <FormMessage>
-                    {errors.tax_identification_number?.message?.toString()}
+                    {errors.company_tax_identification_number?.message?.toString()}
                   </FormMessage>
                 )}
               </FormItem>
@@ -358,17 +408,15 @@ function General() {
       <DeleteWorkPlace />
     </div>
   );
-}
-export default General;
+};
 
-export const WorlplaceLogo = memo(
-  ({
-    handleSaveLogo,
-    logo,
-  }: {
-    handleSaveLogo: (logo: File | null, isLogoRemoved: boolean) => void;
-    logo: string | null;
-  }) => {
+type workplaceProfileLogoType = {
+  handleSaveLogo: (logo: File | null, isLogoRemoved: boolean) => void;
+  logo: string | null;
+};
+
+const WorlplaceLogo = memo(
+  ({ handleSaveLogo, logo }: workplaceProfileLogoType) => {
     const [image, setImage] = useState<File | string | null>(logo);
     const [openUploadLogoModal, setOpenUploadLogoModal] =
       useState<boolean>(false);
@@ -380,9 +428,9 @@ export const WorlplaceLogo = memo(
 
     const handleRemoveLogo = useCallback(() => {
       setImage(null);
-      handleSaveLogo(null, true);
+      let logoStatus = typeof logo === "string" ? true : false;
+      handleSaveLogo(null, logoStatus);
     }, []);
-
     return (
       <div className="flex flex-col space-y-5">
         <h3 className="font-semibold leading-none tracking-tight">
@@ -394,7 +442,11 @@ export const WorlplaceLogo = memo(
             {image && (
               <div className="h-20 w-32">
                 <Image
-                  src={image as string}
+                  src={
+                    typeof image === "string"
+                      ? image
+                      : URL.createObjectURL(image)
+                  }
                   alt="logo"
                   fill
                   className="!static h-full w-full rounded object-cover"
