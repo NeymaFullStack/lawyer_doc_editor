@@ -119,6 +119,12 @@
   list-style-type: decimal;
 }
 
+.ProseMirror a {
+  color: #095ad3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .dropDownContent:has(.simpleSearchSquare),
 input {
   transition: all 0.3s;
