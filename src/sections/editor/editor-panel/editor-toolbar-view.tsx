@@ -7,22 +7,40 @@ import { useHover } from "@/hooks/use-hover";
 import { iconColors } from "../../../../tailwind.config";
 import { cn } from "@/lib/utils";
 import { Editor } from "@tiptap/core";
+import { EditorSearchAndReplace } from "./editor-search";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useDropdown } from "@/components/hook-form/dropdown-provider";
 
 type EditorToolbarProps = {
   editor: Editor | null;
 };
 
 interface ActiveStates {
-  bold: boolean;
-  italic: boolean;
-  underline: boolean;
-  strike: boolean;
-  color: boolean;
-  bullets: boolean;
-  ordered: boolean;
+  [key: string]: boolean;
 }
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const canUndo = editor?.can().undo();
+  const canRedo = editor?.can().redo();
+  const [selectedColor, setSelectedColor] = useState(iconColors.gray);
+  const [selectedHighlight, setSelectedHighlight] = useState(iconColors.white);
+
+  const [activeStates, setActiveStates] = useState<ActiveStates>({
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    color: false,
+    highlight: false,
+    bullets: false,
+    ordered: false,
+  });
+
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
@@ -32,27 +50,19 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     bold: () => editor?.commands?.toggleBold(),
     italic: () => editor?.commands?.toggleItalic(),
     underline: () => editor?.commands?.toggleUnderline(),
-    color: () => {},
+    color: (color: string) => {
+      editor?.chain().focus().setColor(color).run();
+      setSelectedColor(color);
+    },
+    highlight: (hightlight: string) => {
+      editor?.commands?.toggleHighlight({ color: hightlight });
+      setSelectedHighlight(hightlight);
+    },
     bullets: () => editor?.commands?.toggleBulletList(),
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
     image: () => setOpen(true),
   });
-
-  const [open, setOpen] = useState(false);
-  const canUndo = editor?.can().undo();
-  const canRedo = editor?.can().redo();
-
-  const [activeStates, setActiveStates] = useState<ActiveStates>({
-    bold: false,
-    italic: false,
-    underline: false,
-    strike: false,
-    color: false,
-    bullets: false,
-    ordered: false,
-  });
-  const [selectedColor, setSelectedColor] = useState(iconColors.gray);
 
   useEffect(() => {
     if (editor) {
@@ -61,7 +71,8 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
         italic: editor.isActive("italic"),
         underline: editor.isActive("underline"),
         strike: editor.isActive("strike"),
-        color: editor.isActive("color"),
+        color: editor.isActive("textStyle", { color: selectedColor }),
+        highlight: editor.isActive("highlight", { color: selectedHighlight }),
         bullets: editor.isActive("bulletList"),
         ordered: editor.isActive("orderedList"),
       });
@@ -75,22 +86,30 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
       <div className="flex items-center gap-[10px]">
         {ToolBar_ITEMS.map((item: any, index: number) => (
           <React.Fragment key={index}>
-            {item.label === "color" ? (
-              <EditorColorPicker
-                selectedColor={selectedColor}
-                setSelect={setSelectedColor}
+            {item.dropdown ? (
+              <ToolBarDropDown
                 button={
                   <ToolBarItem
                     iconName={item.icon}
                     isSelected={
                       activeStates[item.label as keyof typeof activeStates]
                     }
-                    customColor={selectedColor}
-                    isBlack={index > 2 && true}
+                    customColor={
+                      item.label === "color" ? selectedColor : selectedHighlight
+                    }
+                    isBlack={index > 4 && true}
                     disabled={false}
                   />
                 }
-                editor={editor}
+                content={
+                  item.label === "search" ? (
+                    <EditorSearchAndReplace editor={editor} />
+                  ) : (
+                    <EditorColorPicker
+                      onChange={actions[item.label as keyof typeof actions]}
+                    />
+                  )
+                }
               />
             ) : (
               <ToolBarItem
@@ -118,7 +137,9 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   );
 };
 
-const Divider = () => <span className="border-r border-[#CEDEF6] h-6"></span>;
+export const Divider = () => (
+  <span className="border-r border-logan-primary-400 h-6"></span>
+);
 
 type ToolBarItemProps = {
   iconName: keyof typeof icons;
@@ -177,3 +198,28 @@ const ToolBarItem = React.forwardRef<HTMLSpanElement, ToolBarItemProps>(
 );
 
 ToolBarItem.displayName = "ToolBarItem";
+
+type ToolBarDropDownProps = {
+  button: React.ReactNode;
+  content: React.ReactNode;
+};
+
+const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
+  const { setOpen } = useDropdown();
+
+  return (
+    <DropdownMenu onOpenChange={(open) => setOpen(open)}>
+      <DropdownMenuTrigger asChild>
+        <span className="p-0 h-7 bg-transparent">{button}</span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="p-2 mt-1 grid gap-2 text-logan-black-foreground font-semibold rounded-xl dropDownContent"
+        align="start"
+      >
+        {content}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+ToolBarDropDown.displayName = "ToolBarDropDown";

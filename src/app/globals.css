@@ -103,18 +103,16 @@
 
 /* Styles for the ProseMirror Editor */
 .ProseMirror {
-  aspect-ratio: 1 / 1.65;
-  background-color: white;
+  aspect-ratio: 1 / 1.4;
+  background-color: #f0f5fc;
   box-shadow: 0 0 0 1px transparent;
-  border: 1px solid transparent;
-  padding: 64px;
   transition: all 200ms ease-out;
 }
 
 .ProseMirror-focused {
   outline: none !important;
   border-radius: 0px !important;
-  border-color: #095ad3;
+  border: #095ad3;
   box-shadow: 2px 4px 6px rgba(9, 90, 211, 0.1);
 }
 
@@ -124,4 +122,24 @@
 
 .ProseMirror ol {
   list-style-type: decimal;
+}
+
+.dropDownContent:has(.simpleSearchSquare),
+input {
+  transition: all 0.3s;
+}
+.dropDownContent:has(.simpleSearchSquare):hover,
+input:focus {
+  border: 1px solid #095ad3;
+  transition: all 0.3s;
+}
+
+.search-result {
+  border-radius: 2px;
+  background: #ffefb3;
+}
+
+.search-result-current {
+  background: #ffff00;
+  font-weight: 800;
 }

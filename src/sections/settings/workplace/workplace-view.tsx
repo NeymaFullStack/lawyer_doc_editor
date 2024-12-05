@@ -63,25 +63,6 @@ function WorkplaceView() {
             </TabsTrigger>
           ))}
         </TabsList>
-        {/* <Button
-          onClick={() => {
-            if (
-              formRef.current &&
-              "updateWorkplaceGeneralDetails" in formRef.current
-            ) {
-              setIsLoading(true);
-              formRef.current.updateWorkplaceGeneralDetails().finally(() => {
-                setIsLoading(false);
-              });
-            }
-          }}
-          disabled={!formRef.current?.isFormDirty}
-          variant={"primary-blue"}
-          className="flex items-center transition-all duration-300 ease-in-out"
-        >
-          Save Changes
-          {isLoading && <LoadingSpinner className="ml-1" />}
-        </Button> */}
       </div>
       <Separator className="my-4 bg-logan-primary-200" />
       {tabsContentList.map((tabContent) => {

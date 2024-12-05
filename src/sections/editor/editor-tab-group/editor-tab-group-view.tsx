@@ -7,10 +7,11 @@ import { Icon, icons } from "@/components/icons";
 import { useHover } from "@/hooks/use-hover";
 
 export const EditorTabGroupView = () => {
-  const { isOpen, setOpen, selected, setSelected } = useTabContext();
+  const { isOpen, setOpen, selected, setSelected, showPreview, setShowPreview } = useTabContext();
 
   const handleTabClick = (label: string) => {
     setSelected(label);
+    label === "Preview" && setShowPreview(true);
     setOpen(true);
   };
 
@@ -21,6 +22,7 @@ export const EditorTabGroupView = () => {
         className="size-10 inline-flex justify-center items-center cursor-pointer"
         onClick={() => {
           setOpen(!isOpen);
+          setShowPreview && setShowPreview(!showPreview);
         }}
       >
         <ChevronsLeft
@@ -31,9 +33,11 @@ export const EditorTabGroupView = () => {
 
       {/* Tab Items */}
       <div className="flex flex-col gap-4">
-        {TAB_ITEMS.map((item) => (
+        {TAB_ITEMS.map((item, index) => (
           <TabItem
-            key={item.label}
+            key={index}
+            id={index}
+            order={index}
             iconName={item.icon}
             isSelected={selected === item.label}
             onClick={() => handleTabClick(item.label)}
@@ -45,6 +49,8 @@ export const EditorTabGroupView = () => {
 };
 
 type TabItemProps = {
+  id: number;
+  order: number;
   iconName: keyof typeof icons;
   isSelected: boolean;
   onClick: () => void;
@@ -65,6 +71,7 @@ const TabItem = ({ iconName, isSelected, onClick }: TabItemProps) => {
     >
       <Icon
         iconName={iconName}
+        className="size-10"
         fill={hover || isSelected ? iconColors.white : iconColors.from}
       />
     </span>

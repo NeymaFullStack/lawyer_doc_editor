@@ -1,26 +1,17 @@
-import { Node } from "@tiptap/pm/model";
-import { SplitContext } from "./split-context";
+import { Node as ProseMirrorNode } from "@tiptap/pm/model";
+import { EditorView } from "@tiptap/pm/view";
 
-export type ComputedFn = (
-  splitContext: SplitContext,
-  node: Node,
-  pos: number,
-  parent: Node | null,
-  dom: HTMLElement
-) => boolean;
+export const Max_Page_Height: number = ((297 - 25.4 * 2) / 25.4) * 96;
+export const MIN_PARAGRAPH_HEIGHT = 20;
 
-export type NodesComputed = Record<string, ComputedFn>;
+export type NewAddNodeViewParams = {
+  node: ProseMirrorNode;
+  getPos: () => number;
+  view: EditorView;
+};
 
-export type PageOptions = {
-  footerHeight: number;
-  headerHeight: number;
-  bodyHeight: number;
-  bodyWidth: number;
-  bodyPadding: number;
-  isPaging?: boolean;
-  mode?: 1 | 2 | 3;
-  headerData?: any[];
-  footerData?: any[];
-  NodesComputed?: NodesComputed;
-  SystemAttributes?: Record<string, any>;
+export type NewAddNodeViewReturn = {
+  dom: HTMLElement;
+  contentDOM: HTMLElement;
+  update(updatedNode: ProseMirrorNode): boolean;
 };

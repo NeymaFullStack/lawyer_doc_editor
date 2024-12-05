@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/resizable";
 import { TabProvider, useTabContext } from "./editor-tab-group/use-tab-context";
 import { EditorPanelView } from "./editor-panel/editor-panel-view";
+import { Separator } from "@/components/ui/separator";
+import { EditorTabPreview } from "./editor-tab-group/editor-tab-preview";
 
 export const EditorView = () => {
   return (
@@ -24,10 +26,12 @@ export const EditorView = () => {
 };
 
 export const EditorPanelGroup = () => {
-  const { isOpen } = useTabContext();
+  const { isOpen, selected } = useTabContext();
   return (
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel
+        id="panel-1"
+        order={1}
         defaultSize={isOpen ? 60 : 100}
         className="bg-logan-primary-200"
       >
@@ -37,11 +41,21 @@ export const EditorPanelGroup = () => {
       {isOpen && <ResizableHandle className="bg-logan-primary-300" />}
       {isOpen && (
         <ResizablePanel
+          id="panel-2"
+          order={2}
           defaultSize={40}
           maxSize={40}
-          className="bg-gradient bg-gradient-to-tr from-logan-primary-200 to-white"
+          className="bg-logan-primary-100 "
         >
-          This is the tab panel of editor
+          <div>
+            <div className="px-5 py-2 h-11 leading-7 font-semibold text-logan-black-foreground text-sm">
+              {selected}
+            </div>
+            <Separator className="bg-logan-primary-300" />
+            {
+              selected === 'Preview' && <EditorTabPreview />
+            }
+          </div>
         </ResizablePanel>
       )}
     </ResizablePanelGroup>

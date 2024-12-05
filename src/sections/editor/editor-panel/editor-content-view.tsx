@@ -5,6 +5,5 @@ type EditorContentViewProps = {
 };
 
 export const EditorContentView = ({ editor }: EditorContentViewProps) => {
-  // console.log("EditorContentView rendered -> ", editor);
   return <EditorContent editor={editor}></EditorContent>;
 };

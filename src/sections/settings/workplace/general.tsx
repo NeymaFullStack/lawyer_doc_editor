@@ -140,7 +140,7 @@ export const General = () => {
         params.is_logo_deleted = true;
       }
       if (uploadedImageState.image instanceof File) {
-        params.profile_logo = uploadedImageState.image;
+        params.logo = uploadedImageState.image;
       }
       const formData = new FormData();
       for (const key in params) {

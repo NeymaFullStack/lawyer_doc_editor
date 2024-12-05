@@ -34,6 +34,7 @@ const config: Config = {
           "linear-gradient(92.19deg, #A045FB 3.29%, #4822E4 82.62%)",
       },
       borderRadius: {
+        large: "10px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
@@ -102,6 +103,8 @@ const config: Config = {
             200: "#F0F5FC",
             300: "#095AD31A",
             400: "#CEDEF6",
+            500: "#293038",
+            600: "#f7ae20",
           },
           black: {
             DEFAULT: "#383D44",
@@ -162,6 +165,14 @@ const config: Config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      fontSize: {
+        xm: "11px",
+        smaller: "13px",
+        sm: "15px",
+      },
+      width: {
+        "105": "420px",
       },
     },
   },

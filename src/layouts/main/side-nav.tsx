@@ -68,7 +68,7 @@ const SideNav = () => {
 
     return (
       <div className={logoClass}>
-        <Image src={logoSrc} alt={logoAlt} />
+        <Image src={logoSrc} alt={logoAlt} priority />
       </div>
     );
   }, [isExpanded]);
