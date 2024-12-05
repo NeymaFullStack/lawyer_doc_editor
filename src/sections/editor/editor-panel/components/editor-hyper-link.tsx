@@ -17,8 +17,8 @@ import { sticky } from "tippy.js";
 import { Icon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAttributes } from "./utils/utils";
-import { iconColors } from "../../../../tailwind.config";
+import { useAttributes } from "../utils/utils";
+import { iconColors } from "../../../../../tailwind.config";
 
 interface LinkBubbleProps {
   editor: Editor | null;

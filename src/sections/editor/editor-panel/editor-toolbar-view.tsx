@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { EditorUploadModal } from "./editor-upload-modal";
+import { EditorUploadModal } from "./components/editor-upload-modal";
 import { ToolBar_ITEMS } from "./config-toobar";
-import { EditorColorPicker } from "./editor-color-picker";
+import { EditorColorPicker } from "./components/editor-color-picker";
 import { iconColors } from "../../../../tailwind.config";
 import { Editor } from "@tiptap/core";
-import { EditorSearchAndReplace } from "./editor-search";
+import { EditorSearchAndReplace } from "./components/editor-search";
 import { Label } from "@/components/ui/label";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
-import { ToolBarDropDown } from "./editor-toolbar-dropdown";
-import { ToolBarItem } from "./editor-toolbar-item";
-import { EditorHyperLink } from "./editor-hyper-link";
+import { ToolBarDropDown } from "./components/editor-toolbar-dropdown";
+import { ToolBarItem } from "./components/editor-toolbar-item";
+import { EditorHyperLink } from "./components/editor-hyper-link";
 import isTextSelected from "./utils/utils";
 
 type EditorToolbarProps = {
@@ -42,7 +42,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const onLink = useCallback(() => {
     if (!editor || !isTextSelected(editor)) return;
 
-    editor.chain().focus().toggleLink().run();
+    editor.chain().focus().toggleLink({ href: "" }).run();
   }, [editor]);
 
   const editorActions = (editor: Editor | null) => ({

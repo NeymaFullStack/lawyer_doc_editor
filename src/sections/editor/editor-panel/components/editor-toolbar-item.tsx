@@ -2,7 +2,7 @@ import React from "react";
 import { Icon, icons } from "@/components/icons";
 import { useHover } from "@/hooks/use-hover";
 import { cn } from "@/lib/utils";
-import { iconColors } from "../../../../tailwind.config";
+import { iconColors } from "../../../../../tailwind.config";
 
 type ToolBarItemProps = {
   iconName: keyof typeof icons;

@@ -25,6 +25,10 @@ export const LoganHotKey = Extension.create({
         this.editor.chain().focus().toggleBulletList().run();
         return true;
       },
+      "mod-k": () => {
+        this.editor.chain().focus().toggleLink({ href: "" }).run();
+        return true;
+      },
     };
   },
 });

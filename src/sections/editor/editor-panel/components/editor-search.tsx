@@ -5,10 +5,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icons";
-import { iconColors } from "../../../../tailwind.config";
-import { Divider } from "./editor-toolbar-view";
+import { iconColors } from "../../../../../tailwind.config";
+import { Divider } from "../editor-toolbar-view";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
-import { IconConfig } from "./config-toobar";
+import { IconConfig } from "../config-toobar";
 
 type EditorSearchAndReplaceProps = {
   editor: Editor | null;

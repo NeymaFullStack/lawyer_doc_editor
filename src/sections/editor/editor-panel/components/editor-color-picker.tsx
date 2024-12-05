@@ -1,5 +1,5 @@
 import * as React from "react";
-import { colors } from "./config-toobar";
+import { colors } from "../config-toobar";
 
 type ColorPickerProps = {
   onChange: (color: string) => void;
