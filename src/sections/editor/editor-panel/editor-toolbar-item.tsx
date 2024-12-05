@@ -6,6 +6,7 @@ import { iconColors } from "../../../../tailwind.config";
 
 type ToolBarItemProps = {
   iconName: keyof typeof icons;
+  className?: string;
   dropdownIcon?: boolean;
   isSelected?: boolean;
   isBlack?: boolean;
@@ -18,6 +19,7 @@ export const ToolBarItem = React.forwardRef<HTMLSpanElement, ToolBarItemProps>(
   (
     {
       iconName,
+      className,
       dropdownIcon,
       isSelected,
       isBlack,
@@ -42,7 +44,8 @@ export const ToolBarItem = React.forwardRef<HTMLSpanElement, ToolBarItemProps>(
       isBlack ? "hover:bg-logan-black" : "hover:bg-primary-gradient",
       isSelected && (isBlack ? "bg-logan-black" : "bg-primary-gradient"),
       disabled && "cursor-not-allowed opacity-50",
-      dropdownIcon ? "w-11" : "w-7"
+      dropdownIcon ? "w-11" : "w-7",
+      className
     );
 
     return (

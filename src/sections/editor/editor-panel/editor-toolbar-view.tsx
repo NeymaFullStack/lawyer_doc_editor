@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { EditorUploadModal } from "./editor-upload-modal";
 import { ToolBar_ITEMS } from "./config-toobar";
 import { EditorColorPicker } from "./editor-color-picker";
@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
 import { ToolBarDropDown } from "./editor-toolbar-dropdown";
 import { ToolBarItem } from "./editor-toolbar-item";
+import { EditorHyperLink } from "./editor-hyper-link";
+import isTextSelected from "./utils/utils";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -37,6 +39,12 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     ordered: false,
   });
 
+  const onLink = useCallback(() => {
+    if (!editor || !isTextSelected(editor)) return;
+
+    editor.chain().focus().toggleLink().run();
+  }, [editor]);
+
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
@@ -58,6 +66,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
     image: () => setOpen(true),
+    hyperlink: () => onLink(),
   });
 
   useEffect(() => {
@@ -156,6 +165,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
           />
         </div>
       </div>
+      <EditorHyperLink editor={editor} />
       <EditorUploadModal open={open} setOpen={setOpen} editor={editor} />
     </div>
   );
