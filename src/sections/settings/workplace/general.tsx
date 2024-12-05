@@ -165,10 +165,7 @@ export const General = () => {
         {isLoading && <LoadingSpinner className="ml-1" />}
       </Button>
 
-      <WorlplaceLogo
-        handleSaveLogo={handleSaveLogo}
-        logo={user?.profile_logo}
-      />
+      <WorlplaceLogo handleSaveLogo={handleSaveLogo} logo={user?.logo} />
       <Separator className="bg-logan-primary-200" />
       <Form {...form}>
         {/* Profile Section */}
