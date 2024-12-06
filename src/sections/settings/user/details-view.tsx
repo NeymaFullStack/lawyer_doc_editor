@@ -91,7 +91,7 @@ function DetailsView() {
         isLogoRemoved: isLogoRemoved,
       });
     },
-    [uploadedImageState],
+    [uploadedImageState]
   );
 
   const saveUserData = useCallback(async (formData: FormData) => {
@@ -100,7 +100,7 @@ function DetailsView() {
       const res = await axiosInstance.put(
         endpoints.settings.user.save,
         formData,
-        { headers: { "content-type": "multipart/form-data" } },
+        { headers: { "content-type": "multipart/form-data" } }
       );
       setUser(res.data);
     } catch (error) {
@@ -126,7 +126,7 @@ function DetailsView() {
       }
       saveUserData(formData);
     },
-    [uploadedImageState, saveUserData],
+    [uploadedImageState, saveUserData]
   );
   return (
     <div className="flex flex-col space-y-5">
@@ -358,9 +358,7 @@ function DetailsView() {
                       <Input
                         {...field}
                         placeholder="Phone Number"
-                        className={
-                          "h-[1.6rem] border-none outline-none ring-0 focus-visible:ring-0"
-                        }
+                        className={"h-[1.6rem] !border-none outline-none "}
                       />
                     </FormControl>
                   </FormItem>
@@ -534,7 +532,7 @@ export const UserProfileLogo = memo(
         />
       </div>
     );
-  },
+  }
 );
 
 UserProfileLogo.displayName = "UserProfileLogo";

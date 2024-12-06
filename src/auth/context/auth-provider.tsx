@@ -62,8 +62,7 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
   }
 };
 
-const STORAGE_KEY = "accessToken";
-const WORKPLACE_STORAGE_KEY = "workplace";
+export const STORAGE_KEY = "accessToken";
 
 type Props = {
   children: React.ReactNode;
@@ -74,6 +73,7 @@ export function AuthProvider({ children }: Props) {
 
   const initialize = useCallback(async () => {
     try {
+      //check auth and set user
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
@@ -86,6 +86,7 @@ export function AuthProvider({ children }: Props) {
       } else {
         dispatch({ type: Types.INITIAL, payload: { user: null } });
       }
+
       // set workspace
       const workspace = sessionStorage.getItem(WORKPACE_KEY);
       if (workspace) {

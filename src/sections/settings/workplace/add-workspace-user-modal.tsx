@@ -47,7 +47,7 @@ export const AddWorkspaceUserModal = ({
           user_emails: inviteUsersRef.current,
           role: selectedRole,
         },
-        { headers: { "content-type": "application/json" } },
+        { headers: { "content-type": "application/json" } }
       );
       closeModalActions();
     } catch (error) {
@@ -57,7 +57,6 @@ export const AddWorkspaceUserModal = ({
     }
   }, [inviteUsersRef, selectedRole, setOpen]);
 
-  console.log("selectedRole", selectedRole);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-[40rem] max-w-[40rem] !rounded-2xl">
@@ -146,7 +145,7 @@ const EmailTagInput = memo(
       <div
         className={cn(
           "scrollbar-hide h-11 !max-w-[75%] flex-1 gap-2 overflow-x-auto rounded-md rounded-r-none border border-r-0 px-3 py-1",
-          tags.length > 0 && "flex items-center gap-2",
+          tags.length > 0 && "flex items-center gap-2"
         )}
       >
         {/* Tags */}
@@ -182,6 +181,6 @@ const EmailTagInput = memo(
         />
       </div>
     );
-  },
+  }
 );
 EmailTagInput.displayName = "EmailTagInput";

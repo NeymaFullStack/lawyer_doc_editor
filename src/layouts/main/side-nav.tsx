@@ -48,6 +48,7 @@ import { workspaceItemType } from "./type";
 import axiosInstance, { endpoints } from "@/lib/axios";
 import axios from "axios";
 import { useFetcher } from "@/hooks/use-fetcher";
+import Notification from "@/sections/notification/notification";
 
 type SideNavMenuProps = {
   isExpanded: boolean;
@@ -108,7 +109,7 @@ const NewMenu = ({ isExpanded }: { isExpanded: boolean }) => (
         <SidebarMenuButton
           className={cn(
             "flex h-11 w-auto items-center justify-center gap-4 rounded-xl bg-primary-gradient p-4 !text-white",
-            { "aspect-square": !isExpanded },
+            { "aspect-square": !isExpanded }
           )}
         >
           <div
@@ -162,7 +163,7 @@ const RenderCreateItem = ({ iconName, fill, label }: NavMenuItem) => {
       <span
         className={cn(
           "truncate text-sm font-semibold",
-          hover ? "text-logan-blue" : "text-logan-black",
+          hover ? "text-logan-blue" : "text-logan-black"
         )}
       >
         {label}
@@ -213,7 +214,7 @@ const WorkspaceSwitcher = () => {
       className={cn(
         "flex flex-col justify-center",
         { "mx-6": isExpanded },
-        { "ml-6 mr-4": !isExpanded },
+        { "ml-6 mr-4": !isExpanded }
       )}
     >
       <DropdownMenu>
@@ -301,7 +302,7 @@ const WorkspaceItem = React.memo(
         )}
       </DropdownMenuItem>
     );
-  },
+  }
 );
 WorkspaceItem.displayName = "WorkspaceItem";
 
@@ -312,7 +313,7 @@ const WorkspaceAdd = React.memo(() => {
     <DropdownMenuItem
       className={cn(
         "mx-2 my-2 flex items-center gap-x-2 rounded-lg px-2 py-1.5",
-        { "bg-primary-gradient": hover },
+        { "bg-primary-gradient": hover }
       )}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
@@ -324,7 +325,7 @@ const WorkspaceAdd = React.memo(() => {
       <span
         className={cn(
           "truncate bg-primary-gradient bg-clip-text text-xs font-semibold text-transparent",
-          { "text-white": hover },
+          { "text-white": hover }
         )}
       >
         Add a Workspace
@@ -359,7 +360,7 @@ const SideNavMenu = React.memo(({ isExpanded }: SideNavMenuProps) => {
                   {
                     "aspect-square h-11 w-auto justify-center bg-logan-primary-200":
                       !isExpanded,
-                  },
+                  }
                 )}
               >
                 <Icon iconName={icon} fill={fill} />
@@ -370,7 +371,7 @@ const SideNavMenu = React.memo(({ isExpanded }: SideNavMenuProps) => {
                       {
                         "bg-primary-gradient bg-clip-text text-transparent":
                           path.startsWith(href ?? ""),
-                      },
+                      }
                     )}
                   >
                     {label}
@@ -419,9 +420,8 @@ const UserInfo = React.memo(({ isExpanded }: { isExpanded?: boolean }) => {
 
   return (
     <div
-      className={cn("ml-6 flex items-center gap-2 rounded-xl", {
-        "mr-6 justify-between border border-logan-primary-300 p-2.5":
-          isExpanded,
+      className={cn("mx-6 flex items-center gap-2 rounded-xl", {
+        "justify-between border border-logan-primary-300 p-2.5": isExpanded,
       })}
     >
       <div className="flex shrink items-center justify-center gap-2">
@@ -441,7 +441,7 @@ const UserInfo = React.memo(({ isExpanded }: { isExpanded?: boolean }) => {
           </div>
         )}
       </div>
-      <Bell size={20} color={iconColors.from} />
+      <Notification />
     </div>
   );
 });

@@ -1,9 +1,9 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { all, AxiosRequestConfig } from "axios";
 
 import { HOST_API } from "@/config-global";
 
-const axiosInstance = axios.create({ baseURL: HOST_API });
-// const axiosInstance = axios.create({ baseURL: "http://localhost:7003" });
+// const axiosInstance = axios.create({ baseURL: HOST_API });
+const axiosInstance = axios.create({ baseURL: "http://localhost:7003" });
 
 axiosInstance.defaults.headers.common["Content-Type"] =
   "application/x-www-form-urlencoded";
@@ -12,8 +12,8 @@ axiosInstance.interceptors.response.use(
   (res) => res,
   (error) =>
     Promise.reject(
-      (error.response && error.response.data) || "Something went wrong",
-    ),
+      (error.response && error.response.data) || "Something went wrong"
+    )
 );
 
 export default axiosInstance;
@@ -21,12 +21,18 @@ export default axiosInstance;
 export const endpoints = {
   login: "/auth/login",
   me: "/user",
+  notification: {
+    listen: "/notification/listen",
+    markNotificationRead: "/notification/all/read",
+    allNotifications: "/notification/all",
+  },
   workspace: {
     workspaceDetails: "/workspace",
     workspace: (id: string) => `/workspace/${id}`,
     workspaceList: "/workspace/list",
     workspaceUsers: "/workspace/users",
     inviteUser: "/workspace/users/invite-users",
+    respondWorkspaceInvitation: "/workspace/users/invitation-response",
   },
   document: {
     recent: "/document/recent/list",
