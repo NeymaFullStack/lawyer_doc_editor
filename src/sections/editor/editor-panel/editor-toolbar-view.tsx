@@ -11,6 +11,7 @@ import { ToolBarDropDown } from "./components/editor-toolbar-dropdown";
 import { ToolBarItem } from "./components/editor-toolbar-item";
 import { EditorHyperLink } from "./components/editor-hyper-link";
 import isTextSelected from "./utils/utils";
+import { useDropdown } from "@/components/hook-form/dropdown-provider";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -22,21 +23,25 @@ interface ActiveStates {
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const { showPreview } = useTabContext();
-  const [open, setOpen] = useState<boolean>(false);
+  const { isSearch } = useDropdown();
+  const [isImage, setIsImage] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
   const [selectedColor, setSelectedColor] = useState(iconColors.gray);
   const [selectedHighlight, setSelectedHighlight] = useState(iconColors.white);
 
   const [activeStates, setActiveStates] = useState<ActiveStates>({
+    search: false,
     bold: false,
     italic: false,
     underline: false,
     strike: false,
     color: false,
     highlight: false,
+    hyperlink: false,
     bullets: false,
     ordered: false,
+    image: false,
   });
 
   const onLink = useCallback(() => {
@@ -65,24 +70,27 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     bullets: () => editor?.commands?.toggleBulletList(),
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
-    image: () => setOpen(true),
+    image: () => setIsImage(true),
     hyperlink: () => onLink(),
   });
 
   useEffect(() => {
     if (editor) {
       setActiveStates({
+        search: isSearch,
         bold: editor.isActive("bold"),
         italic: editor.isActive("italic"),
         underline: editor.isActive("underline"),
         strike: editor.isActive("strike"),
         color: editor.isActive("textStyle", { color: selectedColor }),
         highlight: editor.isActive("highlight", { color: selectedHighlight }),
+        hyperlink: editor.isActive("link"),
         bullets: editor.isActive("bulletList"),
         ordered: editor.isActive("orderedList"),
+        image: isImage,
       });
     }
-  }, [editor?.state]);
+  }, [editor?.state, isSearch, isImage]);
 
   const actions = editor ? editorActions(editor) : {};
 
@@ -136,10 +144,10 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                   showPreview
                     ? true
                     : item.label === "previous"
-                    ? !canUndo
-                    : item.label === "next"
-                    ? !canRedo
-                    : false
+                      ? !canUndo
+                      : item.label === "next"
+                        ? !canRedo
+                        : false
                 }
               />
             )}
@@ -166,7 +174,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
         </div>
       </div>
       <EditorHyperLink editor={editor} />
-      <EditorUploadModal open={open} setOpen={setOpen} editor={editor} />
+      <EditorUploadModal open={isImage} setOpen={setIsImage} editor={editor} />
     </div>
   );
 };
