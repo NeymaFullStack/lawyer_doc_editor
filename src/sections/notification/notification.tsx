@@ -1,7 +1,6 @@
 "use client";
 
-import React, { memo, useState, useRef, useCallback } from "react";
-import useClickOutside from "@/hooks/use-click-outside";
+import React, { memo, useState, useCallback } from "react";
 import { formatTimestamp } from "@/lib/date";
 import {
   Avatar,
@@ -81,7 +80,7 @@ const Notification: React.FC = () => {
       onOpenChange={(open) => setIsNotificationOpen(open)}
     >
       <PopoverTrigger>
-        <Bell size={20} color={iconColors.from} />
+        <NotificationBell unreadCount={unreadCount} />
       </PopoverTrigger>
       <PopoverContent
         side="right"
@@ -109,9 +108,6 @@ const NotificationPanel = memo(
     onClose,
     handleRespondWorkspaceInvitation,
   }: NotificationPanelProps) => {
-    const NotificationPanelRef = useRef<HTMLDivElement>(null);
-    useClickOutside(NotificationPanelRef, onClose);
-
     return (
       <>
         <div className="flex items-center justify-between border-b p-2 px-3">
@@ -200,3 +196,14 @@ const NotificationPanel = memo(
   }
 );
 NotificationPanel.displayName = "NotificationPanel";
+
+const NotificationBell = memo(({ unreadCount }: { unreadCount: number }) => {
+  return (
+    <div className="relative">
+      {unreadCount > 0 && (
+        <span className="absolute -top-0.5 rounded-full p-1 bg-red-700"></span>
+      )}
+      <Bell size={20} color={iconColors.from} />
+    </div>
+  );
+});
