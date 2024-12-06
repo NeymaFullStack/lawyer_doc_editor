@@ -97,6 +97,10 @@
   }
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Styles for the ProseMirror Editor */
 .ProseMirror {
   aspect-ratio: 1 / 1.4;

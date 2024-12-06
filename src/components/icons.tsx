@@ -9,15 +9,59 @@ export type IconProps = {
   width?: number;
   height?: number;
   customColor?: string;
-  fill: string | { from: string; to: string };
+  fill?: string | { from: string; to: string };
 } & Pick<HTMLAttributes<HTMLDivElement>, "className" | "onClick" | "style">;
 
 export type SvgIconProps = Omit<SVGAttributes<SVGElement>, "fill"> & {
-  fill: string | { from: string; to: string };
+  fill?: string | { from: string; to: string };
   customColor?: string;
 };
 
 export const icons = {
+  "logan-selct-dropdown-arrow": ({ className, fill }) => {
+    const { from, to } =
+      typeof fill === "string" ? { from: fill, to: fill } : fill || {};
+    return (
+      <svg
+        width="21"
+        height="21"
+        viewBox="0 0 21 21"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+      >
+        <rect
+          x="0.875"
+          y="0.4375"
+          width="20.125"
+          height="20.125"
+          rx="5"
+          fill="#095AD3"
+          fillOpacity="0.1"
+        />
+        <path
+          d="M15.1328 8.61492L11.0798 12.668L7.02671 8.61492"
+          stroke="url(#paint0_linear_3449_67144)"
+          strokeWidth="1.35102"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_3449_67144"
+            x1="15.0885"
+            y1="12.668"
+            x2="6.77548"
+            y2="9.87298"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor={from ?? "#095AD3"} />
+            <stop offset="1" stopColor={to ?? "#166FF4"} />
+          </linearGradient>
+        </defs>
+      </svg>
+    );
+  },
   "gradient-workspace": ({ className, fill }) => {
     const { from, to } =
       typeof fill === "string" ? { from: fill, to: fill } : fill || {};
@@ -51,7 +95,7 @@ export const icons = {
     );
   },
   workspace: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="18"
@@ -202,7 +246,7 @@ export const icons = {
     );
   },
   plus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="13"
@@ -220,7 +264,7 @@ export const icons = {
     );
   },
   minus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="10"
@@ -272,7 +316,7 @@ export const icons = {
     );
   },
   document: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="14"
@@ -293,7 +337,7 @@ export const icons = {
   },
 
   client: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="15"
@@ -567,7 +611,7 @@ export const icons = {
     );
   },
   logout: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="12"
@@ -588,7 +632,7 @@ export const icons = {
     );
   },
   setting: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="18"
@@ -616,7 +660,7 @@ export const icons = {
     );
   },
   help: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="16"
@@ -646,7 +690,7 @@ export const icons = {
     );
   },
   list: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -671,7 +715,7 @@ export const icons = {
     );
   },
   tile: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -725,7 +769,7 @@ export const icons = {
     );
   },
   folder: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -745,7 +789,7 @@ export const icons = {
     );
   },
   arrow: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="15"
@@ -763,7 +807,7 @@ export const icons = {
     );
   },
   save: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -781,7 +825,7 @@ export const icons = {
     );
   },
   export: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -816,7 +860,7 @@ export const icons = {
     );
   },
   brain: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -844,7 +888,7 @@ export const icons = {
     );
   },
   variable: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -877,7 +921,7 @@ export const icons = {
     );
   },
   indexing: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -905,7 +949,7 @@ export const icons = {
     );
   },
   comment: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="40"
@@ -942,7 +986,7 @@ export const icons = {
     );
   },
   version: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -970,31 +1014,31 @@ export const icons = {
     );
   },
   preview: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
+        width="25"
         height="24"
-        viewBox="0 0 24 24"
+        viewBox="0 0 25 24"
         fill="none"
         className={className}
       >
         <path
-          d="M14.0005 2.75C15.9075 2.75 17.2625 2.752 18.2905 2.89C19.2955 3.025 19.8755 3.279 20.2985 3.702C20.7855 4.189 20.9985 4.567 21.1155 5.24C21.2475 5.999 21.2505 7.08 21.2505 9C21.2505 9.19891 21.3295 9.38968 21.4702 9.53033C21.6108 9.67098 21.8016 9.75 22.0005 9.75C22.1994 9.75 22.3902 9.67098 22.5308 9.53033C22.6715 9.38968 22.7505 9.19891 22.7505 9V8.904C22.7505 7.104 22.7505 5.886 22.5925 4.982C22.4175 3.977 22.0435 3.326 21.3595 2.642C20.6105 1.892 19.6615 1.561 18.4895 1.403C17.3495 1.25 15.8945 1.25 14.0565 1.25H14.0005C13.8016 1.25 13.6108 1.32902 13.4702 1.46967C13.3295 1.61032 13.2505 1.80109 13.2505 2C13.2505 2.19891 13.3295 2.38968 13.4702 2.53033C13.6108 2.67098 13.8016 2.75 14.0005 2.75ZM2.00049 14.25C2.1994 14.25 2.39017 14.329 2.53082 14.4697C2.67147 14.6103 2.75049 14.8011 2.75049 15C2.75049 16.92 2.75349 18.001 2.88549 18.76C3.00349 19.433 3.21549 19.811 3.70249 20.298C4.12549 20.721 4.70549 20.975 5.71149 21.11C6.73949 21.248 8.09349 21.25 10.0005 21.25C10.1994 21.25 10.3902 21.329 10.5308 21.4697C10.6715 21.6103 10.7505 21.8011 10.7505 22C10.7505 22.1989 10.6715 22.3897 10.5308 22.5303C10.3902 22.671 10.1994 22.75 10.0005 22.75H9.94449C8.10649 22.75 6.65049 22.75 5.51149 22.597C4.33949 22.439 3.39049 22.107 2.64149 21.359C1.95749 20.674 1.58349 20.023 1.40849 19.018C1.25049 18.114 1.25049 16.895 1.25049 15.096V15C1.25049 14.8011 1.32951 14.6103 1.47016 14.4697C1.61081 14.329 1.80158 14.25 2.00049 14.25ZM22.0005 14.25C22.1994 14.25 22.3902 14.329 22.5308 14.4697C22.6715 14.6103 22.7505 14.8011 22.7505 15V15.096C22.7505 16.896 22.7505 18.114 22.5925 19.018C22.4175 20.023 22.0435 20.674 21.3595 21.358C20.6105 22.108 19.6615 22.439 18.4895 22.597C17.3495 22.75 15.8945 22.75 14.0565 22.75H14.0005C13.8016 22.75 13.6108 22.671 13.4702 22.5303C13.3295 22.3897 13.2505 22.1989 13.2505 22C13.2505 21.8011 13.3295 21.6103 13.4702 21.4697C13.6108 21.329 13.8016 21.25 14.0005 21.25C15.9075 21.25 17.2625 21.248 18.2905 21.11C19.2955 20.975 19.8755 20.721 20.2985 20.298C20.7855 19.811 20.9985 19.433 21.1155 18.76C21.2475 18.001 21.2505 16.92 21.2505 15C21.2505 14.8011 21.3295 14.6103 21.4702 14.4697C21.6108 14.329 21.8016 14.25 22.0005 14.25ZM9.94449 1.25H10.0005C10.1994 1.25 10.3902 1.32902 10.5308 1.46967C10.6715 1.61032 10.7505 1.80109 10.7505 2C10.7505 2.19891 10.6715 2.38968 10.5308 2.53033C10.3902 2.67098 10.1994 2.75 10.0005 2.75C8.09349 2.75 6.73949 2.752 5.71049 2.89C4.70549 3.025 4.12549 3.279 3.70249 3.702C3.21549 4.189 3.00249 4.567 2.88549 5.24C2.75349 5.999 2.75049 7.08 2.75049 9C2.75049 9.19891 2.67147 9.38968 2.53082 9.53033C2.39017 9.67098 2.1994 9.75 2.00049 9.75C1.80158 9.75 1.61081 9.67098 1.47016 9.53033C1.32951 9.38968 1.25049 9.19891 1.25049 9V8.904C1.25049 7.104 1.25049 5.886 1.40849 4.982C1.58349 3.977 1.95749 3.326 2.64149 2.642C3.39049 1.892 4.33949 1.561 5.51149 1.403C6.65149 1.25 8.10649 1.25 9.94449 1.25ZM12.0005 10.75C11.669 10.75 11.351 10.8817 11.1166 11.1161C10.8822 11.3505 10.7505 11.6685 10.7505 12C10.7505 12.3315 10.8822 12.6495 11.1166 12.8839C11.351 13.1183 11.669 13.25 12.0005 13.25C12.332 13.25 12.65 13.1183 12.8844 12.8839C13.1188 12.6495 13.2505 12.3315 13.2505 12C13.2505 11.6685 13.1188 11.3505 12.8844 11.1161C12.65 10.8817 12.332 10.75 12.0005 10.75Z"
+          d="M14.0186 2.75C15.9256 2.75 17.2806 2.752 18.3086 2.89C19.3136 3.025 19.8936 3.279 20.3166 3.702C20.8036 4.189 21.0166 4.567 21.1336 5.24C21.2656 5.999 21.2686 7.08 21.2686 9C21.2686 9.19891 21.3476 9.38968 21.4882 9.53033C21.6289 9.67098 21.8196 9.75 22.0186 9.75C22.2175 9.75 22.4082 9.67098 22.5489 9.53033C22.6895 9.38968 22.7686 9.19891 22.7686 9V8.904C22.7686 7.104 22.7686 5.886 22.6106 4.982C22.4356 3.977 22.0616 3.326 21.3776 2.642C20.6286 1.892 19.6796 1.561 18.5076 1.403C17.3676 1.25 15.9126 1.25 14.0746 1.25H14.0186C13.8196 1.25 13.6289 1.32902 13.4882 1.46967C13.3476 1.61032 13.2686 1.80109 13.2686 2C13.2686 2.19891 13.3476 2.38968 13.4882 2.53033C13.6289 2.67098 13.8196 2.75 14.0186 2.75ZM2.01855 14.25C2.21747 14.25 2.40823 14.329 2.54888 14.4697C2.68954 14.6103 2.76855 14.8011 2.76855 15C2.76855 16.92 2.77155 18.001 2.90355 18.76C3.02155 19.433 3.23355 19.811 3.72055 20.298C4.14355 20.721 4.72356 20.975 5.72956 21.11C6.75756 21.248 8.11156 21.25 10.0186 21.25C10.2175 21.25 10.4082 21.329 10.5489 21.4697C10.6895 21.6103 10.7686 21.8011 10.7686 22C10.7686 22.1989 10.6895 22.3897 10.5489 22.5303C10.4082 22.671 10.2175 22.75 10.0186 22.75H9.96256C8.12456 22.75 6.66856 22.75 5.52956 22.597C4.35756 22.439 3.40856 22.107 2.65955 21.359C1.97555 20.674 1.60155 20.023 1.42655 19.018C1.26855 18.114 1.26855 16.895 1.26855 15.096V15C1.26855 14.8011 1.34757 14.6103 1.48822 14.4697C1.62888 14.329 1.81964 14.25 2.01855 14.25ZM22.0186 14.25C22.2175 14.25 22.4082 14.329 22.5489 14.4697C22.6895 14.6103 22.7686 14.8011 22.7686 15V15.096C22.7686 16.896 22.7686 18.114 22.6106 19.018C22.4356 20.023 22.0616 20.674 21.3776 21.358C20.6286 22.108 19.6796 22.439 18.5076 22.597C17.3676 22.75 15.9126 22.75 14.0746 22.75H14.0186C13.8196 22.75 13.6289 22.671 13.4882 22.5303C13.3476 22.3897 13.2686 22.1989 13.2686 22C13.2686 21.8011 13.3476 21.6103 13.4882 21.4697C13.6289 21.329 13.8196 21.25 14.0186 21.25C15.9256 21.25 17.2806 21.248 18.3086 21.11C19.3136 20.975 19.8936 20.721 20.3166 20.298C20.8036 19.811 21.0166 19.433 21.1336 18.76C21.2656 18.001 21.2686 16.92 21.2686 15C21.2686 14.8011 21.3476 14.6103 21.4882 14.4697C21.6289 14.329 21.8196 14.25 22.0186 14.25ZM9.96256 1.25H10.0186C10.2175 1.25 10.4082 1.32902 10.5489 1.46967C10.6895 1.61032 10.7686 1.80109 10.7686 2C10.7686 2.19891 10.6895 2.38968 10.5489 2.53033C10.4082 2.67098 10.2175 2.75 10.0186 2.75C8.11156 2.75 6.75756 2.752 5.72856 2.89C4.72356 3.025 4.14355 3.279 3.72055 3.702C3.23355 4.189 3.02055 4.567 2.90355 5.24C2.77155 5.999 2.76855 7.08 2.76855 9C2.76855 9.19891 2.68954 9.38968 2.54888 9.53033C2.40823 9.67098 2.21747 9.75 2.01855 9.75C1.81964 9.75 1.62888 9.67098 1.48822 9.53033C1.34757 9.38968 1.26855 9.19891 1.26855 9V8.904C1.26855 7.104 1.26855 5.886 1.42655 4.982C1.60155 3.977 1.97555 3.326 2.65955 2.642C3.40856 1.892 4.35756 1.561 5.52956 1.403C6.66956 1.25 8.12456 1.25 9.96256 1.25ZM12.0186 10.75C11.687 10.75 11.3691 10.8817 11.1347 11.1161C10.9003 11.3505 10.7686 11.6685 10.7686 12C10.7686 12.3315 10.9003 12.6495 11.1347 12.8839C11.3691 13.1183 11.687 13.25 12.0186 13.25C12.3501 13.25 12.668 13.1183 12.9024 12.8839C13.1369 12.6495 13.2686 12.3315 13.2686 12C13.2686 11.6685 13.1369 11.3505 12.9024 11.1161C12.668 10.8817 12.3501 10.75 12.0186 10.75Z"
           fill={color ?? "#095AD3"}
         />
         <path
           fillRule="evenodd"
           clipRule="evenodd"
-          d="M5.89273 14.06C5.29773 13.37 5.00073 13.025 5.00073 12C5.00073 10.975 5.29773 10.63 5.89273 9.94C7.08073 8.562 9.07273 7 12.0007 7C14.9277 7 16.9207 8.562 18.1087 9.94C18.7037 10.63 19.0007 10.975 19.0007 12C19.0007 13.025 18.7037 13.37 18.1087 14.06C16.9207 15.438 14.9287 17 12.0007 17C9.07373 17 7.08073 15.438 5.89273 14.06ZM9.25073 12C9.25073 11.2707 9.54046 10.5712 10.0562 10.0555C10.5719 9.53973 11.2714 9.25 12.0007 9.25C12.7301 9.25 13.4296 9.53973 13.9453 10.0555C14.461 10.5712 14.7507 11.2707 14.7507 12C14.7507 12.7293 14.461 13.4288 13.9453 13.9445C13.4296 14.4603 12.7301 14.75 12.0007 14.75C11.2714 14.75 10.5719 14.4603 10.0562 13.9445C9.54046 13.4288 9.25073 12.7293 9.25073 12Z"
+          d="M5.9108 14.06C5.3158 13.37 5.0188 13.025 5.0188 12C5.0188 10.975 5.3158 10.63 5.9108 9.94C7.0988 8.562 9.0908 7 12.0188 7C14.9458 7 16.9388 8.562 18.1268 9.94C18.7218 10.63 19.0188 10.975 19.0188 12C19.0188 13.025 18.7218 13.37 18.1268 14.06C16.9388 15.438 14.9468 17 12.0188 17C9.0918 17 7.0988 15.438 5.9108 14.06ZM9.2688 12C9.2688 11.2707 9.55853 10.5712 10.0743 10.0555C10.59 9.53973 11.2895 9.25 12.0188 9.25C12.7481 9.25 13.4476 9.53973 13.9633 10.0555C14.4791 10.5712 14.7688 11.2707 14.7688 12C14.7688 12.7293 14.4791 13.4288 13.9633 13.9445C13.4476 14.4603 12.7481 14.75 12.0188 14.75C11.2895 14.75 10.59 14.4603 10.0743 13.9445C9.55853 13.4288 9.2688 12.7293 9.2688 12Z"
           fill={color ?? "#095AD3"}
         />
       </svg>
     );
   },
   search: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         width="28"
@@ -1005,36 +1049,36 @@ export const icons = {
         className={className}
       >
         <path
-          d="M12.4736 7C11.4257 7.00009 10.3929 7.25077 9.46159 7.73114C8.53024 8.21151 7.72728 8.90762 7.11969 9.76142C6.5121 10.6152 6.1175 11.6019 5.96882 12.6392C5.82014 13.6765 5.92169 14.7343 6.265 15.7244C6.6083 16.7145 7.1834 17.6081 7.94232 18.3307C8.70125 19.0533 9.62198 19.584 10.6277 19.8784C11.6334 20.1728 12.695 20.2225 13.7238 20.0232C14.7526 19.824 15.7189 19.3816 16.5419 18.733L19.3655 21.5564C19.5113 21.6972 19.7066 21.7752 19.9093 21.7734C20.1121 21.7716 20.306 21.6903 20.4493 21.547C20.5927 21.4037 20.674 21.2097 20.6758 21.007C20.6775 20.8043 20.5996 20.609 20.4587 20.4632L17.6352 17.6398C18.3991 16.6707 18.8747 15.5062 19.0076 14.2795C19.1405 13.0528 18.9254 11.8135 18.3869 10.7033C17.8483 9.59319 17.0081 8.65708 15.9623 8.00215C14.9166 7.34722 13.7075 6.99992 12.4736 7ZM7.44809 13.5716C7.44809 12.2388 7.97757 10.9606 8.92003 10.0181C9.8625 9.0757 11.1408 8.54625 12.4736 8.54625C13.8064 8.54625 15.0847 9.0757 16.0272 10.0181C16.9696 10.9606 17.4991 12.2388 17.4991 13.5716C17.4991 14.9044 16.9696 16.1826 16.0272 17.125C15.0847 18.0674 13.8064 18.5969 12.4736 18.5969C11.1408 18.5969 9.8625 18.0674 8.92003 17.125C7.97757 16.1826 7.44809 14.9044 7.44809 13.5716Z"
+          d="M12.678 7.11426C11.6128 7.11435 10.5632 7.36914 9.61659 7.85738C8.66998 8.34561 7.85386 9.05314 7.23631 9.92092C6.61877 10.7887 6.21771 11.7916 6.06659 12.8459C5.91548 13.9002 6.01869 14.9753 6.36762 15.9816C6.71655 16.9879 7.30107 17.8962 8.07243 18.6306C8.84379 19.3651 9.7796 19.9044 10.8018 20.2037C11.824 20.5029 12.903 20.5534 13.9486 20.3509C14.9943 20.1484 15.9764 19.6987 16.813 19.0395L19.6828 21.9092C19.831 22.0523 20.0295 22.1315 20.2355 22.1297C20.4416 22.1279 20.6387 22.0453 20.7844 21.8996C20.9301 21.7539 21.0127 21.5568 21.0145 21.3508C21.0163 21.1448 20.9371 20.9463 20.7939 20.7981L17.9241 17.9283C18.7005 16.9434 19.1839 15.7599 19.319 14.5131C19.4541 13.2663 19.2355 12.0066 18.6881 10.8783C18.1407 9.74994 17.2867 8.79849 16.2238 8.13283C15.1609 7.46716 13.9321 7.11417 12.678 7.11426ZM7.5701 13.7935C7.5701 12.4389 8.10825 11.1397 9.06616 10.1818C10.0241 9.22397 11.3233 8.68584 12.678 8.68584C14.0326 8.68584 15.3318 9.22397 16.2897 10.1818C17.2477 11.1397 17.7858 12.4389 17.7858 13.7935C17.7858 15.1481 17.2477 16.4473 16.2897 17.4052C15.3318 18.363 14.0326 18.9012 12.678 18.9012C11.3233 18.9012 10.0241 18.363 9.06616 17.4052C8.10825 16.4473 7.5701 15.1481 7.5701 13.7935Z"
           fill={color ?? "#095AD3"}
         />
       </svg>
     );
   },
   chatai: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
-        width="29"
-        height="28"
-        viewBox="0 0 29 28"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={className}
       >
         <path
-          d="M13.1361 9.12666C13.1369 9.23103 13.1052 9.33306 13.0454 9.41857C12.9855 9.50408 12.9006 9.56881 12.8023 9.60377L10.785 10.3376L10.0518 12.3551C10.0156 12.4525 9.95055 12.5365 9.86529 12.5958C9.78002 12.6551 9.67865 12.6869 9.5748 12.6869C9.47094 12.6869 9.36957 12.6551 9.28431 12.5958C9.19905 12.5365 9.13398 12.4525 9.09783 12.3551L8.36426 10.3353L6.34734 9.60377C6.24998 9.56762 6.16601 9.50253 6.10671 9.41724C6.04741 9.33195 6.01562 9.23055 6.01562 9.12666C6.01562 9.02278 6.04741 8.92138 6.10671 8.83609C6.16601 8.7508 6.24998 8.68571 6.34734 8.64956L8.36649 7.91576L9.09783 5.89823C9.13398 5.80083 9.19905 5.71683 9.28431 5.65752C9.36957 5.5982 9.47094 5.56641 9.5748 5.56641C9.67865 5.56641 9.78002 5.5982 9.86529 5.65752C9.95055 5.71683 10.0156 5.80083 10.0518 5.89823L10.7853 7.91799L12.8023 8.64956C12.9006 8.68452 12.9855 8.74925 13.0454 8.83476C13.1052 8.92027 13.1369 9.02229 13.1361 9.12666Z"
+          d="M7.79625 4.2768C7.79707 4.38288 7.76484 4.48658 7.70402 4.57348C7.6432 4.66039 7.55683 4.72619 7.45691 4.76172L5.40662 5.50754L4.66135 7.55813C4.62462 7.65712 4.55848 7.7425 4.47182 7.80279C4.38516 7.86307 4.28213 7.89539 4.17657 7.89539C4.07101 7.89539 3.96798 7.86307 3.88133 7.80279C3.79467 7.7425 3.72853 7.65712 3.69179 7.55813L2.9462 5.50528L0.896237 4.76172C0.797277 4.72498 0.711928 4.65882 0.651658 4.57213C0.591387 4.48545 0.559082 4.38239 0.559082 4.2768C0.559082 4.17121 0.591387 4.06815 0.651658 3.98146C0.711928 3.89477 0.797277 3.82861 0.896237 3.79187L2.94847 3.04605L3.69179 0.995461C3.72853 0.89647 3.79467 0.811096 3.88133 0.750807C3.96798 0.690518 4.07101 0.658203 4.17657 0.658203C4.28213 0.658203 4.38516 0.690518 4.47182 0.750807C4.55848 0.811096 4.62462 0.89647 4.66135 0.995461L5.40694 3.04832L7.45691 3.79187C7.55683 3.82741 7.6432 3.8932 7.70402 3.98011C7.76484 4.06702 7.79707 4.17072 7.79625 4.2768Z"
           fill={color ?? "#095AD3"}
         />
         <path
-          d="M18.5315 8.42665L17.2003 9.7578L20.7759 13.3332L22.1072 12.0021C22.7948 11.3145 22.7948 10.2006 22.1072 9.51302L21.0235 8.42665C20.3359 7.73907 19.2219 7.73907 18.5343 8.42665H18.5315ZM16.5787 10.3794L10.1672 16.7931C9.88113 17.0791 9.67209 17.4339 9.55657 17.8217L8.58288 21.1303C8.51412 21.3641 8.57738 21.6144 8.74791 21.7849C8.91844 21.9554 9.16874 22.0187 9.39979 21.9527L12.7087 20.9791C13.0965 20.8636 13.4513 20.6545 13.7374 20.3685L20.1543 13.9548L16.5787 10.3794Z"
+          d="M13.2801 3.56531L11.927 4.91827L15.5613 8.55226L16.9143 7.1993C17.6132 6.50045 17.6132 5.36833 16.9143 4.66948L15.8129 3.56531C15.114 2.86647 13.9817 2.86647 13.2828 3.56531H13.2801ZM11.2952 5.55003L4.77866 12.0688C4.48792 12.3596 4.27546 12.7202 4.15804 13.1143L3.1684 16.4771C3.09851 16.7148 3.16281 16.9691 3.33614 17.1424C3.50946 17.3158 3.76386 17.38 3.99869 17.313L7.36179 16.3234C7.75597 16.206 8.1166 15.9935 8.40734 15.7028L14.9295 9.18401L11.2952 5.55003Z"
           fill={color ?? "#095AD3"}
         />
       </svg>
     );
   },
   commentplus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1046,20 +1090,20 @@ export const icons = {
       >
         <path
           fillRule="evenodd"
-          d="M7.22048 8.84939C6.67663 9.39325 6.37109 10.1309 6.37109 10.9V17.1C6.37109 17.8691 6.67663 18.6068 7.22048 19.1506C7.76434 19.6945 8.50197 20 9.27109 20H9.57109V22.328C9.57109 23.0576 10.3943 23.484 10.9899 23.0632L15.3299 20H19.4711C20.2402 20 20.9778 19.6945 21.5217 19.1506C22.0656 18.6068 22.3711 17.8691 22.3711 17.1V10.9C22.3711 10.1309 22.0656 9.39325 21.5217 8.84939C20.9778 8.30553 20.2402 8 19.4711 8H9.27109C8.50197 8 7.76434 8.30553 7.22048 8.84939ZM15.0568 14.5635H17.4854C17.6142 14.5635 17.7377 14.5087 17.8288 14.4111C17.9199 14.3135 17.9711 14.1811 17.9711 14.0431C17.9711 13.9051 17.9199 13.7727 17.8288 13.6751C17.7377 13.5775 17.6142 13.5227 17.4854 13.5227H15.0568V10.9206C15.0568 10.7826 15.0056 10.6503 14.9145 10.5527C14.8235 10.4551 14.6999 10.4002 14.5711 10.4002C14.4423 10.4002 14.3187 10.4551 14.2276 10.5527C14.1366 10.6503 14.0854 10.7826 14.0854 10.9206V13.5227H11.6568C11.528 13.5227 11.4044 13.5775 11.3134 13.6751C11.2223 13.7727 11.1711 13.9051 11.1711 14.0431C11.1711 14.1811 11.2223 14.3135 11.3134 14.4111C11.4044 14.5087 11.528 14.5635 11.6568 14.5635H14.0854V17.1655C14.0854 17.3036 14.1366 17.4359 14.2276 17.5335C14.3187 17.6311 14.4423 17.686 14.5711 17.686C14.6999 17.686 14.8235 17.6311 14.9145 17.5335C15.0056 17.4359 15.0568 17.3036 15.0568 17.1655V14.5635Z"
+          d="M7.23977 8.99417C6.68701 9.54693 6.37646 10.2966 6.37646 11.0784V17.38C6.37646 18.1617 6.68701 18.9114 7.23977 19.4642C7.79254 20.0169 8.54225 20.3275 9.32398 20.3275H9.6289V22.6936C9.6289 23.4352 10.4656 23.8686 11.0709 23.4409L15.4821 20.3275H19.6911C20.4728 20.3275 21.2226 20.0169 21.7753 19.4642C22.3281 18.9114 22.6386 18.1617 22.6386 17.38V11.0784C22.6386 10.2966 22.3281 9.54693 21.7753 8.99417C21.2226 8.4414 20.4728 8.13086 19.6911 8.13086H9.32398C8.54225 8.13086 7.79254 8.4414 7.23977 8.99417ZM15.2045 14.8019H17.6729C17.8038 14.8019 17.9294 14.7462 18.0219 14.647C18.1145 14.5478 18.1665 14.4133 18.1665 14.273C18.1665 14.1327 18.1145 13.9982 18.0219 13.899C17.9294 13.7998 17.8038 13.744 17.6729 13.744H15.2045V11.0994C15.2045 10.9591 15.1525 10.8245 15.0599 10.7253C14.9673 10.6262 14.8418 10.5704 14.7108 10.5704C14.5799 10.5704 14.4543 10.6262 14.3617 10.7253C14.2692 10.8245 14.2172 10.9591 14.2172 11.0994V13.744H11.7488C11.6179 13.744 11.4923 13.7998 11.3997 13.899C11.3071 13.9982 11.2551 14.1327 11.2551 14.273C11.2551 14.4133 11.3071 14.5478 11.3997 14.647C11.4923 14.7462 11.6179 14.8019 11.7488 14.8019H14.2172V17.4466C14.2172 17.5869 14.2692 17.7214 14.3617 17.8206C14.4543 17.9198 14.5799 17.9755 14.7108 17.9755C14.8418 17.9755 14.9673 17.9198 15.0599 17.8206C15.1525 17.7214 15.2045 17.5869 15.2045 17.4466V14.8019Z"
           fill={color ?? "#095AD3"}
         />
       </svg>
     );
   },
   previous: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="14"
         height="15"
-        viewBox="0 0 14 16"
+        viewBox="0 0 14 15"
         fill="none"
         className={className}
       >
@@ -1081,13 +1125,13 @@ export const icons = {
     );
   },
   next: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="14"
         height="15"
-        viewBox="0 0 14 16"
+        viewBox="0 0 14 15"
         fill="none"
         className={className}
       >
@@ -1109,13 +1153,13 @@ export const icons = {
     );
   },
   bold: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="28"
         height="28"
-        viewBox="0 0 26 28"
+        viewBox="0 0 28 28"
         fill="none"
         className={className}
       >
@@ -1127,7 +1171,7 @@ export const icons = {
     );
   },
   italic: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1145,13 +1189,13 @@ export const icons = {
     );
   },
   underline: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="28"
         height="28"
-        viewBox="0 0 27 28"
+        viewBox="0 0 28 28"
         fill="none"
         className={className}
       >
@@ -1166,7 +1210,7 @@ export const icons = {
     );
   },
   color: ({ className, fill, customColor }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1188,7 +1232,7 @@ export const icons = {
     );
   },
   highlight: ({ className, fill, customColor }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1204,13 +1248,14 @@ export const icons = {
         />
         <path
           d="M18.5818 15.5762H6.04476C5.46775 15.5762 5 16.0439 5 16.6209V18.7104C5 19.2874 5.46775 19.7552 6.04476 19.7552H18.5818C19.1589 19.7552 19.6266 19.2874 19.6266 18.7104V16.6209C19.6266 16.0439 19.1589 15.5762 18.5818 15.5762Z"
+          
           fill={customColor ?? "#383D44"}
         />
       </svg>
     );
   },
   bullets: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1260,7 +1305,7 @@ export const icons = {
     );
   },
   ordered: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1304,7 +1349,7 @@ export const icons = {
     );
   },
   hyperlink: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1332,7 +1377,7 @@ export const icons = {
     );
   },
   footnotes: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1351,7 +1396,7 @@ export const icons = {
   },
 
   image: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1386,7 +1431,7 @@ export const icons = {
     );
   },
   uploadplus: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1404,7 +1449,7 @@ export const icons = {
     );
   },
   dialogclose: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1424,7 +1469,7 @@ export const icons = {
     );
   },
   edit: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1444,7 +1489,7 @@ export const icons = {
     );
   },
   trash: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1462,9 +1507,9 @@ export const icons = {
     );
   },
   dropdownicon: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
-      <svg
+     <svg
         xmlns="http://www.w3.org/2000/svg"
         width="18"
         height="19"
@@ -1483,7 +1528,7 @@ export const icons = {
     );
   },
   extenallink: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1504,7 +1549,7 @@ export const icons = {
     );
   },
   whilehovering: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1539,7 +1584,7 @@ export const icons = {
     );
   },
   arrowdown: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1557,7 +1602,7 @@ export const icons = {
     );
   },
   addmore: ({ className, fill }) => {
-    const color = typeof fill === "string" ? fill : fill.from;
+    const color = typeof fill === "string" ? fill : fill?.from;
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1609,13 +1654,13 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
       onClick,
       ...props
     },
-    ref
+    ref,
   ) => (
     <span
       className={cn(
         `flex flex-row items-center justify-center`,
         onClick && "cursor-pointer",
-        className
+        className,
       )}
       onClick={onClick}
       {...props}
@@ -1624,7 +1669,7 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
       {!!icons[iconName] &&
         icons[iconName]({ className: iconClassName, fill, customColor })}
     </span>
-  )
+  ),
 );
 
 Icon.displayName = "Icon";

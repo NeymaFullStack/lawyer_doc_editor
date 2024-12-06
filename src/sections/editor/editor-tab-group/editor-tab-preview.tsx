@@ -90,12 +90,12 @@ export const EditorTabPreview = () => {
                   }
                 />
               </SelectTrigger>
-              <SelectContent className="-mt-1">
+              <SelectContent className="-mt-1 !min-w-20">
                 {AGREEMENT_ITEMS.map((item, index) => (
                   <SelectItem
                     key={index}
                     value={item.label}
-                    className="pl-2 !text-logan-black-foreground hover:!text-logan-primary-600 hover:bg-white focus:bg-white"
+                    className="pl-2 !text-logan-black-foreground hover:!text-logan-primary-600 hover:!bg-white focus:bg-white !cursor-pointer"
                   >
                     {item.label}
                   </SelectItem>

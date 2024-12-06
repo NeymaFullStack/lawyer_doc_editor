@@ -172,6 +172,7 @@ const config: Config = {
         sm: "15px",
       },
       width: {
+        "88": "22rem",
         "105": "420px",
       },
     },
