@@ -63,6 +63,7 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
 };
 
 const STORAGE_KEY = "accessToken";
+const WORKPLACE_STORAGE_KEY = "workplace";
 
 type Props = {
   children: React.ReactNode;
@@ -177,7 +178,7 @@ export function AuthProvider({ children }: Props) {
       setWorkspace,
       workspace: state.workspace,
     }),
-    [login, logout, state.user, status, setUser, setWorkspace, state.workspace]
+    [login, logout, state.user, status, setUser, setWorkspace, state.workspace],
   );
 
   return (

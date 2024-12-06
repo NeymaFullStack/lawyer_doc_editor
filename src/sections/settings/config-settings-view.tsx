@@ -1,5 +1,7 @@
 import React, { ReactNode } from "react";
 import Image from "next/image";
+import { UserRole } from "./types";
+import { SelectDropDownItemType } from "@/types";
 
 type Option = {
   label: ReactNode;
@@ -73,4 +75,9 @@ export const countryOptions: Option[] = [
 export const countryLanguage: Option[] = [
   { label: "French", value: "french" },
   { label: "English (UK)", value: "english(uk)" },
+];
+
+export const userRoleOptions: SelectDropDownItemType[] = [
+  { label: "Administrator", value: UserRole.ADMIN },
+  { label: "Team Member", value: UserRole.TEAM_MEMBER },
 ];
