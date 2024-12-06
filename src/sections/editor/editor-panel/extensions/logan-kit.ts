@@ -18,6 +18,9 @@ import { LoganTextStyle } from "./logan-text-style";
 import { LoganLink } from "./logan-link";
 import { LoganSearch } from "./logan-search";
 import { PageNode } from "./logan-pagination/logan-page";
+import { LoganZoom } from "./logan-zoom";
+import { LoganHotKey } from "./logan-hotkey";
+import { LoganHyperLink } from "./logan-hyperlink";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -36,7 +39,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
         searchResultClass: "font-semibold bg-logan-primary-50 text-logan-blue",
         disableRegex: false,
       }),
-      LoganLink,
+      LoganHyperLink,
       LoganHistory,
       LoganBold,
       LoganItalic,
@@ -48,6 +51,8 @@ export const LoganKit = Extension.create<LoganKitOptions>({
       LoganOrderedList,
       LoganListItem,
       LoganImage,
+      LoganZoom,
+      LoganHotKey,
     ];
     return extensions;
   },

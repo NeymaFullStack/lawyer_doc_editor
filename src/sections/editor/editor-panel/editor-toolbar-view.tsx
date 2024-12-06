@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { EditorUploadModal } from "./editor-upload-modal";
+import React, { useState, useEffect, useCallback } from "react";
+import { EditorUploadModal } from "./components/editor-upload-modal";
 import { ToolBar_ITEMS } from "./config-toobar";
-import { EditorColorPicker } from "./editor-color-picker";
-import { Icon, icons } from "@/components/icons";
-import { useHover } from "@/hooks/use-hover";
+import { EditorColorPicker } from "./components/editor-color-picker";
 import { iconColors } from "../../../../tailwind.config";
-import { cn } from "@/lib/utils";
 import { Editor } from "@tiptap/core";
-import { EditorSearchAndReplace } from "./editor-search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useDropdown } from "@/components/hook-form/dropdown-provider";
+import { EditorSearchAndReplace } from "./components/editor-search";
+import { Label } from "@/components/ui/label";
+import { useTabContext } from "../editor-tab-group/use-tab-context";
+import { ToolBarDropDown } from "./components/editor-toolbar-dropdown";
+import { ToolBarItem } from "./components/editor-toolbar-item";
+import { EditorHyperLink } from "./components/editor-hyper-link";
+import isTextSelected from "./utils/utils";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -24,6 +21,7 @@ interface ActiveStates {
 }
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
+  const { showPreview } = useTabContext();
   const [open, setOpen] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
@@ -40,6 +38,12 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     bullets: false,
     ordered: false,
   });
+
+  const onLink = useCallback(() => {
+    if (!editor || !isTextSelected(editor)) return;
+
+    editor.chain().focus().toggleLink({ href: "" }).run();
+  }, [editor]);
 
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
@@ -62,6 +66,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
     image: () => setOpen(true),
+    hyperlink: () => onLink(),
   });
 
   useEffect(() => {
@@ -81,6 +86,13 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
 
   const actions = editor ? editorActions(editor) : {};
 
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+
+  const handleZoom = (level: number) => {
+    editor?.commands.setZoom(level);
+    setZoomLevel(level);
+  };
+
   return (
     <div className="h-11 px-5 py-2">
       <div className="flex items-center gap-[10px]">
@@ -98,7 +110,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                       item.label === "color" ? selectedColor : selectedHighlight
                     }
                     isBlack={index > 4 && true}
-                    disabled={false}
+                    disabled={showPreview}
                   />
                 }
                 content={
@@ -110,6 +122,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                     />
                   )
                 }
+                dropdownId={item.label}
               />
             ) : (
               <ToolBarItem
@@ -120,7 +133,9 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                 onClick={actions[item.label as keyof typeof actions]}
                 isBlack={index > 4 && true}
                 disabled={
-                  item.label === "previous"
+                  showPreview
+                    ? true
+                    : item.label === "previous"
                     ? !canUndo
                     : item.label === "next"
                     ? !canRedo
@@ -131,7 +146,26 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
             {item.divider && <Divider key={`divider-${index}`} />}
           </React.Fragment>
         ))}
+        <div className="flex flex-1 items-center justify-end">
+          <ToolBarItem
+            iconName="minus"
+            isBlack={true}
+            onClick={() => handleZoom(zoomLevel - 0.1)}
+            disabled={false}
+          />
+          <Label className="bg-white text-smaller p-2 rounded-md">
+            {Math.floor(zoomLevel * 100)}%
+          </Label>
+
+          <ToolBarItem
+            iconName="plus"
+            isBlack={true}
+            onClick={() => handleZoom(zoomLevel + 0.1)}
+            disabled={false}
+          />
+        </div>
       </div>
+      <EditorHyperLink editor={editor} />
       <EditorUploadModal open={open} setOpen={setOpen} editor={editor} />
     </div>
   );
@@ -140,86 +174,3 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
 export const Divider = () => (
   <span className="border-r border-logan-primary-400 h-6"></span>
 );
-
-type ToolBarItemProps = {
-  iconName: keyof typeof icons;
-  dropdownIcon?: boolean;
-  isSelected: boolean;
-  isBlack?: boolean;
-  customColor?: string;
-  onClick?: () => void;
-  disabled: boolean;
-};
-
-const ToolBarItem = React.forwardRef<HTMLSpanElement, ToolBarItemProps>(
-  (
-    {
-      iconName,
-      dropdownIcon,
-      isSelected,
-      isBlack,
-      onClick,
-      disabled,
-      customColor,
-    },
-    ref
-  ) => {
-    const { hover, handleMouseOut, handleMouseOver } = useHover();
-
-    const iconFill = isBlack
-      ? hover || isSelected
-        ? iconColors.white
-        : iconColors.gray
-      : hover || isSelected
-      ? iconColors.white
-      : iconColors.from;
-
-    const spanClasses = cn(
-      `h-7 bg-logan-primary-200 rounded-md cursor-pointer transition-colors flex items-center justify-center gap-2`,
-      isBlack ? "hover:bg-logan-black" : "hover:bg-primary-gradient",
-      isSelected && (isBlack ? "bg-logan-black" : "bg-primary-gradient"),
-      disabled && "cursor-not-allowed opacity-50",
-      dropdownIcon ? "w-11" : "w-7"
-    );
-
-    return (
-      <span
-        ref={ref}
-        className={spanClasses}
-        onMouseOver={!disabled ? handleMouseOver : undefined}
-        onMouseOut={handleMouseOut}
-        onClick={!disabled ? onClick : undefined}
-      >
-        <Icon iconName={iconName} fill={iconFill} customColor={customColor} />
-        {dropdownIcon && <Icon iconName="dropdownicon" fill={iconFill} />}
-      </span>
-    );
-  }
-);
-
-ToolBarItem.displayName = "ToolBarItem";
-
-type ToolBarDropDownProps = {
-  button: React.ReactNode;
-  content: React.ReactNode;
-};
-
-const ToolBarDropDown = ({ button, content }: ToolBarDropDownProps) => {
-  const { setOpen } = useDropdown();
-
-  return (
-    <DropdownMenu onOpenChange={(open) => setOpen(open)}>
-      <DropdownMenuTrigger asChild>
-        <span className="p-0 h-7 bg-transparent">{button}</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="p-2 mt-1 grid gap-2 text-logan-black-foreground font-semibold rounded-xl dropDownContent"
-        align="start"
-      >
-        {content}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
-ToolBarDropDown.displayName = "ToolBarDropDown";

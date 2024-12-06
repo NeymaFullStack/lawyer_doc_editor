@@ -9,11 +9,13 @@ import { useDocumentContext } from "@/layouts/document";
 import { LoganKit } from "./extensions/logan-kit";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
 import { PaginationExtension } from "./extensions/logan-pagination/logan-page-extention";
+import { PageCover } from "../template/page-cover";
+import { PageTableContents } from "../template/page-table-contents";
 
 export const EditorPanelView = () => {
   const { document: documents } = useDocumentContext();
   const [isClient, setIsClient] = useState(false);
-  const {showPreview} = useTabContext();
+  const { showPreview } = useTabContext();
 
   useEffect(() => {
     setIsClient(true);
@@ -24,16 +26,16 @@ export const EditorPanelView = () => {
     content: "",
     editorProps: {
       attributes: {
-        class: "tiptap-editor !bg-white p-[25.4mm]",
+        class:
+          "tiptap-editor !bg-white p-20 border border-logan-primary-200 hover:border-logan-blue transition-all hover:shadow-badge-md",
       },
     },
-    editable: true,
     immediatelyRender: false,
   });
 
   const previewEditor = useEditor({
     extensions: [LoganKit, PaginationExtension],
-    content: '',
+    content: "",
     editorProps: {
       attributes: {
         class: "tiptap-editor",
@@ -53,7 +55,7 @@ export const EditorPanelView = () => {
         );
         const docContent = res.data.content_details.content;
         if (editor) {
-          editor.commands.setContent(docContent);          
+          editor.commands.setContent(docContent);
         }
       } catch (error) {
         console.error("Failed to fetch current version:", error);
@@ -67,13 +69,16 @@ export const EditorPanelView = () => {
       fetchCurrentVersion(documents?.id, documents?.current_version.version_id);
   }, [documents?.id, documents?.current_version, fetchCurrentVersion]);
 
-  useEffect(()=>{
-    editor?.setEditable(!showPreview)
-    previewEditor?.commands.setContent(editor?.getHTML() || "")
+  useEffect(() => {
+    previewEditor?.commands.setContent(editor?.getHTML() || "");
+    console.log("html: ", editor?.getHTML());
     setTimeout(() => {
-      previewEditor?.commands.insertContentAt(previewEditor?.state.doc.content.size, " ");
+      previewEditor?.commands.insertContentAt(
+        previewEditor?.state.doc.content.size,
+        " "
+      );
     }, 1000);
-  }, [showPreview])
+  }, [showPreview]);
 
   if (!isClient) {
     return null;
@@ -86,7 +91,13 @@ export const EditorPanelView = () => {
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="flex justify-center p-10">
           <div className="max-w-[794px] w-full h-380 bg-white">
-              <EditorContentView editor={showPreview ? previewEditor : editor} />
+            {showPreview && (
+              <>
+                <PageCover />
+                <PageTableContents />
+              </>
+            )}
+            <EditorContentView editor={showPreview ? previewEditor : editor} />
           </div>
         </div>
       </ScrollArea>

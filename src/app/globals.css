@@ -112,7 +112,6 @@
 .ProseMirror-focused {
   outline: none !important;
   border-radius: 0px !important;
-  border: #095ad3;
   box-shadow: 2px 4px 6px rgba(9, 90, 211, 0.1);
 }
 
@@ -122,6 +121,12 @@
 
 .ProseMirror ol {
   list-style-type: decimal;
+}
+
+.ProseMirror a {
+  color: #095ad3;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .dropDownContent:has(.simpleSearchSquare),
