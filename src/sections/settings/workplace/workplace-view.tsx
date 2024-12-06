@@ -1,9 +1,7 @@
-import { LoadingSpinner } from "@/components/loading-spinner";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { ReactNode, useState } from "react";
-import General from "./general";
+import React, { useState } from "react";
+import { General } from "./general";
 import UserManagement from "./user-management";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +24,7 @@ const tabs: { label: string; value: string }[] = [
   },
 ];
 
-const tabsContentList: { key: string; value: ReactNode }[] = [
+const tabsContentList = [
   {
     key: "general",
     value: <General />,
@@ -44,12 +42,15 @@ const tabsContentList: { key: string; value: ReactNode }[] = [
     value: <div>Billing</div>,
   },
 ];
-
 function WorkplaceView() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>("general");
 
   return (
-    <Tabs defaultValue="account" className="!h-full">
+    <Tabs
+      defaultValue={"general"}
+      className="!h-full"
+      onValueChange={(value) => setActiveTab(value)}
+    >
       <div className="flex items-center justify-between">
         <TabsList className="space-x-3 bg-white">
           {tabs.map((tab, key) => (
@@ -62,14 +63,6 @@ function WorkplaceView() {
             </TabsTrigger>
           ))}
         </TabsList>
-        <Button
-          onClick={() => {}}
-          variant={"primary-blue"}
-          className="flex items-center transition-all duration-300 ease-in-out"
-        >
-          Save Changes
-          {isLoading && <LoadingSpinner className="ml-1" />}
-        </Button>
       </div>
       <Separator className="my-4 bg-logan-primary-200" />
       {tabsContentList.map((tabContent) => {
@@ -86,5 +79,4 @@ function WorkplaceView() {
     </Tabs>
   );
 }
-
 export default WorkplaceView;

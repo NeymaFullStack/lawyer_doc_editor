@@ -19,12 +19,12 @@ export const ShimmerTable: React.FC<ShimmerTableProps> = ({
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div
             key={rowIndex}
-            className={`grid grid-cols-${cols} gap-4 w-full px-4 py-2 animate-pulse`}
+            className={`grid grid-cols-${cols} w-full animate-pulse gap-4 px-4 py-2`}
           >
             {Array.from({ length: cols }).map((_, colIndex) => (
               <div
                 key={colIndex}
-                className="h-4 bg-logan-primary-300 rounded w-full"
+                className="h-4 w-full rounded bg-logan-primary-300"
               ></div>
             ))}
           </div>
