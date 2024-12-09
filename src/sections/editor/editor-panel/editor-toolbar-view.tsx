@@ -172,7 +172,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
           />
         </div>
       </div>
-      <EidtorComment editor={editor} />
+      {/* <EidtorComment editor={editor} /> */}
       <EditorHyperLink editor={editor} />
       <EditorUploadModal open={isImage} setOpen={setIsImage} editor={editor} />
     </div>
