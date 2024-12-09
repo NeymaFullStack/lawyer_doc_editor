@@ -17,13 +17,13 @@ export const ToolBarDropDown = ({
   content,
   dropdownId,
 }: ToolBarDropDownProps) => {
-  const { open, setOpen } = useDropdown();
+  const { isSearch, setIsSearch } = useDropdown();
 
   useEffect(() => {
     const handleHotkey = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "f") {
         event.preventDefault();
-        setOpen(!open);
+        setIsSearch(!isSearch);
       }
     };
 
@@ -31,13 +31,13 @@ export const ToolBarDropDown = ({
     return () => {
       window.removeEventListener("keydown", handleHotkey);
     };
-  }, [open, setOpen]);
+  }, [isSearch, setIsSearch]);
 
   return (
     <DropdownMenu
-      open={dropdownId === "search" ? open : undefined}
+      open={dropdownId === "search" ? isSearch : undefined}
       onOpenChange={(open) => {
-        dropdownId === "search" && setOpen(open);
+        dropdownId === "search" && setIsSearch(open);
       }}
     >
       <DropdownMenuTrigger asChild>

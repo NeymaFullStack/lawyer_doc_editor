@@ -11,6 +11,8 @@ import { ToolBarDropDown } from "./components/editor-toolbar-dropdown";
 import { ToolBarItem } from "./components/editor-toolbar-item";
 import { EditorHyperLink } from "./components/editor-hyper-link";
 import isTextSelected from "./utils/utils";
+import { useDropdown } from "@/components/hook-form/dropdown-provider";
+import { EidtorComment } from "./components/editor-comment";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -22,21 +24,26 @@ interface ActiveStates {
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const { showPreview } = useTabContext();
-  const [open, setOpen] = useState<boolean>(false);
+  const { isSearch, isComment, setIsComment } = useDropdown();
+  const [isImage, setIsImage] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
   const [selectedColor, setSelectedColor] = useState(iconColors.gray);
   const [selectedHighlight, setSelectedHighlight] = useState(iconColors.white);
 
   const [activeStates, setActiveStates] = useState<ActiveStates>({
+    search: false,
+    commentplus: false,
     bold: false,
     italic: false,
     underline: false,
     strike: false,
     color: false,
     highlight: false,
+    hyperlink: false,
     bullets: false,
     ordered: false,
+    image: false,
   });
 
   const onLink = useCallback(() => {
@@ -48,7 +55,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
-    commentplus: () => console.log("Comment Plus clicked"),
+    commentplus: () => setIsComment(true),
     previous: () => editor?.commands?.undo(),
     next: () => editor?.commands?.redo(),
     bold: () => editor?.commands?.toggleBold(),
@@ -65,33 +72,30 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     bullets: () => editor?.commands?.toggleBulletList(),
     ordered: () => editor?.commands?.toggleOrderedList(),
     footnotes: () => console.log("Footnotes clicked"),
-    image: () => setOpen(true),
+    image: () => setIsImage(true),
     hyperlink: () => onLink(),
   });
 
   useEffect(() => {
     if (editor) {
       setActiveStates({
+        search: isSearch,
+        commentplus: isComment,
         bold: editor.isActive("bold"),
         italic: editor.isActive("italic"),
         underline: editor.isActive("underline"),
         strike: editor.isActive("strike"),
         color: editor.isActive("textStyle", { color: selectedColor }),
         highlight: editor.isActive("highlight", { color: selectedHighlight }),
+        hyperlink: editor.isActive("link"),
         bullets: editor.isActive("bulletList"),
         ordered: editor.isActive("orderedList"),
+        image: isImage,
       });
     }
-  }, [editor?.state]);
+  }, [editor?.state, isSearch, isComment, isImage]);
 
   const actions = editor ? editorActions(editor) : {};
-
-  const [zoomLevel, setZoomLevel] = useState<number>(1);
-
-  const handleZoom = (level: number) => {
-    editor?.commands.setZoom(level);
-    setZoomLevel(level);
-  };
 
   return (
     <div className="h-11 px-5 py-2">
@@ -136,37 +140,41 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
                   showPreview
                     ? true
                     : item.label === "previous"
-                    ? !canUndo
-                    : item.label === "next"
-                    ? !canRedo
-                    : false
+                      ? !canUndo
+                      : item.label === "next"
+                        ? !canRedo
+                        : false
                 }
               />
             )}
             {item.divider && <Divider key={`divider-${index}`} />}
           </React.Fragment>
         ))}
-        <div className="flex flex-1 items-center justify-end">
+        <div className="flex flex-1 items-center justify-end gap-1">
           <ToolBarItem
             iconName="minus"
             isBlack={true}
-            onClick={() => handleZoom(zoomLevel - 0.1)}
-            disabled={false}
+            onClick={() => editor?.commands.decreaseZoom()}
+            disabled={showPreview}
           />
-          <Label className="bg-white text-smaller p-2 rounded-md">
-            {Math.floor(zoomLevel * 100)}%
+          <Label
+            id="zoomLevel"
+            className="w-14 h-7 bg-white text-smaller p-2 rounded-md text-center"
+          >
+            100%
           </Label>
 
           <ToolBarItem
             iconName="plus"
             isBlack={true}
-            onClick={() => handleZoom(zoomLevel + 0.1)}
-            disabled={false}
+            onClick={() => editor?.commands.increaseZoom()}
+            disabled={showPreview}
           />
         </div>
       </div>
+      <EidtorComment editor={editor} />
       <EditorHyperLink editor={editor} />
-      <EditorUploadModal open={open} setOpen={setOpen} editor={editor} />
+      <EditorUploadModal open={isImage} setOpen={setIsImage} editor={editor} />
     </div>
   );
 };

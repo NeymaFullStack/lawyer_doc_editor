@@ -33,17 +33,17 @@ export const EditorPanelView = () => {
     immediatelyRender: false,
   });
 
-  const previewEditor = useEditor({
-    extensions: [LoganKit, PaginationExtension],
-    content: "",
-    editorProps: {
-      attributes: {
-        class: "tiptap-editor",
-      },
-    },
-    editable: false,
-    immediatelyRender: false,
-  });
+  // const previewEditor = useEditor({
+  //   extensions: [LoganKit, PaginationExtension],
+  //   content: "",
+  //   editorProps: {
+  //     attributes: {
+  //       class: "tiptap-editor",
+  //     },
+  //   },
+  //   editable: false,
+  //   immediatelyRender: false,
+  // });
 
   const fetchCurrentVersion = useCallback(
     async (documentId: string, versionId: string) => {
@@ -70,14 +70,15 @@ export const EditorPanelView = () => {
   }, [documents?.id, documents?.current_version, fetchCurrentVersion]);
 
   useEffect(() => {
-    previewEditor?.commands.setContent(editor?.getHTML() || "");
-    console.log("html: ", editor?.getHTML());
-    setTimeout(() => {
-      previewEditor?.commands.insertContentAt(
-        previewEditor?.state.doc.content.size,
-        " "
-      );
-    }, 1000);
+    editor?.setEditable(!showPreview);
+    // previewEditor?.commands.setContent(editor?.getHTML() || "");
+    // console.log("html: ", editor?.getHTML());
+    // setTimeout(() => {
+    //   previewEditor?.commands.insertContentAt(
+    //     previewEditor?.state.doc.content.size,
+    //     " "
+    //   );
+    // }, 1000);
   }, [showPreview]);
 
   if (!isClient) {
@@ -90,14 +91,16 @@ export const EditorPanelView = () => {
       <Separator className="bg-logan-primary-300" />
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="flex justify-center p-10">
-          <div className="max-w-[794px] w-full h-380 bg-white">
+          <div className="max-w-[800px] w-full h-380 bg-white">
             {showPreview && (
               <>
                 <PageCover />
                 <PageTableContents />
               </>
             )}
-            <EditorContentView editor={showPreview ? previewEditor : editor} />
+            <ScrollArea className="bg-gray-50 overflow-hidden">
+              <EditorContentView editor={editor} />
+            </ScrollArea>
           </div>
         </div>
       </ScrollArea>

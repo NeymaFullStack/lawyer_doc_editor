@@ -17,7 +17,7 @@ type EditorSearchAndReplaceProps = {
 export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   editor,
 }) => {
-  const { open } = useDropdown();
+  const { isSearch } = useDropdown();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [replaceTerm, setReplaceTerm] = useState<string>("");
   const [ignoreDiacritics, setIgnoreDiacritics] = useState<boolean>(false);
@@ -112,7 +112,7 @@ export const EditorSearchAndReplace: React.FC<EditorSearchAndReplaceProps> = ({
   useEffect(() => {
     setSearchTerm("");
     setReplaceTerm("");
-  }, [open]);
+  }, [isSearch]);
 
   const icons: IconConfig[] = [
     {

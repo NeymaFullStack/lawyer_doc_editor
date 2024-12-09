@@ -3,8 +3,10 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 
 // Define the shape of the context data
 interface DropdownContextType {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isSearch: boolean;
+  setIsSearch: React.Dispatch<React.SetStateAction<boolean>>;
+  isComment: boolean;
+  setIsComment: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Create the context with default value
@@ -27,10 +29,13 @@ type DropdownProviderProps = {
 export const DropdownProvider: React.FC<DropdownProviderProps> = ({
   children,
 }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [isSearch, setIsSearch] = useState<boolean>(false);
+  const [isComment, setIsComment] = useState<boolean>(false);
 
   return (
-    <DropdownContext.Provider value={{ open, setOpen }}>
+    <DropdownContext.Provider
+      value={{ isSearch, setIsSearch, isComment, setIsComment }}
+    >
       {children}
     </DropdownContext.Provider>
   );
