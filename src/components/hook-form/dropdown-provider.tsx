@@ -5,6 +5,8 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 interface DropdownContextType {
   isSearch: boolean;
   setIsSearch: React.Dispatch<React.SetStateAction<boolean>>;
+  isComment: boolean;
+  setIsComment: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Create the context with default value
@@ -28,9 +30,12 @@ export const DropdownProvider: React.FC<DropdownProviderProps> = ({
   children,
 }) => {
   const [isSearch, setIsSearch] = useState<boolean>(false);
+  const [isComment, setIsComment] = useState<boolean>(false);
 
   return (
-    <DropdownContext.Provider value={{ isSearch, setIsSearch }}>
+    <DropdownContext.Provider
+      value={{ isSearch, setIsSearch, isComment, setIsComment }}
+    >
       {children}
     </DropdownContext.Provider>
   );

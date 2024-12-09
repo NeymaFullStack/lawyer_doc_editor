@@ -12,6 +12,7 @@ import { ToolBarItem } from "./components/editor-toolbar-item";
 import { EditorHyperLink } from "./components/editor-hyper-link";
 import isTextSelected from "./utils/utils";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
+import { EidtorComment } from "./components/editor-comment";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -23,7 +24,7 @@ interface ActiveStates {
 
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const { showPreview } = useTabContext();
-  const { isSearch } = useDropdown();
+  const { isSearch, isComment, setIsComment } = useDropdown();
   const [isImage, setIsImage] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
@@ -32,6 +33,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
 
   const [activeStates, setActiveStates] = useState<ActiveStates>({
     search: false,
+    commentplus: false,
     bold: false,
     italic: false,
     underline: false,
@@ -53,7 +55,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
-    commentplus: () => console.log("Comment Plus clicked"),
+    commentplus: () => setIsComment(true),
     previous: () => editor?.commands?.undo(),
     next: () => editor?.commands?.redo(),
     bold: () => editor?.commands?.toggleBold(),
@@ -78,6 +80,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
     if (editor) {
       setActiveStates({
         search: isSearch,
+        commentplus: isComment,
         bold: editor.isActive("bold"),
         italic: editor.isActive("italic"),
         underline: editor.isActive("underline"),
@@ -90,7 +93,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
         image: isImage,
       });
     }
-  }, [editor?.state, isSearch, isImage]);
+  }, [editor?.state, isSearch, isComment, isImage]);
 
   const actions = editor ? editorActions(editor) : {};
 
@@ -173,6 +176,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
           />
         </div>
       </div>
+      <EidtorComment editor={editor} />
       <EditorHyperLink editor={editor} />
       <EditorUploadModal open={isImage} setOpen={setIsImage} editor={editor} />
     </div>
