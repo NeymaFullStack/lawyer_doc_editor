@@ -29,16 +29,16 @@ export const useNotification = () => {
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem(STORAGE_KEY);
-    const workplaceId = sessionStorage.getItem(WORKPACE_KEY);
+    const workspaceId = sessionStorage.getItem(WORKPACE_KEY);
     let eventSource: EventSource;
-    if (workplaceId && accessToken) {
+    if (workspaceId && accessToken) {
       try {
         eventSource = new EventSource(
-          `http://localhost:7003${endpoints.notification.listen}`,
+          `${HOST_API}${endpoints.notification.listen}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
-              workplace_id: workplaceId,
+              workspace_id: workspaceId,
             },
           }
         );

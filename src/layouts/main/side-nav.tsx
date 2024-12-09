@@ -1,6 +1,5 @@
 import React, {
   ChangeEvent,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -33,7 +32,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Icon, icons } from "@/components/icons";
-import { Bell, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { iconColors } from "../../../tailwind.config";
 import { useHover } from "@/hooks/use-hover";
 import { useAuthContext } from "@/auth/hooks";
@@ -46,9 +45,10 @@ import {
 import { cn } from "@/lib/utils";
 import { workspaceItemType } from "./type";
 import axiosInstance, { endpoints } from "@/lib/axios";
-import axios from "axios";
 import { useFetcher } from "@/hooks/use-fetcher";
 import Notification from "@/sections/notification/notification";
+import { RefreshProvider } from "./refresh-provider";
+import { useRefreshContext } from "./refresh-context";
 
 type SideNavMenuProps = {
   isExpanded: boolean;
@@ -57,7 +57,7 @@ type SideNavMenuProps = {
 const workspaces = [{ name: "Lexington Ltd." }, { name: "Paul's workspace" }];
 
 const SideNav = () => {
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const isExpanded = state === "expanded";
 
   const RenderLogo = useCallback(() => {
@@ -75,28 +75,36 @@ const SideNav = () => {
   }, [isExpanded]);
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
+    <Sidebar
+      onClick={() => {
+        !isExpanded && toggleSidebar();
+      }}
+      collapsible="icon"
+      variant="sidebar"
+    >
       <SidebarHeader>
         <RenderLogo />
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup className="mb-5 mt-24 flex flex-col gap-8 p-0">
-          <WorkspaceSwitcher />
-          <NewMenu isExpanded={isExpanded} />
-        </SidebarGroup>
+      <RefreshProvider>
+        <SidebarContent>
+          <SidebarGroup className="mb-5 mt-24 flex flex-col gap-8 p-0">
+            <WorkspaceSwitcher />
+            <NewMenu isExpanded={isExpanded} />
+          </SidebarGroup>
 
-        <SidebarGroup
-          className={cn("p-0", {
-            "border-b border-t border-logan-primary-300": isExpanded,
-          })}
-        >
-          <SideNavMenu isExpanded={isExpanded} />
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="flex flex-col gap-8 p-0 py-8">
-        <FooterMenu isExpanded={isExpanded} />
-        <UserInfo isExpanded={isExpanded} />
-      </SidebarFooter>
+          <SidebarGroup
+            className={cn("p-0", {
+              "border-b border-t border-logan-primary-300": isExpanded,
+            })}
+          >
+            <SideNavMenu isExpanded={isExpanded} />
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter className="flex flex-col gap-8 p-0 py-8">
+          <FooterMenu isExpanded={isExpanded} />
+          <UserInfo isExpanded={isExpanded} />
+        </SidebarFooter>
+      </RefreshProvider>
     </Sidebar>
   );
 };
@@ -181,7 +189,8 @@ const fetchWorkspaceList = async (): Promise<{
 };
 
 const WorkspaceSwitcher = () => {
-  const { data, loading } = useFetcher(fetchWorkspaceList, []);
+  const { workspaceRefresh } = useRefreshContext();
+  const { data } = useFetcher(fetchWorkspaceList, [workspaceRefresh]);
   const workspaces = data?.data || [];
   const { workspace, setWorkspace } = useAuthContext();
   const [query, setQuery] = useState<string>("");

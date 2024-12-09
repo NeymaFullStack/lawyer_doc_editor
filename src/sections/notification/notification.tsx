@@ -24,6 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useRefreshContext } from "@/layouts/main/refresh-context";
 
 type NotificationPanelProps = {
   unreadCount: number;
@@ -43,6 +44,7 @@ const Notification: React.FC = () => {
     fetchAllNotification,
   } = useNotification();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const { triggerWorkspaceRefresh } = useRefreshContext();
 
   const handleRespondWorkspaceInvitation = useCallback(
     async (
@@ -62,6 +64,7 @@ const Notification: React.FC = () => {
           { headers: { "content-type": "application/json" } }
         );
         fetchAllNotification();
+        triggerWorkspaceRefresh();
       } catch (error) {
         console.error(error);
       }

@@ -82,7 +82,7 @@ export const AddWorkspaceUserModal = ({
                 setSelectedRole(value);
               }}
             >
-              <SelectTrigger className="h-11 w-36 shrink-0 rounded-l-none py-0 ring-0 focus:ring-0 [&>span]:font-medium">
+              <SelectTrigger className="h-11 w-[9.5rem] shrink-0 text-left rounded-l-none py-0 ring-0 focus:ring-0 [&>span]:font-medium focus-within:!border-border">
                 <SelectValue
                   className="font-semibold"
                   placeholder={"Your Role"}
@@ -176,7 +176,7 @@ const EmailTagInput = memo(
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type email and press Enter"
-          className="h-8 w-full min-w-full max-w-full flex-1 overflow-hidden border-none p-0 focus-visible:ring-0"
+          className="h-8 w-full min-w-full max-w-full flex-1 overflow-hidden !border-none outline-none"
           aria-label="Email input field"
         />
       </div>

@@ -116,7 +116,7 @@ export const userManagementTableColumns =
             // setSelectedRole(value);
           }}
         >
-          <SelectTrigger className="h-8 max-w-[9rem] !py-0 [&>span]:font-medium">
+          <SelectTrigger className="h-8 max-w-[9.5rem] !py-0 [&>span]:font-medium text-left">
             <SelectValue className="font-semibold" placeholder={"Your Role"} />
           </SelectTrigger>
           <SelectContent>

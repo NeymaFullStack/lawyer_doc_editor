@@ -29,7 +29,7 @@ export const endpoints = {
   workspace: {
     workspaceDetails: "/workspace",
     workspace: (id: string) => `/workspace/${id}`,
-    workspaceList: "/workspace/list",
+    workspaceList: "/workspace/list/active",
     workspaceUsers: "/workspace/users",
     inviteUser: "/workspace/users/invite-users",
     respondWorkspaceInvitation: "/workspace/users/invitation-response",

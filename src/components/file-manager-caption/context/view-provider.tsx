@@ -1,9 +1,5 @@
 "use client";
-import {
-  getStorage,
-  setStorage,
-  useLocalStorage,
-} from "@/hooks/use-local-storage";
+import { getStorage, setStorage } from "@/hooks/use-local-storage";
 import { ViewType } from "../types";
 import { useEffect, useState } from "react";
 import { ViewContext } from "./view-context";
