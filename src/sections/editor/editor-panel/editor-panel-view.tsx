@@ -4,7 +4,7 @@ import { useEditor } from "@tiptap/react";
 import { Separator } from "@/components/ui/separator";
 import { EditorContentView } from "./editor-content-view";
 import { EditorToolbarView } from "./editor-toolbar-view";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDocumentContext } from "@/layouts/document";
 import { LoganKit } from "./extensions/logan-kit";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
@@ -90,14 +90,18 @@ export const EditorPanelView = () => {
       <Separator className="bg-logan-primary-300" />
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="flex justify-center p-10">
-          <div className="max-w-[794px] w-full h-380 bg-white">
+          <div className="max-w-[800px] w-full h-380 bg-white">
             {showPreview && (
               <>
                 <PageCover />
                 <PageTableContents />
               </>
             )}
-            <EditorContentView editor={showPreview ? previewEditor : editor} />
+            <ScrollArea className="bg-gray-50 overflow-hidden">
+              <EditorContentView
+                editor={showPreview ? previewEditor : editor}
+              />
+            </ScrollArea>
           </div>
         </div>
       </ScrollArea>

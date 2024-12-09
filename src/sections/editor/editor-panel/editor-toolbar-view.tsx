@@ -97,13 +97,6 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
 
   const actions = editor ? editorActions(editor) : {};
 
-  const [zoomLevel, setZoomLevel] = useState<number>(1);
-
-  const handleZoom = (level: number) => {
-    editor?.commands.setZoom(level);
-    setZoomLevel(level);
-  };
-
   return (
     <div className="h-11 px-5 py-2">
       <div className="flex items-center gap-[10px]">
@@ -157,22 +150,25 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
             {item.divider && <Divider key={`divider-${index}`} />}
           </React.Fragment>
         ))}
-        <div className="flex flex-1 items-center justify-end">
+        <div className="flex flex-1 items-center justify-end gap-1">
           <ToolBarItem
             iconName="minus"
             isBlack={true}
-            onClick={() => handleZoom(zoomLevel - 0.1)}
-            disabled={false}
+            onClick={() => editor?.commands.decreaseZoom()}
+            disabled={showPreview}
           />
-          <Label className="bg-white text-smaller p-2 rounded-md">
-            {Math.floor(zoomLevel * 100)}%
+          <Label
+            id="zoomLevel"
+            className="w-14 h-7 bg-white text-smaller p-2 rounded-md text-center"
+          >
+            100%
           </Label>
 
           <ToolBarItem
             iconName="plus"
             isBlack={true}
-            onClick={() => handleZoom(zoomLevel + 0.1)}
-            disabled={false}
+            onClick={() => editor?.commands.increaseZoom()}
+            disabled={showPreview}
           />
         </div>
       </div>
