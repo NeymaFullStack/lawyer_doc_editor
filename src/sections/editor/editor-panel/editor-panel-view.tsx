@@ -4,7 +4,7 @@ import { useEditor } from "@tiptap/react";
 import { Separator } from "@/components/ui/separator";
 import { EditorContentView } from "./editor-content-view";
 import { EditorToolbarView } from "./editor-toolbar-view";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDocumentContext } from "@/layouts/document";
 import { LoganKit } from "./extensions/logan-kit";
 import { useTabContext } from "../editor-tab-group/use-tab-context";
@@ -33,17 +33,17 @@ export const EditorPanelView = () => {
     immediatelyRender: false,
   });
 
-  const previewEditor = useEditor({
-    extensions: [LoganKit, PaginationExtension],
-    content: "",
-    editorProps: {
-      attributes: {
-        class: "tiptap-editor",
-      },
-    },
-    editable: false,
-    immediatelyRender: false,
-  });
+  // const previewEditor = useEditor({
+  //   extensions: [LoganKit, PaginationExtension],
+  //   content: "",
+  //   editorProps: {
+  //     attributes: {
+  //       class: "tiptap-editor",
+  //     },
+  //   },
+  //   editable: false,
+  //   immediatelyRender: false,
+  // });
 
   const fetchCurrentVersion = useCallback(
     async (documentId: string, versionId: string) => {
@@ -70,14 +70,15 @@ export const EditorPanelView = () => {
   }, [documents?.id, documents?.current_version, fetchCurrentVersion]);
 
   useEffect(() => {
-    previewEditor?.commands.setContent(editor?.getHTML() || "");
-    console.log("html: ", editor?.getHTML());
-    setTimeout(() => {
-      previewEditor?.commands.insertContentAt(
-        previewEditor?.state.doc.content.size,
-        " "
-      );
-    }, 1000);
+    editor?.setEditable(!showPreview);
+    // previewEditor?.commands.setContent(editor?.getHTML() || "");
+    // console.log("html: ", editor?.getHTML());
+    // setTimeout(() => {
+    //   previewEditor?.commands.insertContentAt(
+    //     previewEditor?.state.doc.content.size,
+    //     " "
+    //   );
+    // }, 1000);
   }, [showPreview]);
 
   if (!isClient) {
@@ -98,9 +99,7 @@ export const EditorPanelView = () => {
               </>
             )}
             <ScrollArea className="bg-gray-50 overflow-hidden">
-              <EditorContentView
-                editor={showPreview ? previewEditor : editor}
-              />
+              <EditorContentView editor={editor} />
             </ScrollArea>
           </div>
         </div>
