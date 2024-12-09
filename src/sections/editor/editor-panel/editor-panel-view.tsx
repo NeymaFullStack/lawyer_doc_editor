@@ -89,7 +89,7 @@ export const EditorPanelView = () => {
     <div className="flex flex-col gap-0">
       <EditorToolbarView editor={editor} />
       <Separator className="bg-logan-primary-300" />
-      <ScrollArea className="h-[calc(100vh-200px)]">
+      <ScrollArea id="scroll" className="h-[calc(100vh-200px)] w-100">
         <div id="zoomContent" className="flex justify-center p-10">
           <div className="max-w-[800px] w-full h-380 bg-white">
             {showPreview && (

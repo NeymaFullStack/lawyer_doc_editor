@@ -17,10 +17,21 @@ export const LoganZoom = Extension.create({
       setZoom:
         (zoomLevel: number) =>
         ({ commands }) => {
-          const editorDom = document.getElementById("zoomContent");
-          if (editorDom) {
-            editorDom.style.transform = `scale(${zoomLevel})`;
-            editorDom.style.transformOrigin = "0 0";
+          const zoomContent = document.getElementById("zoomContent");
+          if (zoomContent) {
+            zoomContent.style.transform = `scale(${zoomLevel})`;
+            if (zoomLevel >= 1) {
+              zoomContent.style.transformOrigin = "top left";
+
+              const scrollContent = zoomContent?.parentElement?.parentElement;
+              if (scrollContent) {
+                scrollContent.scrollLeft =
+                  (scrollContent.scrollWidth - scrollContent.clientWidth) / 2;
+              }
+            } else {
+              zoomContent.style.transformOrigin = "top center";
+            }
+
             return true;
           }
           return false; // Return false if no editor DOM element is found
