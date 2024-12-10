@@ -12,7 +12,7 @@ import { ToolBarItem } from "./components/editor-toolbar-item";
 import { EditorHyperLink } from "./components/editor-hyper-link";
 import isTextSelected from "./utils/utils";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
-import { EidtorComment } from "./components/editor-comment";
+import { EditorComment } from "./components/editor-comment";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -25,6 +25,7 @@ interface ActiveStates {
 export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const { showPreview } = useTabContext();
   const { isSearch, isComment, setIsComment } = useDropdown();
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [isImage, setIsImage] = useState<boolean>(false);
   const canUndo = editor?.can().undo();
   const canRedo = editor?.can().redo();
@@ -55,7 +56,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
-    commentplus: () => setIsComment(true),
+    commentplus: () => {},
     previous: () => editor?.commands?.undo(),
     next: () => editor?.commands?.redo(),
     bold: () => editor?.commands?.toggleBold(),
@@ -96,6 +97,11 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   }, [editor?.state, isSearch, isComment, isImage]);
 
   const actions = editor ? editorActions(editor) : {};
+
+  const handleSetZoom = (zoomLevel: number) => {
+    editor?.commands.setZoom(zoomLevel);
+    setZoomLevel(zoomLevel);
+  };
 
   return (
     <div className="h-11 px-5 py-2">
@@ -154,25 +160,25 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
           <ToolBarItem
             iconName="minus"
             isBlack={true}
-            onClick={() => editor?.commands.decreaseZoom()}
+            onClick={() => handleSetZoom(zoomLevel - 0.25)}
             disabled={showPreview}
           />
           <Label
             id="zoomLevel"
             className="w-14 h-7 bg-white text-smaller p-2 rounded-md text-center"
           >
-            100%
+            {zoomLevel * 100}%
           </Label>
 
           <ToolBarItem
             iconName="plus"
             isBlack={true}
-            onClick={() => editor?.commands.increaseZoom()}
+            onClick={() => handleSetZoom(zoomLevel + 0.25)}
             disabled={showPreview}
           />
         </div>
       </div>
-      <EidtorComment editor={editor} />
+      <EditorComment editor={editor} />
       <EditorHyperLink editor={editor} />
       <EditorUploadModal open={isImage} setOpen={setIsImage} editor={editor} />
     </div>

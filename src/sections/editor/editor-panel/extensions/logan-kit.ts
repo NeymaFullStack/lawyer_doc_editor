@@ -21,6 +21,7 @@ import { PageNode } from "./logan-pagination/logan-page";
 import { LoganZoom } from "./logan-zoom";
 import { LoganHotKey } from "./logan-hotkey";
 import { LoganHyperLink } from "./logan-hyperlink";
+import { LoganComment } from "./logan-comment";
 
 export interface LoganKitOptions {
   heading: Partial<HeadingOptions> | false;
@@ -39,6 +40,7 @@ export const LoganKit = Extension.create<LoganKitOptions>({
         searchResultClass: "font-semibold bg-logan-primary-50 text-logan-blue",
         disableRegex: false,
       }),
+      LoganComment,
       LoganHyperLink,
       LoganHistory,
       LoganBold,
