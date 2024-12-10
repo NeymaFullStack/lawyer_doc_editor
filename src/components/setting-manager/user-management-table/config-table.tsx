@@ -85,7 +85,11 @@ export const userManagementTableColumns =
           </div>
         </div>
       ),
-      enableSorting: true,
+      sortingFn: (rowA, rowB) => {
+        const nameA = rowA.original.user_details?.name ?? "";
+        const nameB = rowB.original.user_details?.name ?? "";
+        return nameA.localeCompare(nameB);
+      },
     },
     {
       accessorKey: "role",
