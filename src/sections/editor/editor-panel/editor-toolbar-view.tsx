@@ -12,7 +12,7 @@ import { ToolBarItem } from "./components/editor-toolbar-item";
 import { EditorHyperLink } from "./components/editor-hyper-link";
 import isTextSelected from "./utils/utils";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
-import { EidtorComment } from "./components/editor-comment";
+import { EditorComment } from "./components/editor-comment";
 
 type EditorToolbarProps = {
   editor: Editor | null;
@@ -56,7 +56,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
   const editorActions = (editor: Editor | null) => ({
     search: () => console.log("Search clicked"),
     chatai: () => console.log("Chat AI clicked"),
-    commentplus: () => setIsComment(true),
+    commentplus: () => {},
     previous: () => editor?.commands?.undo(),
     next: () => editor?.commands?.redo(),
     bold: () => editor?.commands?.toggleBold(),
@@ -178,7 +178,7 @@ export const EditorToolbarView = ({ editor }: EditorToolbarProps) => {
           />
         </div>
       </div>
-      {/* <EidtorComment editor={editor} /> */}
+      <EditorComment editor={editor} />
       <EditorHyperLink editor={editor} />
       <EditorUploadModal open={isImage} setOpen={setIsImage} editor={editor} />
     </div>

@@ -24,7 +24,7 @@ export interface CommentStorage {
   activeCommentId: string | null;
 }
 
-export const CommentExtension = Mark.create<CommentOptions, CommentStorage>({
+export const LoganComment = Mark.create<CommentOptions, CommentStorage>({
   name: "comment",
 
   addOptions() {
@@ -66,19 +66,10 @@ export const CommentExtension = Mark.create<CommentOptions, CommentStorage>({
 
   onSelectionUpdate() {
     const { $from } = this.editor.state.selection;
-
     const marks = $from.marks();
-
-    if (!marks.length) {
-      this.storage.activeCommentId = null;
-      this.options.onCommentActivated(this.storage.activeCommentId);
-      return;
-    }
-
     const commentMark = this.editor.schema.marks.comment;
 
     const activeCommentMark = marks.find((mark) => mark.type === commentMark);
-
     this.storage.activeCommentId =
       (activeCommentMark?.attrs.commentId as string) || null;
 
@@ -95,37 +86,23 @@ export const CommentExtension = Mark.create<CommentOptions, CommentStorage>({
     return {
       setComment:
         (commentId: string) =>
-        ({ commands }) => {
-          if (!commentId) return false;
-          return commands.setMark("comment", { commentId });
-        },
+        ({ commands }) =>
+          !!commentId && commands.setMark("comment", { commentId }),
+
       unsetComment:
         (commentId: string) =>
         ({ tr, dispatch }) => {
           if (!commentId) return false;
 
-          const commentMarksWithRange: MarkWithRange[] = [];
-
           tr.doc.descendants((node, pos) => {
-            const commentMark = node.marks.find(
-              (mark) =>
-                mark.type.name === "comment" &&
-                mark.attrs.commentId === commentId
+            const mark = node.marks.find(
+              (m) =>
+                m.type.name === "comment" && m.attrs.commentId === commentId
             );
 
-            if (!commentMark) return;
-
-            commentMarksWithRange.push({
-              mark: commentMark,
-              range: {
-                from: pos,
-                to: pos + node.nodeSize,
-              },
-            });
-          });
-
-          commentMarksWithRange.forEach(({ mark, range }) => {
-            tr.removeMark(range.from, range.to, mark);
+            if (mark) {
+              tr.removeMark(pos, pos + node.nodeSize, mark);
+            }
           });
 
           return dispatch?.(tr) ?? false;
