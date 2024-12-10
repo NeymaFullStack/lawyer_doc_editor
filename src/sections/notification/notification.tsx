@@ -69,7 +69,7 @@ const Notification: React.FC = () => {
         console.error(error);
       }
     },
-    [fetchAllNotification]
+    [fetchAllNotification, triggerWorkspaceRefresh]
   );
 
   const handleNotificationClose = () => {
@@ -210,3 +210,5 @@ const NotificationBell = memo(({ unreadCount }: { unreadCount: number }) => {
     </div>
   );
 });
+
+NotificationBell.displayName = "NotificationBell";

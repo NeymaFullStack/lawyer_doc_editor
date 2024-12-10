@@ -37,7 +37,7 @@ function UserManagement() {
         </span>
       </div>
       <p className="text-xs text-logan-black-foreground">
-        Manage your Workspace's Team Members and their role permission here.{" "}
+        {"Manage your Workspace's Team Members and their role permission here."}
       </p>
       <div className="!mt-8">
         {data?.data ? (

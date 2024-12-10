@@ -98,6 +98,8 @@ export const General = () => {
         company_tax_identification_number:
           workerDetails?.company_details?.tax_identification_number || "",
       });
+      workerDetails.logo &&
+        setUploadedImageState({ image: null, isLogoRemoved: false });
     }
   }, [workerDetails]);
 
@@ -113,7 +115,7 @@ export const General = () => {
         isLogoRemoved: isLogoRemoved,
       });
     },
-    [uploadedImageState],
+    [uploadedImageState]
   );
 
   const saveUserData = useCallback(async (formData: FormData) => {
@@ -122,7 +124,7 @@ export const General = () => {
       const res = await axiosInstance.put(
         endpoints.workspace.workspaceDetails,
         formData,
-        { headers: { "content-type": "multipart/form-data" } },
+        { headers: { "content-type": "multipart/form-data" } }
       );
       setUser(res.data);
     } catch (error) {
@@ -148,7 +150,7 @@ export const General = () => {
       }
       saveUserData(formData);
     },
-    [uploadedImageState, saveUserData],
+    [uploadedImageState, saveUserData]
   );
 
   return (
@@ -223,7 +225,7 @@ export const General = () => {
             name={"company_email"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Email*</FormLabel>
+                <FormLabel>Contact Email</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -245,7 +247,7 @@ export const General = () => {
             name={"company_website"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company website*</FormLabel>
+                <FormLabel>Company website</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -267,7 +269,7 @@ export const General = () => {
             name={"company_country_code"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Country*</FormLabel>
+                <FormLabel>Company Country</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
@@ -313,7 +315,7 @@ export const General = () => {
             name={"company_address"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Address*</FormLabel>
+                <FormLabel>Company Address</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -482,7 +484,7 @@ const WorlplaceLogo = memo(
         />
       </div>
     );
-  },
+  }
 );
 
 WorlplaceLogo.displayName = "WorlplaceLogo";

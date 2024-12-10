@@ -1,4 +1,4 @@
-import OrderedList from "@tiptap/extension-Ordered-List";
+import OrderedList from "@tiptap/extension-ordered-list";
 
 export const LoganOrderedList = OrderedList.configure({
   itemTypeName: "listItem",

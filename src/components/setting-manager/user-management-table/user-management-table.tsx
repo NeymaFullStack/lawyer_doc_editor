@@ -50,7 +50,7 @@ const UserManagementTable = memo(
                 >
                   {flexRender(
                     header.column.columnDef.header,
-                    header.getContext(),
+                    header.getContext()
                   )}
                 </TableHead>
               ))}
@@ -65,7 +65,7 @@ const UserManagementTable = memo(
                   className={cn(
                     "py-3",
                     (cell.column.columnDef.meta as { className?: string })
-                      ?.className,
+                      ?.className
                   )}
                   key={cell.id}
                 >
@@ -77,6 +77,7 @@ const UserManagementTable = memo(
         </TableBody>
       </Table>
     );
-  },
+  }
 );
+UserManagementTable.displayName = "UserManagementTable";
 export default UserManagementTable;
