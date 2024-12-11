@@ -68,6 +68,12 @@ export const EditorTabPreview = () => {
 
   return (
     <div>
+      <div className="px-5 py-2 h-11 ">
+        <Label className="leading-7 font-semibold text-logan-black-foreground">
+          Preview
+        </Label>
+      </div>
+      <Separator className="bg-logan-primary-300" />
       <div className="p-5">
         <Flex onClick={() => handleCheckboxChange(customized)}>
           <Checkbox checked={customized} />

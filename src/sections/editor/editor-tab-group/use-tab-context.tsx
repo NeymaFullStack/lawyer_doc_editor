@@ -2,6 +2,32 @@
 
 import { useContext, createContext, useState } from "react";
 
+// export interface Comment {
+//   id: string;
+//   content: string;
+//   replies: Reply[];
+//   createdAt: Date;
+// }
+
+export interface Comment {
+  comment_id: string;
+  document_id: string;
+  avatar?: string;
+  name?: string;
+  content: string;
+  date?: string;
+  time?: string;
+  status: "ACTIVE" | "ARCHIVED";
+  replies?: Reply[];
+}
+
+interface Reply {
+  name?: string;
+  date?: string;
+  time?: string;
+  content: string;
+}
+
 type TabContextType = {
   isOpen: boolean;
   setOpen: (isOpen: boolean) => void;
@@ -9,6 +35,8 @@ type TabContextType = {
   setSelected: (selected: string | null) => void;
   showPreview: boolean;
   setShowPreview: (showPreview: boolean) => void;
+  comments: Comment[];
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
 export const TabContext = createContext({} as TabContextType);
@@ -17,6 +45,7 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>("Chatai");
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   return (
     <TabContext.Provider
@@ -27,6 +56,8 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
         setSelected,
         showPreview,
         setShowPreview,
+        comments,
+        setComments,
       }}
     >
       {children}

@@ -14,36 +14,39 @@ import { Input } from "@/components/ui/input";
 import { useDropdown } from "@/components/hook-form/dropdown-provider";
 import { iconColors } from "../../../../../tailwind.config";
 import { v4 } from "uuid";
-
-interface Comment {
-  id: string;
-  content: string;
-  replies: Comment[];
-  createdAt: Date;
-}
-
-const getNewComment = (content: string): Comment => ({
-  id: `a${v4()}a`,
-  content,
-  replies: [],
-  createdAt: new Date(),
-});
+import { Comment, useTabContext } from "../../editor-tab-group/use-tab-context";
+import { useParams } from "next/navigation";
+import { useAuthContext } from "@/auth/hooks";
 
 type EditorCommentProps = {
   editor: Editor | null;
 };
 
 export const EditorComment: React.FC<EditorCommentProps> = ({ editor }) => {
+  const document_id = useParams()["document-id"];
+  const { user } = useAuthContext();
   const { isComment, setIsComment } = useDropdown();
-  const [comments, setComments] = useState<Comment[]>([]);
+  const { comments, setComments } = useTabContext();
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const commentsSectionRef = useRef<HTMLDivElement | null>(null);
+
+  const getNewComment = (content: string): Comment => ({
+    comment_id: `a${v4()}a`,
+    document_id: `${document_id}`,
+    avatar: user?.profile_logo,
+    name: user?.first_name + " " + user?.last_name,
+    content,
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString(),
+    status: "ACTIVE",
+    replies: [],
+  });
 
   const onSetComment = useCallback(
     (content: string) => {
       const newComment = getNewComment(content);
-      // setComments((prev) => [...prev, newComment]);
-      editor?.commands.setComment(newComment.id);
+      setComments((prevComments) => [...prevComments, newComment]);
+      editor?.commands.setComment(newComment.comment_id);
       // setActiveCommentId(newComment.id);
     },
     [editor]
@@ -149,6 +152,7 @@ const CommentInputPanel = ({
         <Input
           className="h-6 !border-none caret-logan-black p-1 text-logan-black !transition-none"
           type="text"
+          multiple
           placeholder="Add a comment..."
           value={content}
           autoFocus
@@ -163,6 +167,14 @@ const CommentInputPanel = ({
         >
           Save
         </Button>
+        {/* <Button
+          color="primary"
+          size="xm"
+          disabled={!isValidContent}
+          className="h-6 bg-logan-primary-200 !text-logan-blue rounded-lg hover:bg-logan-primary-300 text-smaller"
+        >
+          remove
+        </Button> */}
       </form>
     </div>
   );

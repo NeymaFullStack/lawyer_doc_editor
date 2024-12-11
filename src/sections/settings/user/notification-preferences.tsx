@@ -45,7 +45,7 @@ function NotificationPreferences() {
             headers: {
               "Content-Type": "application/json",
             },
-          },
+          }
         );
       } catch (error) {
         console.error(error);
@@ -53,7 +53,7 @@ function NotificationPreferences() {
         setIsLoading(false);
       }
     },
-    [axiosInstance],
+    [axiosInstance]
   );
 
   const handleSaveNotificationPreferences = useCallback(
@@ -64,13 +64,13 @@ function NotificationPreferences() {
       }
       saveNotificationPreferences({ ...data });
     },
-    [saveNotificationPreferences],
+    [saveNotificationPreferences]
   );
 
   const handleSwitchToggle = useCallback(
     (
       notificationPreference: keyof UserNotificationPreferencesType,
-      toggle: { [k in keyof Toggle]?: boolean },
+      toggle: { [k in keyof Toggle]?: boolean }
     ) => {
       setNotificationPreferences((prev: UserNotificationPreferencesType) => {
         return {
@@ -82,7 +82,7 @@ function NotificationPreferences() {
         };
       });
     },
-    [],
+    []
   );
 
   return (
@@ -209,7 +209,7 @@ function NotificationPreferences() {
                     UserNotificationPreferencesEnum.TEAM_ACTIVITY,
                     {
                       push_enabled: checked,
-                    },
+                    }
                   )
                 }
                 checked={
@@ -228,7 +228,7 @@ function NotificationPreferences() {
                     UserNotificationPreferencesEnum.TEAM_ACTIVITY,
                     {
                       email_enabled: checked,
-                    },
+                    }
                   )
                 }
                 checked={
