@@ -1795,6 +1795,27 @@ export const icons = {
       </svg>
     );
   },
+  sendplane: ({ className, fill }) => {
+    const color = typeof fill === "string" ? fill : fill?.from;
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="34"
+        height="34"
+        viewBox="0 0 34 34"
+        fill="none"
+        className={className}
+      >
+        <path
+          d="M14.3192 18.034L16.8198 25.3685L23.8654 10.9106L8 13.5488L14.3192 18.034ZM14.3192 18.034L18.1377 15.1846"
+          stroke={color ?? "#095AD3"}
+          strokeWidth="1.58815"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  },
 } satisfies Record<string, FC<SvgIconProps>>;
 
 export const Icon = forwardRef<HTMLDivElement, IconProps>(

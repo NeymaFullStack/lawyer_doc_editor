@@ -22,29 +22,36 @@ type EditorCommentProps = {
   editor: Editor | null;
 };
 
+export const getNewComment = (
+  document_id: string,
+  avatar: string,
+  name: string,
+  content: string
+): Comment => ({
+  comment_id: `a${v4()}a`,
+  document_id: `${document_id}`,
+  avatar: avatar,
+  name: name,
+  content,
+  date: new Date().toLocaleDateString(),
+  time: new Date().toLocaleTimeString(),
+  status: "ACTIVE",
+  replies: [],
+});
+
 export const EditorComment: React.FC<EditorCommentProps> = ({ editor }) => {
   const document_id = useParams()["document-id"];
   const { user } = useAuthContext();
+  const avatar = user?.profile_logo;
+  const name = user?.first_name + " " + user?.last_name;
   const { isComment, setIsComment } = useDropdown();
   const { comments, setComments } = useTabContext();
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const commentsSectionRef = useRef<HTMLDivElement | null>(null);
 
-  const getNewComment = (content: string): Comment => ({
-    comment_id: `a${v4()}a`,
-    document_id: `${document_id}`,
-    avatar: user?.profile_logo,
-    name: user?.first_name + " " + user?.last_name,
-    content,
-    date: new Date().toLocaleDateString(),
-    time: new Date().toLocaleTimeString(),
-    status: "ACTIVE",
-    replies: [],
-  });
-
   const onSetComment = useCallback(
     (content: string) => {
-      const newComment = getNewComment(content);
+      const newComment = getNewComment(`${document_id}`, avatar, name, content);
       setComments((prevComments) => [...prevComments, newComment]);
       editor?.commands.setComment(newComment.comment_id);
       // setActiveCommentId(newComment.id);

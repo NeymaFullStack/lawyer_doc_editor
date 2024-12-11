@@ -17,13 +17,32 @@ import { useHover } from "@/hooks/use-hover";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
+import { getNewComment } from "../editor-panel/components/editor-comment";
 
 export const EditorTabComments = () => {
-  const { comments } = useTabContext();
+  const { comments, setComments } = useTabContext();
+  const { user } = useAuthContext();
+  const document_id = useParams()["document-id"];
+  const avatar = user?.profile_logo;
+  const name = user?.first_name + " " + user?.last_name;
+  const [content, setContent] = useState<string>("");
+  const [isNew, setIsNew] = useState<boolean>(false);
+
+  const handleNewAnswer = () => {
+    setContent("");
+    setIsNew(!isNew);
+  };
+
+  const newCreateComment = () => {
+    const newComment = getNewComment(`${document_id}`, avatar, name, content);
+    setComments((prevComments) => [newComment, ...prevComments]);
+    setIsNew(false);
+  };
 
   return (
     <div>
-      <EditorTabCommentsHeader />
+      <EditorTabCommentsHeader onClick={handleNewAnswer} isNew={isNew} />
       <Separator className="bg-logan-primary-300" />
       <Flex className="justify-between simpleSearchSquare px-4 py-2 gap-1">
         <Icon
@@ -39,16 +58,67 @@ export const EditorTabComments = () => {
         />
       </Flex>
       <Separator />
-      <div className="p-4 bg-white">
+      <div className="grid gap-4 p-4 bg-white">
+        {isNew && (
+          <form
+            onSubmit={newCreateComment}
+            className="flex w-full flex-col gap-3 rounded-xl bg-logan-primary-700 px-3 py-4"
+          >
+            <Flex className="justify-between">
+              <Flex>
+                <Avatar className="size-5">
+                  <AvatarImage
+                    src={avatar || "/favicon/favicon-32x32.png"}
+                    className="size-5"
+                    alt={`Your avatar`}
+                  />
+                </Avatar>
+                <Label className="!text-xm font-semibold text-logan-black">
+                  You
+                </Label>
+              </Flex>
+              <Icon iconName="showeye" className="cursor-pointer" />
+            </Flex>
+
+            <Flex className="simpleSearchSquare bg-white px-2 py-1 border border-white rounded-xl hover:border-logan-blue">
+              <Input
+                className="!border-none caret-logan-black p-1 h-6 text-logan-black !transition-none"
+                placeholder="Answer"
+                value={content}
+                autoFocus
+                required
+                onChange={(e) => setContent(e.target.value)}
+              />
+              <ToolBarItem
+                iconName="sendplane"
+                className="bg-white"
+                disabled={content ? false : true}
+                onClick={newCreateComment}
+              />
+            </Flex>
+          </form>
+        )}
         {comments.map((comment) => (
-          <CommentCard key={comment.comment_id} comment={comment} />
+          <CommentCard
+            key={comment.comment_id}
+            comment={comment}
+            fullName={name}
+          />
         ))}
       </div>
     </div>
   );
 };
 
-const EditorTabCommentsHeader = () => {
+type EditorTabCommentsHeaderProps = {
+  onClick: () => void;
+  isNew: boolean;
+};
+
+const EditorTabCommentsHeader = ({
+  onClick,
+  isNew,
+}: EditorTabCommentsHeaderProps) => {
   const [isSwitched, setIsSwitched] = useState<boolean>(true);
 
   return (
@@ -77,7 +147,13 @@ const EditorTabCommentsHeader = () => {
             onClick={() => setIsSwitched(true)}
           />
         </Flex>
-        <ToolBarItem iconName="plus" isBlack={false} disabled={false} />
+        <ToolBarItem
+          iconName="plus"
+          isSelected={isNew}
+          isBlack={false}
+          disabled={false}
+          onClick={onClick}
+        />
       </Flex>
     </Flex>
   );
@@ -111,11 +187,10 @@ const CommentHeaderButton = ({ iconName, label }: CommentHeaderButtonProps) => {
 
 interface CommentCardProps {
   comment: Comment;
+  fullName: string;
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
-  const { user } = useAuthContext();
-  const fullName = user?.first_name + " " + user?.last_name;
+const CommentCard: React.FC<CommentCardProps> = ({ comment, fullName }) => {
   const nowDate = new Date().toLocaleDateString();
   // const dispatch = useDispatch();
   // const { editor } = useSelector((state: RootState) => state.commentsReducer);
