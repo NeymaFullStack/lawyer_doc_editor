@@ -2,12 +2,7 @@
 
 import { useContext, createContext, useState } from "react";
 
-// export interface Comment {
-//   id: string;
-//   content: string;
-//   replies: Reply[];
-//   createdAt: Date;
-// }
+export const defaultAvatar = "/favicon/favicon-32x32.png";
 
 export interface Comment {
   comment_id: string;
@@ -21,7 +16,8 @@ export interface Comment {
   replies?: Reply[];
 }
 
-interface Reply {
+export interface Reply {
+  avatar?: string;
   name?: string;
   date?: string;
   time?: string;

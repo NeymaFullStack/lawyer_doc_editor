@@ -101,6 +101,26 @@
   display: none;
 }
 
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: #6b7280;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background-color: #4b5563;
+}
+
+textarea::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 /* Styles for the ProseMirror Editor */
 .ProseMirror {
   aspect-ratio: 1 / 1.4;

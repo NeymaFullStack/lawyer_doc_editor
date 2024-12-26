@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchAllComments } from "../redux/actions";
-// import { postReply, archiveComment } from "../api";
-// import RemSizeImage from "./RemSizeImage";
-
-import { Comment, useTabContext } from "./use-tab-context";
+import React, { useState, useCallback } from "react";
+import {
+  Comment,
+  defaultAvatar,
+  Reply,
+  useTabContext,
+} from "./use-tab-context";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAuthContext } from "@/auth/hooks";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { getNewComment } from "../editor-panel/components/editor-comment";
+import { Textarea } from "@/components/ui/textarea";
 
 export const EditorTabComments = () => {
   const { comments, setComments } = useTabContext();
@@ -37,6 +38,7 @@ export const EditorTabComments = () => {
   const newCreateComment = () => {
     const newComment = getNewComment(`${document_id}`, avatar, name, content);
     setComments((prevComments) => [newComment, ...prevComments]);
+
     setIsNew(false);
   };
 
@@ -64,22 +66,7 @@ export const EditorTabComments = () => {
             onSubmit={newCreateComment}
             className="flex w-full flex-col gap-3 rounded-xl bg-logan-primary-700 px-3 py-4"
           >
-            <Flex className="justify-between">
-              <Flex>
-                <Avatar className="size-5">
-                  <AvatarImage
-                    src={avatar || "/favicon/favicon-32x32.png"}
-                    className="size-5"
-                    alt={`Your avatar`}
-                  />
-                </Avatar>
-                <Label className="!text-xm font-semibold text-logan-black">
-                  You
-                </Label>
-              </Flex>
-              <Icon iconName="showeye" className="cursor-pointer" />
-            </Flex>
-
+            <CommentCardHeader avatar={avatar} name="You" status="ACTIVE" />
             <Flex className="simpleSearchSquare bg-white px-2 py-1 border border-white rounded-xl hover:border-logan-blue">
               <Input
                 className="!border-none caret-logan-black p-1 h-6 text-logan-black !transition-none"
@@ -103,6 +90,7 @@ export const EditorTabComments = () => {
             key={comment.comment_id}
             comment={comment}
             fullName={name}
+            avatar={avatar}
           />
         ))}
       </div>
@@ -188,122 +176,102 @@ const CommentHeaderButton = ({ iconName, label }: CommentHeaderButtonProps) => {
 interface CommentCardProps {
   comment: Comment;
   fullName: string;
+  avatar: string;
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ comment, fullName }) => {
+const CommentCard: React.FC<CommentCardProps> = ({
+  comment,
+  fullName,
+  avatar,
+}) => {
   const nowDate = new Date().toLocaleDateString();
-  // const dispatch = useDispatch();
-  // const { editor } = useSelector((state: RootState) => state.commentsReducer);
-  // const [reply, setReply] = useState<string>("");
-  // const [isReplyOpen, setIsReplyOpen] = useState<boolean>(false);
+  const [reply, setReply] = useState<string>("");
+  const [isReplyOpen, setIsReplyOpen] = useState<boolean>(false);
 
-  // const replies: Reply[] = comment.replies || [];
-  // const replyCount: number = replies.length;
+  const replies: Reply[] = comment.replies || [];
+  const replyCount: number = replies.length;
 
-  // const handleSubmit = useCallback(async () => {
-  //   if (reply.trim()) {
-  //     await postReply(comment.comment_id, reply);
-  //     dispatch(fetchAllComments(comment.document_id));
-  //     setReply("");
-  //   }
-  // }, [reply, dispatch, comment.comment_id, comment.document_id]);
-
-  // const handleArchiveComment = useCallback(async () => {
-  //   try {
-  //     await archiveComment(comment.comment_id);
-  //     dispatch(fetchAllComments(comment.document_id));
-  //     editor?.commands.changeCommentColor(
-  //       comment.comment_id,
-  //       "var(--logan-comment-archive)"
-  //     );
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [dispatch, comment.comment_id, comment.document_id, editor]);
+  const handleSubmit = useCallback(async () => {
+    replies.push({
+      avatar: avatar,
+      name: fullName,
+      date: nowDate,
+      time: new Date().toLocaleTimeString(),
+      content: reply,
+    });
+    console.log("replies: ", replies);
+    setReply("");
+  }, [reply, replies]);
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl bg-logan-primary-700 px-3 py-4">
-      <Flex className="justify-between">
-        {/* User Information */}
-        <Flex>
-          <Avatar className="size-5">
-            <AvatarImage
-              src={comment?.avatar || "/favicon/favicon-32x32.png"}
-              className="size-5"
-              alt={`${comment?.name || "User"}'s avatar`}
-            />
-          </Avatar>
-          <Label className="!text-xm font-semibold text-logan-black">
-            {comment.name === fullName ? "You" : (comment.name ?? "User")}
-          </Label>
-        </Flex>
-        {/* Date, Time, and Status */}
-        <Flex className="!gap-2">
-          <Label className="!text-xxm font-medium text-logan-primary-800">
-            {comment.date === nowDate
-              ? "Today"
-              : (comment.date ?? "Unknown Date")}{" "}
-            · {comment.time ?? "12:00 AM"}
-          </Label>
-          <Icon
-            iconName={comment.status === "ACTIVE" ? "showeye" : "hiddeneye"}
-            className="cursor-pointer"
-          />
-        </Flex>
-      </Flex>
+      <CommentCardHeader
+        avatar={comment.avatar || ""}
+        name={comment.name === fullName ? "You" : (comment.name ?? "User")}
+        date={
+          comment.date === nowDate ? "Today" : (comment.date ?? "Unknown Date")
+        }
+        time={comment.time ?? "12:00 AM"}
+        status={comment.status}
+      />
 
-      <Label className="flex-1 !text-xm font-normal text-logan-black">
+      <Label className="flex-1 !text-sm font-normal text-logan-black">
         {comment.content}
       </Label>
 
-      {/* <div className="flex w-fit flex-col items-start justify-center gap-3">
-        <button
-          onClick={() => setIsReplyOpen((prev) => !prev)}
-          className="rounded-lg bg-white p-1.5 px-2 text-left text-xs font-semibold leading-tight text-[#095AD3]"
-        >
-          {replyCount > 0 ? `${replyCount} Replies` : "Reply"}
-        </button>
+      <Flex className="flex-col items-start justify-center">
+        <Flex className="rounded-full bg-white p-1.5 px-2">
+          <Label
+            onClick={() => setIsReplyOpen((prev) => !prev)}
+            className="!text-xm font-semibold leading-tight text-logan-blue cursor-pointer"
+          >
+            {replyCount > 0 ? `${replyCount} Replies` : "Reply"}
+          </Label>
+          {replyCount > 0 && (
+            <Flex className="gap-0">
+              {replies.map((reply, index) => (
+                <CommentAvatar
+                  key={index}
+                  avatar={reply.avatar || ""}
+                  name={reply.name}
+                />
+              ))}
+            </Flex>
+          )}
+        </Flex>
 
         {isReplyOpen && replyCount > 0 && (
-          <div className="flex w-full flex-col items-start gap-[14px] rounded-lg bg-white p-[26px_32px]">
+          <Flex className="w-full flex-col items-start rounded-lg bg-white p-6">
             {replies.map((reply, index) => (
               <div key={index} className="w-full">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <RemSizeImage
-                      imagePath={
-                        comment.avatar || "/assets/images/default-avatar.png"
-                      }
-                      alt="User avatar"
-                      remWidth={2}
-                      remHeight={2}
-                      className="h-8 w-8 rounded-full"
-                    />
-                    <p className="text-left text-[13px] font-semibold leading-[15.73px]">
-                      {reply.name || "User"}
-                    </p>
-                  </div>
-                  <p className="text-left text-[9.6px] font-medium leading-[11.62px] text-[#095AD34D]">
-                    {reply.date || "Today"} . {reply.time || "12:00 AM"}
-                  </p>
-                </div>
-                <div className="my-[14px] flex-1">
-                  <p className="text-left text-[13px] font-normal leading-[16.9px]">
-                    {reply.content}
-                  </p>
-                </div>
+                <CommentCardHeader
+                  avatar={reply.avatar || ""}
+                  name={reply.name === fullName ? "You" : (reply.name ?? "")}
+                  date={
+                    reply.date === nowDate
+                      ? "Today"
+                      : (reply.date ?? "Unknown Date")
+                  }
+                  time={reply.time ?? "12:00 AM"}
+                />
+                <Label className="flex-1 !text-sm font-normal text-logan-black my-3">
+                  {reply.content}
+                </Label>
                 {index < replyCount - 1 && (
-                  <hr className="mt-[14px] h-[1px] bg-[#095AD31A]" />
+                  <Separator className="mt-3 bg-logan-primary-300" />
                 )}
               </div>
             ))}
-          </div>
+          </Flex>
         )}
 
         {isReplyOpen && (
-          <div className="min-w-[20rem] p-1">
-            <div className="flex flex-1 items-center gap-2 rounded-lg bg-white px-3 py-0.5">
-              <textarea
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-lg bg-white p-2 w-96"
+          >
+            <Flex className="gap-2 font-extralight simpleSearchSquare">
+              <Textarea
                 name="query"
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
@@ -313,26 +281,14 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, fullName }) => {
                     handleSubmit();
                   }
                 }}
-                className="max-h-[8rem] flex-1 resize-none overflow-x-hidden overflow-y-scroll bg-white px-2 pl-1 text-sm text-black-txt outline-none"
+                className="flex-1 resize-none bg-white px-2 outline-none border-none"
+                required
               />
-              <button
-                onClick={handleSubmit}
-                disabled={!reply.length}
-                className="flex h-full w-[1rem] items-center gap-3"
-              >
-                {reply.length > 0 && (
-                  <RemSizeImage
-                    imagePath="/assets/icons/send-icon.svg"
-                    remWidth={1.173}
-                    remHeight={1.082}
-                    alt="Send Button"
-                  />
-                )}
-              </button>
-            </div>
-          </div>
+              <CommentAvatar avatar={avatar} />
+            </Flex>
+          </form>
         )}
-      </div> */}
+      </Flex>
     </div>
   );
 };
@@ -344,4 +300,61 @@ type FlexProps = {
 
 const Flex = ({ children, className = "" }: FlexProps) => (
   <div className={cn("flex items-center gap-3", className)}>{children}</div>
+);
+
+type CommentAvatarProps = {
+  avatar: string;
+  name?: string;
+};
+
+const CommentAvatar = ({ avatar, name }: CommentAvatarProps) => (
+  <Avatar className="size-5">
+    <AvatarImage
+      src={avatar || defaultAvatar}
+      className="size-5"
+      alt={`${name ? name + "'s " : "Your "} avatar`}
+    />
+  </Avatar>
+);
+
+type CommentAvatarLabelProps = {
+  label: string;
+};
+
+const CommentAvatarLabel = ({ label }: CommentAvatarLabelProps) => (
+  <Label className="!text-xm font-semibold text-logan-black">{label}</Label>
+);
+
+type CommentCardHeaderProps = {
+  avatar: string;
+  name: string;
+  date?: string;
+  time?: string;
+  status?: "ACTIVE" | "ARCHIVED";
+};
+
+const CommentCardHeader = ({
+  avatar,
+  name,
+  date,
+  time,
+  status,
+}: CommentCardHeaderProps) => (
+  <Flex className="justify-between">
+    <Flex>
+      <CommentAvatar avatar={avatar} name={name} />
+      <CommentAvatarLabel label={name} />
+    </Flex>
+    <Flex className="!gap-2">
+      <Label className="!text-xxm font-medium text-logan-primary-800">
+        {date} · {time}
+      </Label>
+      {status && (
+        <Icon
+          iconName={status === "ACTIVE" ? "showeye" : "hiddeneye"}
+          onClick={() => {}}
+        />
+      )}
+    </Flex>
+  </Flex>
 );
